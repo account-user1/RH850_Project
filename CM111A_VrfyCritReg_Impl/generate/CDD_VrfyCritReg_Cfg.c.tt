@@ -1,0 +1,246 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #><#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #><#@ output extension="" #><#@ include file="Helper.tt" #><#@ include file="Logger.tt" #><#@ include file="CDD_VrfyCritReg_helper.tt" #><#
+#>/*****************************************************************************
+* Copyright 2016 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : CDD_VrfyCritReg_Cfg.c
+* Module Description: Critical Register Verification source file
+* Project           : CBD
+* Author            : Selva
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       nzt9hv %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 04/15/16  1        Selva       MicroDiag Critical Register                                                    EA4#5190
+**********************************************************************************************************************/
+
+#include "CDD_VrfyCritReg_Cfg_private.h"
+#include "Rte_CDD_VrfyCritReg.h"
+
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+/* MISRA-C:2004 Rule 1.1  [NXTRDEV 1.1.2]: Inline functions are used for functions to allow for throughput optimization */
+
+
+#define CDD_VrfyCritReg_START_SEC_CODE
+#include "CDD_VrfyCritReg_MemMap.h" 
+
+
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "VrfyCritReg" ) ); #>
+
+
+/****************Critical Registers to be checks Initialisation functions  ****************/  
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegInitSignallist" )) #>
+LOCAL_INLINE FUNC(void, CDD_VrfyCritReg_CODE)  SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>IninChk(P2VAR(boolean, AUTOMATIC,CDD_VrfyCritReg_CODE)SysRegsOk_Uls_T_lgc);
+<#!ENDLOOP #>
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegPerSignallist" )) #>
+LOCAL_INLINE FUNC(void, CDD_VrfyCritReg_CODE)  SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>PerChk(P2VAR(boolean, AUTOMATIC,CDD_VrfyCritReg_CODE)SysRegsOk_Uls_T_lgc);
+<#!ENDLOOP #>
+
+CONST(NonSysCritRegRec1, AUTOMATIC) IninCritReg8BitChk_rec[NROFININCRITREG8BIT_CNT_U16]=
+{
+		
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg8bitInitSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitInitSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitInitSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitInitSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+
+CONST(NonSysCritRegRec1, AUTOMATIC) IninCritReg16BitChk_rec[NROFININCRITREG16BIT_CNT_U16]=
+{
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg16bitInitSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitInitSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitInitSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitInitSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+
+
+CONST(NonSysCritRegRec1, AUTOMATIC) IninCritReg32BitChk_rec[NROFININCRITREG32BIT_CNT_U16]=
+{
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg32bitInitSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitInitSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitInitSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitInitSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+
+
+/****************Critical Registers to be checked at Periodic rate  ****************/
+CONST(NonSysCritRegRec1, AUTOMATIC) PerCritReg8BitChk_rec[NROFPERCRITREG8BIT_CNT_U16]=
+{
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg8bitPerSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitPerSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitPerSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg8bitPerSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+/****************Critical Registers to be checked at Periodic rate  ****************/
+CONST(NonSysCritRegRec1, AUTOMATIC) PerCritReg16BitChk_rec[NROFPERCRITREG16BIT_CNT_U16]=
+{
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg16bitPerSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitPerSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitPerSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg16bitPerSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+/****************Critical Registers to be checked at Periodic rate  ****************/
+CONST(NonSysCritRegRec1, AUTOMATIC) PerCritReg32BitChk_rec[NROFPERCRITREG32BIT_CNT_U16]=
+{
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfyCritReg32bitPerSignallist" )) #>
+	  { <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitPerSignallist/Address" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitPerSignallist/Value" ) )) #>U, <#= FormatHex(ValueOf( Xp.ValueAtDefRefTo( "VrfyCritReg32bitPerSignallist/Mask" ) )) #>U}, /* <#=ValueOf( "ar:SHORT-NAME" )#> */
+	<#!ENDLOOP #>
+	
+};
+
+#define CDD_VrfyCritReg_STOP_SEC_CODE
+#include "CDD_VrfyCritReg_MemMap.h" /* PRQA S 5087 */ /* MD_MSR_19.1 */
+
+/*************************************************************************/
+/***************Start of function definition************/
+
+
+
+
+#define CDD_VrfyCritReg_START_SEC_CODE
+#include "CDD_VrfyCritReg_MemMap.h" /* PRQA S 5087 */ /* MD_MSR_19.1 */
+
+/******************************************************************************
+  * Name:        SysCritRegPerChk
+  * Description: set 'SysRegsOk_Uls_T_lgc' to 'FALSE' if CPU System Register values are not equal to 
+  *              expected values
+  * Inputs:      None     
+  * Outputs:     SysRegsOk_Uls_T_lgc   
+  * Usage Notes: Configured as a trusted function because it needs to run in supervisor mode
+  ****************************************************************************/
+FUNC(boolean, CDD_VrfyCritReg_CODE) SysCritRegPerChk(void) /* PRQA S 0850 */ /* MD_MSR_19.8 */
+{
+	VAR(boolean, AUTOMATIC)  SysRegsOk_Uls_T_lgc = TRUE;
+
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegPerSignallist" )) #>
+SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>PerChk(&SysRegsOk_Uls_T_lgc);
+    <#!ENDLOOP #>
+	
+    return(SysRegsOk_Uls_T_lgc);
+}
+
+
+/******************************************************************************
+  * Name:        SysCritRegIninChk
+  * Description: set 'SysRegsOk_Uls_T_lgc' to 'FALSE' if CPU System Register values are not equal to 
+  *              expected values
+  * Inputs:      None     
+  * Outputs:     SysRegsOk_Uls_T_lgc   
+  * Usage Notes: Configured as a trusted function because it needs to run in supervisor mode
+  ****************************************************************************/
+FUNC(boolean, CDD_VrfyCritReg_CODE) SysCritRegIninChk(void) /* PRQA S 0850 */ /* MD_MSR_19.8 */
+{
+	VAR(boolean, AUTOMATIC)  SysRegsOk_Uls_T_lgc = TRUE;
+	
+	<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegInitSignallist" ))#>
+SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>IninChk(&SysRegsOk_Uls_T_lgc);
+    <#!ENDLOOP #>
+		
+   return(SysRegsOk_Uls_T_lgc);
+}
+
+<#  
+uint LoopCount1 = 0;
+string regValStrStart1; 
+string regValStrEnd1;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegInitSignallist" )) #>
+
+/******************************************************************************
+  * Name:        SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>IninChk
+  * Description: set 'SysRegsOk_Uls_T_lgc' to 'FALSE' if CPU System Register values are not equal to 
+  *              expected values
+  * Inputs:      None     
+  * Outputs:     SysRegsOk_Uls_T_lgc   
+  * Usage Notes: Called from SysCritRegPerChk
+  ****************************************************************************/
+LOCAL_INLINE FUNC(void, CDD_VrfyCritReg_CODE)  SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>IninChk(P2VAR(boolean, AUTOMATIC,CDD_VrfyCritReg_CODE) SysRegsOk_Uls_T_lgc)
+{
+	VAR(uint32, AUTOMATIC)   TempRegVal_Uls_T_u32;
+	<#
+    if (LoopCount1 > 0)
+	{
+	regValStrStart1 = "if(*SysRegsOk_Uls_T_lgc == TRUE){";
+	regValStrEnd1 ="}";
+	}
+	else
+	{
+	regValStrStart1 = " ";
+	regValStrEnd1 =" ";
+	}
+	#>
+	  	
+	<#=regValStrStart1#>
+        /* System Critical register check for "<#=ValueOf( "ar:SHORT-NAME" )#>" */    
+		TempRegVal_Uls_T_u32 = ((uint32)__STSR (<#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/RegisterID")))#>, <#=FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/SelectionID")))#>) & <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/Mask")))#>U) ;
+		if(TempRegVal_Uls_T_u32  != <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/Value")))#>U)
+		{
+			*SysRegsOk_Uls_T_lgc = FALSE;
+			*Rte_Pim_dVrfyCritRegSysCritRegAdr() = ((uint32)((uint32)<#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/RegisterID")))#> << 8U) | <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/SelectionID")))#>U);
+			*Rte_Pim_dVrfyCritRegSysCritRegDesVal() = TempRegVal_Uls_T_u32;
+			*Rte_Pim_dVrfyCritRegSysCritRegActVal() = <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegInitSignallist/Value")))#>U;		
+		}
+	<#=regValStrEnd1#>
+}
+<#  
+ LoopCount1 = LoopCount1 + 1;
+#>
+<#!ENDLOOP #>
+
+<#  
+uint LoopCount2 = 0;
+string regValStrStart2; 
+string regValStrEnd2;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "VrfySysCritRegPerSignallist" )) #>
+/******************************************************************************
+  * Name:        SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>PerChk
+  * Description: set 'SysRegsOk_Uls_T_lgc' to 'FALSE' if CPU System Register values are not equal to 
+  *              expected values
+  * Inputs:      None     
+  * Outputs:     SysRegsOk_Uls_T_lgc   
+  * Usage Notes: Called from SysCritRegPerChk
+  ****************************************************************************/
+LOCAL_INLINE FUNC(void, CDD_VrfyCritReg_CODE)  SysCritReg<#=ValueOf( "ar:SHORT-NAME" )#>PerChk(P2VAR(boolean, AUTOMATIC,CDD_VrfyCritReg_CODE) SysRegsOk_Uls_T_lgc)
+{
+	VAR(uint32, AUTOMATIC)   TempRegVal_Uls_T_u32;
+	<#
+    if (LoopCount2 > 0)
+	{
+	regValStrStart2 = "if(*SysRegsOk_Uls_T_lgc == TRUE){";
+	regValStrEnd2 ="}";
+	}
+	else
+	{
+	regValStrStart2 = " ";
+	regValStrEnd2 =" ";
+	}
+	#>
+	      	
+	<#=regValStrStart2#>
+	/* System Critical register check for "<#=ValueOf( "ar:SHORT-NAME" )#>" */
+		TempRegVal_Uls_T_u32 = ((uint32)__STSR (<#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/RegisterID")))#>, <#=(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/SelectionID")))#>) & <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/Mask")))#>U) ;
+		if(TempRegVal_Uls_T_u32  != <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/Value")))#>U)
+		{
+			*SysRegsOk_Uls_T_lgc = FALSE;
+			*Rte_Pim_dVrfyCritRegSysCritRegAdr() = ((uint32)((uint32)<#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/RegisterID")))#> << 8U) | <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/SelectionID")))#>U);
+			*Rte_Pim_dVrfyCritRegSysCritRegDesVal() = TempRegVal_Uls_T_u32;
+			*Rte_Pim_dVrfyCritRegSysCritRegActVal() = <#= FormatHex(ValueOf(Xp.ValueAtDefRefTo( "VrfySysCritRegPerSignallist/Value")))#>U;		
+		}
+	<#=regValStrEnd2#>
+}
+<#  
+ LoopCount2 = LoopCount2 + 1;
+#>
+<#!ENDLOOP #>
+#define CDD_VrfyCritReg_STOP_SEC_CODE
+#include "CDD_VrfyCritReg_MemMap.h" /* PRQA S 5087 */ /* MD_MSR_19.1 */
+
+

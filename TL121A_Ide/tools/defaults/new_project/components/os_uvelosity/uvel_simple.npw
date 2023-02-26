@@ -1,0 +1,1208 @@
+%if !file_exists("${__OS_DIR__}/multi/new_project/components/os_uvelosity/uvel_simple.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.libstartup.disabled = false
+component.libsys.disabled = false
+component.stdlib_startup.disabled = false
+component.stdlib_sys.disabled = false
+
+# Extend standard custom library configuration with extra step to protect uvlib
+component.stdlib_startup.actions.add.standard.100 += { \
+	"python ${__DIR__}/uvel_simple.py source_uvel_custom_libstartup_add" \
+}
+component.stdlib_startup.actions.remove.standard.100 += { \
+	"python ${__DIR__}/uvel_simple.py source_uvel_custom_libstartup_remove" \
+}
+component.stdlib_sys.actions.add.standard.100 += { \
+	"python ${__DIR__}/uvel_simple.py source_uvel_custom_libsys_add" \
+}
+component.stdlib_sys.actions.remove.standard.100 += { \
+	"python ${__DIR__}/uvel_simple.py source_uvel_custom_libsys_remove" \
+}
+
+%if defined (UNSUPPORTED_MSG2)
+component.top_level_project.actions.add.standard {
+ 	10 += { "message ${UNSUPPORTED_MSG2}\nTo change your target, select Set Build Target in the Edit menu."};
+}
+%endif
+
+component_template.uvelosity_appT {
+    use_template = "IntProjectT"
+    tags = { "uvelOSity_Application" }
+
+    parent_context_types = { "top_level_project", "project", "OuterProject" }
+    parent_context_filetypes = { "Project" }
+    context_types += { "Debuggable", "ExecutableProgram", "Container", "AnyProject" }
+
+    top_file_type = "Program"
+    icon_name="program"
+    bg_color="#ecffce"
+#	fg_color="#000000"
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	
+    dlg_info {
+	edit {
+	    menu_str = "Edit u-velOSity &Application"
+	    cmd_str = "EditUVELApp"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.uvel_project",  "multi.mpm.program_layout",  "multi.mpm.uvel_lib_config" }
+	}
+	paste_local {
+	    cmd_str = "PasteUVELApp"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}	    
+    }
+    attributes {
+	tf_ProjectName {
+	    type = "string"
+	    refreshNode = true
+	    display_name = true
+	    default = "hello"
+	    
+	    build_file_setting = "filename $build_file_basename"
+
+	    actions {
+		add {
+		    intermediate {
+		    	1 += { "defineLocal tf_name $(tf_ProjectName)"}
+			10 += { "copydef tf_ProjectName BASE_PROJ_NAME" }
+		    }
+		    standard {
+			5 += { "python ${__DIR__}/uvel_simple.py simple_tf_name_add_std" }
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+			# Set the object directory to be a subdirectory
+			# of the global object directory based on the name
+			# of the subproject's directory to avoid conflicts
+			# between subprojects.
+			# This is only done for GHS toolchains here since
+			# the exact option syntax is different for each
+			# toolchain.
+			100 += { "defineLocal OPTION_STRING -object_dir=objs/$BASE_PROJ_NAME" }
+			101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif
+
+			1000000 += { "python ${__DIR__}/uvel_simple.py simple_std_lastdefines" }
+		    } 
+		}
+		edit {
+		    intermediate {
+			1 += { "defineLocal tf_name $(tf_ProjectName)"}
+			10 += { "copydef tf_ProjectName BASE_PROJ_NAME" }
+		    }
+		    standard {			
+			5  += { "python ${__DIR__}/uvel_simple.py simple_tf_name_edit_std" }
+			1000000 += { "python ${__DIR__}/uvel_simple.py simple_std_lastdefines" }
+		    }
+		}
+		readin {
+		    standard {
+		    	1 += { "defineLocal tf_name $(tf_ProjectName)"}
+			10 += { "copydef tf_ProjectName BASE_PROJ_NAME" }
+
+			# very last thing, set variable			    
+			1000000 += { "defineLocal LAST_SIMPLE_NAME $tf_ProjectName" }
+			1000000 += { "defineLocal LAST_BASE_PROJ_NAME $tf_ProjectName" }
+		    }
+		}
+	    }
+	    
+	}
+	bs_uvOptions {
+	    type = "choice"
+	    
+	    build_file_setting = "option id:AltSysLib"
+	    # -syslib
+	    choices {
+		debug {
+		    default = true
+		    display_name = "Use debug library"
+		    build_file_setting_suffix = "uv_debug"
+		    actions {
+			add {
+			    intermediate {
+				1 += { "defineLocal UV_LIB debug" }
+			    }
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_add_std" }
+			    }
+			}
+			edit {
+			    intermediate {
+				1 += { "defineLocal UV_LIB debug" }
+			    }			    
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_edit_std" }
+			    }
+			}
+			readin {
+			    standard {
+				100000000 += { "defineLocal LAST_UV_LIB debug" }
+			    }
+			}
+		    }
+		}
+		minsize {
+		    default = false
+		    display_name= "Use minimum footprint"
+		    build_file_setting_suffix = "uv_min"
+		    actions {
+			add {
+			    intermediate {
+				1 += { "defineLocal UV_LIB minsize" }
+			    }
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_add_std" }
+			    }
+			}
+			edit {
+			    intermediate {
+				1 += { "defineLocal UV_LIB minsize" }
+			    }			    
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_edit_std" }
+			    }
+			}
+			readin {
+			    standard {
+				100000000 += { "defineLocal LAST_UV_LIB minsize" }
+			    }
+			}
+		    }
+		}
+		maxperf {
+		    default = false
+		    display_name = "Use maximum performance library"
+		    build_file_setting_suffix = "uv"
+		    actions {
+			add {
+			    intermediate {
+				1 += { "defineLocal UV_LIB maxperf" }
+			    }
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_add_std" }
+			    }
+			}
+			edit {
+			    intermediate {
+				1 += { "defineLocal UV_LIB maxperf" }
+			    }			    
+			    standard {
+				10  += { "python ${__DIR__}/uvel_simple.py simple_bs_uvOptions_edit_std" }
+			    }
+			}
+			readin {
+			    standard {
+				100000000 += { "defineLocal LAST_UV_LIB maxperf" }
+			    }
+			}
+		    }
+		}		    
+	    }
+	}
+#	tf_ProjectDir {
+#	    type = "string"
+#	    build_file_setting = "filedir $build_file_directory"
+#	    sanity_check_action = "python ${__DIR__}/../shared/common.py newproj_sanity_check" 
+#	    actions {		
+#		readin {
+#		    standard {			
+#			1 += { "defineLocal PROJ_DIR $tf_ProjectDir" }
+#			2 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }			
+#			2 += { "localCalculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }			
+#			3 += { "localCalculateRelativePath REL_PROJ_DIR $ABS_BASE_PROJ_DIR $ABS_PROJ_DIR" }
+#		    }
+#		}
+#	    }
+#	}
+	
+
+	linkMap {
+	    type = "string"
+	    default = "standalone_ram.ld"
+	    defaults = { "standalone_ram.ld", "standalone_romrun.ld", "standalone_romcopy.ld"}
+	    pre_populate_action = "python ${__SHARED_PY_DIR__}/projects.py populate_linkmap_list"
+	    actions {
+		add.standard {
+		    100 += { "defineLocal LINKMAP $linkMap" }
+		    101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+		}
+		edit.standard {
+		    100 += { "defineLocal LINKMAP $linkMap" }
+		    101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+		}
+	    }
+	    refreshNode = false
+#	    dlg_info {
+#		add {
+#		    cmd_str = "AddLinkMap"
+#		    dlg_filelist =  "${__SHARED_PY_DIR__}/programs.plc" 
+#		    dlg_namelist = "ProjectWizardLinkMapLibraries"
+#		}
+#		edit {
+#		    cmd_str = "ChangeLinkMap"
+#		    dlg_filelist =  "${__SHARED_PY_DIR__}/programs.plc" 
+#		    dlg_namelist = "ProjectWizardLinkMapLibraries"
+#		}
+#	    }
+	}
+
+	std_libraries {
+	    display_name = "Libraries"
+	    type = "childlist"
+	    tags = "STD_LIBRARY"
+	    doc_anchor_ids += { "multi.mpm.attribute.custom_libraries" }
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:stdlib_"		
+	}
+
+    }
+    actions {
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/uvel_simple.py simple_remove_std" }
+	    }
+	}	
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/uvel_simple.py simple_delete_std" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_REL_PROJ_DIR $(REL_PROJ_DIR)" }
+		10 += { "defineLocal COPY_PROJ_DIR $(PROJ_DIR)" }
+	    }
+	}
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/uvel_simple.py simple_paste_local_std" }
+	    }
+	}
+	reload {
+	    intermediate {
+		10 += { "python ${__DIR__}/uvel_simple.py simple_reload_int" }
+
+	    }
+	    standard {
+		1 += { "defineLocal tf_name $tf_ProjectName" }
+		1 += { "defineLocal BASE_PROJ_NAME $tf_ProjectName" }
+		10 += { "python ${__DIR__}/uvel_simple.py simple_tf_name_edit_std" } 
+		10000000 += { "python ${__DIR__}/uvel_simple.py simple_std_lastdefines" } 
+	    }
+	}
+	
+    }
+}
+
+component.uvelosity_application {
+	use_template = "uvelosity_appT"
+	display_type_name = "u-velOSity Application"
+	doc_anchor_ids = { "multi.mpm.uvel_project" }
+
+
+	dlg_info {
+	    add {
+		menu_str = "Add u-velOSity &Application"
+		cmd_str = "AddUVELApp"
+		dlg_cmdlist = { "SetProjInfo_uvel_simple", "Edit_uvel_simple" }
+	    }
+	    edit {
+		menu_str = "Edit u-velOSity &Application"
+		cmd_str = "Edit_uvel_simple"
+		dlg_filelist = "${__DIR__}/uvel_simple.plc"
+		dlg_namelist = "uvelOSityNPWDlg"
+	    }
+	    paste_local {
+		cmd_str = "Paste_uvel_simple"
+		dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+		dlg_namelist =  "ProjectWizardDirName"
+	    }	
+	}
+	attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/hello_src"
+	attributes {
+	    tf_ProjectName {
+		default = "hello_project"
+		dlg_info {
+		    add {
+			cmd_str = "SetProjInfo_uvel_simple"
+			same_object_dialogs = { "Edit_uvel_simple" }
+		    }
+		}
+		actions {
+		    add {
+			standard {
+			    10 += { "python ${__DIR__}/uvel_simple.py source_uvel_app_add_std" }
+
+			}
+		    }
+		}
+	    }
+	}
+}
+
+component.uvelosity_demo_timer {
+    use_template = "uvelosity_appT"
+    display_type_name = "u-velOSity Timer Driver Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_timer" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &Timer Driver Example"
+	    cmd_str = "AddUVELApp_timer"
+	    dlg_cmdlist = { "SetProjInfo_uvel_timer", "Edit_uvel_timer" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &Timer Driver Example"
+	    cmd_str = "Edit_uvel_timer"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_timer"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/timer_src"
+    attributes {
+	tf_ProjectName {
+	    default = "timer_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_timer"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_timer" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_timer_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+%if !defined(HAS_TIMER_DRIVER_EXAMPLE)
+    disabled = true
+%endif
+}
+
+component.uvelosity_demo_prodcons {
+    use_template = "uvelosity_appT"
+    display_type_name = "u-velOSity Producer/Consumer Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_prodcons" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &Producer/Consumer Example"
+	    cmd_str = "AddUVELApp_prodcons"
+	    dlg_cmdlist = { "SetProjInfo_uvel_prodcons", "Edit_uvel_prodcons" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &Producer/Consumer Example"
+	    cmd_str = "Edit_uvel_prodcons"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_prodcons"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/prodcons_src"
+    attributes {
+	tf_ProjectName {
+	    default = "prodcons_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_prodcons"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_prodcons" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_prodcons_add_std" }
+
+		    }
+		}
+	    }
+	}
+    }
+}
+
+### USB ######################################################################
+
+component_template.uvelosity_demo_usb_example {
+    use_template = "uvelosity_appT"
+%if streq(__BSP_NAME__, "at91rm9200")
+    # Install ethernet driver
+    attributes.tf_ProjectName.actions.add.standard {
+		1 += { "defineLocal INSTALL_AT91RM9200_USB_DRIVER 1" }
+    }
+%endif
+}
+
+%if file_exists("${__OS_DIR__}/multi/new_project/usb_device/audio_source_device_c.npw")
+component.uvelosity_demo_usb_device_audio_source {
+    use_template = "uvelosity_demo_usb_example"
+    display_type_name = "u-velOSity USB Device Audio Source Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_usb" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &USB Device Audio Source Example"
+	    cmd_str = "AddUVELApp_usb_device_audio_source"
+	    dlg_cmdlist = { "SetProjInfo_uvel_usb_device_audio_source", "Edit_uvel_usb_device_audio_source" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &USB Device Audio Source Example"
+	    cmd_str = "Edit_uvel_usb_device_audio_source"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_usb_device_audio_source"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/usb_device_audio_source_src"
+    attributes {
+	tf_ProjectName {
+	    default = "usb_device_audio_source_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_usb_device_audio_source"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_usb_device_audio_source" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_usb_device_audio_source_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_USB_DEVICE_CONTROLLER_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/usb_device/mass_storage_device_c.npw")
+component.uvelosity_demo_usb_device_mass_storage {
+    use_template = "uvelosity_demo_usb_example"
+    display_type_name = "u-velOSity USB Device Mass Storage Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_usb" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &USB Device Mass Storage Example"
+	    cmd_str = "AddUVELApp_usb_device_mass_storage"
+	    dlg_cmdlist = { "SetProjInfo_uvel_usb_device_mass_storage", "Edit_uvel_usb_device_mass_storage" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &USB Device Mass Storage Example"
+	    cmd_str = "Edit_uvel_usb_device_mass_storage"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_usb_device_mass_storage"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/usb_device_mass_storage_src"
+    attributes {
+	tf_ProjectName {
+	    default = "usb_device_mass_storage_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_usb_device_mass_storage"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_usb_device_mass_storage" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_usb_device_mass_storage_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_USB_DEVICE_CONTROLLER_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/usb_device/mouse_device_c.npw")
+component.uvelosity_demo_usb_device_mouse_device {
+    use_template = "uvelosity_demo_usb_example"
+    display_type_name = "u-velOSity USB Device Mouse Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_usb" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &USB Device Mouse Example"
+	    cmd_str = "AddUVELApp_usb_device_mouse_device"
+	    dlg_cmdlist = { "SetProjInfo_uvel_usb_device_mouse_device", "Edit_uvel_usb_device_mouse_device" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &USB Device Mouse Example"
+	    cmd_str = "Edit_uvel_usb_device_mouse_device"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_usb_device_mouse_device"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/usb_device_mouse_device_src"
+    attributes {
+	tf_ProjectName {
+	    default = "usb_device_mouse_device_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_usb_device_mouse_device"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_usb_device_mouse_device" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_usb_device_mouse_device_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_USB_DEVICE_CONTROLLER_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/usb_device/serial_usb_device_c.npw")
+component.uvelosity_demo_usb_device_serial_device {
+    use_template = "uvelosity_demo_usb_example"
+    display_type_name = "u-velOSity USB Device Serial Echo Example (IODevice)"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_usb" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &USB Device Serial Echo Example (IODevice)"
+	    cmd_str = "AddUVELApp_usb_device_serial_device"
+	    dlg_cmdlist = { "SetProjInfo_uvel_usb_device_serial_device", "Edit_uvel_usb_device_serial_device" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &USB Device Serial Echo Example (IODevice)"
+	    cmd_str = "Edit_uvel_usb_device_serial_device"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_usb_device_serial_device"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/usb_device_serial_device_src"
+    attributes {
+	tf_ProjectName {
+	    default = "usb_device_serial_device_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_usb_device_serial_device"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_usb_device_serial_device" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_usb_device_serial_device_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_USB_DEVICE_CONTROLLER_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/usb_device/serial_usb_device_c.npw")
+component.uvelosity_demo_usb_device_serial_device_fd {
+    use_template = "uvelosity_demo_usb_example"
+    display_type_name = "u-velOSity USB Device Serial Echo Example (File Descriptor)"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_usb" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &USB Device Serial Echo Example (File Descriptor)"
+	    cmd_str = "AddUVELApp_usb_device_serial_device_fd"
+	    dlg_cmdlist = { "SetProjInfo_uvel_usb_device_serial_device_fd", "Edit_uvel_usb_device_serial_device_fd" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &USB Device Serial Echo Example (File Descriptor)"
+	    cmd_str = "Edit_uvel_usb_device_serial_device_fd"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_usb_device_serial_device_fd"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/usb_device_serial_device_fd_src"
+    attributes {
+	tf_ProjectName {
+	    default = "usb_device_serial_device_fd_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_usb_device_serial_device_fd"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_usb_device_serial_device_fd" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_usb_device_serial_device_fd_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_USB_DEVICE_CONTROLLER_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+### FILESYSTEM ###############################################################
+
+%if file_exists("${__OS_DIR__}/multi/new_project/fs_ramdisk_c.npw")
+component.uvelosity_demo_fs_ramdisk {
+    use_template = "uvelosity_appT"
+    display_type_name = "u-velOSity File System RAM Disk Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_fs_ramdisk" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &File System RAM Disk Example"
+	    cmd_str = "AddUVELApp_fs_ramdisk"
+	    dlg_cmdlist = { "SetProjInfo_uvel_fs_ramdisk", "Edit_uvel_fs_ramdisk" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &File System RAM Disk Example"
+	    cmd_str = "Edit_uvel_fs_ramdisk"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_fs_ramdisk"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/fs_ramdisk_src"
+    attributes {
+	tf_ProjectName {
+	    default = "fs_ramdisk_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_fs_ramdisk"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_fs_ramdisk" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_fs_ramdisk_add_std" }
+
+		    }
+		}
+	    }
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/fs_wlfs2_c.npw")
+component.uvelosity_demo_fs_wlfs2 {
+    use_template = "uvelosity_appT"
+    display_type_name = "u-velOSity File System WLFS2 Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_fs_wlfs2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &File System WLFS2 Example"
+	    cmd_str = "AddUVELApp_fs_wlfs2"
+	    dlg_cmdlist = { "SetProjInfo_uvel_fs_wlfs2", "Edit_uvel_fs_wlfs2" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &File System WLFS2 Example"
+	    cmd_str = "Edit_uvel_fs_wlfs2"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_fs_wlfs2"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/fs_wlfs2_src"
+    attributes {
+	tf_ProjectName {
+	    default = "fs_wlfs2_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_fs_wlfs2"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_fs_wlfs2" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_fs_wlfs2_add_std" }
+
+		    }
+		}
+	    }
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+}
+%endif
+
+### GHNET V2 #################################################################
+
+component_template.uvelosity_demo_ghnet2_svc_example {
+    use_template = "uvelosity_appT"
+%if streq(__BSP_NAME__, "at91rm9200")
+    # Install ethernet driver
+    attributes.tf_ProjectName.actions.add.standard {
+		1 += { "defineLocal INSTALL_AT91RM9200_ETHERNET_DRIVER 1" }
+    }
+%endif
+}
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/ghnet2_httpd_example.npw")
+component.uvelosity_demo_ghnet2_svc_httpd_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 Web Server Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 Web Server Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_httpd_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_httpd_example", "Edit_uvel_ghnet2_svc_httpd_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 Web Server Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_httpd_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_httpd_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_httpd_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_httpd_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_httpd_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_httpd_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_httpd_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/ghnet2_ftpd_example.npw")
+component.uvelosity_demo_ghnet2_svc_ftpd_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 FTP Server Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 FTP Server Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_ftpd_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_ftpd_example", "Edit_uvel_ghnet2_svc_ftpd_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 FTP Server Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_ftpd_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_ftpd_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_ftpd_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_ftpd_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_ftpd_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_ftpd_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_ftpd_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/ghnet2_snmpd_example.npw")
+component.uvelosity_demo_ghnet2_svc_snmpd_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 SNMP Server Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 SNMP Server Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_snmpd_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_snmpd_example", "Edit_uvel_ghnet2_svc_snmpd_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 SNMP Server Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_snmpd_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_snmpd_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_snmpd_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_snmpd_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_snmpd_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_snmpd_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_snmpd_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/sockets/ghnet2_loopback_example.npw")
+component.uvelosity_demo_ghnet2_svc_loopback_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 Loopback (UDP) Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 Loopback (UDP) Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_loopback_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_loopback_example", "Edit_uvel_ghnet2_svc_loopback_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 Loopback (UDP) Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_loopback_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_loopback_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_loopback_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_loopback_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_loopback_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_loopback_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_loopback_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/sockets/ghnet2_echo_tcp_example.npw")
+component.uvelosity_demo_ghnet2_svc_echo_tcp_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 Echo Server (TCP) Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 Echo Server (TCP) Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_echo_tcp_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_echo_tcp_example", "Edit_uvel_ghnet2_svc_echo_tcp_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 Echo Server (TCP) Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_echo_tcp_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_echo_tcp_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_echo_tcp_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_echo_tcp_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_echo_tcp_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_echo_tcp_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_echo_tcp_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/sockets/ghnet2_echo_udp_example.npw")
+component.uvelosity_demo_ghnet2_svc_echo_udp_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 Echo Server (UDP) Example"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 Echo Server (UDP) Example"
+	    cmd_str = "AddUVELApp_ghnet2_svc_echo_udp_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_echo_udp_example", "Edit_uvel_ghnet2_svc_echo_udp_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 Echo Server (UDP) Example"
+	    cmd_str = "Edit_uvel_ghnet2_svc_echo_udp_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_echo_udp_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_echo_udp_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_echo_udp_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_echo_udp_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_echo_udp_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_echo_udp_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%if file_exists("${__OS_DIR__}/multi/new_project/ghnet2_svc/zerocopy/ghnet2_echo_tcp_zc_example.npw")
+component.uvelosity_demo_ghnet2_svc_echo_tcp_zc_example {
+    use_template = "uvelosity_demo_ghnet2_svc_example"
+    display_type_name = "u-velOSity GHNet v2 Echo Server (TCP) Example using ZeroCopy"
+    doc_anchor_ids = { "multi.mpm.uvel_demo_ghnet2" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add u-velOSity &GHNet v2 Echo Server (TCP) Example using ZeroCopy"
+	    cmd_str = "AddUVELApp_ghnet2_svc_echo_tcp_zc_example"
+	    dlg_cmdlist = { "SetProjInfo_uvel_ghnet2_svc_echo_tcp_zc_example", "Edit_uvel_ghnet2_svc_echo_tcp_zc_example" }
+	}
+	edit {
+	    menu_str = "Edit u-velOSity &GHNet v2 Echo Server (TCP) Example using ZeroCopy"
+	    cmd_str = "Edit_uvel_ghnet2_svc_echo_tcp_zc_example"
+	    dlg_filelist = "${__DIR__}/uvel_simple.plc"
+	    dlg_namelist = "uvelOSityNPWDlg"
+	}
+	paste_local {
+	    cmd_str = "Paste_uvel_ghnet2_svc_echo_tcp_zc_example"
+	    dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist =  "ProjectWizardDirName"
+	}		    
+    }
+    attributes.tf_ProjectDir.default="$ABS_BASE_PROJ_DIR/ghnet2_svc_echo_tcp_zc_example_src"
+    attributes {
+	tf_ProjectName {
+	    default = "ghnet2_svc_echo_tcp_zc_example_demo"
+	    dlg_info {
+		add {
+		    cmd_str = "SetProjInfo_uvel_ghnet2_svc_echo_tcp_zc_example"
+		    dlg_namelist = "ProjectWizardDirName"
+		    same_object_dialogs = { "Edit_uvel_ghnet2_svc_echo_tcp_zc_example" }
+		}
+	    }
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/uvel_simple.py source_uvel_ghnet2_svc_echo_tcp_zc_example_add_std" }
+
+		    }
+		}
+	    }	    
+	}
+    }
+    # Disable minimum size kernel library with prebuilt middleware libraries
+    attributes.bs_uvOptions.choices.minsize.disabled = true
+%if !defined(HAS_GHNET2_EXAMPLES)
+    disabled = true
+%endif
+}
+%endif
+
+%endif
+
+%endif

@@ -1,0 +1,177 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/target_data.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+provides_order = { "UserFileSystemServer", "FileSystemServer" }
+provides_order += { "GHnetIP46", "GHnetIP4", "GHnet", "TCPIPStack"  }
+
+default_filters {
+    hidden += { "INTEGRITY Resource Files", "INTEGRITY Generic Libraries" }
+}
+
+#component.source_file_c.attributes.filename.actions.readin.standard.10 += { "python ${__SHARED_PY_DIR__}/source.py source_readin_std"  }
+
+component.top_level_project.dlg_info.edit.right_click_list = { "AddINTMono", "AddINTDD", "AddINTKStandalone" }
+	    
+component.project.dlg_info.edit.right_click_list = { "AddINTMono", "AddINTDD", "AddINTKStandalone" }
+
+component.top_level_project.actions.add.standard.20 += { "python ${__SHARED_PY_DIR__}/int_utils.py top_add_macros" }		
+component.top_level_project.actions.edit.standard.20 += { "python ${__SHARED_PY_DIR__}/int_utils.py top_edit_macros" }		
+
+%if defined(__BSP_DIR_FULL__)
+% define BSP_DIR ${__BSP_DIR_FULL__}
+%else
+% define BSP_DIR  ${__INTEGRITY_DIST__}/${__BSP_NAME__}
+%endif
+
+# Preliminary work for using builder macro for the bsp dir for the connections
+%if file_exists("${BSP_DIR}/default.con")
+    component.top_level_project.actions.add.standard {
+        24 += { "defineLocal RES_NAME $__BSP_DIR/default.con" }
+        25 += { "python ${__SHARED_PY_DIR__}/utils.py add_file_to_resources" }
+    }
+    component.top_level_project.actions.edit.standard {
+        24 += { "defineLocal RES_NAME $__BSP_DIR/default.con" }
+        25 += { "python ${__SHARED_PY_DIR__}/utils.py add_file_to_resources" }
+    }
+%endif
+
+board_attributes {
+    target_resources {
+
+%if file_exists("${BSP_DIR}/default.con")
+	nocopy_files += { "${BSP_DIR}/default.con" }
+%endif
+
+	# For all Integrity targets, always grab default.bsp, default.ld,
+	# and flash.ld for the target resources file.
+    
+	copy_files += { "${BSP_DIR}/default.ld" }
+%if file_exists("${BSP_DIR}/flash.ld")
+	copy_files += { "${BSP_DIR}/flash.ld" }
+%endif
+	copy_files += { "${__INTEGRITY_DIST__}/INTEGRITY.ld" }
+#	copy_files += { "${__INTEGRITY_DIST__}/reloc.ld" }
+	copy_files += { "${BSP_DIR}/default.bsp" }
+    }
+}
+
+component.linker_directives_int_ram {
+    use_template = "linker_directives"
+    parent_context_types = { "integrity_kernel"  }
+    display_object_name = "Load and Execute from RAM"
+    #value = "default.ld"
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives", "multi.mpm.int_ld_ram"}
+
+    default_module_filename = "default.ld"
+    variable_defs {
+    	LINKMAP = "default.ld"
+    }
+    filters =  { "INTEGRITY Resource Files" }
+}
+component.linker_directives_int_rom {
+    use_template = "linker_directives"
+    parent_context_types = { "integrity_kernel"  }
+    display_object_name = "Load and Execute from ROM"
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives", "multi.mpm.int_ld_rom2ram"}
+ 
+    default_module_filename = "flash.ld"
+    variable_defs {
+    	LINKMAP = "flash.ld"
+    }    
+    filters =  { "INTEGRITY Resource Files" }
+}
+component.linker_directives_int_virt {
+    use_template = "linker_directives"
+    parent_context_types = { "integrity_virtual_address_space", "integrity_os_modules_file_system_copy" ,"integrity_os_modules_posix_system_server_virtual"}
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives", "multi.mpm.int_ld_virt"}
+ 
+    default_module_filename = "INTEGRITY.ld"
+    variable_defs {
+    	LINKMAP = "INTEGRITY.ld"
+    }    
+    filters =  { "INTEGRITY Resource Files" }
+}
+component.linker_directives_int_reloc {
+    use_template = "linker_directives"
+    parent_context_types = { "integrity_relocatable"  }
+    
+    default_module_filename = "reloc.ld"
+    variable_defs {
+    	LINKMAP = "reloc.ld"
+    }    
+    filters =  { "INTEGRITY Resource Files" }
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives"}
+}
+component.linker_directives_int_custom {
+    use_template = "linker_directives"
+    display_object_name = "Custom"
+    default_for_filetypes = { "Linker Directives" }
+    filters =  { "INTEGRITY Resource Files" }
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives"}
+ 
+}
+
+component.bsp_description {
+    use_template = "resource_file"
+    
+    parent_context_filetypes = { "INTEGRITY Application" }
+    parent_context_types = { "integrity_monolith", "integrity_dynamic_download"}
+    display_type_name = "BSP Description"
+
+    top_file_type = "BSP Description"
+    default_for_filetypes = { "BSP Description" }
+
+    filters =  { "INTEGRITY Resource Files" }
+    documentation_files =  { "${__DIR__}/docs/mpm_bsp.gpd" }
+    doc_anchor_ids = { "multi.mpm.bsp_description"}
+    icon_name = "source_file"
+    bg_color = "#9ECEFF"
+    
+    dlg_info.edit.cmd_str = "EditBSPFile"
+    actions {
+	add {
+	    standard {
+		1 += { "defineProject BSP_FILE_NAME $filename" }
+		1 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	edit {
+	    standard {
+		20 += { "defineProject BSP_FILE_NAME $filename" }
+		20 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	readin {
+	    standard {
+		1 += { "defineProject BSP_FILE_NAME $filename" }
+		1 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME BSP Description" }
+	    }
+	}		
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME BSP Description" }
+	    }
+	}
+    }
+}
+
+%endif
+
+%endif

@@ -1,0 +1,36 @@
+configure cwindlines 14
+/* Turn off breakpoint setting output. */
+Q 1;
+D
+
+configure AllowExecutionInBpCommand true;
+
+b /s main#2 {
+    scrollcommand +MAX wid=-2;
+    mprintf("\n%s\n", before);
+    resume;
+}
+
+b /s main#5 {
+    scrollcommand +MAX wid=-2;
+    mprintf("\n%s\n", after);
+    resume;
+}
+
+b /s main#12 {
+    scrollcommand +MAX wid=-2;
+    echo "To get a list of memory leaks halt the process and select ";
+    echo "\"Memory Allocations...\" in the \"View\" menu or type \"heapview\"";
+    echo "at the command pane (we have done this step for you), then select";
+    echo "the \"Leaks\" tab and click on \"Refresh Leaks\".";
+    heapview;
+}
+
+scrollcommand +MAX wid=-2;
+echo "  Memory leak detection works by determining the memory locations which are"
+echo "not referenced at the time that leaks are scanned for. This means that the"
+echo "target must be halted at the time the scan is done, and only memory leaks"
+echo "that have happened prior to the scan will be detected.";
+echo " ";
+echo "  Click 'Go on Selected Items (F5)' to begin.";
+echo " ";

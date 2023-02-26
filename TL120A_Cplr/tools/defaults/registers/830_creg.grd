@@ -1,0 +1,93 @@
+# Converted with command: rdf2grd.pl -c -srs -sa 830_creg.rdf
+
+##############################################################################
+#
+# This file contains the fundamental description of V830 control registers.
+#
+# Take care when modifying this file, especially if you are not familiar with
+# the register description file format.
+#
+##############################################################################
+
+# General information
+general {
+    version = 1
+}
+
+# Bitfield definitions
+bitfield {
+    eipsw_bitfield {
+        "Z" {loc="0..0"}
+        "S" {loc="1..1"}
+        "OV" {loc="2..2"}
+        "CY" {loc="3..3"}
+        "SAT" {loc="10..10"}
+        "DP" {loc="11..11"}
+        "ID" {loc="12..12"}
+        "EP" {loc="14..14"}
+        "NP" {loc="15..15"}
+        "I0" {loc="16..16"}
+        "I1" {loc="17..17"}
+        "I2" {loc="18..18"}
+        "I3" {loc="19..19"}
+    }
+    ecr_bitfield {
+        "EICC" {loc="0..15"}
+        "FECC" {loc="16..31"}
+    }
+    pir_bitfield {
+        "PT" {loc="4..19"}
+    }
+    dcw_bitfield {
+        "AE0" {loc="0..0"}
+        "AE1" {loc="1..1"}
+        "AD0" {loc="4..4"}
+        "AD1" {loc="5..5"}
+        "AD2" {loc="6..6"}
+        "AD3" {loc="7..7"}
+        "BP" {loc="8..8"}
+        "BI" {loc="15..15"}
+        "AE" {loc="16..16"}
+        "IO0" {loc="28..28"}
+        "IO1" {loc="29..29"}
+        "IO2" {loc="30..30"}
+        "IO3" {loc="31..31"}
+    }
+}
+
+# Register definitions
+register {
+    # Control Registers
+    pc {address=32; type="code *"}
+    eipc {address=33; type="code *"}
+    eipsw {address=34; type="eipsw_bitfield"}
+    fepc {address=35; type="code *"}
+    fepsw {address=36; type="eipsw_bitfield"}
+    ecr {address=37; type="ecr_bitfield"; permission="write/none"}
+    psw {address=38; type="eipsw_bitfield"}
+    pir {address=39; type="pir_bitfield"; permission="write/none"}
+    tkcw {address=40; permission="write/none"}
+    dpc {address=49}
+    dpsw {address=50; type="eipsw_bitfield"}
+    adtre0 {address=51}
+    adtre1 {address=52}
+    adtrd0 {address=53}
+    adtrd1 {address=54}
+    adtrd2 {address=55}
+    adtrd3 {address=56}
+    dcw {address=59; type="dcw_bitfield"}
+    hccw {address=64}
+}
+
+# Group definitions
+group {
+    control {
+        sn = "Control"
+        ln = "Control Registers"
+	top_level_index = 20
+        register += {"pc"}
+        register += {"psw", "eipc", "eipsw", "fepc", "fepsw", "ecr"}
+        register += {"pir", "tkcw", "dpc", "dpsw", "adtre0", "adtre1"}
+        register += {"adtrd0", "adtrd1", "adtrd2", "adtrd3", "dcw", "hccw"}
+    }
+}

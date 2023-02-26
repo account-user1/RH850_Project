@@ -1,0 +1,66 @@
+import ide;
+import ghs_ideobject;
+import ghs_constants;
+import ghs_winreg;
+from ghs_util import *;
+
+class GHS_CoBrowse(ghs_ideobject.GHS_IdeObject):
+    """ Describe information for MULTI Checkout Browser. """
+    #
+    # Initialize object.
+    #
+    # GHS: Validated
+    #
+    def __init__(self, workingDir=""):
+	ghs_ideobject.GHS_IdeObject.__init__(self, "CheckoutBrowser",
+					     workingDir);
+	self.service = GHS_GetGeneralService(self.serviceName,
+					    "MULTI Checkout Browser",
+					    workingDir);
+    #
+    # Open checkout browser window.
+    #
+    # Return an object of GHS_CoBrowseWindow.
+    #
+    # GHS: Validated
+    #
+    def OpenCheckoutBrowserWindow(self, checkoutDir="", scanNow=False):
+	self.CleanCmdExecVariables();
+	if not self.service:
+	    print("MULTI Checkout Browse service is not started up.");
+	    return None;
+
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	self.cmdExecOutput = self.service.OpenCheckoutBrowserWindow(checkoutDir,
+							    scanNow);
+	obj = winreg.WaitForWindowFromClass(oldWinList,
+		      self.maxSecToWaitForNewWindow,
+		      getattr(ghs_constants.winClassNames, "coBrowser", ""),
+		      "");
+	if not obj:
+	    print("Did not see MULTI Checkout Browse window.");
+	if self.cmdExecOutput:
+	    print("%s" % self.cmdExecOutput);
+	return obj;
+    # Define some aliases for the function
+    opencheckoutbrowserwindow = OpenCheckoutBrowserWindow;
+    OpenCheckoutBrowserWin = OpenCheckoutBrowserWindow;
+    opencheckoutbrowserwin = OpenCheckoutBrowserWindow;
+    OpenCoBrowserWindow = OpenCheckoutBrowserWindow;
+    opencobrowserwindow = OpenCheckoutBrowserWindow;
+    OpenCoBrowserWin = OpenCheckoutBrowserWindow;
+    opencobrowserwin = OpenCheckoutBrowserWindow;
+    OpenCoBrowser = OpenCheckoutBrowserWindow;
+    opencobrowser = OpenCheckoutBrowserWindow;
+    OpenWindow = OpenCheckoutBrowserWindow;
+    openwindow = OpenCheckoutBrowserWindow;
+    OpenWin = OpenCheckoutBrowserWindow;
+    openwin = OpenCheckoutBrowserWindow;
+
+# Define an object for the class.
+ghs_cobrowse = GHS_CoBrowse;

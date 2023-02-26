@@ -1,0 +1,122 @@
+# ColdFire/MAC internal flash
+#
+# Note: Erase block size is for one of two interleaved 16-bit arrays
+#
+# Options:
+#  pin       Required part identification number
+#  name      Required
+# ColdFire options:
+#  logic_block_size Required size of logical block/mass erase block
+#  logic_block_count Required, must total to device size
+# MAC options:
+#  program_block_size Required size of program blocks
+#  program_block_count Required, must total to device size
+# Geometry:
+#  Must be a list of erase block regions
+# Erase block region:
+#  count     Number of blocks in region
+#  size      Size of each block in the region
+cfm_chips {
+  { pin=0x3c; cpu_name="Freescale MCF5211"
+    logic_block_size=0x20000; logic_block_count=1
+    geometry {
+      { count=64; size="1 KB" }
+    }
+  }
+  { pin=0x42; cpu_name="Freescale MCF5212"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x43; cpu_name="Freescale MCF5213"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x4a; cpu_name="Freescale MCF52233"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x4b; cpu_name="Freescale MCF52234"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x4c; cpu_name="Freescale MCF52235"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x4d; cpu_name="Freescale PCF52235"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x53; cpu_name="Freescale MCF52223"
+    logic_block_size=0x40000; logic_block_count=1
+    geometry {
+      { count=128; size="1 KB" }
+    }
+  }
+  { pin=0x92; cpu_name="Freescale MCF52259"
+    logic_block_size=0x80000; logic_block_count=1
+    geometry {
+      { count=128; size="2 KB" }
+    }
+  }
+# { pin=*unknown*; cpu_name="Freescale MCF5281"
+#   logic_block_size=0x40000; logic_block_count=1
+#   geometry {
+#     { count=128; size="1 KB" }
+#   }
+# }
+  { pin=0x80; cpu_name="Freescale MCF5282"
+    logic_block_size=0x40000; logic_block_count=2
+    geometry {
+      { count=256; size="1 KB" }
+    }
+  }
+  { rev=0x7110; mask_set="0L49P" cpu_name="Freescale PAC71x1"
+    program_block_size=0x80000; program_block_count=1
+    geometry {
+      { count=128; size=0x800 }
+    }
+  }
+  { rev=0x7111; mask_set="1L49P" cpu_name="Freescale PAC71x1"
+    program_block_size=0x80000; program_block_count=1
+    geometry {
+      { count=128; size=0x800 }
+    }
+  }
+  { rev=0x7120; mask_set="0L47W" cpu_name="Freescale PAC71x1"
+    program_block_size=0x80000; program_block_count=1
+    geometry {
+      { count=128; size=0x800 }
+    }
+  }
+  { rev=0x7121; mask_set="1L47W" cpu_name="Freescale MAC71x1"
+    program_block_size=0x80000; program_block_count=1
+    geometry {
+      { count=128; size=0x800 }
+    }
+  }
+  { rev=0x7130; mask_set="0L61W" cpu_name="Freescale PAC71x2"
+    program_block_size=0x40000; program_block_count=1
+    geometry {
+      { count=64; size=0x800 }
+    }
+  }
+  { rev=0x7140; mask_set="0L38Y" cpu_name="Freescale PAC71x6"
+    program_block_size=0x80000; program_block_count=2
+    geometry {
+      { count=256; size=0x800 }
+    }
+  }
+}

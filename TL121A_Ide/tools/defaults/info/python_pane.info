@@ -1,0 +1,711 @@
+General Information
+===================
+
+The Python pane can execute normal Python statements and scripts as
+in the standard Python interpreter.
+
+Actually, the Python pane mimics the behavior of the standard Python
+interpreter interface, for example:
+ * Changes the standard prompt "Python> " into "......  " (incomplete mode)
+   when the input python statement block is not complete.
+ * Goes into incomplete mode in various situations when the input statements
+   is a block statement, like "for", "while", "if" etc.
+ * Goes into incomplete mode when a unbalanced parentheses pair occurs,
+   including "()", "[]" and "{}".
+ * Goes into incomplete mode when an incomplete syntax element occurs, like
+   strings, doc string etc.
+ * Runs the input statements whenever user inputs an empty line.
+ * Runs the input statements whenever user inputs a line without indention
+   in other cases (excluded the above cases).
+ * ......
+
+In addition to these, the Python pane has more functions:
+
+1. The Python pane supports syntax coloring and automatic indention.
+
+    Here are some hints for using the auto-indention mechanism in the
+    Python pane:
+    * "Ctrl-i" indents by the defined spaces (4 by default)
+    * "Ctrl-shift-i" un-indents by the defined spaces (4 by default)
+    * The statements requiring indention are automatically indented by 
+      the defined spaces (4 by default), like "if", "while", "for" etc.
+    * Tabs are properly indented
+    * The indentions are automatically nested for those statements requiring
+      indention.
+    * The indentions are automatically inherited except for pending strings
+      and parentheses.
+
+2. Line number is displayed in the prompt when you type in a compound statement
+   block containing multiple lines so that it is easy for you to find the
+   position when the Python interpreter reports error later.
+
+3. Key stroke "Ctrl-[Return]" executes the Python statements while the Python 
+   pane is still prompting you to type in more Python statements.
+
+4. Any input line beginning with "$" will be treated as Python Pane
+   commands and be executed immediately.
+
+
+Python Pane Commands
+====================
+
+Python Pane commands:
+    c/clear                 Clear the buffered Python statements.
+                            It is different from clearing the contents of the
+                            Python pane.
+    d/display [-new]        If "-new" option is given, display the inputted
+			    Python statements which have not been executed yet;
+			    otherwise, display all inputted Python statements.
+    e/execute               Execute the buffered Python statements.
+    h/help                  Display Python Pane help information.
+    s/save [<FileName>]     Save the buffered Python statements into a file.
+    v/verbose [-on|-off]    Change the verbose mode.
+			    In verbose mode, the Python pane will print a
+			    message to indicate that it is executing Python
+			    statements.
+			    The verbose mode is on by default.
+
+Python Pane shortcut key strokes:
+    Ctrl-h                  help		(depreciated)
+    Ctrl-s                  save
+    Ctrl-[Return]           execute
+
+
+Where to Run MULTI-Python Statement
+===================================
+
+1. MULTI debugger's "Py" pane.
+
+2. Task Manager window's "Py" pane.
+
+3. "Show Separate Python Window" entry from the context menu in any of MULTI
+   Debugger's panes.
+
+4. A standalone MULTI Python window, which can be started from MULTI Launcher's
+   "Components->Open Python Window" menu entry, or from OS command line
+   command "mpythongui".
+
+You can save the statements you have executed in MULTI Python pane by the
+"save" command (Ctrl-s or Ctrl-Shift-s are the shortcut key strokes) mentioned
+in above section. File extension ".gpy" is dedicated for the kind of scripts.
+
+You can run a script file for MULTI-Python statements from the MULTI Python
+pane with "execfile" Python function, or run it with a utility program
+"mpythonrun" from OS command line if you don't want to start up MULTI GUI.
+
+
+Python Requirements
+===================
+
+In order to run Python, the standard Python modules and libraries are
+required. But they must be 2.3 (including all verions of 2.3) or lower verion
+of Python, because MULTI Python interpreter is built on Python 2.3.3 release,
+and a lots of changes, including syntax extensions, happened in 2.4 Python.
+
+For example, the following syntax 
+    from module import (name1, name2)
+is newly implemented in 2.4 Python and used in some popular modules,
+like "os.py".
+
+We will migrate the integration to 2.4 Python.
+
+Initial tests are also done on 2.3.5, 2.2.2 etc, they work well with the
+integration.
+
+You can provide such Python environment by installing a proper Python version,
+then set environment variable "PYTHONHOME" and "PYTHONPATH". "PYTHONHOME" is
+the top dir for the Python installation, "PYTHONPATH" should contain the paths
+to search for Python modules. These paths are kept in "sys.path", you can list
+them from Python command line interpreter or from Python GUI (IDLE).
+
+If you are running MULTI on linux from your MULTI development branch
+checkout, and you don't want to install your own Python, you can check
+out "python" under your check out dir. In such case, be sure that no
+"PYTHONHOME" and no "PYTHONPATH" are defined in your environment.
+
+Whenever you changed these environment variables (including undefining them),
+to make the changes have effect, you should fully shutdown all MULTI
+components (you can use "File->Exit All" menu entry from MULTI Launcher),
+then restart MULTI IDE from the environment (like the xterm) where the
+information for the two environment variables is refreshed.
+
+
+Supported MULTI IDE Python modules
+==================================
+
+Right now, we have two simple Python modules for some MULTI Components, like:
+    Launcher
+    Editor
+    Debugger
+    Builder
+    Window Register
+    Standalone MULTI Python GUI
+    EventAnalyzer
+    ... (in progress)
+They are automatically preloaded, and some objects are ready to use.
+
+For each function defined in the GHS Python modules, a bunch of aliases
+are defined to make it case-insensitive and support shorter names for
+your convenience.
+
+* GHS_Window
+
+    Any GUI window can be represented as a GHS_Window object.
+    
+    GHS_Window is an abstract class, it is base class of a bunch of other
+    objects.
+    
+    The class implements the basic functions which are applicable to a window.
+    For example,
+       Close window
+       Iconify window
+       Show window
+       Dump a widget's contents
+       Dump the whole window's contents
+       Select a menu/sub-menu/sub-sub-menu entry
+       Press a button
+       Run commands supported by the window
+       ... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Window);
+
+    A lot of operations can produce a GHS_Window object, for example, when you
+    open a file via MULTI Editor, debug a program via MULTI Debugger, connect
+    to target with run-mode connection etc.
+
+    Here is an example to create a GHS_Window object and use it:
+	# Create a GHS_Window object for the first entry in the window list
+	# from Window Register (see the next section for detail).
+	# "winreg" is a pre-created object of GHS_WindowRegister, which is
+	# explained below.
+	w0 = winreg.CreateWindowFromWindowList(0);
+	# Iconify the window
+	w0.IconifyWindow();
+	# Show the window
+	w0.ShowWindow();
+	# Move a window 100 pixels left
+	w0.MoveWindow(-100, 0);
+	# Move a window to position (100, 100) at the current display
+	w0.MoveWindow(100, 100, False);
+	# Make a window 100 pixels wider
+	w0.ResizeWindow(100, 0);
+
+    MULTI Python environment also defines two special variables for the
+    display's dimension:
+	__ghs_display_width
+	__ghs_display_height
+
+    These variables can be used in the expressions of the methods which move
+    or resize a window. For example:
+	# Move a window to position at 1/3 of the screen
+	w0.MoveWindow(__ghs_display_width/3, __ghs_display_height/3, False);
+	# Move a window to the same position at the next right logic display
+	# if the underlying window manager supports logic displays, like
+	# FVWM etc
+	w0.MoveWindow(__ghs_display_width, 0);
+
+* GHS_WindowRegister
+
+    MULTI keeps track of its windows via a special service, Window Register.
+
+    GHS_WindowRegister exposes the service's functions. For example,
+	Close one or all windows
+	Iconify one or all windows
+	Iconify one or all windows
+	List all windows
+	Create a GHS_Window object from an entry in the window list
+	Route commands to a special window to execute
+	Wait for a special window to show up and return a GHS_Window object
+	...
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_WindowRegister);
+
+    A global object "winreg" has been pre-created for your convenience.
+
+    For example, you can run the following commands:
+	# List all windows
+	wins = winreg.GetWindowList();
+	# Create a GHS_Window for the third entry (the index is 0 based)
+	w1 = winreg.CreateWindowFromWindowList(2, wins);
+	# Close the window
+	w1.CloseWindow();
+
+* GHS_Launcher
+
+    GHS_Launcher class exposes MULTI Launcher's functions. For example:
+	Show a new workspace file
+	Run an action or action sequence
+	...
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Launcher);
+
+    It is a sub-class of GHS_Window. Whenever such an object is created,
+    a MULTI Launcher window will be shown if it has not been started up before.
+
+    No object is pre-created for the class.
+
+    For example, you can run the following commands:
+	# Show MULTI Launcher
+	ml = GHS_Launcher();
+	# Load a customized workspace file
+	ml.LoadConfigureFile("Your_Workspace_File.gmb");
+	# Run an action(the second one) in a special action sequence in the
+	# current workspace.
+	ml.RunAction("", "Your_Action_Sequence_Name", 1);
+	# Run all enabled actions in an action sequence of the current
+	# workspace.
+	ml.RunAction("", "Your_Action_Sequence_Name");
+	# Run all enabled actions of workspace "MULTI Group Checkin"
+	ml.RunAction("MULTI Group Checkin");
+
+* GHS_EditorWindow
+
+    It is a special kind of GHS_Window. It is for the MULTI Editor windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example,
+	Select a range in MULTI Editor
+	Copy/Cut the selection in MULTI Editor window
+	Paste the clipboard content to MULTI Editor window
+	Save/Open file
+	Move cursor to a special position
+	Undo/Redo operations
+	Version Control Operations
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_EditorWindow);
+
+    Here is an example to create a GHS_EditorWindow object and use it:
+	# Open an existing file into MULTI Editor
+	# "editor" is a pre-created object of GHS_Editor, which is explained
+	# below.
+	e1 = editor.OpenFile("mytest.mpy");
+	# Select from line 1's column 2 to 10's column 7 (lines are 1 based,
+	# and columns are 0 based).
+	e1.SelectRange(1, 2, 10, 7);
+	# Copy the selection to clipboard.
+	e1.Copy();
+	# Move cursor to the line 12 and flash the cursor
+	e1.MoveTo(12, 0, True);
+	# Paste the clipboard content to the cursor position.
+	e1.Paste();
+
+* GHS_Editor
+
+    MULTI supports different editor services, like MULTI Editor, vi, emacs.
+    For each of them, a global object is pre-created for your convenience:
+       editor	MULTI Editor
+       vi	vi editor
+       emacs	emacs editor
+
+    GHS_Editor exposes the service's functions. For example,
+	Open a file into Editor
+	Goto a special line number of a file
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Editor);
+
+    For example, you can run the following commands:
+	# Open a vi window for a file
+	vi.open("/tmp/myPython.py");
+	# Open a MULTI Editor window for a file and return a GHS_Window object
+	e1 = editor.goto("/tmp/myPython.py", 20);
+	# Run a special command on the MULTI Editor: list the file in the
+	# current working dir
+	e1.RunCommands("cmd2wnd ls");
+
+* GHS_DebuggerWindow
+
+    It is a special kind of GHS_Window. It exposes MULTI Debugger windows's
+    functions.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example,
+	Print/Dump file/window
+	Run control: halt/resume/step/next
+	Breakpoint: set/remove
+	Connect to target: specially to rtserv/rtserv2
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_DebuggerWindow);
+
+    Here is an example to create a GHS_DebuggerWindow object and use it:
+	# Open INTEGRITY kernel program for sim800 bsp.
+	# "debugger" is a pre-created object of GHS_Debugger, which is
+	# explained below.
+	d1 = debugger.debugprogram("/home/whiptail/terry/rtos50/sim800/kernel");
+	# Connect to target.
+	fm = d1.ConnectToTarget("isimppc");
+	# Run the program.
+	d1.Run();
+	# Halt the program.
+	d1.Halt();
+	# Single step.
+	d1.Step();
+
+* GHS_Task
+
+    GHS_Task, a derived class of GHS_DebuggerWindow, is a RTOS task. 
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example,
+	Attach
+	Detach
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Task);
+
+    Here is an example to create a GHS_Task object and use it (continued
+    from the example for GHS_DebuggerWindow):
+	# Resume the kernel for sim800 BSP.
+	d1.Resume();
+	# Connect to target in run-mode with rtserv.
+	rm = debugger.rtserv(); # or: rm = d1.rtserv();
+	# Load pizza demo.
+	rm.Load("/home/whiptail/terry/rtos50/sim800/pizza");
+	# Create a GHS_Task object for engineer AddressSpace's initial task.
+	eng = ghs_task(rm.component, "engineer", "Initial");
+	# Try to run the task, but fails.
+	eng.Run();
+	# Attach to the task.
+	eng.Attach();
+	# Run the task.
+	eng.Run();
+
+* GHS_DebugServer
+
+    GHS_DebugServer, a derived class of GHS_Window (because some debug server
+    has a Task Manager window in the current implementation), exposes MULTI
+    debug connection's functions.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example,
+	Disconnect
+	LoadProgram
+	ShowTaskWindow
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_DebugServer);
+
+    In the above example, we have shown how to create GHS_DebugServer object.
+    "fm" is for the debug connection using "isimppc", and "rm" is the
+    debug connection using "rtserv".  Here are more examples (continued
+    from the example for GHS_Task):
+	# Show the run-mode Task Manager window to the top.
+	rm.ShowTaskWindow();
+	# Select menu "View->Flat View" to flat the task view in the Task
+	# Manager window.
+	rm.SelectMenu("&View", "F&lat View", True);
+	# Dump the contents of the Task Manager window
+	rm.DumpAll();
+	# Disconnect the run-mode debug server connection.
+	rm.Disconnect();
+	# Disconnect the freeze-mode debug server connection.
+	fm.Disconnect();
+	# Close the debugger window for the INTEGRITY kernel.
+	d1.CloseWindow();
+	# So, the whole debugging environment is cleaned up.
+
+* GHS_Debugger
+
+    GHS_Debugger class exposes MULTI Debugger's functions. For example:
+	Debug a program
+	Establish a target connect
+	Run MULTI debugger commands
+	...
+
+    Running a command on a GHS_Debugger object can create an object for
+    GHS_Window, GHS_DebuggerWindow, GHS_DebugServer or nothing.
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Debugger);
+
+    A global object "debugger" has been pre-created for your convenience.
+
+    We have given examples about how to create such an object and perform
+    operations on it in the above sections (from GHS_DebuggerWindow).
+
+    You can save the Python statements into a script file (by pressing
+    ctrl-shift-s from MULTI Python Pane or Window), make necessary changes
+    to the file if you want. Then you can run the file as a script from
+    MULTI Python Pane or Window, or run it from command line using utility
+    program "mpythonrun" (run the program to get its usage).
+
+* GHS_BuilderWindow
+
+    GHS_BuilderWindow is a special kind of GHS_Window. It exposes MULTI Builder
+    windows's functions.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example,
+	Open/close project file
+	Create new MULTI Builder window
+	Edit/Debug/Build all/selected projects
+	Halt building
+	Expand/Contract all/selected projects
+	Copy/Cut/Delete/Paste selected projects
+	Toggle full path display
+	Save/Revert changes
+	Print view/all
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_BuilderWindow);
+
+    Here is an example to create a GHS_BuilderWindow object and use it:
+	# Open INTEGRITY kernel program for sim800 bsp.
+	# "builder" is a pre-created object of GHS_Builder, which is
+	# explained below.
+	b1 = builder.OpenProject("default.gpj");
+	# Build all.
+	b1.BuildAllProjects();
+	# Halt the building process.
+	b1.HaltBuild();
+	# Open a new builder window.
+	b2 = b1.NewWindow();
+	# Load another project file into the new builder window.
+	b2.OpenProject("test.gpj");
+
+* GHS_Builder
+
+    GHS_Builder class exposes MULTI Builder's functions. For example:
+	Open a Builder window for a project file
+	Get top project files loaded in MULTI Builder windows
+	...
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_Builder);
+
+    A global object "builder" of the class has been pre-created for your
+    convenience.
+
+    We have given an example in the above section for how to create a MULTI
+    Builder window from GHS_Builder object.
+
+* GHS_PythonGui
+
+    GHS_PythonGui class exposes MULTI Python GUI's functions. 
+
+    For the complete list of methods defined on the class and their syntax,
+    please run the following python command:
+	help(GHS_PythonGui);
+
+    GHS_PythonGui is a sub-class of GHS_Window, whenever such an object is
+    created, a MULTI Python GUI window will show up and the window's
+    information will be kept in the object.
+
+    No global object has been pre-created for the class.
+
+    For example, you can run the following commands:
+	# Open MULTI Python GUI window
+	pw = GHS_PythonGui();
+	# Bring the existing MULTI Python GUI window to the top
+	pw.ShowWindow();
+	# Close MULTI Python GUI window
+	pw.CloseWindow();
+
+* GHS_EventAnalyzerWindow
+
+    GHS_EventAnalyzerWindow is a special kind of GHS_Window. It is for the
+    MULTI EventAnalyzer windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EventAnalyzerWindow. For example,
+	Zoom in, zoom out, zoom to the selection
+	Open new event data file
+	Close the current event data file
+	Toggle the hierarchy view in the task list
+	Navigate among the history views
+	... (in progress)
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_EventAnalyzerWindow);
+
+    Here is an example to create a GHS_EventAnalyzerWindow object and use it:
+	# Create an object for MULTI EventAnalyzer component.
+	mea = GHS_EventAnalyzer();
+	# Open a data file to create a GHS_EventAnalyzerWindow object.
+	ea1 = mea.OpenFile("/home/whiptail/terry/devl/linux86-ecom/intdump1.mes");
+	# Zoom out
+	ea1.ZoomOut();
+	# Go back to the previous view.
+	ea1.GotoPrevView();
+	# Create a new MULTI EventAnalyzer window.
+	ea2 = ea1.NewWindow();
+	# Load another data file to the new window.
+	ea2.OpenFile("/home/whiptail/terry/devl/linux86-ecom/ghs_eventlog.mes");
+	# Move the window down by 100 pixels.
+	ea2.MoveWindow(0, 100);
+
+* GHS_EventAnalyzer
+
+    GHS_EventAnalyzer exposes the service's functions. For example,
+	Open an event data file to create a MULTI EventAnalyzer window
+	Get data files opened in MULTI EventAnalyzer windows
+	...
+
+    For the complete list of methods defined on the class and their syntax,
+    run the following python command:
+	help(GHS_EventAnalyzer);
+
+    We have given an example in the above section for how to create a MULTI
+    EventAnalyzer window from GHS_EventAnalyzer object.
+
+
+GUI Demo Using Tcl/Tk via Tkinter Module
+========================================
+
+A simple GUI demo using Tcl/Tk is available. You just need to run the following
+Python statement:
+    execfile(__ghs_site_default_python_dir+os.sep+"ghs_guidemo.py");
+
+The demo uses INTEGRITY kernel to demo dual-mode debugging (freeze-mode and
+run-mode) via our MULTI-Python integration.
+
+
+Trouble Shooting
+================
+
+1. The Python statement containing only an object or its field, its value
+   is not printed as in the standalone Python interpreter.
+
+   This is an issue we will fix (see item 2 in "Todo List" section).
+
+2. When executing a Python statement with syntax error, no error message is
+   printed in the MULTI Python pane.
+
+   Make sure that program "svc_python" is under the same directory of multi
+   (or mstart) and is up to date, otherwise, recompile it.
+
+   Of course, you should be sure that the whole source tree of your MULTI
+   checkout is refreshed up to date.
+
+3. MULTI reports errors for its startup in the MULTI Python pane.
+
+   Make sure that the "defaults/python" under the same directory of multi
+   contains the up-to-date MULTI Python classes (refresh it if necessary).
+
+4. MULTI does not report any error but it cannot execute Python statements
+   correctly and there are some error message displayed in the xterm (on Linux,
+   for example).
+
+   Refer to section "Python Requirements".
+
+5. The above GUI demo using Tcl/Tk does not work on Windows.
+
+   The reason is that MULTI Python service crashes when it tries to import
+   module "Tkinter". For example:
+       from Tkinter import *
+
+   See item 2 in the "Todo List".
+
+6. MULTI Python reports undefined symbol, like
+	PyUnicodeUCS2_FromUnicode
+   or
+	PyUnicodeUCS4_FromUnicode
+   when you run the above GUI demo using Tcl/Tk.
+
+
+   Python on RedHat 9 is compiled with 4 byte unicode characters (UCS4), most
+   other distributions use 2 byte unicode characters (UCS2).
+
+   To fix the problem, recompile your Python installation by using UCS4 or UCS2
+   resprctively.
+
+   When you follow the Python installation, give argument
+	--enable-unicode=ucs4"
+   or
+	--enable-unicode=ucs2
+   to command "configure" when you configure your Python installation.
+
+   We suggest you to install Python at your local place instead of a global
+   place shared by other people.
+
+
+Todo List
+=========
+ 
+1. Syntax related
+
+   * Fix various bugs while analyzing input Python statements to decide if
+     to immediately execute the input Python statements.
+   * Make the Python pane does not syntax coloring the prompt area.
+   * Support nested compound statement's "follower" clauses in auto-indention.
+   * Indicate which clause we are in the prompt.
+     For example:
+           Python> if x:
+	   if...2>     y = 2;
+	   if...3>     print("x+y=%d" % eval("x+y"));
+	   .....4> else:
+	   else.5>     y = -2;
+	   else.6>     print("x-y=%d" % eval("x-y"));
+
+     The feature is not important.
+
+2. Python interpreter related
+
+   * Make Tcl/Tk module be able to work with MULTI Python service on Windows.
+
+       MULTI Python service crashes when it tries to import module "Tkinter".
+       For example:
+	   from Tkinter import *
+    
+       The crash happens when MULTI Python service finds the initialization
+       function from the corresponding DLL library (_tkinter.pyd) and executes
+       it.
+
+   * Build MULTI Python interpreter against the latest Python 2.4 release.
+
+	Right now, it is built against to Python 2.3.3.
+
+   * Make the Python statement execution abortable with MULTI's ESC
+     mechanism.
+
+       For example, for a dead Python loop:
+	   x = 0;
+           while True:
+	       x = x + 1;
+
+   * Make Python interpreter can "echo" an object's value if the statement
+     does not change anything. For example:
+         2+2
+	 x
+
+   * Support Python input functions, like "input" and "raw_input"
+
+3. GUI related
+
+   * Support any number of Python pane
+   * Support separate Python pane window, which show different Python panes
+     as tabs.
+
+4. MULTI IDE components related
+
+   * Infra-structure changes to make it possible to get a window's basic
+     information (name and internal ID) from all MULTI IDE components as I
+     already did in MULTI debugger.
+
+   * Implement a concise but powerful set of functions for each MULTI IDE
+     module. We should never sacrifice simplicity.
+
+5. Python Debugger (for script files)
+

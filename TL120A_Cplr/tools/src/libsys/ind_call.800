@@ -1,0 +1,66 @@
+--
+--	V850 Language Independent Runtime Library
+--
+--	Copyright (C) 1996-2000 by Green Hills Software, Inc.
+--
+--    This program is the property of Green Hills Software, Inc,
+--    its contents are proprietary information and no part of it
+--    is to be disclosed to anyone except employees of Green Hills
+--    Software, Inc., or as agreed in writing signed by the President
+--    of Green Hills Software, Inc.
+--
+-- C callable wrapper for Host I/O system calls.
+
+#ifdef EMBEDDED
+
+#if defined(MINIMAL_STARTUP) && !defined(NO_FAR_SYSCALL)
+#define NO_FAR_SYSCALL
+#endif
+
+#include "ind_800.h"
+
+#if defined(NO_FAR_SYSCALL)
+#define SYSCALL(x,y) CALL(x)
+#else
+#define SYSCALL(x,y) farcall x, y
+#endif
+
+	.file	"ind_call.800"
+	.text
+	.align	2
+	.globl ___ghs_syscall
+#ifdef __V850
+..lxtdaG.___ghs_syscall=:0
+#endif
+___ghs_syscall:
+	add	-4, sp
+	SYNC
+	st.w	lp, 0[sp] 	-- Save return address because __gh_set_errno()
+	cmp	1, r0		-- Set carry flag to pretend we got an error
+	mov	0, r10		--	with errno == 0.
+				-- Now, try to invoke system call service.
+	SYSCALL(___dotsyscall,r12)
+	bnc	noerr		-- If no error, return.
+	mov	r10, r6		-- Else set errno with error code from syscall.
+	CALL(___gh_set_errno)
+	mov	-1, r10		-- Return -1.
+noerr:
+	ld.w	0[sp], lp	-- Restore return address.
+	add	4, sp
+	jmp	[lp]
+	.fsize 4
+	.scall ___dotsyscall
+	.scall ___gh_set_errno
+	.type ___ghs_syscall,@function
+	.size ___ghs_syscall,.-___ghs_syscall
+
+#if defined(__V850) && defined(__COFF)
+-- .scl 2 for a function means "global"
+        .def ___ghs_syscall; .val ___ghs_syscall; .scl 2; .type 36; 	.endef
+        .def .bf;	.val .;		.scl 101;	.line 2;	.endef
+        .def _.RSM;	.scl 1;		.val 0;		.endef
+        .def _.FRAMES;	.scl 1;		.val 0; 	.endef
+        .def .ef;	.val .; 	.scl 101; 	.line 3;	.endef
+#endif
+
+#endif	/* EMBEDDED */

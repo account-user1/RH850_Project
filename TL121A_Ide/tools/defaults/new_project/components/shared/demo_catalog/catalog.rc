@@ -1,0 +1,120 @@
+configure cwindlines 14
+D;
+
+bA ReadCatalog(LIST **, char *)##FileNotFound {echo " ";echo " ";echo " ";echo " ";echo " ";echo " ";echo " ";echo " ";echo " ";
+  echo "  Could not open the input file. This could be caused by:";
+  echo " "
+  echo "1) The program is unable to resolve the full path to the data file. "
+  echo "   Modify the script 'Catalog.rc' to specify the absolute path.";
+  echo "2) You are loading from ROM where command line arguments are not "
+  echo "   supported.  Modify the main function of the catalog program to "
+  echo "   specify the absolute path."
+  echo "3) The file does not exist";
+  echo " ";echo " ";
+  echo "  To Continue and terminate this demonstration, click 'Go on Selected Items (F5)'.";
+  echo " ";echo " ";
+}
+
+
+bA main##InMain {
+  scrollcommand +MAX wid=-2;
+  echo "  We have hit a pre-set break point in the function 'main'. ";
+  echo "Double-click  on the variables to view their values in the Data";
+  echo "Explorer.";
+  echo " ";echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";echo " ";
+  view argc;
+}
+  
+bA main##PrintedHelloWorld {
+  scrollcommand +MAX wid=-2;
+  echo "  Standard I/O of this application is redirected to the target 'I/O'";
+  echo "pane. You can see this pane by clicking the I/O tab below this";
+  echo "command pane or by right-clicking here and selecting 'IO Pane'.";
+  echo "Notice 'Hello, World!' was printed.";
+  echo " ";echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";echo " ";
+  viewdel;
+};
+
+bA SetupCatalog {
+  scrollcommand +MAX wid=-2;
+  bA strcpy {
+    scrollcommand +MAX wid=-2;
+    echo "  MULTI has detected a run-time error. This error could be serious";
+    echo "so let's fix it by setting a complex break point.";
+    echo " ";echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";echo " ";
+    c;
+  };
+  c;
+};
+
+bA Insert(list **, Item *)##ExplainBreakpoint {
+  b Insert(list **, Item *)##HeresTheProblem {
+    nameLength++;echo " Fixing nameLength and continuing ";c
+  };
+  bA Item::Item(const char *, int, float) {
+    scrollcommand +MAX wid=-2;
+    echo "  MULTI reports another runtime error here because of our earlier";
+    echo "allocation bug.  If we ran the program again from the beginning";
+    echo "with our complex break point fix, it would go away.  However, it";
+    echo "is probably safe for us to continue debugging.";
+    echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";
+    c;
+  }
+  bA Item::Item(const char *, int, float)##SmallProblem  {
+    scrollcommand +MAX wid=-2;
+    echo "  MULTI has detected another run-time error. newItemNumber is 243.";
+    echo "Right-click 'Item' and choose 'Go To Definition' to see that the";
+    echo "class member itemNumber is an 8 bit integer.  It is not large enough";
+    echo "to hold this value.  This does not have serious consequences so";
+    echo "let's ignore it for now.";
+    echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";
+    c;
+  }
+  scrollcommand +MAX wid=-2;
+  echo "  Use your mouse to hover the complex break point at label";
+  echo "HeresTheProblem. You can see that every time this break point is";
+  echo "reached MULTI will increment 'nameLength' and continue,";
+  echo "allocating enough space for a NULL delimiter.";
+  echo " ";echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";echo " ";
+};
+
+bA SetupCatalog##ReadyToSort {
+  scrollcommand +MAX wid=-2;
+  echo "  Our program has populated 'theCatalog' with data.";
+  echo "In the Data Explorer, select 'theCatalog' and use the";
+  echo "'View'->'View theCatalog as Container...' menu item to easily";
+  echo "view the linked list.";
+  echo " ";echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";echo " ";
+  viewdel;view theCatalog;view theCatalog->next;view theCatalog->next->item;
+  __modgui msl.selectcellbyname "Data Explorer" "msl_view" "*theCatalog" 0
+};
+
+b PrintList {
+  scrollcommand +MAX wid=-2;
+  echo "  MULTI has detected another run-time error.  This is caused by";
+  echo "the truncated assignment we saw earlier.  It should be safe to";
+  echo "continue, but incorrect data may be printed.";
+  echo " ";echo "  To Continue, click 'Go on Selected Items (F5)'.";echo " ";;
+  c;
+}
+
+bA Shop##ReadyToShop {
+  scrollcommand +MAX wid=-2;
+  echo "  Notice the catalog was printed to the I/O tab. This concludes";
+  echo "the scripted portion of this demo.";
+  echo "  For more information about the MULTI debugger, please refer to the";
+  echo "on-line help.";
+  echo " ";
+  echo "  To terminate the application, click 'Go on Selected Items (F5)' and then enter '3' in the";
+  echo "I/O tab (or type \"targetinput 3\\n\").";
+  echo " ";
+  viewdel;
+};
+
+setargs catalogfile
+clear;
+echo "  The MULTI script driving this demo session will take you through some ";
+echo "basic features of the debugger. For a more in-depth look at the capabilities";
+echo "of our debugger, please reference the on-line help.";
+echo "  If you have not done so already connect to your target, or simply";
+echo "click 'Go on Selected Items (F5)' to begin.";echo " ";echo " ";;

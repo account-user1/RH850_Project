@@ -1,0 +1,51 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   HwTqCorrln_Cfg.h
+* Module Description: Configuration Header file for HwTqCorrln
+* Project           : CBD
+* Author            : Matthew Leser
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       nz2796 %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 03/08/17  1       ML     Initial version of the HwTqCorrln header template                                EA4#9638
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef HWTQCORRLN_CFG_H	/* Multiple include preventer */
+#define HWTQCORRLN_CFG_H
+
+/************************************************ Include Statements *************************************************/
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/****************************************************** Macros *******************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "HwTqCorrln" ) ); #>
+
+<# string Param_HwTqACorrlnFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTqCorrlnGeneral/NTC_HwTqACorrlnFlt" ) ); #>
+<# string Param_HwTqBCorrlnFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTqCorrlnGeneral/NTC_HwTqBCorrlnFlt" ) ); #>
+<# string Param_HwTqCCorrlnFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTqCorrlnGeneral/NTC_HwTqCCorrlnFlt" ) ); #>
+<# string Param_HwTqDCorrlnFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTqCorrlnGeneral/NTC_HwTqDCorrlnFlt" ) ); #>
+
+#define HWTQCORRLN_HWTQACORRLNFLTNTCNR_CNT_ENUM                   <#=Param_HwTqACorrlnFlt#>
+#define HWTQCORRLN_HWTQBCORRLNFLTNTCNR_CNT_ENUM 				  <#=Param_HwTqBCorrlnFlt#>
+#define HWTQCORRLN_HWTQCCORRLNFLTNTCNR_CNT_ENUM	     			  <#=Param_HwTqCCorrlnFlt#>
+#define HWTQCORRLN_HWTQDCORRLNFLTNTCNR_CNT_ENUM                   <#=Param_HwTqDCorrlnFlt#>
+
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif /* HWAG0MEAS_CFG_H */
+

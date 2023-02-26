@@ -1,0 +1,146 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  If_AsrIfCan.plugin
+*  Module     :  Elisa
+*
+*  Description:  Checking rule for If_AsrIfCan
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Eugen Stripling               visseu        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  02.00.00   2016-02-23    visseu   ESCAN00088228    FEAT-1688: SafeBSW Step 4  (Initial version for CFG5: SafeBSW)
+*  02.00.01   2016-05-11    visseu   -                Enforce of CANIF_RX_SEARCH_CONSIDER_MSG_TYPE = STD_OFF, CPU_TYPE != CPU_TYPE_16 added
+*  02.01.00   2016-06-22    visseu   ESCAN00090594    FEAT-1914: Data checksum
+*             2016-07-06    visseu   ESCAN00090873    Symbol 'CPU_TYPE' not found / Symbol 'CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA' not found
+*             2016-07-07    visseu   ESCAN00090883    FEAT-1513: Release of CAN-FD
+*             2016-07-07    visseu   ESCAN00090884    FEAT-1602: Gateway - Tx-FIFO final
+*  02.02.00   2016-10-13    visseu   ESCAN00092311    FEAT-2004: Release of FEAT-912 (Support of several CAN Drivers in one ECU configuration)
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x020200)          /* Add the version number of the plugin */
+  reg.SetPackageName("If_AsrIfCan") /* Add the package name of the module (as in ALM). */
+  reg.SetInputFiles(["CanIf.c"])    /* Add a list of all required C-files to be checked */
+  return reg // Mandatory
+}
+
+
+def CheckVersions()
+{
+  AssertDefineEquals("IF_ASRIFCAN_VERSION", "0x0612u")   /* Add the name of the BSW module header which contains the version defines of the module,
+                                                            as well as the major/minor and release version of the BSW module to be checked */
+}
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check QM inactive", CheckQMDefines)
+  InvokeRule("Check value of CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA", CheckMaxRxDlcPlusMaxMetaDataDefine)
+}
+
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+
+
+/********************************************************************************************************************** 
+* Name         : CheckQMDefines 
+* Parameter    : None 
+* Return value : None 
+* Description  : This rule checks the setting of QM-related preprocessor defines. 
+*                Typically it checks that QM features are inactive in safety context. 
+* Requirements : N/A 
+**********************************************************************************************************************/ 
+def CheckQMDefines() 
+{
+  AssertDefineIsStdOn("CANIF_ECUC_SAFE_BSW_CHECKS")
+  AssertDefineIsStdOn("CANIF_DEV_ERROR_DETECT")
+  AssertDefineIsStdOff("CANIF_ONE_CONTROLLER_OPTIMIZATION")
+  AssertDefineEquals("CANIF_J1939_DYN_ADDR_SUPPORT", "CANIF_J1939_DYN_ADDR_DISABLED")
+  AssertDefineIsStdOn("CANIF_USES_VSTDLIB_COPY")
+
+
+  var cpuTypeValStr = Define("CPU_TYPE")
+  var cpuTypeVal = Define(cpuTypeValStr.GetValueAsString())
+  var cpuTypeValAsNumVal = cpuTypeVal.GetValueAsNumber()
+
+  /* Ensure that CPU_TYPE != CPU_TYPE_8 */  
+  var cpuType8Bit = Define("CPU_TYPE_8")
+  var cpuType8BitAsNumVal = cpuType8Bit.GetValueAsNumber()
+  Assert(cpuTypeValAsNumVal, NotEqual, cpuType8BitAsNumVal)
+  
+  /* Ensure that CPU_TYPE != CPU_TYPE_16 */  
+  var cpuType16Bit = Define("CPU_TYPE_16")
+  var cpuType16BitAsNumVal = cpuType16Bit.GetValueAsNumber()
+  Assert(cpuTypeValAsNumVal, NotEqual, cpuType16BitAsNumVal)
+  
+
+  /* BETA - FEATURES - START */
+  AssertDefineIsStdOff("CANIF_DATA_CHECKSUM_RX_SUPPORT")
+  AssertDefineIsStdOff("CANIF_DATA_CHECKSUM_TX_SUPPORT")
+  /* BETA - FEATURES - END */
+}
+
+/********************************************************************************************************************** 
+* Name         : CheckMaxRxDlcPlusMaxMetaDataDefine 
+* Parameter    : None 
+* Return value : None 
+* Description  : This rule checks the value of generated define CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA. 
+*                SBSW_CANIF_30: Checks that CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA > CANIF_J1939_ACKM_ACKADDR_POS. 
+* Requirements : N/A 
+**********************************************************************************************************************/ 
+def CheckMaxRxDlcPlusMaxMetaDataDefine() 
+{
+  var defJ1939DynAddrSupp = Define("CANIF_J1939_DYN_ADDR_SUPPORT")
+  var defJ1939DynAddrSuppAsStr = defJ1939DynAddrSupp.GetValueAsString()
+
+  /* Run only if J1939DynAddrSupport is enabled */
+  if (defJ1939DynAddrSuppAsStr != "CANIF_J1939_DYN_ADDR_DISABLED")
+  {
+    /* Value of CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA */
+    var maxRxDlcPlusMaxMetaData  = Define("CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA")
+    var maxRxDlcPlusMaxMetaDataAsNumVal = maxRxDlcPlusMaxMetaData.GetValueAsNumber()
+    
+    /* Value of CANIF_J1939_ACKM_ACKADDR_POS */
+    var j1939AckmAckAddrPos = Define("CANIF_J1939_ACKM_ACKADDR_POS")
+    var j1939AckmAckAddrPosAsNumVal = j1939AckmAckAddrPos.GetValueAsNumber()
+    
+    /* Ensure that CANIF_CFG_MAXRXDLC_PLUS_MAXMETADATA > CANIF_J1939_ACKM_ACKADDR_POS */
+    Assert(maxRxDlcPlusMaxMetaDataAsNumVal, GreaterThan, j1939AckmAckAddrPosAsNumVal)
+  }
+} 

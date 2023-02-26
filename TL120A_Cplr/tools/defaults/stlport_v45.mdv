@@ -1,0 +1,312 @@
+#
+#            Debugger STL Visualization Script
+#
+#    Copyright (c) 2004 Green Hills Software, Inc.
+#
+#    This program is the property of Green Hills Software, Inc,
+#    its contents are proprietary information and no part of it
+#    is to be disclosed to anyone except employees of Green Hills
+#    Software, Inc., or as agreed in writing signed by the President
+#    of Green Hills Software, Inc.
+#
+
+list {
+    signature = {"list<*>", "std::list<*>", "_STL::list<*>"}
+    required_fields = {"_M_node"}
+    type = "container"
+
+    size = "return self.size()"
+    begin_iter = "return ($M_typeof(self._M_node._M_data)) (self._M_node._M_data->_M_next);"
+    next_iter = "return ($M_typeof(self)) (self->_M_next)"
+    value_from_iter = "return self->_M_data"
+
+    functions {
+	size {
+	    name = "size"
+	    # Loop through the list since there is no "size" member
+	    body  = "$GHScur = self._M_node._M_data->_M_next;"
+	    body += "$GHSend = self._M_node._M_data;"
+	    body += "$GHScount = 0;"
+	    body += "while ($GHScur != $GHSend) {"
+	    body += "   $GHScount++;"
+	    body += "   $GHScur = $GHScur->_M_next;"
+	    body += "};"
+	    body += "return $GHScount;"
+	}
+	front {
+	    name = "front"
+	    body = "return (($M_typeof(self._M_node._M_data)) (self._M_node._M_data->_M_next))->_M_data;"
+	}
+	back {
+	    name = "back"
+	    body = "return (($M_typeof(self._M_node._M_data)) (self._M_node._M_data->_M_prev))->_M_data;"
+	}
+    }
+}
+
+vector {
+    signature = {"vector<*>", "std::vector<*>", "_STL::vector<*>"}
+    required_fields = {"_M_start", "_M_finish"}
+    type = "container"
+
+    size = "return self._M_finish - self._M_start"
+    begin_iter = "return self._M_start"
+    next_iter = "return self+1"
+    value_from_iter = "return *self"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "return self._M_finish - self._M_start;"
+	}
+	front {
+	    name = "front"
+	    body = "return *(self._M_start);"
+	}
+	back {
+	    name = "back"
+	    body = "return *(self._M_finish - 1);
+	}
+	at {
+	    name = "at"
+	    arguments = {"index"}
+	    body = "if (index >= 0 && index < self.size()) {"
+	    body+= "   return *(self._M_start + index);
+	    body+= "} else {"
+	    body+= "   return 0;"
+	    body+= "};"
+	}
+    }
+}
+
+#boolvector must come after vector in the file
+boolvector {
+    signature = {"vector<bool, *allocator<bool>>", "std::vector<bool, *allocator<bool>>", "_STL::vector<bool, _STL::allocator<bool>>" }
+    required_fields = {"_M_start", "_M_finish"}
+    type = "container"
+
+    size = "return self.size()"
+    begin_iter = "$GHSOffset = self._M_start._M_offset;"
+    begin_iter+= "$GHSPtr = self._M_start._M_p;"
+    begin_iter+= "return $GHSPtr;"
+    
+    next_iter= "if ($GHSOffset == __WORD_BIT - 1) {"
+    next_iter+= "   $GHSOffset = 0;"
+    next_iter+= "   $GHSPtr++;"
+    next_iter+= "} else {"
+    next_iter+= "   $GHSOffset++;"
+    next_iter+= "};"
+    next_iter+= "return self;"
+        
+    value_from_iter = "$GHSResult = !(!( *$GHSPtr & (1UL << $GHSOffset)));  return $GHSResult"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "return __WORD_BIT * (self._M_finish._M_p - self._M_start._M_p) + self._M_finish._M_offset - self._M_start._M_offset"
+	}
+    }
+}
+
+tree {
+    signature = {"set<*>", "std::set<*>", "_STL::set<*>", "map<*>", "std::map<*>", "_STL::map<*>"}
+    required_fields = {"_M_t"}
+    type = "container"
+
+    size = "return self._M_t._M_node_count"
+
+    begin_iter = "return ($M_typeof(self._M_t._M_header._M_data)) (self._M_t._M_header._M_data->_M_left)"
+
+    next_iter  = "$GHSPtr = self;"
+    next_iter += "if ($GHSPtr->_M_right != 0) {"
+    next_iter += "   $GHSPtr = $GHSPtr->_M_right;"
+    next_iter += "   while ($GHSPtr->_M_left != 0) {"
+    next_iter += "      $GHSPtr = $GHSPtr->_M_left;"
+    next_iter += "   };"
+    next_iter += "} else {"
+    next_iter += "   $GHSParent = $GHSPtr->_M_parent;"
+    next_iter += "   while ($GHSPtr == $GHSParent->_M_right) {"
+    next_iter += "      $GHSPtr = $GHSParent;"
+    next_iter += "      $GHSParent = $GHSPtr->_M_parent;"
+    next_iter += "   };"
+    next_iter += "   if ($GHSPtr->_M_right != $GHSParent) {"
+    next_iter += "      $GHSPtr = $GHSParent;"
+    next_iter += "   };"
+    next_iter += "};"
+    next_iter += "return ($M_typeof(self)) $GHSPtr;"
+
+    value_from_iter = "return self->_M_value_field"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "return self._M_t._M_node_count"
+	}
+    }
+}
+
+slist {
+    signature = {"slist<*>", "std::slist<*>", "_STL::slist<*>"}
+    required_fields = {"_M_head"}
+    type = "container"
+
+    size = "return self.size()"
+    # Use the _Tp template argument because that is the only thing that has
+    # the real type of the node
+    begin_iter = "return ($M_typeof(&self._M_head._Tp)) self._M_head._M_data._M_next"
+    next_iter = "return ($M_typeof(self)) self->_M_next"
+
+    value_from_iter = "return self->_M_data"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "$GHSPtr = self._M_head._M_data._M_next;"
+	    body+= "$GHSSize = 0;
+	    body+= "while ($GHSPtr != 0) {"
+	    body+= "   $GHSSize++;"
+	    body+= "   $GHSPtr = $GHSPtr->_M_next;"
+	    body+= "};"
+	    body+= "return $GHSSize;"
+	}
+    }
+}
+
+hash {
+    signature = {"hash_set<*>", "std::hash_set<*>", "_STL::hash_set<*>"}
+    required_fields = {"_M_ht"}
+    type = "container"
+
+    size = "return self._M_ht._M_num_elements._M_data"
+    begin_iter = "$GHSIndex = 0;"
+    begin_iter+= "$GHSht = &self._M_ht;"
+    begin_iter+= "$GHShtSize = self._M_ht._M_buckets.size();"
+    begin_iter+= "while ($GHSIndex < $GHShtSize) {"
+    begin_iter+= "   if (*(self._M_ht._M_buckets._M_start + $GHSIndex) != 0) {"
+    # Use _M_num_elements._Tp because that's the only thing available with the
+    # real type of the node
+    begin_iter+= "      return ($M_typeof(&self._M_ht._M_num_elements._Tp)) (self._M_ht._M_buckets.at($GHSIndex));"
+    begin_iter+= "   };"
+    begin_iter+= "   $GHSIndex++;"
+    begin_iter+= "};"
+    begin_iter+= "return 0;"
+
+    next_iter = "$GHSPtr = self->_M_next;"
+    next_iter+= "while ($GHSPtr == 0 && ++$GHSIndex < $GHShtSize) {"
+    next_iter+= "   $GHSPtr = *($GHSht->_M_buckets._M_start + $GHSIndex);"
+    next_iter+= "};"
+    next_iter+= "return ($M_typeof(self)) ((void*)$GHSPtr);"
+
+    value_from_iter = "return self->_M_val;"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "return self._M_ht._M_num_elements._M_data"
+	}
+    }
+}
+
+deque {
+    signature = {"deque<*>", "std::deque<*>", "_STL::deque<*>"}
+    required_fields = {"_M_start", "_M_finish"}
+    type = "container"
+
+    size = "return self.size()"
+
+    begin_iter = "$GHSValSize = sizeof(*(self._M_start._M_cur));"
+    begin_iter+= "$GHSBufSize = $GHSValSize < _MAX_BYTES ? _MAX_BYTES / $GHSValSize : 1;"
+    begin_iter+= "$GHSLast = self._M_start._M_last;"
+    begin_iter+= "$GHSNode = self._M_start._M_node;"
+    begin_iter+= "$GHSCurNode = self._M_start._M_cur;"
+    begin_iter+= "return self;"
+
+    next_iter  = "if (++$GHSCurNode == $GHSLast) {"
+    next_iter += "   $GHSNode++;"
+    next_iter += "   $GHSLast = *$GHSNode + $GHSBufSize;"
+    next_iter += "   $GHSCurNode = *$GHSNode;
+    next_iter += "};"
+    next_iter += "return self;"
+
+    value_from_iter = "return *$GHSCurNode;"
+    
+    functions {
+	size {
+	    name = "size"
+	    # size = self._M_finish - self._M_start
+	    # A - B = buffer_size * (A._M_node - B._M_node - 1) +
+	    #         (A._M_cur - A._M_first) + (B._M_last - B._M_cur)
+	    body  = "$GHSValSize = sizeof(*(self._M_start._M_cur));"
+	    body += "$GHSBufSize = $GHSValSize < _MAX_BYTES ? _MAX_BYTES/$GHSValSize : 1;"
+	    body += "return $GHSBufSize * (self._M_finish._M_node - self._M_start._M_node - 1)";
+	    body += "     + (self._M_finish._M_cur - self._M_finish._M_first)"
+	    body += "     + (self._M_start._M_last - self._M_start._M_cur);"
+	}
+    }
+}
+
+# classes that use the deque
+queue {
+    signature = {"queue<*, *deque<*>>", "std::queue<*,*deque<*>>", "_STL::queue<*,*deque<*>>", "stack<*,*deque<*>>", "std::stack<*,*deque<*>>", "_STL::stack<*,*deque<*>>"}
+    required_fields = {"c"}
+    type = "container"
+
+    size = "return self.size()"
+
+    begin_iter = "$GHSValSize = sizeof(*(self.c._M_start._M_cur));"
+    begin_iter+= "$GHSBufSize = $GHSValSize < _MAX_BYTES ? _MAX_BYTES / $GHSValSize : 1;"
+    begin_iter+= "$GHSLast = self.c._M_start._M_last;"
+    begin_iter+= "$GHSNode = self.c._M_start._M_node;"
+    begin_iter+= "$GHSCurNode = self.c._M_start._M_cur;"
+    begin_iter+= "return self;"
+
+    next_iter  = "if (++$GHSCurNode == $GHSLast) {"
+    next_iter += "   $GHSNode++;"
+    next_iter += "   $GHSLast = *$GHSNode + $GHSBufSize;"
+    next_iter += "   $GHSCurNode = *$GHSNode;
+    next_iter += "};"
+    next_iter += "return self;"
+
+    value_from_iter = "return *$GHSCurNode;"
+    
+    functions {
+	size {
+	    name = "size"
+	    # size = self._M_finish - self._M_start
+	    # A - B = buffer_size * (A._M_node - B._M_node - 1) +
+	    #         (A._M_cur - A._M_first) + (B._M_last - B._M_cur)
+	    body  = "$GHSValSize = sizeof(*(self.c._M_start._M_cur));"
+	    body += "$GHSBufSize = $GHSValSize < _MAX_BYTES ? _MAX_BYTES/$GHSValSize : 1;"
+	    body += "return $GHSBufSize * (self.c._M_finish._M_node - self.c._M_start._M_node - 1)";
+	    body += "     + (self.c._M_finish._M_cur - self.c._M_finish._M_first)"
+	    body += "     + (self.c._M_start._M_last - self.c._M_start._M_cur);"
+	}
+    }
+}
+
+pair {
+    signature = {"pair<*>", "std::pair<*>", "_STL::pair<*>"}
+    required_fields = {"first", "second"}
+    type = "structure"
+
+    fields {
+	first {
+	    name = "first"
+	    value = "return self.first"
+	}
+	second {
+	    name = "second"
+	    value = "return self.second"
+	}
+    }
+}
+
+string {
+    signature = {"basic_string<*>", "std::basic_string<*>", "_STL::basic_string<*>"}
+    required_fields = {"_M_start", "_M_finish", "_M_end_of_storage"}
+    type = "alias"
+
+    value = "return self._M_start"
+    mutable = false;
+}
+

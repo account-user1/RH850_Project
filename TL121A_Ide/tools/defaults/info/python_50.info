@@ -1,0 +1,640 @@
+Supported MULTI IDE Python Modules
+==================================
+
+Initial Python modules are available for the following MULTI components:
+    Launcher
+    Editor
+    Debugger
+    Builder
+    Window Register
+    Stand-alone MULTI Python GUI
+    EventAnalyzer
+    Terminal
+    Checkout Browser
+    Diff Viewer
+    Hex Editor
+    ... (in progress)
+
+The Python modules are automatically preloaded and contain select pre-created
+objects that are ready for use.
+
+For each function defined in the GHS Python modules, a number of aliases
+are defined. For your convenience, these aliases support shorter names and are
+case-insensitive.
+
+* GHS_Window
+
+    Any GUI window can be represented as a GHS_Window object. GHS_Window is an
+    abstract base class consisting of other objects.
+    
+    The GHS_Window class implements the basic functions applicable to a window.
+    For example, it can:
+       Close a window
+       Iconify a window
+       Show a window
+       Dump a widget's contents
+       Dump a window's contents
+       Select a menu, submenu, or sub-submenu entry
+       Press a button
+       Run commands supported by a window
+       ... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Window);
+
+    Many operations can produce a GHS_Window object. These operations include
+    opening a file via the MULTI Editor, debugging a program via the MULTI
+    Debugger, or connecting to a target via a run-mode connection.
+
+    The following command examples show you how to create and use a GHS_Window
+    object:
+	# Create a GHS_Window object for the first entry in a Window Register's
+	  window list. The pre-created GHS_WindowRegister object "winreg" is
+	  explained in the next section.
+	w0 = winreg.CreateWindowFromWindowList(0);
+	# Iconify the window.
+	w0.IconifyWindow();
+	# Show the window.
+	w0.ShowWindow();
+	# Move the window 100 pixels left.
+	w0.MoveWindow(-100, 0);
+	# Move the window to position (100, 100) in the current display.
+	w0.MoveWindow(100, 100, False);
+	# Widen the window by 100 pixels.
+	w0.ResizeWindow(100, 0);
+
+    The MULTI Python environment also defines two special variables for display
+    dimensions:
+	__ghs_display_width
+	__ghs_display_height
+
+    You can use these variables in method expressions that move or resize a
+    window. For example:
+	# Position a window 1/3 of the screen to the right and 1/3 of the
+	  screen down.
+	w0.MoveWindow(__ghs_display_width/3, __ghs_display_height/3, False);
+	# Move a window to the same position in the next logical display if the
+	  underlying window manager, such as FVWM, supports logical displays.
+	w0.MoveWindow(__ghs_display_width, 0);
+
+* GHS_WindowRegister
+
+    MULTI keeps track of its windows via a special service--the Window
+    Register. GHS_WindowRegister exposes the Window Register's functions. For
+    example, it can:
+	Close one or all windows
+	Iconify one or all windows
+	List all windows
+	Create a GHS_Window object from an entry in the window list
+	Route commands to a select window for execution
+	Wait for a select window to appear and return a GHS_Window object
+        ... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_WindowRegister);
+
+    The global object "winreg" has been pre-created for your convenience. The
+    following command examples show you how to use "winreg":
+	# List all windows.
+	wins = winreg.GetWindowList();
+	# Create a GHS_Window for the third entry (index count starts at 0).
+	w1 = winreg.CreateWindowFromWindowList(2, wins);
+	# Close the window.
+	w1.CloseWindow();
+
+* GHS_Launcher
+
+    GHS_Launcher exposes the MULTI Launcher's functions. For example, it can:
+	Show a new workspace file
+	Run an action or action sequence
+        ... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Launcher);
+
+    GHS_Launcher is a subclass of GHS_Window.
+
+    Whenever a GHS_Launcher object is created, the MULTI Launcher appears if it
+    has not already been started.
+
+    No object has been pre-created for GHS_Launcher.
+
+    The following command examples show you how to create and use a
+    GHS_Launcher object:
+	# Show the MULTI Launcher.
+	ml = GHS_Launcher();
+	# Load a customized workspace file.
+	ml.LoadConfigureFile("Your_Workspace_File.gmb");
+	# In the current workspace, run the second action in a special action
+	  sequence.
+	ml.RunAction("", "Your_Action_Sequence_Name", 1);
+	# In the current workspace, run all enabled actions in an action
+	  sequence.
+	ml.RunAction("", "Your_Action_Sequence_Name");
+	# In the "MULTI Group Checkin" workspace, run all enabled actions.  
+	ml.RunAction("MULTI Group Checkin");
+
+* GHS_EditorWindow
+
+    GHS_EditorWindow is a special kind of GHS_Window for MULTI Editor windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EditorWindow. For example, it can:
+	Select a range in the MULTI Editor
+	Copy or cut a selection in a MULTI Editor window
+	Paste clipboard content to a MULTI Editor window
+	Save a file
+	Open a file
+	Move the cursor to a special position
+	Undo or redo operations
+	Perform version control operations
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_EditorWindow);
+
+    The following command examples show you how to create and use a
+    GHS_EditorWindow object:
+    	# Open an existing file in the MULTI Editor. The pre-created
+	  GHS_Editor object "editor" is explained in the next section.
+	e1 = editor.OpenFile("mytest.gpy");
+	# Select from line 1's column 2 to line 10's column 7 (line and column
+	  count starts at 1).
+	e1.SelectRange(1, 2, 10, 7);
+	# Copy the selection to the clipboard.
+	e1.Copy();
+	# Move the cursor to line 12 and flash the cursor.
+	e1.MoveTo(12, 0);
+	# Paste clipboard contents to the cursor position.
+	e1.Paste();
+
+* GHS_Editor
+
+    MULTI currently supports the following editor services: the MULTI Editor,
+    vi, and emacs. For your convenience, a global GHS_Editor object has been
+    pre-created for each of these:
+       editor	MULTI Editor
+       vi	vi editor
+       emacs	emacs editor
+
+    GHS_Editor exposes your editor's functions. For example, it can:
+	Open a file in your editor
+	Go to a line number in a file
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Editor);
+
+    The following command examples show you how to use the pre-created global
+    editor objects:
+	# Open a vi window for a file.
+	vi.OpenFile("/tmp/myPython.py");
+	# Open a MULTI Editor window for a file and return a GHS_Window object.
+	e1 = editor.goto("/tmp/myPython.py", 20);
+	# Run a special command on the MULTI Editor to list the file in the
+	  current working directory.
+	e1.RunCommands("cmd2wnd ls");
+
+* GHS_DebuggerWindow
+
+    GHS_DebuggerWindow is a special kind of GHS_Window that exposes the
+    functions of MULTI Debugger windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_DebuggerWindow. For example, it can:
+	Print a file or window
+	Dump the contents of a file or window
+	Halt or resume a process
+	Single-step or go to the next function call
+	Set and remove breakpoints
+	Connect to a target (including rtserv and rtserv2)
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_DebuggerWindow);
+
+    The following command examples show you how to create and use a
+    GHS_DebuggerWindow object:
+    	# Open an INTEGRITY kernel program for sim800 bsp. The pre-created
+    	  GHS_Debugger object "debugger" is explained in the GHS_Debugger
+	  section.
+	d1 = debugger.debugprogram("/home/whiptail/terry/rtos50/sim800/kernel");
+	# Connect to the target (this step returns a debug server object that
+	  is described in the GHS_DebugServer section).
+	fm = d1.ConnectToTarget("isimppc");
+	# Run the program.
+	d1.Run();
+	# Halt the program.
+	d1.Halt();
+	# Single-step through the program.
+	d1.Step();
+
+* GHS_Task
+
+    GHS_Task, a derived class of GHS_DebuggerWindow, is an RTOS task. 
+
+    In addition to the functions of GHS_Window, some special functions
+    are available to GHS_Task. For example, it can:
+	Attach
+	Detach
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Task);
+
+    The following command examples show you how to create and use a
+    GHS_Task object (continued from the example for GHS_DebuggerWindow):
+	# Resume the kernel for sim800 BSP.
+	d1.Resume();
+	# Use rtserv to connect to the target in run-mode (this step returns a
+	  debug server object that is described in the GHS_DebugServer
+	  section). 
+	rm = debugger.rtserv(); # or: rm = d1.rtserv();
+	# Load the pizza demo.
+	rm.Load("/home/whiptail/terry/rtos50/sim800/pizza");
+	# Create a GHS_Task object for the "engineer" AddressSpace's "Initial"
+	  task.
+	eng = ghs_task(rm.component, "engineer", "Initial");
+	# Run the task without attaching.
+	eng.Run();
+	# Attach to the task.
+	eng.Attach();
+	# Run the task.
+	eng.Run();
+
+* GHS_DebugServer
+
+    GHS_DebugServer exposes MULTI's debug connections' functions. Because some
+    debug servers currently have a Task Manager window, GHS_DebugServer is a
+    derived class of GHS_Window. 
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_DebugServer. For example, it can:
+	Disconnect
+	Load a program
+	Show a task window
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_DebugServer);
+
+    In the preceding examples (GHS_DebuggerWindow and GHS_Task), we showed how
+    to create a GHS_DebugServer object. In this example, which is continued
+    from the example for GHS_Task, "fm" is the debug connection that used
+    "isimppc", and "rm" is the debug connection that used "rtserv":
+	# Show the run-mode Task Manager window.
+	rm.ShowTaskWindow();
+	# Select "View -> Flat View" to flatten the Task Manager's task view.
+	rm.SelectMenu("&View", "F&lat View", True);
+	# Dump the contents of the Task Manager window.
+	rm.DumpAll();
+	# Disconnect from the run-mode debug server.
+	rm.Disconnect();
+	# Disconnect from the freeze-mode debug server.
+	fm.Disconnect();
+	# Close the INTEGRITY kernel's Debugger window. 
+	d1.CloseWindow();
+    After this example is complete, the debugging environment is cleaned up.
+
+* GHS_Debugger
+
+    GHS_Debugger exposes the MULTI Debugger's functions. For example, it can:
+	Debug a program
+	Establish a target connection
+	Run MULTI Debugger commands
+        ... (in progress)
+
+    Running a command on a GHS_Debugger object can either do nothing, or it can
+    create an object for GHS_Window, GHS_DebuggerWindow, or GHS_DebugServer.
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Debugger);
+
+    The global object "debugger" has been pre-created for your convenience. For
+    examples about how to create such an object and perform operations with it,
+    see the preceding sections (from GHS_DebuggerWindow through
+    GHS_DebugServer).
+
+    To save Python statements in a script file, press ctrl-shift-s in the MULTI
+    Python pane or window. After you save a file, you can still edit it as
+    necessary. You can run the file as a script from the MULTI Python pane or
+    window, or run it from the command line using the utility program
+    "mpythonrun" (run the program to get its usage).
+
+* GHS_BuilderWindow
+
+    GHS_BuilderWindow is a special kind of GHS_Window that exposes the MULTI
+    Builder's functions.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_BuilderWindow. For example, it can:
+	Open or close a project file
+	Create a new MULTI Builder window
+	Edit, debug, and/or build all or select projects
+	Halt building
+	Expand or contract all or select projects
+	Copy, cut, delete, and/or paste select projects
+	Toggle full path display
+	Save or revert changes
+	Print and/or view all
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_BuilderWindow);
+
+    The following command examples show you how to create and use a
+    GHS_BuilderWindow object:
+	# Open an INTEGRITY kernel program for sim800 bsp. The pre-created
+    	  GHS_Builder object "builder" is explained in the next section.
+	b1 = builder.OpenProject("default.gpj");
+	# Build all projects.
+	b1.BuildAllProjects();
+	# Halt the building process.
+	b1.HaltBuild();
+	# Open a new Builder window.
+	b2 = b1.NewWindow();
+	# Load another project file into the new Builder window.
+	b2.OpenProject("test.gpj");
+
+* GHS_Builder
+
+    The GHS_Builder class exposes the MULTI Builder's functions. For example,
+    it can:
+	Open a Builder window for a project file
+	Load top project files in MULTI Builder windows
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Builder);
+
+    The global object "builder" has been pre-created for your convenience. The
+    preceding GHS_BuilderWindow example shows how to use the GHS_Builder object
+    "builder" to create a MULTI Builder window.
+
+* GHS_PythonGui
+
+    GHS_PythonGui exposes the MULTI Python GUI's functions. 
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_PythonGui);
+
+   GHS_PythonGui is a subclass of GHS_Window. Whenever a GHS_PythonGui object
+    is created, a MULTI Python GUI window appears.
+
+    No global object has been pre-created for this class.
+
+    The following command examples show you how to create and use a
+    GHS_PythonGui object:
+	# Open a MULTI Python GUI window.
+	pw = GHS_PythonGui();
+	# Bring the existing MULTI Python GUI window to the top.
+	pw.ShowWindow();
+	# Close the MULTI Python GUI window.
+	pw.CloseWindow();
+
+* GHS_EventAnalyzerWindow
+
+    GHS_EventAnalyzerWindow is a special kind of GHS_Window for MULTI
+    EventAnalyzer windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_EventAnalyzerWindow. For example, it can:
+	Zoom in, zoom out, and zoom to a selection
+	Open a new event data file
+	Close the current event data file
+	Toggle the hierarchy view in the task list
+	Navigate among history views
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_EventAnalyzerWindow);
+
+    The following command examples show you how to create and use a
+    GHS_EventAnalyzerWindow object:
+	# Create an object for the MULTI EventAnalyzer component.
+	mea = GHS_EventAnalyzer();
+	# Open a data file to create a GHS_EventAnalyzerWindow object.
+	ea1 = mea.OpenFile("/home/whiptail/terry/devl/linux86-ecom/intdump1.mes");
+	# Zoom out.
+	ea1.ZoomOut();
+	# Return to the previous view.
+	ea1.GotoPrevView();
+	# Create a new MULTI EventAnalyzer window.
+	ea2 = ea1.NewWindow();
+	# Load another data file in the new window.
+	ea2.OpenFile("/home/whiptail/terry/devl/linux86-ecom/ghs_eventlog.mes");
+	# Move the window down 100 pixels.
+	ea2.MoveWindow(0, 100);
+
+* GHS_EventAnalyzer
+
+    GHS_EventAnalyzer exposes the EventAnalyzer's functions. For example, it
+    can:
+	Open an event data file to create a MULTI EventAnalyzer window
+	Retrieve data files opened in MULTI EventAnalyzer windows
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_EventAnalyzer);
+
+    The preceding GHS_EventAnalyzerWindow example shows how to use a 
+    GHS_EventAnalyzer object to create a MULTI EventAnalyzer window.
+    
+* GHS_CoBrowseWindow
+
+    GHS_CoBrowseWindow is a special kind of GHS_Window for MULTI Checkout
+    Browser windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_CoBrowseWindow.
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_CoBrowseWindow);
+
+    The following command examples show you how to create and use a
+    GHS_CoBrowseWindow object:
+	# Create an object for the MULTI Checkout Browser component.
+	cobrowse = GHS_CoBrowse();
+	# Open a Checkout Browser window for a directory.
+	cb1 = cobrowse.OpenCoBrowserWin("/home/whiptail/terry/devl/src/wutil/python_gui");
+	# Move the window down 100 pixels.
+	cb1.MoveWindow(0, 100);
+	# Dump the window's contents.
+	cb1.DumpAll();
+	# Perform a local scan.
+	cb1.SelectMenu("&File", "Local Rescan");
+	# Press the button "Diff all locally modified files". This button is
+	  available if a file has changed.
+	cb1.PressButton("Diff all locally modified files");
+	# Close the Checkout Browser window.
+	cb1.CloseWindow();
+
+* GHS_CoBrowse
+
+    GHS_CoBrowse exposes the Checkout Browser's functions. For example, it can:
+	Open a Checkout Browser window for a directory
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_CoBrowse);
+
+    The preceding GHS_CoBrowseWindow example shows how to use a 
+    GHS_CoBrowse object to create a MULTI Checkout Browser window.
+
+* GHS_TerminalWindow
+
+    GHS_TerminalWindow is a special kind of GHS_Window for MULTI Terminal
+    windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_TerminalWindow. For example, it can:
+	Connect to a serial port
+	Disconnect from a serial port
+	Change the baud rate (while the connection is on)
+	Send break
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_TerminalWindow);
+
+    The following command examples show you how to create and use a
+    GHS_TerminalWindow object:
+	# Create an object for the MULTI Terminal component.
+	mterm = GHS_Terminal();
+	# Open a MULTI Terminal window and connect to a serial port. If you
+	  know the serial connection's name, include it as an argument to the
+	  function.
+	mt1 = mterm.MakeConnection();
+	# Move the window down 100 pixels.
+	mt1.MoveWindow(0, 100);
+	# Change the baud rate.
+	mt1.ChangeBaudRate(9600);
+	# Send break.
+	mt1.SendBreak();
+	# Disconnect from the serial port.
+	mt1.Disconnect();
+	# Connect again.
+	mt1.Connect();
+	# Close the window.
+	mt1.CloseWindow();
+
+* GHS_Terminal
+
+    GHS_Terminal exposes MULTI Terminal functions. For example, it can:
+	Connect to a serial port from a MULTI Terminal window
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_Terminal);
+
+    The preceding GHS_TerminalWindow example shows how to use a GHS_Terminal
+    object to create a MULTI Terminal window.
+   
+* GHS_DiffViewWindow
+
+    GHS_DiffViewWindow is a special kind of GHS_Window for MULTI Diff View
+    windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_DiffViewWindow. For example, it can:
+	Open a Diff Viewer in the current Diff Viewer window
+	Open a Diff Viewer in a new window
+	Show a current diff
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_DiffViewWindow);
+
+    The following command examples show you how to create and use a
+    GHS_DiffViewWindow object:
+	# Create an object for the MULTI Diff Viewer component.
+	dv = GHS_DiffView();
+	# Open a MULTI Diff Viewer window on two files.
+	dvw = dv.DiffFiles("test.cc", "func.cc");
+	# Toggle the display of character changes.
+	dvw.ToggleCharDiff();
+	# Toggle the display of word changes.
+	dvw.ToggleWordDiff();
+	# Close the Diff Viewer window.
+	dvw.CloseWindow();
+
+* GHS_DiffView
+
+    GHS_DiffView exposes the MULTI Diff Viewer's functions. For example, it
+    can:
+	Open a file chooser in which you can select what to diff
+	Diff files
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_DiffView);
+
+    The preceding GHS_DiffViewWindow example shows how to use a GHS_DiffView
+    object to create a MULTI Diff Viewer window.
+
+* GHS_HexEditorWindow
+
+    GHS_HexEditorWindow is a special kind of GHS_Window for MULTI Hex Editor
+    windows.
+
+    In addition to the functions of GHS_Window, some special functions are
+    available to GHS_HexEditorWindow. For example, it can:
+	Open a file
+	Open a new Hex Editor window
+	Close the current file
+	Save changes to the current file
+	Change bytes per row
+	Print the window
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_HexEditorWindow);
+
+    The following command examples show you how to create and use a
+    GHS_HexEditorWindow object:
+	# Create an object for the MULTI Hex Editor component.
+	ghe = GHS_HexEditor();
+	# Open a MULTI Hex Editor window on a file.
+	hew = ghe.OpenFile("test.cc");
+	# Change bytes per row. (If I change the MULTI Hex Editor to be
+	  command-driven, I hope to be able to give the width directly.)
+	hew.ChangeRowWidth();
+	# Close the current file.
+	hew.CloseFile();
+	# Close the Hex Editor window.
+	hew.CloseWindow();
+
+* GHS_HexEditor
+
+    GHS_HexEditor exposes the MULTI Hex Editor's functions. For example, it
+    can:
+	Open a Hex Editor window on a file
+	... (in progress)
+
+    For the complete list of methods defined for the class and for their
+    syntax, run the following Python command:
+	help(GHS_HexEditor);
+
+    The preceding GHS_HexEditorWindow example shows how to use a GHS_HexEditor
+    object to create a MULTI Hex Editor window.

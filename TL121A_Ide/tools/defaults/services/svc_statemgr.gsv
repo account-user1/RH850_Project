@@ -1,0 +1,115 @@
+Services.svc_statemgr {
+    ExecName="svc_statemgr"
+    PluginName="State Manager Service"
+    Persistent=0
+    PluginData {
+	Description="Handles configuration, mru lists, window registration and broadcasting."
+    }
+    ServicesProvided {
+	{
+	    ServiceName="MRUService"
+	    ServiceData {
+		Description="Handles most recently used lists."
+	    }
+	}
+	{
+            ServiceName="BroadcastService.File.Listen"
+	    ServiceData {
+		Description="Listen side of file notification broadcast messages (destination)."
+	    }
+	}
+	{
+            ServiceName="BroadcastService.File.Notify"
+	    ServiceData {
+		Description="Notify side of file notification broadcast messages (source)."
+	    }
+	}
+	{
+            ServiceName="BroadcastService.Config"
+	    ServiceData {
+		Description="Both the notify and the listen side of configuration broadcast messages."
+	    }
+	}
+	{
+            ServiceName="GHS_WindowRegisterService"
+	    ServiceData {
+		Description="Handles important windows."
+	    }
+	}
+	{
+            ServiceName="FileRegistry"
+	    ServiceData {
+		Description="File registration."
+	    }
+	}
+	{
+	    ServiceName="BroadcastService.XSwitch"
+	    ServiceData {
+		Description="Forward notification of changes to xswitches."
+	    }
+	}
+	{
+	    ServiceName="WhiteBoard"
+	    ServiceData {
+		Description="WhiteBoard service, provides shared memory and state saving."
+	    }
+	}
+
+# Possibly temporary dumping ground for random services.
+	{
+	    ServiceName="Editor.Emacs"
+	    ServiceData {
+		Description="Emacs editor tie in."
+	    }
+	}
+	{
+	    ServiceName="Editor.Vi"
+	    ServiceData {
+		Description="Vi editor tie in."
+	    }
+	}
+	{
+	    ServiceName="Editor.Other"
+	    ServiceData {
+		Description="Other editor tie in."
+	    }
+	}
+	{
+	    ServiceName="FeatureCount"
+	    ServiceData {
+	        Description="Collects anonymous usage data to help GHS improve MULTI."
+	    }
+	}
+    }
+}
+
+Services.svc_oracle {
+    ExecName="svc_answer"
+    PluginName="The Answer To All Your Questions"
+    Persistent=0
+    ServicesProvided {
+	{
+	    ServiceName="Answer"
+	    ServiceData {
+		Description="The Answer"
+	    }
+	}
+    }
+}
+
+Services.svc_recorder {
+    ExecName="svc_recorder"
+    PluginName="GHS GUI Operation Recorder"
+    Persistent=0
+    PluginData {
+	Description="Records MULTI GUI operations."
+    }
+    ServicesProvided {
+	{
+	    ServiceName="GHS_GuiOpsRecorder"
+	    ServiceData {
+		Description="MULTI GUI operations recorder."
+	    }
+	}
+    }
+}

@@ -1,0 +1,903 @@
+%if ! defined(OBJECT_EXTENSION)
+% define OBJECT_EXTENSION	o
+%endif
+
+%if ! defined(LIBRARY_EXTENSION)
+% define LIBRARY_EXTENSION	a
+%endif
+
+%if ! defined(EXECUTABLE_EXTENSION)
+% define EXECUTABLE_EXTENSION
+%endif
+
+%if ! defined(SHARED_OBJECT_EXTENSION)
+% define SHARED_OBJECT_EXTENSION	so
+%endif
+
+%if defined (C_DRIVER) && defined (CXX_DRIVER) && defined (ADA_DRIVER) && defined (FORTRAN_DRIVER)
+% define FILETYPE_OPTIONS "C;-language=c","C++;-language=cxx","Ada;-language=ada","FORTRAN;-language=fortran"
+% define LANGUAGE_OPTIONS "GhsCompilerOptions","GhsFORTRANCompilerOptions","GhsAdaCompilerOptions"
+%elif defined (C_DRIVER) && defined (CXX_DRIVER) && defined (ADA_DRIVER)
+% define FILETYPE_OPTIONS "C;-language=c","C++;-language=cxx","Ada;-language=ada"
+% define LANGUAGE_OPTIONS "GhsCompilerOptions","GhsAdaCompilerOptions"
+%elif defined (C_DRIVER) && defined (CXX_DRIVER) && defined (FORTRAN_DRIVER)
+% define FILETYPE_OPTIONS "C;-language=c","C++;-language=cxx","FORTRAN;-language=fortran"
+% define LANGUAGE_OPTIONS "GhsCompilerOptions","GhsFORTRANCompilerOptions"
+%elif defined (C_DRIVER) && defined (CXX_DRIVER)
+% define FILETYPE_OPTIONS "C;-language=c","C++;-language=cxx"
+% define LANGUAGE_OPTIONS "GhsCompilerOptions"
+%else
+% error "this combination is not yet defined"
+%endif
+
+%if defined(NO_TOP_PROJECT)
+% define TOP_PROJECT_OPTION
+%elif defined(TOP_PROJECT_IS_RELATIVE)
+% define TOP_PROJECT_OPTION -force_relative_paths -top_project $TOPPROJECTRELATIVE 
+%else
+% define TOP_PROJECT_OPTION -top_project $TOPPROJECT
+%endif
+
+%if streq(__MULTI_HOST__, "win32")
+% if defined (__MULTI_IDE_DIR__) && file_exists("${__MULTI_IDE_DIR__}/rtcontrol.exe")
+%  define MULTI_PROCESSOR_CONTROL_PANEL rtcontrol
+% endif
+%else
+% if defined (__MULTI_IDE_DIR__) && file_exists("${__MULTI_IDE_DIR__}/rtcontrol")
+%  define MULTI_PROCESSOR_CONTROL_PANEL rtcontrol
+% endif
+%endif
+
+%include "ghs_optionguis.bod"
+
+%include "html_compiler_options.bod"
+
+%if file_exists("${__DIR__}/gcores.bod")
+  %include "gcores.bod"
+%endif
+
+Commands {
+%if defined (C_DRIVER)
+    Driver {
+# The driver is used for language independant compilation (like linking)
+	name="driver"
+	exec="${GHS_TOOLS_DIR}/${C_DRIVER}"
+	alternateExec="metabld"
+	options={${LANGUAGE_OPTIONS},"SpecialOptions","GhsCommonOptions"}
+	makeDepends {
+	    twoPass=false
+	    args="-MD"
+	    extension="d"
+%if (GHS_TOOLS_VERSION >= 50) 
+	    lnkExtension="dep"
+%endif
+	    moveFile=false
+	}
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 40) 
+	    showCommands="-v -nested_diagnostics"
+	    showStatistics="-statistics -nested_diagnostics"
+	    dumpOptions="--dump_options"
+%else
+	    showCommands="-v"
+	    showStatistics="-statistics"
+%endif
+	    showHeaders="-H"
+	    preprocess="-P"
+	    preprocessExtension="i"
+%if (GHS_TOOLS_VERSION >= 40) 
+	    xrefOnly="-dbo_only --no_warnings"
+	    xrefOnlyExtension="dbo"
+%endif
+	    noStrip="-nostrip"
+%if (GHS_TOOLS_VERSION >= 50)
+            analyzeLibs="--analyze_libs"
+	    analyzeLibsAsync=true
+            pdo1b="-a"
+            pdo1e="-prepare_for_feedback -Onone"
+#	    pdo2="-use_feedback"
+	    pdo2="-W0,-optpro="
+	    pdoExtension="coi"
+%endif
+%if (GHS_TOOLS_VERSION >= 50)
+            ipaLibAnalysis="-Oip_pure_analysis_only"
+	    ipaLibExtension="ipf"
+%endif
+	}
+    }
+%endif
+%if defined (C_DRIVER)
+    C_Compiler {
+	name="C compiler"
+	exec="${GHS_TOOLS_DIR}/${C_DRIVER}"
+	alternateExec="metabld"
+	options={"GhsCompilerOptions","SpecialOptions","GhsCommonOptions"}
+	makeDepends {
+	    twoPass=false
+	    args="-MD"
+	    extension="d"
+%if (GHS_TOOLS_VERSION >= 50) 
+	    lnkExtension="dep"
+%endif
+	    moveFile=false
+	}
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 40) 
+	    showCommands="-v -nested_diagnostics"
+	    showStatistics="-statistics -nested_diagnostics"
+	    dumpOptions="--dump_options"
+%else
+	    showCommands="-v"
+	    showStatistics="-statistics"
+%endif	    
+	    showHeaders="-H"
+	    preprocess="-P"
+	    preprocessExtension="i"
+%if (GHS_TOOLS_VERSION >= 40) 
+	    xrefOnly="-dbo_only --no_warnings"
+	    xrefOnlyExtension="dbo"
+%endif
+	    noStrip="-nostrip"
+%if (GHS_TOOLS_VERSION >= 50)
+            pdo1b="-a"
+            pdo1e="-prepare_for_feedback -Onone"
+#	    pdo2="-use_feedback"
+	    pdo2="-W0,-optpro="
+	    pdoExtension="coi"
+%endif
+%if (GHS_TOOLS_VERSION >= 50)
+            ipaLibAnalysis="-Oip_pure_analysis_only"
+	    ipaLibExtension="ipf"
+%endif
+	}
+    }
+%endif
+%if defined (CXX_DRIVER)
+    Cxx_Compiler {
+	name="C++ compiler"
+	exec="${GHS_TOOLS_DIR}/${CXX_DRIVER}"
+	alternateExec="metabld"
+	options={"GhsCompilerOptions","SpecialOptions","GhsCommonOptions"}
+	makeDepends {
+	    twoPass=false
+	    args="-MD"
+	    extension="d"
+%if (GHS_TOOLS_VERSION >= 50) 
+	    lnkExtension="dep"
+%endif
+	    moveFile=false
+	}
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 40) 
+	    showCommands="-v -nested_diagnostics"
+	    showStatistics="-statistics -nested_diagnostics"
+	    dumpOptions="--dump_options"
+%else
+	    showCommands="-v"
+	    showStatistics="-statistics"
+%endif	    
+	    showHeaders="-H"
+	    preprocess="-P"
+	    preprocessExtension="i"
+%if (GHS_TOOLS_VERSION >= 40) 
+	    xrefOnly="-dbo_only --no_warnings"
+	    xrefOnlyExtension="dbo"
+%endif
+	    noStrip="-nostrip"
+%if (GHS_TOOLS_VERSION >= 50)
+            pdo1b="-a"
+            pdo1e="-prepare_for_feedback -Onone"
+	    pdo2="-feedback="
+	    pdoExtension="coi"
+%endif
+%if (GHS_TOOLS_VERSION >= 50)
+            ipaLibAnalysis="-Oip_pure_analysis_only"
+	    ipaLibExtension="ipf"
+%endif
+	}
+	var="cxx_compiler"
+    }
+%endif
+%if defined (ADA_DRIVER)
+    Ada_Compiler {
+	name="Ada compiler"
+	exec="${GHS_TOOLS_DIR}/${ADA_DRIVER}"
+	alternateExec="metabld"
+	options={"GhsCompilerOptions","GhsAdaCompilerOptions","SpecialOptions","GhsCommonOptions"}
+	var="ada_compiler"
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 40) 
+	    showCommands="-v -nested_diagnostics"
+	    showStatistics="-statistics -nested_diagnostics"
+	    dumpOptions="--dump_options"
+%else
+	    showCommands="-v"
+	    showStatistics="-statistics"
+%endif	    
+	    showHeaders="-H"
+	    noStrip="-nostrip"
+	}
+    }
+%endif
+%if defined (FORTRAN_DRIVER)
+    FORTRAN_Compiler {
+	name="FORTRAN compiler"
+	exec="${GHS_TOOLS_DIR}/${FORTRAN_DRIVER}"
+	alternateExec="metabld"
+	options={"GhsCompilerOptions","GhsFORTRANCompilerOptions","SpecialOptions","GhsCommonOptions"}
+	makeDepends {
+	    twoPass=false
+	    args="-MD"
+	    extension="d"
+%if (GHS_TOOLS_VERSION >= 50) 
+	    lnkExtension="dep"
+%endif
+	    moveFile=false
+	}
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 40) 
+	    showCommands="-v -nested_diagnostics"
+	    showStatistics="-statistics -nested_diagnostics"
+	    dumpOptions="--dump_options"
+%else
+	    showCommands="-v"
+	    showStatistics="-statistics"
+%endif	    
+	    showHeaders="-H"
+	    noStrip="-nostrip"
+	}
+	var="fortran_compiler"
+    }
+%endif
+    HTML_Compiler {
+	name="HTML compiler"
+	exec="${GHS_TOOLS_DIR}/cchtml"
+	options={"HTMLCompilerOptions","SpecialOptions"}
+	specialOptions {
+	    showCommands="-v"
+	    runInDirectory="$(INPUTDIR)";
+	}
+    }
+    Project_Builder {
+	name="Project Builder"
+	# This exec isn't actually used since everything that uses this
+	# command for graphical editing uses service commands.
+	exec="mprojmgr"
+    }
+%if !streq(__MULTI_HOST__, "win32")
+    DML2PDF {
+	name="DML2PDF"
+%if defined(__MULTI_IDE_DIR__)
+	exec="${__MULTI_IDE_DIR__}/dmlview"
+%else
+	exec="dmlview"
+%endif
+    }
+%endif
+%if !streq(__MULTI_HOST__, "win32")
+    Acrobat {
+	name="Acrobat"
+	exec="acroread"
+    }
+%endif
+%if !streq(__MULTI_HOST__, "win32")
+    GhostView {
+	name="GhostView"
+%if streq(__MULTI_HOST__, "linux86")
+	exec="ggv"
+%else
+	exec="ghostview"
+%endif
+    }
+%endif
+%if defined (MULTI_PROCESSOR_CONTROL_PANEL)
+    Multi_Processor_Control_Panel {
+	name="Multi-Processor Control Panel"
+%if defined (__MULTI_IDE_DIR__)
+	exec="${__MULTI_IDE_DIR__}/${MULTI_PROCESSOR_CONTROL_PANEL}"
+%else
+	exec="${MULTI_PROCESSOR_CONTROL_PANEL}"
+%endif
+    }
+%endif
+}
+
+
+FileTypes {
+%if defined (C_DRIVER)
+    C {
+	name="C"
+%if defined (GHS_IGNORE_CAPS_FOR_C_FILE_EXT)
+	extensions={"c","C"}
+%else
+	extensions={"c"}
+%endif
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="ObjectFile"
+	grepable=true
+	isCoreCompiledType=true
+	command="C compiler"
+	firstPassOutputExtension="inf"
+	firstPass="$COMMAND ${VERBOSEOPTION} -Q $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.c $INPUTFILE -o $OUTPUTFILE"
+	secondPassOption="-no_gen_inf"
+	commandLine="$COMMAND ${VERBOSEOPTION} -c $SECOND_PASS_OPTION $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.c $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).lst","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).inf","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	firstPassProgress="Analyzing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+%endif
+%if defined (CXX_DRIVER)
+    Cxx {
+	name="C++"
+%if defined (GHS_IGNORE_CAPS_FOR_C_FILE_EXT)
+	extensions={"cc","cxx","cpp","c++","CXX","CPP"}
+%else
+	extensions={"cc","cxx","cpp","c++","C","CXX","CPP"}
+%endif
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="ObjectFile"
+	grepable=true
+	postModifiable=true
+	isCoreCompiledType=true
+	command="C++ compiler"
+	firstPassOutputExtension="inf"
+	firstPass="$COMMAND ${VERBOSEOPTION} -Q $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.cc $INPUTFILE -o $OUTPUTFILE"
+	secondPassOption="-no_gen_inf"
+	commandLine="$COMMAND ${VERBOSEOPTION} -c $SECOND_PASS_OPTION $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.cc $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ti","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ii","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).et","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).lst","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).inf","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	firstPassProgress="Analyzing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+%endif
+%if defined (ADA_DRIVER)
+    Ada {
+	name="Ada"
+	extensions={"ada","adb","bdy","ada_body","ADA","ADB","BDY"}
+	extensions+={"ADA_BODY","Ada","Adb","Bdy","Ada_body","Ada_Body"}
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="RepositoryObjectFile"
+	grepable=true	
+	postModifiable=true
+	isCoreCompiledType=true
+	command="Ada compiler"
+	firstPassOutputExtension="ia"
+	firstPass="$COMMAND ${VERBOSEOPTION} -E $OPTIONS -filetype.ada $INPUTFILE -o $(OUTPUTFILE)"
+	commandLine="$COMMAND ${VERBOSEOPTION} $OPTIONS -filetype.ada $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(INFOFILEDIR)/$(FILENAME).info","$(XREFFILEDIR)/$(FILENAME).xref","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(IAFILEDIR)/$(OUTPUTNAMEBASE).ia","$(LISTFILEDIR)/$(FILENAME).lst","$(XLISTFILEDIR)/$(FILENAME).xlst"}
+	firstPassProgress="Preprocessing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+    AdaSpec {
+	name="Ada Spec"
+	extensions={"ads","spc","ada_spec","ADS","SPC","ADA_SPEC","Ads"}
+	extensions+={"Spc","Ada_spec","Ada_Spec"}
+	outputPreExtension="_";
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="RepositoryObjectFile"
+	grepable=true
+	postModifiable=true
+	isCoreCompiledType=true
+	command="Ada compiler"
+	firstPassOutputExtension="ia"
+	firstPass="$COMMAND ${VERBOSEOPTION} -E $OPTIONS -filetype.ada $INPUTFILE -o $(OUTPUTFILE)"
+	commandLine="$COMMAND ${VERBOSEOPTION} $OPTIONS -filetype.ada $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(INFOFILEDIR)/$(FILENAME).info","$(XREFFILEDIR)/$(FILENAME).xref","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(IAFILEDIR)/$(OUTPUTNAMEBASE).ia","$(LISTFILEDIR)/$(FILENAME).lst","$(XLISTFILEDIR)/$(FILENAME).xlst"}
+	firstPassProgress="Preprocessing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+%endif
+%if defined (FORTRAN_DRIVER)
+    FORTRAN {
+	name="FORTRAN"
+	extensions={"f","f77","for"}
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="ObjectFile"
+	grepable=true
+	isCoreCompiledType=true
+	command="FORTRAN compiler"
+	firstPassOutputExtension="inf"
+	firstPass="$COMMAND ${VERBOSEOPTION} -Q $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.f $INPUTFILE -o $OUTPUTFILE"
+	secondPassOption="-no_gen_inf"
+	commandLine="$COMMAND ${VERBOSEOPTION} -c $SECOND_PASS_OPTION $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.f $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ti","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ii","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).lst"}
+	firstPassProgress="Analyzing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+    FORTRAN90 {
+	name="FORTRAN-90"
+	extensions={"f90"}
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="ObjectFile"
+	grepable=true
+	isCoreCompiledType=true
+	command="FORTRAN compiler"
+	firstPassOutputExtension="inf"
+	firstPass="$COMMAND ${VERBOSEOPTION} -Q $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.f90 $INPUTFILE -o $OUTPUTFILE"
+	secondPassOption="-no_gen_inf"
+	commandLine="$COMMAND ${VERBOSEOPTION} -c $SECOND_PASS_OPTION $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.f90 $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ti","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ii","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).lst"}
+	firstPassProgress="Analyzing"
+	progress="Compiling"
+	action="&Compile"
+	color="#006000"
+	parallelOK=true
+    }
+%endif
+    Assembly {
+	name="Assembly"
+	extensions={"s", "asm", ${ASSEMBLY_EXTENSIONS}}
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="ObjectFile"
+	grepable=true
+	command="C compiler"
+	commandLine="$COMMAND ${VERBOSEOPTION} -c $MAKE_DEPEND_OPTIONS $OPTIONS -filetype.assembly $INPUTFILE -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dbo","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).lst"}
+	progress="Assembling"
+	action="&Assemble"
+	color="#006000"
+	parallelOK=true
+    }
+    HTMLSource {
+	name="HTML Source"
+	extensions={"mak"}
+	outputExtension="c"
+	outputType="SourceFile"
+	command="HTML compiler"
+	commandLine="$COMMAND $HTML_COMPILER_OPTIONS -i $FILENAME $OPTIONS -o $(OUTPUTNAMEBASE).c"
+	extraFiles+={"$(RUNDIR)/$(OUTPUTNAMEBASE).c", "$(RUNDIR)/$(OUTPUTNAMEBASE).h"}
+	progress="Compiling"
+	promoteToFirstPass=true
+    }
+    Header {
+	name="Header"
+	extensions={"h","hh","H","h++","hxx","hpp"}
+	outputType="None"
+	grepable=true
+	color="#0020a0"
+	parallelOK=true
+	group="source_file"
+	docAnchors={"multi.mpm.header_file"}
+    }
+    Text {
+	name="Text"
+	extensions={"txt","notes"}
+	outputType="None"
+	grepable=true
+	color="#0020a0"
+	isDefaultType=true
+	parallelOK=true
+        isJustDocumentation=true
+	foundByLinker=true
+	group="docs"
+	docAnchors={"multi.mpm.text_file"}
+    }
+    Documentation {
+	name="Documentation"
+	extensions={"xml"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+	group="docs"
+    }
+%if !streq(__MULTI_HOST__, "win32")
+    HTML {
+	name="HTML File"
+	extensions={"htm","html"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+	group="docs"
+    }
+    DML {
+	name="DML File"
+	extensions={"dml"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+	graphicalEditor="DML2PDF"
+	group="docs"
+    }
+    PortableDocumentFormat {
+	name="Portable Document Format"
+	extensions={"pdf"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+	graphicalEditor="Acrobat"
+	group="docs"
+    }
+    Postscript {
+	name="PostScript"
+	extensions={"ps"}
+	outputType="None"
+	color="#0020a0"
+	grepable=false
+	parallelOK=true
+	graphicalEditor="GhostView"
+	group="docs"
+    }
+%endif
+    Script {
+	name="Script"
+	extensions={"rc","irc","prc"}
+	outputType="None"
+	grepable=true
+	parallelOK=true
+	color="#0020a0"
+	docAnchors={"multi.mpm.rc_script"}
+    }
+    MultiLauncherConfigFile {
+	name="MULTI Workspace"
+	extensions={"gmb"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	graphicalEditor="Project Builder"
+	graphicalEditorCommand="multibar cfgFileName:$(DISKFILE)"
+	editorIsService=true
+	registered=true
+	color="#004040"
+    }
+    LinkerDirectives {
+	name="Linker Directives"
+	extensions={"lnk","ld"}
+	outputType="PassToLinker"
+	neverPassToArchiver=true
+	grepable=true
+	color="#500050"
+    }
+    LinkerRawFiles {
+	name="Linker Raw Files"
+	extensions={""}
+	outputType="PassToLinker"
+	grepable=false
+	foundByLinker=true;
+	color="#500050"
+    }
+    Object {
+	name="Object"
+	extensions={"${OBJECT_EXTENSION}"}
+	outputType="PassToLinker"
+	grepable=false
+	color="#800060"
+    }
+    MemoryLayout {
+	name="Memory Layout"
+	extensions={"gmd"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+#could uncomment the following line to pass these into the link
+#	findLinkLine=true
+	color="#500050"
+	docAnchors={"multi.mpm.memory_description"}
+    }
+    TargetConnections {
+	name="Target Connections"
+	extensions={"con"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	graphicalEditor="Project Builder"
+	graphicalEditorCommand="OpenConnectionOrganizer connectionFile:$(DISKFILE)"
+	editorIsService=true
+	registered=true
+	color="#500050"
+    }
+    BoardSetup {
+	name="Board Setup"
+	extensions={"dbs","mbs"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#500050"
+	docAnchors={"multi.mpm.board_setup_script"}
+    }
+    Program {
+	name="Program"
+	aliases={"program"}
+	outputExtension="${EXECUTABLE_EXTENSION}"
+	command="driver"
+	outputType="Program"
+	grepable=false
+	commandLine="$COMMAND ${VERBOSEOPTION} $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS $TOP_PROJECT_OPTION -o $OUTPUTFILE"
+%if file_exists("${GHS_TOOLS_DIR}/filechanged")
+	postExecSafe={"${GHS_TOOLS_DIR}/filechanged $(OUTPUTFILE)"}
+%endif
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).mem","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).run","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+%if defined (EXTRA_OUTPUT_EXTENSION)
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).${EXTRA_OUTPUT_EXTENSION}"}
+%endif
+	filetypeOptions={${FILETYPE_OPTIONS}}
+        linkSpecifiers += {"System Library;-l$(FILENAME)"}
+	linkSpecifiers += {"Linker Raw Files;-rawimport $(DISKFILE)"}
+#	linkSpecifiers += {"Linker Directives;-filetype.ld $(INPUTFILE)"}
+#could uncomment the following line to pass these into the link
+#	linkSpecifiers += {"Memory Layout;--memory_description_file=$(INPUTFILE)"}
+#	linkableTypes += {"Memory Layout"}
+	# Add numerous text-based file formats to the debug information.
+	linkSpecifiers += {"Text;-extra_file=$(INPUTFILE)"}
+	linkableTypes += {"Text"}
+	progress="Linking"
+	action="&Build Program"
+	parallelOK=true
+	color="#c00000"
+    }
+%if defined (SHARED_OBJECTS)
+    SharedObject {
+	name="Shared Object"
+	outputExtension="${SHARED_OBJECT_EXTENSION}"
+	command="driver"
+	outputType="Program"
+	grepable=false
+	commandLine="$COMMAND ${VERBOSEOPTION} -shared $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS $TOP_PROJECT_OPTION -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	linkSpecifiers += {"System Library;-l$(FILENAME)"}
+	linkSpecifiers += {"Linker Raw Files;-rawimport $(DISKFILE)"}
+#	linkSpecifiers += {"Linker Directives;-filetype.ld $(INPUTFILE)"}
+	linkSpecifiers += {"Text;-extra_file=$(INPUTFILE)"}
+	linkableTypes += {"Text"}
+	allowEmptyLink=true
+	progress="Linking"
+	action="&Build"
+	parallelOK=true
+	color="#c00000"
+    }
+%endif
+    SingletonLibrary {
+	name="Singleton Library"
+	aliases={"single_file_library"}
+	outputExtension="${LIBRARY_EXTENSION}"
+	command="driver"
+	outputType="Program"
+	grepable=false
+	isLibraryType=true
+	commandLine="%copy $OBJECTS $OUTPUTFILE"
+	postExecSafe={"%copy $(OBJECTBASE).dbo $(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba"}
+	postExecSafe+={"%copy $(OBJECTBASE).d $(OUTPUTDIR)/$(OUTPUTNAMEBASE).dep"}
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr", "$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dep"}
+	progress="Creating single file library"
+	action="&Build Library"
+	parallelOK=true
+	maxLinkObjects=1
+	color="#c00000"
+    }
+    Program.linkableTypes += {"Singleton Library"}
+    Reference {
+    	name="Reference"
+	extensions={"gpj"}
+	outputType="Subproject"
+	grepable=false
+	action="&Build Referent of"
+	color="#800060"
+    }
+    AutoInclude {
+	name="Auto Include"
+	extensions={"auto"}
+	outputType="Subproject"
+	grepable=false	
+	extraFiles+={"$(INPUTDIR)/$(FILENAMEBASE).incl"}
+	action="&Build files included by"
+	parallelOK=true
+	color="#c00000"
+    }
+    Project {
+	name="Project"
+	aliases={"nobuild"}
+	outputType="None"
+	grepable=false
+	defaultContainer="Program"
+	action="&Build Project"
+	color="#c00000"
+    }
+    Subproject {
+	name="Subproject"
+	aliases={"subproject"}
+	extensions={"gpj"} # this is the preferred type for a gpj file
+	outputType="Subproject"
+	grepable=false
+	action="&Build Subproject"
+	color="#c00000"
+    }
+    SelectOne {
+	name="Select One"
+	aliases={"select_one"}
+	outputType="SelectOne"
+	grepable=false
+	action="&Build Select One"
+	parallelOK=true
+	color="#c00000"
+    }
+    Library {
+	name="Library"
+	aliases={"library"}
+	outputExtension="${LIBRARY_EXTENSION}"
+	outputType="Library"
+	grepable=false	
+	isLibraryType=true
+	nondebugable=true
+	command="driver"
+	LibraryLinkInfo {
+	    update="$COMMAND ${VERBOSEOPTION} $FILETYPEOPTIONS $OPTIONS -update_archive -o $OUTPUTFILE $OBJECTS -keep_objs $KEEPOBJECTS"
+	    addReplace="$COMMAND ${VERBOSEOPTION} $FILETYPEOPTIONS $OPTIONS -archive -o $OUTPUTFILE $OBJECTS"
+	    delete="${GHS_TOOLS_DIR}/ax cd${ARCHIVEVERBOSEOPTION} $OUTPUTFILE $OBJECTS"
+	}
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	extraExtensionsToDeletePerObject={"dbo"}
+	progress="Archiving"
+	action="&Build Library"
+	parallelOK=true
+	color="#800060"
+    }
+    SystemLibrary {
+	name="System Library"
+	extensions={"${LIBRARY_EXTENSION}"}
+	outputType="PassToLinker"
+	grepable=false	
+	isLibraryType=true
+	foundByLinker=true
+	color="#800060"
+    }
+    PrebuiltLibrary {
+	name="Prebuilt Library"
+	aliases={"prebuilt_library"}
+	extensions={"${LIBRARY_EXTENSION}","lib"}
+	outputType="PassToLinker"
+	grepable=false
+	isLibraryType=true
+	isPrebuiltType=true
+	color="#800060"
+	docAnchors={"multi.mpm.prebuilt_library"}
+    }
+    RelocatableObject {
+	name="Relocatable Object"
+	aliases={"RelativeObject"}
+	outputExtension="${OBJECT_EXTENSION}"
+	outputType="Program"
+	grepable=false
+	nondebugable=true
+	command="driver"
+	commandLine="$COMMAND ${VERBOSEOPTION} -relobj $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS -o $OUTPUTFILE"
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+%if defined (EXTRA_OUTPUT_EXTENSION)
+	extraFiles += {"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).${EXTRA_OUTPUT_EXTENSION}"}
+%endif
+	linkSpecifiers += {"System Library;-l$(FILENAME)"}
+	linkSpecifiers += {"Linker Raw Files;-rawimport $(DISKFILE)"}
+#	linkSpecifiers += {"Linker Directives;-filetype.ld $(INPUTFILE)"}
+	linkSpecifiers += {"Text;-extra_file=$(INPUTFILE)"}
+	linkableTypes += {"Text"}
+	progress="Linking"
+	allowEmptyLink=true
+	action="&Build"
+	parallelOK=true
+	color="#800060"
+    }
+    Program.linkableTypes += {"Relocatable Object"}
+    Library.linkableTypes += {"Relocatable Object"}
+%if defined (__GHS_OS_INTEGRITY)
+    SharedLibrary {
+	name="Shared Library"
+	outputExtension="so"
+	command="driver"
+	outputType="Program"
+	grepable=false
+	commandLine="$COMMAND ${VERBOSEOPTION} -shared $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS -o $OUTPUTFILE"
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	filetypeOptions={${FILETYPE_OPTIONS}}
+#	linkSpecifiers += {"Linker Directives;-filetype.ld $(INPUTFILE)"}
+	linkSpecifiers += {"Text;-extra_file=$(INPUTFILE)"}
+	linkableTypes += {"Text"}
+	progress="Linking"
+	action="&Build"
+	parallelOK=true
+	color="#c00000"
+    }
+%endif
+%if !defined (USES_NATIVE_ARCHIVER)
+    MergedLibrary {
+	name="Merged Library"
+	aliases={"merged_library"}
+	outputExtension="${LIBRARY_EXTENSION}"
+	command="driver"
+	outputType="Program"
+	grepable=false
+	isLibraryType=true
+	nondebugable=true
+	commandLine="$COMMAND ${VERBOSEOPTION} $MAKE_DEPEND_OPTIONS $FILETYPEOPTIONS $OPTIONS -merge_archive -o $OUTPUTFILE $OBJECTS"
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	progress="Archiving Merged Library"
+	action="&Build Library"
+	parallelOK=true
+	color="#c00000"
+	linkableTypes = {"Library","Merged Library"}
+        linkSpecifiers += {"System Library;--whole-archive -l$(FILENAME) --no-whole-archive "}
+    }
+    Program.linkableTypes += {"Merged Library"}
+%endif
+    OnlineHelp {
+	name="Online Help"
+	extensions={"chm"}
+	outputType="None"
+	grepable=false
+	graphicalEditor="Project Builder"
+	graphicalEditorCommand="OpenManualFile filename:$(DISKFILE)"
+	editorIsService=true
+	color="#0020a0"
+    }
+%if defined (MULTI_PROCESSOR_CONTROL_PANEL)
+    MultiProcessorControlPanel {
+	name="Multi-Processor Control Panel"
+	extensions={"mpcp"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	graphicalEditor="Multi-Processor Control Panel"
+    }
+%endif
+    CodingStandardProfile {
+	name="Coding Standard Profile"
+	extensions={"csp"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+    }
+    CustomizationFile {
+	name="Customization"
+	extensions={"bod"}
+	outputType="None"
+	grepable=false
+	parallelOK=true
+	color="#0020a0"
+    }
+    ProbeConfigurationFile {
+	name="Probe Settings"
+	extensions={"cfg","ghpcfg"}
+	outputType="None"
+	grepable=true
+	parallelOK=true
+	color="#500050"
+    }
+    BuildConfigurationFile {
+	name="Build Configuration"
+	extensions={"gpc"}
+	outputType="None"
+	grepable=true
+	parallelOK=true
+	color="#0020a0"
+    }
+    MultiCoreConfiguration {
+	name="Multi-Core Configuration"
+	extensions={"ghsmc"}
+	nondebugable=false
+	outputType="None"
+	grepable=false
+	findLinkLine=true
+	color="#c00000"
+	debugPrecedence=true
+    }
+}

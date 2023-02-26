@@ -1,0 +1,32 @@
+Nexteer Manufacturing Component Integration Guide
+========================================================================================================================
+The following guidelines apply when integrating both common of program specific service components.  The 
+
+
+1. Bring component into project using Synergy as would be done for any component integration.
+2. Import CmnMfgSrv.arxml or ProgMfgSrvCfg.arxml from tools folder into Configurator using File > Import.
+    - On the second page, ensure the checkbox for NxtrMfgSrv component is checked before clicking [Finish].
+    - If updating both CmnMfgSrv and ProgMfgSrv simultaneously, the imports of the arxml files must be done separately.
+3. Manually merge the configuration into Configurator using the options provided.  Here are some general rules:
+    - Typically add everything that has been added.
+    - Typically keep all OTHER values on modified items (i.e. you typically want changes).
+    - Typically IGNORE all removed items (Configurator will always want to remove previous Enable/Application settings).
+4. Navigate to NxtrMfgSrv in the Basic Editor.
+5. Enable all services listed in DSR by ticking the corresponding Enable checkbox
+6. Select an Application from the select box if the service must write to RAM owned by an application other than CMS'.
+    - CMS relies on a single Non-Trusted function call for each application in which a service must run.
+    - Selecting a previously unused application from the list of available applications will generate the functions in
+      MfgSrvCfg.c but will require the addition of the Non-Trusted function for that application in your OS settings in
+      Configurator.
+7. Set the software revision in Basic Editor > NxtrMfgSrv > NxtrMfgSrvGeneral.
+8. Once configured, generate NxtrMfgSrv through the Configurator generation dialog.
+    - Generates the source and header config files needed to configure services.
+    - Generates a merged ODX file containing services from CmnMfgSrv.odx-d and ProgMfgSrv.odx-d.
+    - Generates a trimmed ODX file containing only the services that were enabled in Configurator.
+    - Generates an HTML reference document for enabled services.
+    - All generated files are output to the generate folder of the integration project.
+9. Build and flash to controller.
+10. Run OdxTest.bat in TL110A_MfgSrvSuprt/tools folder to execute a basic test of the configuration against the ODX file.
+    - The test requires a Peak tool for communication with the controller.
+    - An HTML test report will open in your browser once the test completes.
+    - This test does NOT replace functional test, it is only intended to point out gross configuration errors.

@@ -1,0 +1,63 @@
+// iostream standard header
+#ifndef _IOSTREAM_
+#define _IOSTREAM_
+#include <istream>
+_STD_BEGIN
+#if defined(__GHS_PRAGMAS)
+#pragma ghs startdata
+#endif
+#if defined(__ghs) && defined(__ghs_max_pack_value)
+#pragma pack (push, __ghs_max_pack_value)
+#endif
+
+		// OBJECTS
+static ios_base::Init _Ios_init;	// force initialization of byte streams
+
+extern istream cin;
+extern ostream cout;
+extern ostream cerr;
+
+ #if _HAS_NAMESPACE
+extern ostream clog;
+
+ #else /* _HAS_NAMESPACE */
+
+ #if __GNUC__ < 3 || defined(__ghs) || defined(__SC3__) /* compiler test */
+extern ostream clog;
+
+ #else /* __GNUC__ < 3 */
+namespace std {
+extern ostream clog;
+}	/* namespace std */
+using std::clog;
+ #endif /* __GNUC__ < 3 */
+
+ #endif /* _HAS_NAMESPACE */
+
+		// CLASS _Winit
+class _Winit
+	{	// controller for wide standard-stream initialization
+public:
+	_Winit();
+	~_Winit();
+private:
+	static int _Init_cnt;
+	};
+
+		// WIDE OBJECTS
+static _Winit _Wios_init;	// force initialization of wide streams
+extern wistream wcin;
+extern wostream wcout, wcerr, wclog;
+#if defined(__ghs) && defined(__ghs_max_pack_value)
+#pragma pack(pop)
+#endif
+#if defined(__GHS_PRAGMAS)
+#pragma ghs enddata
+#endif
+_STD_END
+#endif /* _IOSTREAM_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

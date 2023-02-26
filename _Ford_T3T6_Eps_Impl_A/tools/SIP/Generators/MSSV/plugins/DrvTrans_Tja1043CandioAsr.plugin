@@ -1,0 +1,86 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  DrvTrans_Tja1043CandioAsr.plugin
+*  Module     :  Elisa
+*
+*  Description:  Checking rule for DrvTrans_Tja1043CandioAsr
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Andreas Weinrauch             viswas        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2016-12-15    viswas   -                Initial version for: SafeBSW
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x010000)                        /* Add the version number of the plugin */
+  reg.SetPackageName("DrvTrans_Tja1043CandioAsr") /* Add the package name of the module (as in ALM). */
+  reg.SetInputFiles(["CanTrcv_30_Tja1043.c"])     /* Add a list of all required C-files to be checked */
+  return reg // Mandatory
+}
+
+
+def CheckVersions()
+{
+  AssertDefineEquals("DRVTRANS_TJA1043CANDIOASR_VERSION", "0x0402u")   /* Add the name of the BSW module header which contains the version defines of the module,
+                                                                          as well as the major/minor and release version of the BSW module to be checked */
+}
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check QM inactive", CheckQMDefines)
+}
+
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+
+
+/********************************************************************************************************************** 
+* Name         : CheckQMDefines 
+* Parameter    : None 
+* Return value : None 
+* Description  : This rule checks the setting of QM-related preprocessor defines. 
+*                Typically it checks that QM features are inactive in safety context. 
+* Requirements : N/A 
+**********************************************************************************************************************/ 
+def CheckQMDefines() 
+{
+  AssertDefineIsStdOn("CANTRCV_30_TJA1043_ECUC_SAFE_BSW_CHECKS")
+  AssertDefineIsStdOn("CANTRCV_30_TJA1043_DEV_ERROR_DETECT")
+}

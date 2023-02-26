@@ -1,0 +1,52 @@
+--
+--	V850 Language Independent Library
+--
+--	Copyright (C) 1983-2000 by Green Hills Software Inc.
+--
+--	This program is the property of Green Hills Software, Inc,
+--	its contents are proprietary information and no part of it
+--	is to be disclosed to anyone except employees of Green Hills
+--	Software, Inc., or as agreed in writing signed by the President
+--	of Green Hills Software, Inc.
+--
+
+#ifdef EMBEDDED
+	.file	"ind_dots.800"
+	.text
+
+#if defined(__ELF)
+	.section ".syscall", "ax"
+#else
+	.section ".syscall", .text
+#endif
+	.align	4	
+	.globl	___dotsyscall
+#ifdef __V850
+..lxtdaG.___dotsyscall=:0
+#endif
+___dotsyscall:
+	nop
+-- [edlee] Fri Jan 24 18:06:43 PST 1997.  SPR 3338.  New:
+#ifdef __V850
+	nop	-- V850: 'trap' instruction is 4 bytes 
+#endif
+-- End new
+	jmp	[lp]
+	.fsize 0
+	.scall __leaf__
+	.type ___dotsyscall,@function
+	.size ___dotsyscall,.-___dotsyscall
+
+         .weak   ___ghs_initial_dotsyscall
+	 .set    ___ghs_initial_dotsyscall, ___dotsyscall
+
+#if defined(__V850) && defined(__COFF)
+-- .scl 2 for a function means "global"
+        .def ___dotsyscall; .val ___dotsyscall; .scl 2; .type 36; 	.endef
+        .def .bf;	.val .;		.scl 101;	.line 2;	.endef
+        .def _.RSM;	.scl 1;		.val 0;		.endef
+        .def _.FRAMES;	.scl 1;		.val 0; 	.endef
+        .def .ef;	.val .; 	.scl 101; 	.line 3;	.endef
+#endif
+
+#endif	/* EMBEDDED */

@@ -1,0 +1,169 @@
+configure cwindlines 21
+print "swtrace.rc"
+
+if (_REMOTE_CONNECTED == 0){
+    connect;
+}
+
+python -b -file "swtrace.gpy"
+scrollcommand +MAX wid=-2;
+
+if (!$remote_ok){
+    echo "This demo requires a hardware connection via 850eserv2.";
+} else {
+    scrollcommand +MAX wid=-2;
+    echo "===============================================================================";
+    echo "  This example program will use software trace to log function entries and";
+    echo "exits and to log user-specified values during execution.";
+    echo " ";
+    echo "  For this demo, trace of PC, reads, and writes has been disabled.  The trace";
+    echo "window will show just the function entry/exit information and any user log";
+    echo "messages.  This mode can be particularly helpful when debugging on a board with";
+    echo "a small trace buffer.";
+    echo " ";
+    echo "Click 'Go on Selected Items (F5)' to begin.";
+    echo " ";
+
+    // Configure the trace settings
+    trace off;
+    trace set automatic_trace;
+    trace set "Trace PC" Off;
+    trace set "Trace Reads" Off;
+    trace set "Trace Writes" Off;
+    trace set "Trace Data Access PC" OFf;
+    trace clear;
+    trace on;
+
+    Q 1;
+    D;
+
+    bA main##LABEL1 {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  We have stopped after a call to a function that calculates a factorial.  The";
+	echo "MULTI trace list shows the function entry and exit events, as well as the";
+	echo "arguments that were passed in registers.";
+	echo " ";
+	echo "  Before and after the call to fact(), we logged messages.  The message before";
+	echo "the call used EAGLE_LogPrint() with a constant string, which can be logged with";
+	echo "very little overhead.  The second logging call used EAGLE_LogPrintf(), which";
+	echo "provides the flexibility of printf-style formatting, but has much higher ";
+	echo "overhead.  Note the log messages and the function entry/exit messages in the";
+	echo "trace list window.";
+	echo " ";	
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";
+	echo " ";
+	echo " ";
+	
+	// Open the trace list window
+	trace list;
+    }
+
+    bX logtest1 {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  We have stopped after logging some user values.  These calls cause log";
+	echo "messages to be inserted in the trace list.  Integers up to 64 bits can be";
+	echo "logged, as can Booleans, strings, and pointers.  The first argument to the log";
+	echo "functions is a tag name, which must follow the same syntax rules as a C";
+	echo "identifier, although it need not correspond to one that exists in the program.";
+	echo " ";
+	echo "  Take a moment to scroll to the end of the trace list to see the logged values";
+	echo "The log messages show the tag name and the value.";
+	echo " ";
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";
+	echo " ";
+	echo " ";
+	trace list;
+    }
+
+    bA logtest2##LABEL1 {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  In the previous example, the displayed name in the log message was the tag.";
+	echo "When logging values that are in an array, it is useful to also know the array";
+	echo "index.  This example uses the indexing log functions, which take an additional";
+	echo "index argument.  The displayed name in the log message is tag[index].";
+	echo " ";
+	echo "  Scroll to the end of the trace list window to see the loged values.";
+	echo " ";
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";
+	echo " ";
+	echo " ";
+	trace list;
+    }
+
+    bX logtest2 {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  Here, the call to log_names logged all of the elements of the names array,";
+	echo "prefaced by a simple message.  The array was then sorted, and all elements";
+	echo "were logged again.  Note the use of EAGLE_LogPrint to insert simple messages";
+	echo "into the trace list for clarity.";
+	echo " ";
+	echo "  Scroll through the trace list to see the values before and after sorting.";
+	echo "Also note that although the qsort function was called from do_sort(), there is";
+	echo "no function entry or exit log message for it.  This is because qsort was not";
+	echo "built with the logging enabled.  Furthermore, note that the cmpstring function";
+	echo "also does not show up in the log, since it was specifically excluded with a";
+	echo "#pragma statement.";
+	echo " ";
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";
+	echo " ";
+	echo " ";
+	trace list;
+    }
+    
+    bA do_tag_test {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  In the preceding examples, the logging messages were all enabled.  Sometimes,";
+	echo "however, it is useful to be able to control the logging on a per-tag basis.  In";
+	echo "this file, the macro EAGLE_CONFIG_LOGGING was defined to 3 before including the";
+	echo "rh850_eagle.h header file.  This configures the logging to use tag names that";
+	echo "must be individually declared.  The declaration takes the form of a #define";
+	echo "statement where the value being defined is EAGLE_TAG_tagname.";
+	echo " ";
+	echo "  Note that this file sets EAGLE_TAG_var1 and EAGLE_TAG_verbose to enabled, and";
+	echo "EAGLE_TAG_var2 to disabled.";
+	echo " ";
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";
+    }
+
+    bX do_tag_test {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  Each call to log_globals logged some messages and global values.  Note the";
+	echo "use of EAGLE_LogPrint to log some messages to aid in debugging.  The first, as";
+	echo "a constant string is very low overhead.  The second requires more run-time";
+	echo " code, since the string is not constant, but it does not use printf-style";
+	echo " formatting, so it keeps the overhead down.";
+	echo " ";
+	echo "  The value of var1 is logged by each call, but var2 is not, since its tag is";
+	echo "set to disabled.  This per-tag control allows the logging calls to be used";
+	echo "throughout an application, but only enabled when required for debugging.";
+	echo " ";
+	echo "  To Continue, click 'Go on Selected Items (F5)'.";	
+	trace list;
+    }
+    
+    bX main {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "  The Path Analyzer can show the execution path of the program.  Only those";
+	echo "functions that have entry and exit logging will show up in the path. On targets";
+	echo "that support trace timestamps, the duration of the functions will be shown, but";
+	echo "even without that the call depth and sequence of events is useful for debugging.";
+	echo " ";
+	echo "  This concludes the demo.  To finish running the executable, click 'Go on";
+	echo "Selected Items (F5)'.";
+	echo " ";
+	echo "  For more information about the logging features, consult the manual 'MULTI:";
+	echo "Building Applications for Embedded V850 and RH850' or the header file:";
+	echo "'include/v800/rh850_eagle.h'";
+	echo " ";
+	echo " ";
+
+	trace path;
+    }
+}

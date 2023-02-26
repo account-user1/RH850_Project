@@ -1,0 +1,334 @@
+% if defined (SUPPORTS_GCORES) && defined (GHS_TOOLS_DIR) && (file_exists("${GHS_TOOLS_DIR}/gcores.exe") || file_exists("${GHS_TOOLS_DIR}/gcores"))
+CommandOptions {
+    GCoresOptions {
+	GCores_OutputName {
+		{
+			name="-o"
+			delimiter="Space"
+		}
+		merge="Replace"
+		optionType="String"
+		pass={"None"}
+		flags={"OUTPUTNAME"}
+		valueIsFilename=true
+		guiLabel="Gcores Output Filename"
+		guiCategory="GCores"
+		commonLevel=101
+	}    
+	GCores_SharedImports {
+	    {
+	        name="-shared_imports"
+	        value=0 # must be unique
+	        enumLabel="On" #text to show when selecting this option
+	    }
+	    {
+	        name="-no_shared_imports"
+	        value=1 # must be unique
+	        enumLabel="Off" #text to show when selecting this option
+	        flags={"FAKEOPTION"} # Do not pass on command line
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum" # enumerated value option	
+	    guiLabel="Gcores Shared Modules Import Symbols From Cores"	
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_AllowOverlap {
+	    {
+	        name="-allow_overlap"
+	        value=0 # must be unique
+	        enumLabel="On" #text to show when selecting this option
+	    }
+	    {
+	        name="-no_allow_overlap"
+	        value=1 # must be unique
+	        enumLabel="Off" #text to show when selecting this option
+	        flags={"FAKEOPTION"} # Do not pass on command line
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum" # enumerated value option	
+	    guiLabel="GCores Disable Error Messages Concerning Overlapping Sections"	
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_CrossCoreImports {
+	    {
+	        name="-cross_core_imports"
+	        value=0 # must be unique
+	        enumLabel="On" #text to show when selecting this option
+	    }
+	    {
+	        name="-no_cross_core_imports"
+	        value=1 # must be unique
+	        enumLabel="Off" #text to show when selecting this option
+	        flags={"FAKEOPTION"} # Do not pass on command line
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum" # enumerated value option	
+	    guiLabel="GCores Cores Import Symbols From Other Cores"	
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_Common {
+	    name="-common"
+	    merge="Replace"
+	    delimiter="space"
+	    optionType="String"	
+	    guiLabel="Gcores Common Link Options"	
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_Driver {
+	    name="-driver"
+	    merge="Replace"
+	    delimiter="Equal"
+	    optionType="String"
+	    guiLabel="GCores Driver"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_Cpu {
+	    name="-cpu=nevermatch"
+%if defined (TARGET) && file_exists("${__TARGET_DIR__}/${TARGET}/bld_rules")
+%include_many "${__TARGET_DIR__}/${TARGET}/bld_rules/*.bod"
+	    # -cpu
+	    delimiter="NoArg"
+	    optionType="Enum"
+	    sortKey="primarySort"
+	    autoIncrementValue=true
+%else
+	    name="-cpu"
+	    delimiter="Equal"
+	    optionType="String"
+%endif
+	    merge="Replace"
+	    guiLabel="GCores Cpu"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_TargetBoard {
+	    {
+		name="-bsp"
+		delimiter="Space"
+	    }
+	    {
+		name="-bsp"
+		delimiter="Equal"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="GCores Target Board"
+	    guiCategory="GCores"
+	    commonLevel=101
+	    hidden=true
+	}
+	GCores_KeepTempFiles {
+	    {
+	        name="-keeptempfiles"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+	        name="-nokeeptempfiles"
+		value=1
+		enumLabel="Off"
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum"
+	    guiLabel="Keep GCores Temporary Files"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_SharedLibs {
+	    {
+	        name="-shared_libs"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+	        name="-no_shared_libs"
+		value=1
+		enumLabel="Off"
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum"
+	    guiLabel="Import libraries into shared module"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_AllocSharedMem {
+	    {
+	        name="-alloc_shared_mem"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+	        name="-no_alloc_shared_mem"
+		value=1
+		enumLabel="Off"
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum"
+	    guiLabel="Automatically allocate shared memory for the cores and shared object"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_ExportedAbsolutesOnly {
+	    {
+	        name="-exported_absolutes_only"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+	        name="-no_exported_absolutes_only"
+		value=1
+		enumLabel="Off"
+	    }
+	    merge="Replace"
+	    delimiter="NoArg"
+	    optionType="Enum"
+	    guiLabel="Gcores Exported Absolutes Only"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+	GCores_AdditionalOutput {
+	    {
+		name="-srec"
+		value=0
+		enumLabel="S-Record File"
+		delimiter="NoArg"
+	    }
+	    {
+		name="-srec"
+		value=1
+		enumLabel="User-Specified S-Record File"
+		delimiter="Equal"
+	    }
+	    {
+		name="-hex"
+		value=2
+		enumLabel="Hex-386 File"
+		delimiter="NoArg"
+	    }
+	    {
+		name="-hex"
+		value=3
+		enumLabel="User-Specified Hex-386 File"
+		delimiter="Equal"
+	    }
+            {
+                name="--no_additional_output"
+                value=4
+                enumLabel="None"
+                delimiter="NoArg"
+                flags={"FAKEOPTION"}
+            }            
+	    merge="Replace"
+	    optionType="String"
+	    guiLabel="GCores Generate Additional Output"
+	    guiCategory="GCores"
+	    pass={"All"}
+	    commonLevel=101
+	}
+    }
+}
+
+Commands {
+    {
+    name="GCores"
+    exec="${GHS_TOOLS_DIR}/gcores"
+    options={"SpecialOptions","GCoresOptions"}
+    specialOptions {
+	    showCommands="-v"
+	}
+    }
+}
+
+FileTypes {
+    MultiCoreArchive {
+      nondebugable=false
+      name="MultiCoreArchive"
+      outputExtension="mca"
+      command="GCores"
+      outputType="Program"
+      commandLine="$COMMAND -driver ${GHS_TOOLS_DIR}/${C_DRIVER} $OPTIONS $TOP_PROJECT_OPTION -o $OUTPUTFILE $OBJECTS"
+      progress="Linking Multi-Core Archive"
+      action="&Build"
+      color="#c00000"
+      linkableTypes += {"Core"}
+      linkableTypes += {"SharedMemory"}
+%if defined (CXX_DRIVER)
+      linkSpecifiers += {"SharedMemory;-share { -language=cxx -o $OUTPUTFILE $(OUTPUTFILE).rel -ignore_objects_and_libs $OBJECTS }"}
+      linkSpecifiers += {"Core;-core { -language=cxx -o $OUTPUTFILE $(OUTPUTFILE).rel -ignore_objects_and_libs $OBJECTS }"}
+%else
+      linkSpecifiers += {"SharedMemory;-share { -o $OUTPUTFILE $(OUTPUTFILE).rel -ignore_objects_and_libs $OBJECTS }"}
+      linkSpecifiers += {"Core;-core { -o $OUTPUTFILE $(OUTPUTFILE).rel -ignore_objects_and_libs $OBJECTS }"}
+%endif      
+      extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).mcdla"}
+      extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).mcdnm"}
+      extraFiles+={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).run"}      
+      extraFiles+={"$(OUTPUTDIR)/gcores.ghsmc"}      
+    }
+
+    SharedMemory {
+	name="SharedMemory"
+	outputExtension=".so"
+	outputType="Program"
+	grepable=false
+	command="driver"
+	nondebugable=true
+	commandLine="$COMMAND ${VERBOSEOPTION} -relobj $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS -o $OUTPUTFILE"
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	extraFiles={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	extraFiles += {"$(OUTPUTFILE).rel"}
+	progress="Linking"
+	allowEmptyLink=true
+	action="&Build"
+	parallelOK=true
+	color="#8000f0"
+	lateLinkSpecifier=true
+        postExec={"%copy $OUTPUTFILE $(OUTPUTFILE).rel"}        
+    }
+
+    Core {
+	name="Core"
+	outputExtension=""
+	outputType="Program"
+	grepable=false
+	command="driver"
+	nondebugable=true
+	commandLine="$COMMAND ${VERBOSEOPTION} -relobj $FILETYPEOPTIONS $OBJECTS $MAKE_DEPEND_OPTIONS $OPTIONS -o $OUTPUTFILE"
+	filetypeOptions={${FILETYPE_OPTIONS}}
+	extraFiles={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dba","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).map","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dca","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).gsr"}
+	extraFiles += {"$(OUTPUTFILE).rel"}
+	progress="Linking"
+	allowEmptyLink=true
+	action="&Build"
+	parallelOK=true
+	color="#800060"
+	lateLinkSpecifier=true
+        postExec={"%copy $OUTPUTFILE $(OUTPUTFILE).rel"}        
+    }
+    
+    Core.linkSpecifiers += { "Linker Directives; -extra_file=$(INPUTDIR)/$(FILENAME)" }
+    SharedMemory.linkSpecifiers += { "Linker Directives; -extra_file=$(INPUTDIR)/$(FILENAME)" }
+}
+%endif
+

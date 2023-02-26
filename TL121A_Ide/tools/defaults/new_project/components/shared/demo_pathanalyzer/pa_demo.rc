@@ -1,0 +1,118 @@
+
+configure cwindlines 15;
+
+clear;
+
+trace off;
+// The following command disables the tracing of data values.  This is set
+// because trace data is not needed for this demonstration, and having it
+// enabled can cause some trace collection interfaces to produce gaps in the
+// trace data.
+tracesetutdl ":data=off";
+// The following command enables both the "Automatically enable trace collection"
+// option and the "Retrieve trace when target halts" option.  This is needed
+// because the rest of this demo script assumes those options are enabled.
+trace set automatic_trace;
+trace on;
+
+scrollcommand +MAX wid=-2;
+echo "===============================================================================";
+echo "This example program will analyze several different sorting algorithms using";
+echo "TimeMachine.  With this demo, you can see the O(N^2) behavior of bubble sort,";
+echo "insertion sort and selection sort.  We also show the recursive nature of";
+echo "quicksort and how quicksort degenerates into insertion sort when given";
+echo "presorted data.";
+echo " ";
+echo "Click 'Go on Selected Items (F5)' to begin.";
+echo " ";
+
+Q 1;
+D;
+
+bX main {
+    scrollcommand +MAX wid=-2;
+    echo "===============================================================================";
+    echo "We have now collected trace data for this program and have opened the";
+    echo "PathAnalyzer, a tool that is very useful for visualizing the behavior of your";
+    echo "program and where it spends its time.";
+    echo " ";
+    echo "Take a look at the PathAnalyzer and zoom in and out to analyze the different";
+    echo "sorting algorithms.";
+    echo " ";
+    echo "To Continue click 'Go Back (Alt+F5)'.";
+    echo " ";
+
+    trace path;
+    python pa_filter.gpy;
+
+    b main {
+	bA bubblesort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "The execution of the bubble sort algorithm is now filtered in the PathAnalyzer";
+	    echo "window.  The filter text field in the upper-right of the PathAnalyzer window";
+	    echo "has been filled with \"bubblesort\" to draw in grey all non-matching functions.";
+	    echo "You can see that more time is spent in the shallower recursive calls than in";
+	    echo "the deeper calls, giving the recursive call \"spike\" a concave shape.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    python pa_filter.gpy bubblesort;
+
+	    bA main##END {
+		scrollcommand +MAX wid=-2;
+		echo "===============================================================================";
+		echo "We have now reached the end of this demo.";
+		echo " ";
+		python pa_filter.gpy;
+	    }
+	}
+
+	bA selectionsort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "Now the filter feature of the PathAnalyzer is pointing out the selection sort";
+	    echo "algorithm.  This recursive implementation of selection sort shows clearly that";
+	    echo "selection sort has a O(N^2) runtime (where N is the number of comparisons) by";
+	    echo "observing that the earlier calls to the function take more time before making";
+	    echo "their recursive call than do later calls to the function, which are sorting a";
+	    echo "reduced data set.  This can be seen more clearly after zooming in.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    python pa_filter.gpy selectionsort;
+	}
+
+	bA insertionsort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "Now we are filtering the insertion sort algorithm.  This algorithm also has a";
+	    echo "O(N^2) runtime, but most of the sorting work (element comparisons and moves,";
+	    echo "which take time) are in the deeper recursive calls.  This is seen by noting";
+	    echo "the convex shape of the recursive call \"spike\" drawn in the PathAnalyzer.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    python pa_filter.gpy insertionsort;
+	}
+
+	bA quicksort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "Now we are filtering the quicksort algorithm.  Two data sets were sorted by ";
+	    echo "this algorithm: the first was the same unsorted data set used for the other ";
+	    echo "algorithms, and the second was a sorted dataset.  The first sorting shows how ";
+	    echo "quicksort is a divide-and-conquer sorting algorithm, making two recursive ";
+	    echo "calls after placing a selected element into the correct position.  The second ";
+	    echo "sorting shows that sorting an already-sorted data set with this quicksort ";
+	    echo "implementation has a O(N) call stack depth just like the preceding sorting ";
+	    echo "algorithms. ";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    python pa_filter.gpy quicksort;
+	}
+	d main;
+	cb;
+    }
+}

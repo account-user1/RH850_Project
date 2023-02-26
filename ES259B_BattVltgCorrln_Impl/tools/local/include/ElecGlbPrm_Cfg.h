@@ -1,0 +1,4 @@
+#ifndef ELECGLBPRM_CFG_H
+#define ELECGLBPRM_CFG_H
+
+#endif/*ELECGLBPRM_CFG_H*/

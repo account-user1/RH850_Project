@@ -1,0 +1,194 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   CDD_FlsMem_Cfg_private.h
+* Module Description: Private configuration header file for Flah Configuration for CRC calculation component.
+* Project           : CBD
+* Author            : Avinash James
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       rzk04c %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 11/10/17  1        AJM       Initial Version                                                              EA4#13211
+**********************************************************************************************************************/
+<#
+    /* List Declaration */
+    List<WriteRegionClass> WriteRegionList = new List<WriteRegionClass>();
+#>
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef CDD_FLSMEM_CFG_PRIVATE_H
+#define CDD_FLSMEM_CFG_PRIVATE_H
+
+/************************************************ Include Statements *************************************************/
+#include "Std_Types.h"
+   
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+
+/******************************************** File Level Rule Deviations *********************************************/
+ /* MISRA-C:2004 Rule 8.12 [NXTRDEV 8.12.1] The ghs compiler requires the [] notation in extern declarations of linker symbols and the size of the
+                           sections is unknown when generating the extern declarations.  Code using the symbols is not performing array access
+                           so the unknown size is not a functional issue. */
+ /* MISRA-C:2004 Rule 8.9  [NXTRDEV 8.9.1] Deviation allowed for use of linker symbols, because the linker symbols are not defined 
+                           in any source code file. */
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+/**************************************************** Type defs ******************************************************/
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "FlsMem" ) );
+#>
+#define HWCRCRESARYSIZE_CNT_U08        (8U)         /* Placed it here as not required to expose to other components */
+#define NROFFLSCRCREGNS_CNT_U08        (<#= Count( Xp.ContainerAtDefRefTo("FlashCRCRegnConfig") ) #>U)
+
+#define APPLCRCREGNNR_CNT_U08        (<#= ValueOf( Xp.ValueAtDefRefTo("ApplCRCRegnIdx/ApplCrcRegnNr") ) #>U)
+
+#if (APPLCRCREGNNR_CNT_U08 >=  NROFFLSCRCREGNS_CNT_U08)
+#error "Undefined CRC Region"
+#endif
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "FlashCRCRegnConfig" ) ) #>
+<#
+        WriteRegionClass data = new WriteRegionClass();
+        
+        /* Gather data for each region */
+        
+        data.StartAddr = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/StartingAddress" ));
+        data.StartAddrSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/StartingAddressSymbol" ));
+        data.StartAddrSym = data.StartAddrSym.Trim();
+        
+        data.PredefinedCrcAddress = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/PredefinedCrcAddress" ));
+        data.PredefinedCrcAddressSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/PredefinedCrcAddressSymbol" ));
+        data.PredefinedCrcAddressSym = data.PredefinedCrcAddressSym.Trim();
+ 
+        data.Length = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/Length" ));
+        data.LengthSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/LengthSymbol" ));
+        data.LengthSym = data.LengthSym.Trim();
+        
+        data.UseSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/UseSymbolName" ));
+        
+        /* Quick data checking */
+        if ( data.UseSym == true )
+        {
+            if ( String.IsNullOrEmpty(data.StartAddrSym) )
+            {
+                data.StartAddrSym = "@error \"CRC Region Start Address not defined\"";
+            }
+            
+            if ( String.IsNullOrEmpty(data.PredefinedCrcAddressSym) )
+            {
+                data.PredefinedCrcAddressSym = "@error \"CRC Predefined Address not defined\"";
+            }
+            if ( String.IsNullOrEmpty(data.LengthSym) )
+            {
+                data.LengthSym = "@error \"Length not defined\"";
+            }
+        }
+        else
+        {
+            if ( data.StartAddr == 0 )
+            {
+                data.StartAddrSym = "@error \"CRC Region Start Address not defined\"";
+            }
+            
+            if ( data.PredefinedCrcAddress == 0 )
+            {
+                data.PredefinedCrcAddressSym = "@error \"CRC Predefined Address not defined\"";
+            }
+            if ( data.Length == 0 )
+            {
+                data.LengthSym = "@error \"Length not defined\"";
+            }
+        }
+    WriteRegionList.Add(data);
+#>
+<# !ENDLOOP #>
+
+<#
+foreach( WriteRegionClass entry in WriteRegionList )
+{
+    if (entry.UseSym == true)
+    {
+#>
+extern uint8 <#= entry.StartAddrSym #>[];
+extern uint8 <#= entry.PredefinedCrcAddressSym #>[];
+extern uint8 <#= entry.LengthSym #>[];
+
+<#
+    }
+    else
+    {
+    }
+}
+#>
+
+typedef struct 
+{
+
+    /*! \n
+    * -# Description: Start Address of the Flash Block for CRC Calculation.
+    * -# Units of measure:               N/A
+    * -# Limit/range of values:          0-0xFFFFFFFF
+    * -# Required Accuracy/Precision:    N/A
+    * -# Source/Destination:             
+    * -# Type:                           uint32
+    * -# Calculation Frequency:          At link time
+    */
+    uint32 CrcFlsBlkStrtAdr;
+    
+    /*! \n
+    * -# Description: Length of the Flash Block for CRC Calculation.
+    * -# Units of measure:               N/A
+    * -# Limit/range of values:          0-0xFFFFFFFF
+    * -# Required Accuracy/Precision:    N/A
+    * -# Source/Destination:             
+    * -# Type:                           uint32
+    * -# Calculation Frequency:          At link time
+    */
+    uint32 CrcFlsBlkLen;
+    
+    /*! \n
+    * -# Description: Address to the Pre calculated CRC saved in flash.
+    * -# Units of measure:               N/A
+    * -# Limit/range of values:          0-0xFFFFFFFF
+    * -# Required Accuracy/Precision:    N/A
+    * -# Source/Destination:             
+    * -# Type:                           uint32
+    * -# Calculation Frequency:          At link time
+    */
+    uint32 PreCalcnCrcFlsAdr;
+}FlsCrcCfgBlkRec;
+
+/* Placed it here as not required to expose to other components */
+#define CDD_FlsMemNonRte_START_SEC_VAR_INIT_128
+#include "CDD_FlsMemNonRte_MemMap.h"
+
+extern VAR(uint32, AUTOMATIC) HwCrcCalcdRes_C[HWCRCRESARYSIZE_CNT_U08];
+    
+#define CDD_FlsMemNonRte_STOP_SEC_VAR_INIT_128
+#include "CDD_FlsMemNonRte_MemMap.h"
+extern const FlsCrcCfgBlkRec FLSCFGTBL[NROFFLSCRCREGNS_CNT_U08];
+
+/****************************************************** Macros *******************************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif/*CDD_FLSMEM_CFG_PRIVATE_H*/
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+<#+
+    public class WriteRegionClass
+    {
+        public string StartAddrSym;
+        public uint StartAddr;
+        public string LengthSym;
+        public uint Length;
+        public string PredefinedCrcAddressSym;
+        public uint PredefinedCrcAddress;
+        public bool UseSym;
+    }
+#>

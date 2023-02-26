@@ -1,0 +1,908 @@
+# C90FL internal flash
+#
+# Options:
+#  midr        Required PARTNUM in SIU_MIDR
+#  cpu_name    Required
+#  shadow_base Base address of the shadow block space
+c90fl_chips {
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x52
+    cpu_name="STMicroelectronics SPC560S"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x52
+    cpu_name="Freescale MPC560xS"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x52; bank_num=1
+    cpu_name="Freescale MPC560xS Bank 1";
+    shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=false; midr2_partnum=0x53
+    cpu_name="Freescale MPC5606S"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=false; midr2_partnum=0x53; bank_num=1
+    cpu_name="Freescale MPC5606S Bank 1";
+    shadow_base=0x200000; page_size=0x8
+    low_block_count=2; mid_block_count=2; high_block_count=0
+    geometry {
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=false; midr2_partnum=0x53; dflash=true
+    cpu_name="Freescale MPC5606S DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x52; bank_num=1
+    cpu_name="STMicroelectronics SPC560S Bank 1";
+    shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x52; dflash=true
+    cpu_name="Freescale MPC560xS DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x52; dflash=true
+    cpu_name="STMicroelectronics SPC560S DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x42
+    cpu_name="Freescale MPC5604B CFlash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x42; dflash=true
+    cpu_name="Freescale MPC5604B DFlash"; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=false; midr2_partnum=0x42
+    cpu_name="Freescale MPC5605B CFlash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=5; size="128 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=false; midr2_partnum=0x42; dflash=true
+    cpu_name="Freescale MPC5605B DFlash"; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=false; midr2_partnum=0x42
+    cpu_name="Freescale MPC5606B CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=false; midr2_partnum=0x42; dflash=true
+    cpu_name="Freescale MPC5606B DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=false; midr2_partnum=0x45
+    cpu_name="Freescale MPC5604E CFlash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=false; midr2_partnum=0x45; dflash=true
+    cpu_name="Freescale MPC5604E DFlash"; page_size=0x4
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x50
+    cpu_name="Freescale MPC5604P CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x50; dflash=true
+    cpu_name="Freescale MPC5604P DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x50; dflash=true
+    cpu_name="STMicroelectronics SPC560P DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5633; midr2_sf=false
+    cpu_name="Freescale MPC5633M"; shadow_base=0x200000; page_size=0x10
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="48 KB" }
+      { count=1; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+    }
+  }
+ { midr=0x5600; midr2_sf=true; midr2_partnum=0x50
+     cpu_name="STMicroelectronics SPC560P"; shadow_base=0x200000; page_size=0x8
+     geometry {
+       { count=1; size="32 KB" }
+       { count=2; size="16 KB" }
+       { count=2; size="32 KB" }
+       { count=1; size="128 KB" }
+       { count=2; size="128 KB" }
+     }
+   }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x50
+    cpu_name="STMicroelectronics SPC56AP60"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=6; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x50; dflash=true
+    cpu_name="STMicroelectronics SPC56AP60 DFlash"; page_size=0x4
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5634; midr2_sf=false; bank_num=0
+    cpu_name="MPC5634M Bank 0"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5634; midr2_sf=false; bank_num=1
+    cpu_name="MPC5634M Bank 1 Array 1"; shadow_base=0x0; page_size=0x8
+    geometry {
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5634; midr2_sf=false; bank_num=2
+    cpu_name="MPC5634M Bank 1 Array 2"; shadow_base=0x0; page_size=0x8
+    geometry {
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=false; midr2_partnum=0x50; flash_size_1=4
+    cpu_name="Freescale MPC5602P CFlash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.9.5b:SM"
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=false; midr2_partnum=0x50; dflash=true
+    cpu_name="Freescale MPC5602P DFlash"; page_size=4
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=false; midr2_partnum=0x50
+    cpu_name="Freescale MPC5604P CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5674; midr2_sf=false; midr2_partnum=0x0
+    cpu_name="Freescale MPC5674F"; shadow_base=0xffc000; page_size = 0x10
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=6; size="512 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=false; midr2_partnum=0x42
+    cpu_name="Freescale MPC5607B CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=8; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B 64KB DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C 64KB DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x44; dflash=true
+    cpu_name="STMicroelectronics SPC560D 64KB DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5601; midr2_sf=true; midr2_partnum=0x44; dflash=true
+    cpu_name="STMicroelectronics SPC560D30 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B40 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C40 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x44; dflash=true
+    cpu_name="STMicroelectronics SPC560D40 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5603; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B44 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5603; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C44 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B50 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C50 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B54 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C54 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B60 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C60 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5607; midr2_sf=true; midr2_partnum=0x42; dflash=true
+    cpu_name="STMicroelectronics SPC560B64 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5607; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC560C64 DFlash"; page_size=0x8
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x44
+    cpu_name="STMicroelectronics SPC560D 128KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+    }
+  }
+  { midr=0x5601; midr2_sf=true; midr2_partnum=0x44
+    cpu_name="STMicroelectronics SPC560D30 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 256KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 256KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x44
+    cpu_name="STMicroelectronics SPC560D 256KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B40 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C40 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=true; midr2_partnum=0x44
+    cpu_name="STMicroelectronics SPC560D40 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 384KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 384KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5603; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B44 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5603; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C44 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 512KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 512KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B50 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C50 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 768KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 768KB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B54 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5605; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C54 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 1MB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 1MB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B60 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5606; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C60 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B 1.5MB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5600; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C 1.5MB CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5607; midr2_sf=true; midr2_partnum=0x42
+    cpu_name="STMicroelectronics SPC560B64 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5607; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC560C64 CFlash"; shadow_base=0x200000; page_size=0x8
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+      { count=4; size="128 KB" }
+      { count=4; size="128 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x43
+    cpu_name="STMicroelectronics SPC5604C CFlash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+      { count=2; size="128 KB" }
+    }
+  }
+  { midr=0x5604; midr2_sf=true; midr2_partnum=0x43; dflash=true
+    cpu_name="STMicroelectronics SPC5604C DFlash"; page_size=0x8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  # End not tested yet
+  { midr=0x5643; midr2_sf=false; midr2_partnum=0x4c
+    cpu_name="MPC5643L Flash"; shadow_base=0xf00000; shadow0=10; page_size=0x10
+    driver_ver="c90fl:0.3.4b:SM"
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="48 KB" }
+      { count=1; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=1; size="16 KB"; address=0xf00000 }
+    }
+  }
+  { midr=0x5646; midr2_sf=false; midr2_partnum=0x4c
+    cpu_name="MPC5643L Cut2 Flash"; shadow_base=0xf00000; shadow0=10; page_size=0x10
+    driver_ver="c90fl:0.3.4b:SM"
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="48 KB" }
+      { count=1; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=1; size="16 KB"; address=0xf00000 }
+    }
+  }
+  { midr=0x5643; midr2_sf=true; midr2_partnum=0x4c
+    cpu_name="STMicroelectronics SPC56EL60 Flash"; shadow_base=0xf00000; page_size=0x10
+    driver_ver="c90fl:0.3.4b:SM"
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="48 KB" }
+      { count=1; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+    }
+  }
+  { midr=0x5668; midr2_sf=false;
+    cpu_name="MPC5668 Flash"; page_size=0x10
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+  { midr=0x5675; midr2_sf=false; midr2_partnum=0x4b;
+    cpu_name="MPC5675K Code Flash"; shadow_base=0x200000; page_size=0x8
+    driver_ver="c90lc:0.1.1b:5675K"
+    geometry {
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+  { midr=0x5675; midr2_sf=false; midr2_partnum=0x4b; dflash=true
+    cpu_name="MPC5675K Data Flash"; page_size=0x4
+    driver_ver="c90lc:0.1.1b:5675K"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5640; midr2_sf=false; midr2_partnum=0x41
+    cpu_name="Freescale MPC5644A Flash_A"; shadow_base=0xffc000; page_size=0x10
+    driver_ver="c90fl:0.4.3b:5644A"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=6; size="512 KB" }
+    }
+  }
+  { midr=0x5644; midr2_sf=false; midr2_partnum=0x41
+    cpu_name="Freescale MPC5644A Flash_A"; shadow_base=0xffc000; page_size=0x10
+    driver_ver="c90fl:0.4.3b:5644A"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=6; size="512 KB" }
+    }
+  }
+  { midr=0x5642; midr2_sf=false; midr2_partnum=0x41
+    cpu_name="Freescale MPC5642A Flash_A"; shadow_base=0xffc000; page_size=0x10
+    driver_ver="c90fl:0.9.0:JDP"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+  { midr=0x5645; midr2_sf=false; midr2_partnum=0x53
+    cpu_name="Freescale MPC564xS"; shadow_base=0xffc000; page_size=16
+    driver_ver="c90fl:0.3.4b:SM"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+  { midr=0x5676; midr2_sf=false; midr2_partnum=0x00
+    cpu_name="Freescale MPC5676R"; shadow_base=0xffc000; page_size=16
+    driver_ver="c90fl:0.4.7b:5676R"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=2; size="256 KB" }
+      { count=10; size="512 KB" }
+    }
+  }
+  { midr=0x5608; midr2_sf=false; midr2_partnum=0x43
+    cpu_name="Freescale MPC5646C CFlash 0"; shadow_base=0xffc000; page_size=8
+    driver_ver="c90lc:0.9.4b:SM"; bank_count=1; bank_base=0
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=11; size="128 KB" }
+    }
+  }
+  { midr=0x5608; midr2_sf=false; midr2_partnum=0x43
+    cpu_name="Freescale MPC5646C CFlash 1"; shadow_base=0; page_size=8
+    driver_ver="c90lc:0.9.4b:SM"; bank_count=1; bank_base=0x180000
+    reg_base=0xc3fb0000
+    low_block_count=6; mid_block_count=2; high_block_count=8
+    low_block_start=8; mid_block_start=14; high_block_start=0
+    geometry {
+      { count=8; size="128 KB" }
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=3; size="128 KB" }
+    }
+  }
+  { midr=0x5608; midr2_sf=false; midr2_partnum=0x43; dflash=true
+    cpu_name="Freescale MPC5646C DFlash"; page_size=4
+    low_block_count=6; mid_block_count=0; high_block_count=0
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=false; midr2_partnum=0x44
+    cpu_name="Freescale MPC5602D CFlash"; shadow_base=0x200000; page_size=8
+    driver_ver="c90lc:0.9.3b:SM"
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=1; size="128 KB" }
+    }
+  }
+  { midr=0x5602; midr2_sf=false; midr2_partnum=0x44; dflash=true
+    cpu_name="Freescale MPC5602D DFlash"; page_size=4
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5640; midr2_sf=true; midr2_partnum=0x41
+    cpu_name="STMicroelectronics SPC564A70"; shadow_base=0xffc000; page_size=0x10
+    driver_ver="c90fl:0.9.0:JDP"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+  { midr=0x5646; midr2_sf=false; midr2_partnum=0x43
+    cpu_name="Freescale MPC5646C CFlash 0"; shadow_base=0xffc000; page_size=8
+    driver_ver="c90lc:0.9.4b:SM"; bank_count=1; bank_base=0
+    geometry {
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=11; size="128 KB" }
+    }
+  }
+  { midr=0x5646; midr2_sf=false; midr2_partnum=0x43
+    cpu_name="Freescale MPC5646C CFlash 1"; shadow_base=0; page_size=8
+    driver_ver="c90lc:0.9.4b:SM"; bank_count=1; bank_base=0x180000
+    reg_base=0xc3fb0000
+    low_block_count=6; mid_block_count=2; high_block_count=8
+    low_block_start=8; mid_block_start=14; high_block_start=0
+    geometry {
+      { count=8; size="128 KB" }
+      { count=1; size="32 KB" }
+      { count=2; size="16 KB" }
+      { count=2; size="32 KB" }
+      { count=3; size="128 KB" }
+    }
+  }
+  { midr=0x5646; midr2_sf=false; midr2_partnum=0x43; dflash=true
+    cpu_name="Freescale MPC5646C DFlash"; page_size=4
+    low_block_count=6; mid_block_count=0; high_block_count=0
+    driver_ver="c90lc:0.9.4b:SM"
+    geometry {
+      { count=4; size="16 KB" }
+    }
+  }
+  { midr=0x5645; midr2_sf=true; midr2_partnum=0x4C
+    cpu_name="STMicroelectronics SPC56EL70"; shadow_base=0xffc000; page_size=0x10
+    driver_ver="c90fl:0.9.0:JDP"
+    geometry {
+      { count=8; size="16 KB" }
+      { count=2; size="64 KB" }
+      { count=2; size="128 KB" }
+      { count=6; size="256 KB" }
+    }
+  }
+}

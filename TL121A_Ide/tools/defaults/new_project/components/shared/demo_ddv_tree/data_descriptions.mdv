@@ -1,0 +1,33 @@
+tree_profile {
+    profile_name = "tree_profile"
+
+    data_descriptions {
+	node {
+	    signature = {"TreeNode"}
+	    type = "graph"
+    
+	    node_text = "p self.data"
+    
+	    children {
+		left_child {
+		    value = "return self.left"
+		}
+		right_child {
+		    value = "return self.right"
+		}
+	    }
+	}
+    }
+}
+
+tree_view {
+    initial_pane = "only_pane"
+    default_root = "main#root"
+    tab_name = "Tree"
+
+    panes {
+        only_pane {
+	    profile_name = "tree_profile"
+	}
+    }
+}

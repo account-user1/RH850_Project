@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProjectAssistant Version="5.10.21 SP2">
+    <General>
+        <Name>Component</Name>
+        <Version>1.0</Version>
+        <Author>SoftwareGroup</Author>
+    </General>
+    <Environment>
+        <Platform>Canoeemu</Platform>
+        <Derivative>RH850_1311</Derivative>
+        <Compiler>GreenHills</Compiler>
+        <SipIds>
+            <SipId>CBD1400351_D05</SipId>
+        </SipIds>
+        <TargetType>Real Target</TargetType>
+    </Environment>
+    <Folders>
+        <ECUC>local\autosar\ECUC</ECUC>
+        <GenData>local\generate</GenData>
+        <GenDataVtt>local\generate</GenDataVtt>
+        <Source>local\generate</Source>
+        <ServiceComponents>local\autosar</ServiceComponents>
+        <Logs>.</Logs>
+        <SIP>..\..\TL101A_CptRteGen\tools\Sip</SIP>
+        <StartMenu></StartMenu>
+        <ApplicationComponents>local\generate</ApplicationComponents>
+        <BswInternalBehaviour>..\..\TL101A_CptRteGen\tools\InternalBehavior</BswInternalBehaviour>
+        <McData>local\autosar</McData>
+        <AddBswmds>
+            <AddBswmd>..\autosar</AddBswmd>
+            <AddBswmd>local\autosar</AddBswmd>
+            <AddBswmd>..\..\TL101A_CptRteGen\tools\Sip\BSWMD\Rte</AddBswmd>
+        </AddBswmds>
+        <DefinitionRestriction>local\autosar</DefinitionRestriction>
+        <AUTOSAR>local\autosar</AUTOSAR>
+    </Folders>
+    <Tools>
+        <DEV>..\..\TL102A_Davinci\tools\Developer\Bin\DaVinciDEV.exe</DEV>
+    </Tools>
+    <Input/>
+    <References>
+        <DVWorkspace>..\autosar\MotCtrlMgr.dcf</DVWorkspace>
+        <FlatMap>local\autosar\FlatMap.arxml</FlatMap>
+        <FlatECUEX>local\autosar\FlatExtract.arxml</FlatECUEX>
+    </References>
+    <EcucSplitter>
+        <Configuration>local\autosar\ECUC\Component.ecuc.arxml</Configuration>
+        <Splitter File=".\local\autosar\ECUC\Component_Rte_ecuc.arxml">
+            <Module Name="Rte"/>
+        </Splitter>
+        <Splitter File=".\local\autosar\ECUC\Component_MotCtrlMgr_ecuc.arxml">
+            <Module Name="MotCtrlMgr"/>
+        </Splitter>
+        <OwnFolderForEachSplitter>false</OwnFolderForEachSplitter>
+    </EcucSplitter>
+    <PostBuildLoadable RTEDataFreezeChecksum="" CurrentConfigurationPhase="PRE_COMPILE"/>
+    <ToolSettings>
+        <Generators>
+            <Settings Name="com.vector.cfg.gui.core.generators.CustomWorkflowStepOrder">
+                <Setting Value="Local Headers Generation" Name="Order"/>
+            </Settings>
+            <Settings Name="com.vector.cfg.gui.core.generators.CustomWorkflowSteps">
+                <Settings Name="Local Headers Generation">
+                    <Setting Value="true" Name="Active"/>
+                    <Setting Value="SWCSupport.bat" Name="CommandLine"/>
+                    <Setting Value="IBM437" Name="CommandLineEncoding"/>
+                    <Setting Value="" Name="Comment"/>
+                    <Setting Value="generate_local_headers" Name="Parameters"/>
+                    <Setting Value="" Name="RequiredAsVersion"/>
+                    <Setting Value="false" Name="SpecificAsVersionRequired"/>
+                    <Setting Value="" Name="TransformationOutput"/>
+                    <Setting Value="false" Name="TransformationRequired"/>
+                    <Setting Value="" Name="TransformationXsltFile"/>
+                    <Setting Value="External" Name="Type"/>
+                    <Setting Value="$(DpaProjectFolder)" Name="WorkingDir"/>
+                </Settings>
+            </Settings>
+            <Settings Name="com.vector.cfg.gui.core.generators.ExtGenSteps">
+                <Settings Name="MotCtrlMgr">
+                    <Setting Name="GenerationParameters" Value="$(ProcessingEcuCFile) $(GenDataFolder) FALSE"/>
+                    <Setting Name="ValidationParameters" Value=""/>
+                    <Setting Name="SupportsStandAloneValidation" Value="false"/>
+                    <Setting Name="Active" Value="true"/>
+                    <Setting Name="RequiredAsVersion" Value=""/>
+                    <Setting Name="TransformationRequired" Value=""/>
+                    <Setting Name="TransformationXsltFile" Value=""/>
+                    <Setting Name="TransformationOutput" Value=""/>
+                    <Setting Name="ExecutionType" Value="Parallel"/>
+                    <Setting Name="SpecificAsVersionRequired" Value="false"/>
+                    <Setting Name="WorkingDir" Value="$(DpaProjectFolder)\template"/>
+                    <Setting Name="CommandLine" Value="MotCtrlMgr_Generate.bat"/>
+                </Settings>
+            </Settings>
+            <Settings Name="com.vector.cfg.gui.core.generators.GeneratedModules"/>
+        </Generators>
+        <Misc>
+            <Settings Name="com.vector.cfg.gui.pse.pages.generators">
+                <Settings Name="BuildVipProject"/>
+                <Settings Name="CustomWorkflowExecution"/>
+            </Settings>
+            <Settings Name="com.vector.cfg.persistency.internal.folder">
+                <Settings Name="TargetFolderManager"/>
+            </Settings>
+        </Misc>
+    </ToolSettings>
+    <TopDownServiceConfiguration>
+        <NvM>false</NvM>
+    </TopDownServiceConfiguration>
+    <Miscellaneous>
+        <AmdGenerateDebugData>false</AmdGenerateDebugData>
+    </Miscellaneous>
+    <SwctGeneration>
+        <Component Name="MotCtrlMgr" GenerationEnabled="true"/>
+    </SwctGeneration>
+</ProjectAssistant>

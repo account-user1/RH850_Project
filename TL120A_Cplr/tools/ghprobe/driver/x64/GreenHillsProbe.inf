@@ -1,0 +1,116 @@
+[Version]
+Signature="$Windows NT$"
+Class=GHS
+ClassGuid={0ffcda5e-6b7b-11de-996f-0019b977cde3}
+Provider=%GHS%
+DriverVer=07/21/2011,3.0.2
+CatalogFile=GreenHillsProbe.cat
+PnpLockDown=1
+DriverPackageDisplayName=%DESC%
+
+[Manufacturer]
+%GHS%=Microsoft,NTAMD64
+
+[Microsoft.NTAMD64]
+%GHSPROBE%=GhsUsb_Install, USB\VID_0E1E&PID_0101, USB\VID_0E1E&PID_0201
+%GHSSLING%=GhsUsb_Install, USB\VID_0E1E&PID_0401
+%GHSPROBEV2%=GhsUsb_Install, USB\VID_0E1E&PID_0020
+%GHSSTPROBEV2%=GhsUsb_Install, USB\VID_0E1E&PID_0021
+%GHSPROBEV3%=GhsUsb_Install, USB\VID_0E1E&PID_0030
+%GHSSTPROBEV3%=GhsUsb_Install, USB\VID_0E1E&PID_0031
+
+[ClassInstall32]
+AddReg=GHSClass_RegistryAdd
+
+[GHSClass_RegistryAdd]
+HKR,,,,%ClassName%
+HKR,,Icon,,"-10"
+
+[SourceDisksFiles]
+GreenHillsProbe.dll=1
+WudfUpdate_01009.dll=1
+WdfCoInstaller01009.dll=1
+WinUsbCoinstaller2.dll=1
+
+[SourceDisksNames]
+1 = %MediaDescription%
+
+[GhsUsb_Install.NT]
+CopyFiles=UMDriverCopy
+Include=WINUSB.INF                      ; Import sections from WINUSB.INF
+Needs=WINUSB.NT                         ; Run the CopyFiles & AddReg directives for WinUsb.INF
+
+[GhsUsb_Install.NT.hw]
+AddReg=GhsUsb_Device_AddReg
+
+[GhsUsb_Install.NT.Services]
+AddService=WUDFRd,0x000001fa,WUDFRD_ServiceInstall  ; flag 0x2 sets this as the service for the device
+AddService=WinUsb,0x000001f8,WinUsb_ServiceInstall  ; this service is installed because its a filter.
+
+[GhsUsb_Install.NT.Wdf]
+KmdfService=WINUSB, WinUsb_Install
+UmdfDispatcher=WinUsb
+UmdfService=GhsUsb, GhsUsb_Install
+UmdfServiceOrder=GhsUsb
+
+[GhsUsb_Install.NT.CoInstallers]
+AddReg=CoInstallers_AddReg
+CopyFiles=CoInstallers_CopyFiles
+
+[WinUsb_Install]
+KmdfLibraryVersion = 1.9
+
+[GhsUsb_Install]
+UmdfLibraryVersion=1.9.0
+DriverCLSID = "{09fac630-675e-11de-8a39-0800200c9a66}"
+ServiceBinary = "%12%\UMDF\GreenHillsProbe.dll"
+
+[GhsUsb_Device_AddReg]
+HKR,,"LowerFilters",0x00010008,"WinUsb" ; FLG_ADDREG_TYPE_MULTI_SZ | FLG_ADDREG_APPEND
+
+[WUDFRD_ServiceInstall]
+DisplayName = %WudfRdDisplayName%
+ServiceType = 1
+StartType = 3
+ErrorControl = 1
+ServiceBinary = %12%\WUDFRd.sys
+LoadOrderGroup = Base
+
+
+[WinUsb_ServiceInstall]
+DisplayName     = %WinUsb_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WudfUpdate_01009.dll", "WinUsbCoinstaller2.dll", "WdfCoInstaller01009.dll,WdfCoInstaller"
+
+[CoInstallers_CopyFiles]
+WudfUpdate_01009.dll
+WdfCoInstaller01009.dll
+WinUsbCoinstaller2.dll
+
+[DestinationDirs]
+UMDriverCopy=12,UMDF ; copy to driversMdf
+CoInstallers_CopyFiles=11
+
+[UMDriverCopy]
+GreenHillsProbe.dll
+
+; =================== Generic ==================================
+
+[Strings]
+GHS="Green Hills Software, Inc."
+MediaDescription="Probe CD"
+ClassName="Green Hills Debug Devices"
+WudfRdDisplayName="Windows Driver Foundation - User-mode Driver Framework Reflector"
+WinUsb_SvcDesc="WinUSB Driver"
+GHSPROBE="Green Hills Probe"
+GHSSLING="Green Hills Slingshot"
+GHSPROBEV2="Green Hills Probe V2"
+GHSSTPROBEV2="Green Hills SuperTrace Probe"
+GHSPROBEV3="Green Hills Probe V3"
+GHSSTPROBEV3="Green Hills SuperTrace Probe V3"
+DESC="Green Hills Probe Driver"

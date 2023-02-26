@@ -1,0 +1,89 @@
+# This is a customization file describing a type of binary input which will
+# be processed using the Green Hills tool "gbin2c" to convert it into a C
+# source file which can then be used in our project. Below are some basic
+# descriptions of each setting.  Additional information can be found in the
+# MULTI: Building Applications book for your target.
+
+CommandOptions {
+# CommandOptions contains options that can be passed to our tool.
+    GBCOptions {
+	# options for the GHS Binary Converter (referred to below)
+
+	SizeOpt {
+	# Size option for determining whether to output lengths
+	    {
+		name="-size"	# Exact name of the option to be passed to
+		                # the command.
+		value=0		# A unique identifier (to distinguish this
+		                # enumeration value).
+		enumLabel="On"	# Text to show when selecting this option.
+	    }
+	    {
+
+	    # Fake options can be added so that a real option can be disabled
+	    # lower in the heirarchy even though the tool has no such option.
+	    # When the command is invoked, no option will be passed.
+		name="-no_size" # Name of the option (stored in .gpj files).
+		value=1		# Unique value for this setting.
+		enumLabel="Off" # Text to show when selecting this option.
+		flags={"FAKEOPTION"} # Don't pass anything on the command line.
+	    }
+	    
+	    delimiter="NoArg"	# This is a stand-alone option (no arguments).
+	    merge="Replace"	# Each occurance in the heirarchy replaces
+	                        # those above it
+	    optionType="Enum"	# The type of this option is an enumerated
+	                        # value.
+	    guiLabel="Output the length of each array"
+	                        # Text to display in the options dialog.
+	    guiCategory="Binary Converter"
+	                        # Category in the options dialog.
+	}
+    }
+}
+
+
+Commands {
+# Commands contains a list of custom commands and how to locate them.
+    {
+        name="GHS Binary Converter"
+				# Name of this command (referred to below)
+	# GHS_TOOLS_DIR is a macro specifying the location of "gbuild"
+        exec="${GHS_TOOLS_DIR}/gbin2c"
+				# Where to find the executable on disk.
+        options={"SpecialOptions","GBCOptions"}
+				# The supported option sets.
+    }
+}
+
+
+FileTypes {
+# FileTypes defines our custom types and how to fill in the command arguments
+
+    BinInput {
+    # Here we've created a new custom type called "Binary Input"
+        name="Binary Input"
+        extensions={"bin"}	# The input extensions are .bin.
+        outputExtension="c"	# It outputs .c files (used for -clean).
+        outputType="SourceFile" # It outputs source files (as opposed to
+	                        # object files)
+        grepable=false		# Do not perform grep operations on this input.
+        command="GHS Binary Converter"	# Use the matching command from above.
+	commandLine="$COMMAND $OPTIONS $INPUTFILE -o $OUTPUTFILE"
+	                        # Specifies the exact command line using
+				# variables to substitute for context-sensitive
+				# elements.
+        progress="Converting"	# What to show in the progress/details windows.
+        action="&Convert"	# What to show in the right click menu.
+        color="#500050"		# Color for files of this type.
+	findLinkLine=true	# Pass this file onto the link line (see below).
+	promoteToFirstPass=true # Run during the first pass on multi-pass
+	                        # builds.
+    }
+    
+    # The following two lines describe how to pass this file on the link line.
+    # Here we're passing this as an extra_file, which adds a reference to the
+    # file into the debug info (so that you can "e" to the .bin file).
+    Program.linkableTypes += {"Binary Input"}
+    Program.linkSpecifiers += {"Binary Input;-extra_file=$(INPUTFILE)"}
+}

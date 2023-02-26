@@ -1,0 +1,28 @@
+Adding New Libraries
+========================================================================================================================
+It is common to need to add new libraries to the Python component to support tool components.  The libraries should be
+added as zip files rather than folder structures.  The core library has been modified to include a step that will
+automatically unzip the libraries on the first run.
+
+
+This has a number of benefits, including:
+
+- Reduced Synergy transfer times (a few large files rather than thousands of tiny files).
+- Easier to see changes in compare view in Synergy.
+    - Currently it shows hundreds of changed files at a time which are impossible to review.
+
+
+When adding a new library use the following steps as a guide.
+
+1. Copy the library folder into include folder of TL112A.
+2. Run ZipLib.py against the library folder to convert it into an archive.
+3. Remove all folders from the include directory (including the new library).
+4. Check changes into Synergy.
+
+
+The same process applies for updating a library.
+
+
+The first time any script is run, the modified site.py script will automatically unzip all of the *.zip files into the
+include directory for and append that directory to the sys.path variable for use by scripts via regular "import"
+statements.

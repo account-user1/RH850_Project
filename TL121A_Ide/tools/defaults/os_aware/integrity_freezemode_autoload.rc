@@ -1,0 +1,15 @@
+menumodify update ToolsMenu 0 {'EventAnalyzer...' '' mev -newWindowIfNoFile -raisewindow}
+menumodify update ToolsMenu 1 {'ResourceAnalyzer...' '' mrv} 
+menumodify update TaskViewTools 0 {'EventAnalyzer...' '' mev -newWindowIfNoFile -raisewindow}
+menumodify update TaskViewTools 1 {'ResourceAnalyzer...' '' mrv} 
+
+debugbutton "osa" c="__check_condition $_OSA_OK; osaexplorer" i="osaexplorer" h="Show OSA Explorer" t="OSA Explorer"
+// The following button is not dimmed properly in MULTI Debugger for run-mode.
+// Section ".eventlog" could be in a customized kernel but the ghs symbols may be not.
+//debugbutton "dumpAndShowEvents" c="memdump raw ghs_eventlog.mer __ghsbegin_eventlog  (__ghsend_eventlog-__ghsbegin_eventlog); mev -newWindowIfNoFile -raisewindow" i="dumpmemtomevgui" t="Dump and Show Events"
+//debugbutton "dumpAndShowEvents" c="__check_condition $_MEV_OK; py -nb -s \"if ghs_window.GHS_Window.RunCmd(self_dbw, '__mevdump;'):  res=ghs_window.GHS_Window.RunCmd(self_dbw, 'mev -newWindowIfNoFile -raisewindow');\"" i="dumpmemtomevgui" h="Dump event log and show events in MULTI EventAnalyzer" t="Dump and Show Events"
+debugbutton "dumpAndShowEvents" c="__check_condition $_MEV_OK; __mevdump;" i="dumpmemtomevgui" h="Dump event log and show events in MULTI EventAnalyzer" t="Dump and Show Events"
+debugbutton "mevgui" c="mev -newWindowIfNoFile -raisewindow" i="mevgui" h="Open MULTI EventAnalyzer" t="MULTI EventAnalyzer"
+debugbutton "wperf" c="mrv" i="wperf" h="Open MULTI ResourceAnalyzer" t="MULTI ResourceAnalyzer"
+
+//< vel.rc

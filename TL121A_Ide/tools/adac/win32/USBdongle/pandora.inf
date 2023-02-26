@@ -1,0 +1,98 @@
+; Installation inf for Pandora Key
+;
+; (C) Copyright 1998-2001 Jujo Electronics
+;
+; 1998/12/01 V1.0
+; 2000/02/05 V1.3
+; 2001/03/07 V2.0
+
+[Version]
+Signature="$CHICAGO$"
+Class=USB Keys
+ClassGUID={3A049680-77B9-11d2-9BBA-0060979CF7AA}
+Provider=%Provider%
+
+[Manufacturer]
+%Provider%=JUJO
+
+[JUJO]
+%PANDORA.DeviceDesc%=PANDORA.Dev, USB\VID_6A75&PID_9801
+
+[SourceDisksNames]
+1="Pandora Key Installation Disk",,,
+
+[DestinationDirs]
+PANDORA.Files.Ext = 10,System32\Drivers
+PANDORA.Files.Inf = 17
+PANDORA.Files.Del = 11
+PANDORA.Files.Ext.NTx86 = 10,System32\Drivers
+PANDORA.Files.Inf.NTx86 = 17
+
+[SourceDisksFiles]
+pandora.sys = 1
+pandora.inf = 1
+
+[PreCopySection]
+HKR,,NoSetupUI,,1
+
+;------------------------------------------------------------------
+; USB Keys Class Install
+
+[ClassInstall32]
+Addreg=Class.AddReg
+
+[Class.AddReg]
+HKR,,,,%PANDORA.ClassName%
+HKR,,Icon,,"-20"
+
+;------------------------------------------------------------------
+; Windows 98
+
+[PANDORA.Dev]
+CopyFiles=PANDORA.Files.Ext,PANDORA.Files.Inf
+DelFiles=PANDORA.Files.Del
+AddReg=PANDORA.AddReg
+
+[PANDORA.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,pandora.sys
+
+[PANDORA.Files.Ext]
+pandora.sys
+
+[PANDORA.Files.Inf]
+pandora.inf
+
+[PANDORA.Files.Del]
+pandora.sys,,,1
+pandora.inf,,,1
+
+;------------------------------------------------------------------
+; Windows 2000
+
+[PANDORA.Dev.NTx86]
+CopyFiles=PANDORA.Files.Ext.NTx86,PANDORA.Files.Inf.NTx86
+
+[PANDORA.Dev.NTx86.Services]
+AddService = Pandora, 0x00000002, PANDORA.AddService
+
+[PANDORA.AddService]
+DisplayName    = %PANDORA.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %10%\System32\Drivers\pandora.sys
+LoadOrderGroup = Extended base
+
+[PANDORA.Files.Ext.NTx86]
+pandora.sys
+
+[PANDORA.Files.Inf.NTx86]
+pandora.inf
+
+;---------------------------------------------------------------;
+[Strings]
+Provider="Jujo"
+PANDORA.DeviceDesc = "Pandora Key"
+PANDORA.SvcDesc="Pandora Key"
+PANDORA.ClassName="USB Keys"

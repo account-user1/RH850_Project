@@ -1,0 +1,528 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+%if defined (__TARGET_DIR__)
+% define ARCH_DIR ${__TARGET_DIR__}/${__ARCH_NAME__}
+%else
+% define ARCH_DIR ${__MULTI_TARGET_DIR__}/${__ARCH_NAME__}
+%endif
+%define BSP_DIR  ${ARCH_DIR}/${__BSP_NAME__}
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+
+%if !defined(NO_RAM_LAYOUT) && file_exists("${ARCH_DIR}/standalone_ram.ld")
+% define HAS_RAM_LD_FILE
+%endif
+
+%if !defined(NO_ROMCOPY_LAYOUT) && file_exists("${ARCH_DIR}/standalone_romcopy.ld")
+% define HAS_ROMCOPY_LD_FILE
+%endif
+
+%if !defined(NO_ROM_LAYOUT) && file_exists("${ARCH_DIR}/standalone_romrun.ld")
+% define HAS_ROMRUN_LD_FILE
+%endif
+
+%if !defined(NO_ROMDEBUG_LAYOUT) && file_exists("${ARCH_DIR}/standalone_romdebug.ld")
+% define HAS_ROMDEBUG_LD_FILE
+%endif
+
+%if defined(__SupportsPic) && file_exists("${ARCH_DIR}/standalone_pic.ld")
+% define HAS_PIC_LD_FILE
+%endif
+
+%if defined(__SupportsPid) && file_exists("${ARCH_DIR}/standalone_pid.ld")
+% define HAS_PID_LD_FILE
+%endif
+
+%if defined(__SupportsPic) && defined(__SupportsPid) && file_exists("${ARCH_DIR}/standalone_picpid.ld")
+% define HAS_PICPID_LD_FILE
+%endif
+
+
+
+board_attributes {
+
+%if defined(__GHS_GPJ_SUPPORTS_CONFIGURATIONS) && defined(__GHS_CREATE_PROJECTS_WITH_CONFIGURATIONS)
+    use_configurations = true
+%   define __GHS_USE_CONFIGURATIONS
+%endif
+
+    target_resources {
+	copy_files += {"$__DIR__/resource_readme.txt"}
+
+	# If there's a probe config file, go ahead and pull it in.
+%if defined(__BSP_VARIANT_NAME__) && file_exists("${BSP_DIR}/${__BSP_NAME__}_${__BSP_VARIANT_NAME__}.ghpcfg")
+	%define PROBE_CFG_FILE_NAME ${__BSP_NAME__}_${__BSP_VARIANT_NAME__}.ghpcfg
+%elif file_exists("${BSP_DIR}/${__BSP_NAME__}.ghpcfg")
+	%define PROBE_CFG_FILE_NAME ${__BSP_NAME__}.ghpcfg
+%elif defined(__BSP_VARIANT_NAME__) && file_exists("${BSP_DIR}/probe_${__BSP_VARIANT_NAME__}.cfg")
+    	copy_files += { "${BSP_DIR}/probe_${__BSP_VARIANT_NAME__}.cfg" }
+%elif file_exists("${BSP_DIR}/probe.cfg")
+	copy_files += {"${BSP_DIR}/probe.cfg"}
+%elif file_exists("${BSP_DIR}/${__BSP_NAME__}.cfg")
+	copy_files += {"${BSP_DIR}/${__BSP_NAME__}.cfg"}
+
+%endif
+
+%if defined(PROBE_CFG_FILE_NAME)
+	%define PROBE_CFG_FULL_PATH ${BSP_DIR}/${PROBE_CFG_FILE_NAME}
+        copy_files += { "$PROBE_CFG_FULL_PATH" }
+%endif
+
+     
+%if defined(__GHS_USE_CONFIGURATIONS)
+        copy_files += {"$__DIR__/debug.gpc"}
+        copy_files += {"$__DIR__/release.gpc"}
+%endif
+
+
+	# For all GHS stand-alone targets, always create the standalone_ram.ld,
+	# standalone_romcopy.ld, and standalone_romrun.ld files.
+        concat_files {
+
+
+#
+# RAM
+#
+%if defined(HAS_RAM_LD_FILE)
+	    {
+	        output = "standalone_ram.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/elxr_standalone_config.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/elxr_standalone_ram.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_ram.ld"}
+%elif file_exists("${BSP_DIR}/standalone_ram.ld")
+		inputs += {"${BSP_DIR}/standalone_ram.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_ram.ld"}
+%endif
+	    }
+%endif  # HAS_RAM_LD_FILE
+
+
+
+#
+# ROM Copy
+#
+%if defined(HAS_ROMCOPY_LD_FILE)
+	    {
+	        output = "standalone_romcopy.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/elxr_standalone_config.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/elxr_standalone_romcopy.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_romcopy.ld"}
+%elif file_exists("${BSP_DIR}/standalone_romcopy.ld")
+		inputs += {"${BSP_DIR}/standalone_romcopy.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_romcopy.ld"}
+%endif
+	    }
+%endif	# HAS_ROMCOPY_LD_FILE
+
+
+#
+# ROM Run
+#
+%if defined(HAS_ROMRUN_LD_FILE)
+	    {
+	        output = "standalone_romrun.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/elxr_standalone_config.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/elxr_standalone_romrun.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_romrun.ld"}
+%elif file_exists("${BSP_DIR}/standalone_romrun.ld")
+		inputs += {"${BSP_DIR}/standalone_romrun.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_romrun.ld"}
+%endif
+	    }
+%endif	# HAS_ROMRUN_LD_FILE
+
+
+#
+# ROM Debug
+#
+%if defined(HAS_ROMDEBUG_LD_FILE)
+	    {
+	        output = "standalone_romdebug.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/elxr_standalone_config.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/elxr_standalone_romdebug.ld") && defined (USE_ELXR_LD)
+		inputs += {"${BSP_DIR}/elxr_standalone_romdebug.ld"}
+%elif file_exists("${BSP_DIR}/standalone_romdebug.ld")
+		inputs += {"${BSP_DIR}/standalone_romdebug.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_romdebug.ld"}
+%endif
+	    }
+%endif	# HAS_ROMDEBUG_LD_FILE
+
+
+#
+# PIC
+#
+%if defined(HAS_PIC_LD_FILE)
+	    {
+	        output = "standalone_pic.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/standalone_pic.ld")
+		inputs += {"${BSP_DIR}/standalone_pic.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_pic.ld"}
+%endif
+	    }
+%endif	# HAS_PIC_LD_FILE
+
+
+#
+# PID
+#
+%if defined(HAS_PID_LD_FILE)
+	    {
+	        output = "standalone_pid.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/standalone_pid.ld")
+		inputs += {"${BSP_DIR}/standalone_pid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_pid.ld"}
+%endif
+	    }
+%endif	# HAS_PID_LD_FILE
+
+
+#
+# PIC/PID
+#
+%if defined(HAS_PICPID_LD_FILE)
+	    {
+	        output = "standalone_picpid.ld"
+
+%if defined(__BSP_VARIANT__) && file_exists("${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld")
+		inputs += {"${BSP_DIR}/standalone_${__BSP_VARIANT__}_config.ld"}
+%elif file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+
+%if file_exists("${BSP_DIR}/standalone_picpid.ld")
+		inputs += {"${BSP_DIR}/standalone_picpid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_picpid.ld"}
+%endif
+	    }
+%endif	# HAS_PICPID_LD_FILE
+
+	}
+    }
+}	# board_attributes
+
+
+component_template.linker_directives {
+    actions {
+	add.standard {
+            101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+        }
+	edit.standard {
+            101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+	}
+    }
+    tags += {"LINKER_DIRECTIVES"}
+}
+
+
+
+%if defined(HAS_RAM_LD_FILE)
+component.linker_directives_std_ram {
+    use_template = "linker_directives"
+    display_object_name = "Link to and Execute out of RAM"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_ram"}
+
+    default_module_filename = "standalone_ram.ld"
+    variable_defs {
+    	LINKMAP = "standalone_ram.ld"
+    }
+
+    default_select = true
+}
+%endif
+
+%if defined(HAS_ROMCOPY_LD_FILE)
+component.linker_directives_std_romcopy {
+    use_template = "linker_directives"
+    display_object_name = "Link to ROM and Execute out of RAM"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_romcopy"}
+
+    default_module_filename = "standalone_romcopy.ld"
+    variable_defs {
+    	LINKMAP = "standalone_romcopy.ld"
+    }
+
+%if !defined(HAS_RAM_LD_FILE)
+    default_select = true
+%endif
+}
+%endif
+
+%if defined(HAS_ROMRUN_LD_FILE)
+component.linker_directives_std_romrun {
+    use_template = "linker_directives"
+    display_object_name = "Link to and Execute out of ROM"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_romrun"}
+
+    default_module_filename = "standalone_romrun.ld"
+    variable_defs {
+    	LINKMAP = "standalone_romrun.ld"
+    }
+
+%if !defined(HAS_RAM_LD_FILE) && !defined(HAS_ROMCOPY_LD_FILE)
+    default_select = true
+%endif
+}
+%endif
+
+%if defined(HAS_ROMDEBUG_LD_FILE)
+component.linker_directives_std_romdebug {
+    use_template = "linker_directives"
+    display_object_name = "Link to and Execute out of ROM, with Enhanced Debugging"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_romdebug"}
+
+    default_module_filename = "standalone_romdebug.ld"
+    variable_defs {
+    	LINKMAP = "standalone_romdebug.ld"
+    }
+}
+%endif
+
+%if defined(HAS_PIC_LD_FILE)
+component.linker_directives_std_pic {
+    use_template = "linker_directives"
+    display_object_name = "Link for Position Independent Code"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_pic"}
+
+    default_module_filename = "standalone_pic.ld"
+    variable_defs {
+    	LINKMAP = "standalone_pic.ld"
+    }
+    actions {
+	add.standard {
+	    500 += { "defineLocal OPTION_STRING -pic" }
+	    501 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_parent_project"}
+        }
+	remove.standard {
+	    1 += { "defineLocal OPTION_STRING -pic" }
+	    2 += { "python ${__SHARED_PY_DIR__}/utils.py unset_option_in_parent_project"}
+	}
+    }
+}
+%endif
+
+%if defined(HAS_PID_LD_FILE)
+component.linker_directives_std_pid {
+    use_template = "linker_directives"
+    display_object_name = "Link for Position Independent Data"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_pid"}
+
+    default_module_filename = "standalone_pid.ld"
+    variable_defs {
+    	LINKMAP = "standalone_pid.ld"
+    }
+    actions {
+	add.standard {
+	    500 += { "defineLocal OPTION_STRING -pid" }
+	    501 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_parent_project"}
+        }
+	remove.standard {
+	    1 += { "defineLocal OPTION_STRING -pid" }
+	    2 += { "python ${__SHARED_PY_DIR__}/utils.py unset_option_in_parent_project"}
+	}
+    }
+}
+%endif
+
+%if defined(HAS_PICPID_LD_FILE)
+component.linker_directives_std_picpid {
+    use_template = "linker_directives"
+    display_object_name = "Link for Position Independent Code and Data"
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_picpid"}
+
+    default_module_filename = "standalone_picpid.ld"
+    variable_defs {
+    	LINKMAP = "standalone_picpid.ld"
+    }
+    actions {
+	add.standard {
+	    500 += { "defineLocal OPTION_STRING -pic" }
+	    501 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_parent_project"}
+	    502 += { "defineLocal OPTION_STRING -pid" }
+	    503 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_parent_project"}
+        }
+	remove.standard {
+	    1 += { "defineLocal OPTION_STRING -pic" }
+	    2 += { "python ${__SHARED_PY_DIR__}/utils.py unset_option_in_parent_project"}
+	    3 += { "defineLocal OPTION_STRING -pid" }
+	    4 += { "python ${__SHARED_PY_DIR__}/utils.py unset_option_in_parent_project"}
+	}
+    }
+}
+%endif
+
+
+# Separate "add type" which is just a wrapper around the file chooser dialog.
+component.add_custom_ld_file {
+    display_type_name = "Linker Directives File"
+
+    description = "Add custom linker directives."
+
+    dlg_info {
+	add {
+	    menu_str = "Add Custom &Linker Directives"
+	    cmd_str = "AddCustomLDFile"
+	    dlg_filelist = "none"
+	    dlg_namelist = "MULTIFileChooser"
+	}	
+    }
+
+    attributes {
+	filename {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+	    build_file_setting = "item_filename $build_item_basename"
+	    default = "custom.ld"
+	}
+        filetype_preset {
+	    type = "string"
+	    display_name = false
+	    default = "LinkerDirectives"
+	}
+    }
+
+
+    actions {
+	add.standard {
+	    100 += { "defineLocal LINKMAP $filename" }
+            101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+        }
+    }
+}
+
+
+component.linker_directives_std_custom {
+    use_template = "linker_directives"
+    display_object_name = "Custom"
+    default_for_filetypes = { "Linker Directives" }
+    documentation_files =  { "${__DIR__}/standalone_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.std_linker_directives", "multi.mpm.std_ld_custom"}
+
+    actions.add.intermediate {
+        10 += { "rungui AddCustomLDFile" }
+    }
+}
+
+%endif	# TOOLCHAIN == GREEN_HILLS
+
+
+%if defined (__TOOLS_DEFAULTS_DIR__)
+%define DEFN_DIR ${__TOOLS_DEFAULTS_DIR__}/target_server
+%else
+%define DEFN_DIR ${__MULTI_DEFAULTS_DIR__}/target_server
+%endif
+
+%if defined(PROBE_CFG_FILE_NAME)
+%if file_exists("${DEFN_DIR}/mpserv.npw")
+    target_connection.mpserv.required_args += "-cfgload $PROBE_CFG_FILE_NAME"
+%endif
+%endif
+
+%endif

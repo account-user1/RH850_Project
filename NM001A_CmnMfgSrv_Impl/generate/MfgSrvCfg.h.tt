@@ -1,0 +1,198 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/schema/r4.0'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "NxtrMfgSrv" ) ); #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer
+* Nexteer Confidential
+*
+* Module File Name  : MfgSrvCfg.h.tt
+* Module Description: Nexteer Manufacturing Services
+* Project           : CBD
+* Author            : Jared Julien
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          3 %
+* %derived_by:       kzdyfh %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author    Change Description                                                             SCR #
+* -------   -------  --------  -----------------------------------------------------------------------------  ---------
+* 11/04/15  1        JWJ       Initial Version                                                                EA4#
+* 06/07/17  2        JWJ       Changed non-trusted function calls to support both old and new OS via patch    EA4#11834
+* 07/07/17  3        JWJ       Update non-trusted function table to include application ID number             EA4#13539
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef MFGSRVCFG_H
+#define MFGSRVCFG_H
+
+/************************************************ Include Statements *************************************************/
+#include "CmnMfgSrvTyp.h"
+
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/***************************************** Non-Rte Enumeration Definitions *******************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+<# int ActiveCount = 0; #>
+<# int MaxAppl = 0; #>
+<# System.Text.RegularExpressions.Regex trailNr = new System.Text.RegularExpressions.Regex(@"\d+$"); #>
+<# !LOOP(Xp.ContainerAtDefRefTo("CommonService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		/* Count this service towards the list of active services */
+		ActiveCount += 1;
+
+		/* Check the application number to determine if it's the new maximum */
+		string applPath = Xp.ValueRefAtDefRefTo( "Application" );
+		if (Exists( applPath ))
+		{
+			int appl = Int32.Parse( trailNr.Match( LastValueSegmentOf( applPath ) ).Value );
+			if (appl > MaxAppl)
+			{
+				MaxAppl = appl;
+			}
+		}
+	}
+#><# !ENDLOOP #>
+<# !LOOP(Xp.ContainerAtDefRefTo("ProgramSpecificService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		/* Count this service towards the list of active services */
+		ActiveCount += 1;
+
+		/* Check the application number to determine if it's the new maximum */
+		string applPath = Xp.ValueRefAtDefRefTo( "Application" );
+		if (Exists( applPath ))
+		{
+			int appl = Int32.Parse( trailNr.Match( LastValueSegmentOf( applPath ) ).Value );
+			if (appl > MaxAppl)
+			{
+				MaxAppl = appl;
+			}
+		}
+	}
+#><# !ENDLOOP #>
+extern CONST(MfgSrvTblRec, AUTOMATIC) CmnMfgSrv_MfgSrvTbl_Cnt_str[<#= ActiveCount #>u];
+extern CONST(NonTrustdFctApplIdxRec, AUTOMATIC) CmnMfgSrvCfg_NonTrustdFctPtrTbl[<#= MaxAppl + 1 #>U];
+
+
+/* Service Enable/Disable */
+<# Dictionary<string, bool> ServiceDict = new Dictionary<string, bool>(); #>
+<# !LOOP(Xp.ContainerAtDefRefTo( "CommonService" )) #><#
+	string IdRef = Xp.ValueAtDefRefTo( "ServiceId" );
+	string ServiceIdStr = "";
+
+	if ( Exists( IdRef ) )
+	{
+		int SrvIdInt = ValueOf( IdRef );
+		ServiceIdStr = SrvIdInt.ToString( "X4" );
+	}
+	else
+	{
+		string SrvTypeStr = ValueOf( Xp.ValueAtDefRefTo( "ServiceType" ) );
+		int SrvSubInt = ValueOf( Xp.ValueAtDefRefTo( "SubFunction" ) );
+		ServiceIdStr = SrvTypeStr.Substring(SrvTypeStr.Length - 2) + SrvSubInt.ToString( "X2" );
+	}
+
+	ServiceIdStr = "CMNMFGSRV_" + ServiceIdStr;
+
+	bool ServiceEnadBool = ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) );
+
+	if (!ServiceDict.ContainsKey( ServiceIdStr ) )
+	{
+		ServiceDict.Add( ServiceIdStr, ServiceEnadBool );
+	}
+	else
+	{
+		ServiceDict[ServiceIdStr] |= ServiceEnadBool;
+	}
+#>
+<# !ENDLOOP #>
+<# !LOOP(Xp.ContainerAtDefRefTo( "ProgramSpecificService" )) #><#
+	string IdRef = Xp.ValueAtDefRefTo( "ServiceId" );
+	string ServiceIdStr = "";
+
+	if ( Exists( IdRef ) )
+	{
+		int SrvIdInt = ValueOf( IdRef );
+		ServiceIdStr = SrvIdInt.ToString( "X4" );
+	}
+	else
+	{
+		string SrvTypeStr = ValueOf( Xp.ValueAtDefRefTo( "ServiceType" ) );
+		int SrvSubInt = ValueOf( Xp.ValueAtDefRefTo( "SubFunction" ) );
+		ServiceIdStr = SrvTypeStr.Substring(SrvTypeStr.Length - 2) + SrvSubInt.ToString( "X2" );
+	}
+
+	ServiceIdStr = "PROGMFGSRV_" + ServiceIdStr;
+
+	bool ServiceEnadBool = ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) );
+
+	if (!ServiceDict.ContainsKey( ServiceIdStr ) )
+	{
+		ServiceDict.Add( ServiceIdStr, ServiceEnadBool );
+	}
+	else
+	{
+		ServiceDict[ServiceIdStr] |= ServiceEnadBool;
+	}
+#>
+<# !ENDLOOP #>
+<# foreach ( KeyValuePair<string, bool> Service in ServiceDict) { #>
+#define <#= Service.Key #>ENA_CNT_LGC	CMNMFGSRV_<#= Service.Value ? "ENAD" : "DISAD" #>_CNT_LGC
+<# } #>
+
+/* Prototypes for enabled services */
+<# !LOOP(Xp.ContainerAtDefRefTo( "CommonService" )) #><#
+	string SrvTypeStr = ValueOf( Xp.ValueAtDefRefTo( "ServiceType" ) );
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) && ( SrvTypeStr.Substring(SrvTypeStr.Length - 2) != "3E" ) )
+	{
+#>
+FUNC(NegRespCodEnum, CmnMfgSrv_CODE) CmnMfgSrv_<#= ValueOf( "ar:SHORT-NAME" ) #>(VAR(uint8, CmnMfgSrv_VAR) DataBuf_Uls_T_u08[]);
+<#
+	}
+#>
+<# !ENDLOOP #>
+<# !LOOP(Xp.ContainerAtDefRefTo( "ProgramSpecificService" )) #><#
+	string SrvTypeStr = ValueOf( Xp.ValueAtDefRefTo( "ServiceType" ) );
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) && ( SrvTypeStr.Substring(SrvTypeStr.Length - 2) != "3E" ) )
+	{
+#>
+FUNC(NegRespCodEnum, CmnMfgSrv_CODE) ProgMfgSrv_<#= ValueOf( "ar:SHORT-NAME" ) #>(VAR(uint8, CmnMfgSrv_VAR) DataBuf_Uls_T_u08[]);
+<#
+	}
+#>
+<# !ENDLOOP #>
+<#
+	ChangeContext( Xp.ModuleConfAtDefRefTo( "Os" ) );
+	try
+	{
+		/* Try to read the OsKernelVersion which is defined in the latest OS and not in older versions.  If the read
+		 * is successful the the program is using the newest OS and nothing needs to be done. */
+		ValueOf( Xp.ValueAtDefRefTo( "OsPublishedInformation/OsKernelVersion" ));
+	}
+	catch
+	{
+		/* If the read fails, the program is using the older OS and a patch needs to be made to adapt the non-trusted
+		 * function name and types to those used by the older operating system. */
+#>
+
+
+/* Provide patch for use with older version of the Vector OS without prefixed names on functions and types. */
+#define Os_NonTrustedFunctionIndexType         NonTrustedFunctionIndexType
+#define Os_NonTrustedFunctionParameterRefType  NonTrustedFunctionParameterRefType
+#define Os_CallNonTrustedFunction              CallNonTrustedFunction
+<#
+    }
+#>
+
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif
+
+/* End of File: MfgSrvCfg.h */

@@ -1,0 +1,25 @@
+#
+#  DoubleCheck Default INTEGRITY Configuration file
+#  Copyright 2006 (c) Green Hills Software, Inc
+#
+#  This file is always used automatically whenever DoubleCheck is used on
+#  INTEGRITY applications.
+#
+#  Its advisable to not edit this file and instead make another config file
+#  and add it to your project with -double_check.config=my_config.dcc
+#
+needs_null_check 0 GetPageFromDomain
+needs_null_check 0 AllocatePage
+malloced 0 GetPageFromDomain
+malloced 0 AllocatePage
+no_return 0 CheckSuccessHelper2
+no_return 0 INTERRUPT_PanicHelper
+no_return 0 _dbexit
+no_return 0 Exit
+no_return 0 INDRT_DbAssert
+no_return 0 comerr
+no_return 0 comerrno
+# This function probably returns but if the panic hanlder gets inlined we
+# need to stop the inlining somewhere to indicate we're never going to
+# return.
+no_return 0 BSP_TurnOnErrorIndicator

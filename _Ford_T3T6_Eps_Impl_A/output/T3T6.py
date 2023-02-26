@@ -1,0 +1,23 @@
+DeviceFilePath = os.path.abspath((os.chdir(os.path.join(os.path.dirname(sys.argv[0]) + '\\..\\tools'))))
+self_dbw.RunCmd('connect 850eserv2 -df="dr7f701373.dvf" -e1lpd4=11000KHz -rh850 -dclock=16000,0,swoff -noiop -id FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -cfapw FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -dfapw FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -ip='+DeviceFilePath)
+
+ret = winreg.GetProjectManagerWindow().YesNo("Do you want to flash option bytes?")
+winreg.GetProjectManagerWindow().IconifyWindow(False,False)
+if ret==True:
+	self_dbw.RunCmd('target opbyte 0 0x7ffffdff')
+	self_dbw.RunCmd('target opbyte 1 0xbfffc9d8')
+	self_dbw.RunCmd('target opbyte 2 0xbfffffff')
+	self_dbw.RunCmd('target opbyte 3 0xffffffff')
+	self_dbw.RunCmd('target opbyte 4 0xffffffff')
+	self_dbw.RunCmd('target opbyte 5 0xffffffff')
+	self_dbw.RunCmd('target opbyte 6 0xffffffff')
+	self_dbw.RunCmd('target opbyte 7 0xffffffff')
+	self_dbw.RunCmd('target opbyte 8 0xffffffff')
+	self_dbw.RunCmd('target opbyte 9 0xffffffff')
+	self_dbw.RunCmd('target opbyte 10 0xffffffff')
+	self_dbw.RunCmd('target opbyte 11 0xffffffff')
+	self_dbw.RunCmd('target opbyte 12 0xffffffff')
+	self_dbw.RunCmd('target opbyte 13 0xffffffff')
+	self_dbw.RunCmd('target opbyte 14 0xfffffcfe')
+	self_dbw.RunCmd('target opbyte 15 0xffffffee')
+	

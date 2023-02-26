@@ -1,0 +1,289 @@
+<!-- Entities -->
+
+<!ENTITY ti.DataType       "DataType">
+<!ENTITY ti.Constant       "Constant">
+<!ENTITY ti.Package        "Package">
+<!ENTITY ti.BaseType       "BaseType">
+<!ENTITY ti.Unit           "Unit">
+<!ENTITY ti.CompuMethod    "CompuMethod">
+<!ENTITY ti.DataConstr     "DataConstr">
+
+<!-- Elements -->
+
+<!ELEMENT DataType  (%C.DefAttr;, ATTRLink*, (PrimitiveType|ComplexType), GenAttrList?)>
+<!ELEMENT PrimitiveType (BooleanPrimitive|IntegerPrimitive|RealPrimitive|OpaquePrimitive|EnumerationPrimitive|StringPrimitive|Boolean4Primitive|String4Primitive|NumericApp4Primitive|NumericImpl4Primitive|TypeReference4Primitive|DataReference4Primitive)>
+<!ELEMENT ComplexType (ArrayPrimitive|RecordPrimitive|ArrApp4Primitive|ArrImpl4Primitive|RecApp4Primitive|RecImpl4Primitive)>
+
+<!ELEMENT BooleanPrimitive EMPTY>
+<!ELEMENT IntegerPrimitive (ATTRLink*)>
+<!ELEMENT RealPrimitive    (ATTRLink*)>
+<!ELEMENT OpaquePrimitive  EMPTY>
+<!ELEMENT StringPrimitive  EMPTY>
+<!ELEMENT EnumerationPrimitive (ATTRLink*, EnumerationElement*)>
+<!ELEMENT EnumerationElement (%C.DefAttr;)>
+
+<!ELEMENT ArrayPrimitive (ATTRLink*)>
+<!ELEMENT RecordPrimitive (RecordElement+)>
+<!ELEMENT RecordElement (%C.DefAttr;, ATTRLink*)>
+
+<!ELEMENT Boolean4Primitive (ATTRLink*, Constant?)>
+<!ELEMENT String4Primitive  (ATTRLink*, Constant?)>
+<!ELEMENT NumericApp4Primitive  (ATTRLink*, Constant?)>
+<!ELEMENT NumericImpl4Primitive (ATTRLink*, Constant?)>
+<!ELEMENT TypeReference4Primitive (ATTRLink*, DataType?, Constant?)>
+<!ELEMENT DataReference4Primitive (ATTRLink*, DataType?)>
+
+<!ELEMENT ArrApp4Primitive  (ATTRLink*)>
+<!ELEMENT ArrImpl4Primitive (ATTRLink*, DataType?)>
+<!ELEMENT RecApp4Primitive  (RecElementApp4+)>
+<!ELEMENT RecElementApp4    (%C.DefAttr;, ATTRLink*)>
+<!ELEMENT RecImpl4Primitive (RecElementImpl4+)>
+<!ELEMENT RecElementImpl4   (%C.DefAttr;, DataType?)>
+
+<!ATTLIST DataType %A.ConfigItem; 
+          Primitive                 (Boolean|Integer|Real|Opaque|Enumeration|Array|Record|String|Boolean4|String4|NumApp4|NumImpl4|ArrApp4|ArrImpl4|RecApp4|RecImpl4|TypeReference4|DataReference4) "Integer" 
+          BSWModule                 CDATA ''
+          BaseType                  CDATA ''
+          BaseTypeName              CDATA ''
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST PrimitiveType %A.ChildItem;>
+<!ATTLIST ComplexType   %A.ChildItem;>
+
+<!ATTLIST BooleanPrimitive %A.ChildItem;
+  UseInvalidValue        CDATA '0'
+  InvalidValue           CDATA '0'
+  IVLiteralName          CDATA ''
+>
+
+<!ATTLIST IntegerPrimitive  %A.ChildItem;
+    LowerLimit              CDATA '0'
+    UpperLimit              CDATA '255'
+    LowerLimitClosed        CDATA '0'
+    UpperLimitClosed        CDATA '0'
+    UseScaling              CDATA '0'
+    Factor                  CDATA '1'
+    Offset                  CDATA '0'
+    Unit                    CDATA ''
+    UseInvalidValue         CDATA '0'
+    InvalidValue            CDATA '0'
+    IVLiteralName           CDATA ''
+    UseScalingLimit         CDATA '0'
+    ScalingLowerLimit       CDATA '0'
+    ScalingUpperLimit       CDATA '0'
+    ScalingLowerLimitClosed CDATA '0'
+    ScalingUpperLimitClosed CDATA '0'
+    UnitPackageLink NMTOKEN #FIXED "&ti.Package;"
+    UnitName                CDATA ''
+    SemanticsPackageLink NMTOKEN #FIXED "&ti.Package;"
+    SemanticsName           CDATA ''
+    AutoARChildHdlg         CDATA "-1"
+    RangeName               CDATA ''
+>
+
+<!ATTLIST RealPrimitive     %A.ChildItem; 
+    LowerLimit              CDATA '-INF'
+    UpperLimit              CDATA '+INF'
+    LowerLimitClosed        CDATA '0'
+    UpperLimitClosed        CDATA '0' 
+    Encoding                (Single|Double) "Single" 
+    AllowNaN                CDATA "0"
+    UseScaling              CDATA '0'
+    Factor                  CDATA '1'
+    Offset                  CDATA '0'
+    Unit                    CDATA ''
+    UseInvalidValue         CDATA '0'
+    InvalidValue            CDATA '0'
+    IVLiteralName           CDATA ''
+    UseScalingLimit         CDATA '0'
+    ScalingLowerLimit       CDATA '0'
+    ScalingUpperLimit       CDATA '0'
+    ScalingLowerLimitClosed CDATA '0'
+    ScalingUpperLimitClosed CDATA '0'
+    UnitPackageLink NMTOKEN #FIXED "&ti.Package;"
+    UnitName                CDATA ''
+    SemanticsPackageLink NMTOKEN #FIXED "&ti.Package;"
+    SemanticsName           CDATA ''
+    AutoARChildHdlg         CDATA "-1"
+    RangeName               CDATA ''
+>
+
+<!ATTLIST OpaquePrimitive  %A.ChildItem; 
+  NumBits   CDATA "8"
+  UseInvalidValue        CDATA '0'
+  InvalidValue           CDATA '0'
+  IVLiteralName          CDATA ''
+>
+
+<!ATTLIST StringPrimitive  %A.ChildItem; 
+  Encoding         CDATA "ISO-8859-1"
+  MaxCharLength    CDATA '256'
+  UseInvalidValue  CDATA '0'
+  InvalidValue     CDATA ''
+  IVLiteralName    CDATA ''
+>
+
+<!ATTLIST EnumerationPrimitive %A.ChildItem;
+    Old_DataTypeLink NMTOKEN #FIXED "&ti.DataType;"
+    LowerLimit              CDATA '0'
+    UpperLimit              CDATA '255'
+    LowerLimitClosed        CDATA '0'
+    UpperLimitClosed        CDATA '0'
+    UseInvalidValue         CDATA '0'
+    InvalidValue            CDATA '0'
+    IVLiteralName           CDATA ''
+    UseScaling              CDATA '0'
+    Factor                  CDATA '1'
+    Offset                  CDATA '0'
+    Unit                    CDATA ''
+    UseScalingLimit         CDATA '0'
+    ScalingLowerLimit       CDATA '0'
+    ScalingUpperLimit       CDATA '0'
+    ScalingLowerLimitClosed CDATA '0'
+    ScalingUpperLimitClosed CDATA '0'
+    UnitPackageLink NMTOKEN #FIXED "&ti.Package;"
+    UnitName                CDATA ''
+    SemanticsPackageLink NMTOKEN #FIXED "&ti.Package;"
+    SemanticsName           CDATA ''
+    AutoARChildHdlg         CDATA "-1"
+    RangeName               CDATA ''
+>
+
+<!ATTLIST EnumerationElement %A.ChildItem;
+    Value      CDATA '0'
+    OrderIndex CDATA '0'
+    UpperLimit CDATA ''
+>
+
+<!ATTLIST ArrayPrimitive  %A.ChildItem;
+    NumElements   CDATA "1"
+    DataTypeLink  NMTOKEN #FIXED "&ti.DataType;"
+    ElementName   CDATA ""
+>
+
+<!ATTLIST RecordPrimitive %A.ChildItem;>
+
+<!ATTLIST RecordElement %A.ChildItem;
+  DataTypeLink NMTOKEN #FIXED "&ti.DataType;"
+  OrderIndex CDATA '0'
+>
+
+<!ATTLIST Boolean4Primitive %A.ChildItem;
+  DisplayFormat          CDATA ''
+  CalAccess                (RO | NA | RW | NS) "NA"
+  CompuMethodLink        NMTOKEN #FIXED "&ti.CompuMethod;"
+  DataConstrLink        NMTOKEN #FIXED "&ti.DataConstr;"
+>
+
+<!ATTLIST String4Primitive  %A.ChildItem; 
+  SizeSem          (Fix|Var) "Fix"
+  TextSize         CDATA '256'
+  FillChar         CDATA '0'
+  DisplayFormat    CDATA ''
+  CalAccess                (RO | NA | RW | NS) "NA"
+  BaseTypeLink     NMTOKEN #FIXED "&ti.BaseType;"
+  CompuMethodLink  NMTOKEN #FIXED "&ti.CompuMethod;"
+>
+
+<!ATTLIST TypeReference4Primitive  %A.ChildItem; 
+    DataTypeLink                  NMTOKEN #FIXED "&ti.DataType;"
+    CompuMethodLink               NMTOKEN #FIXED "&ti.CompuMethod;"
+    AdditionalNativeTypeQualifier CDATA ''
+    SymbolProps             CDATA ""
+    SymbolName              CDATA ""
+    TypeEmitter             CDATA ""
+>
+
+<!ATTLIST DataReference4Primitive  %A.ChildItem; 
+    DataTypeLink            NMTOKEN #FIXED "&ti.DataType;"
+    BaseTypeLink            NMTOKEN #FIXED "&ti.BaseType;"
+    AdditionalNativeTypeQualifier CDATA ''
+    SymbolProps             CDATA ""
+    SymbolName              CDATA ""
+    TypeEmitter             CDATA ""
+    ImplPolicy              (None|Const|Fixed|MPoint|Queued|Standard) "None"
+    TargetPolicy            (None|Const|Fixed|MPoint|Queued|Standard) "None"
+>
+
+<!ATTLIST NumericApp4Primitive  %A.ChildItem;
+    DisplayFormat           CDATA ''
+    CalAccess                (RO | NA | RW | NS) "NA"
+    CompuMethodLink         NMTOKEN #FIXED "&ti.CompuMethod;"
+    UnitLink                NMTOKEN #FIXED "&ti.Unit;"
+    DataConstrLink          NMTOKEN #FIXED "&ti.DataConstr;"
+>
+
+<!ATTLIST NumericImpl4Primitive  %A.ChildItem;
+    BaseTypeLink            NMTOKEN #FIXED "&ti.BaseType;"
+    DisplayFormat           CDATA ''
+    CalAccess                (RO | NA | RW | NS) "NA"
+    Alignment               CDATA '0'
+    UseAlignment            CDATA '0'
+    CompuMethodLink         NMTOKEN #FIXED "&ti.CompuMethod;"
+    AdditionalNativeTypeQualifier CDATA ''
+    SymbolProps             CDATA ""
+    SymbolName              CDATA ""
+    TypeEmitter             CDATA ""
+    DataConstrLink        NMTOKEN #FIXED "&ti.DataConstr;"
+>
+
+<!ATTLIST ArrApp4Primitive  %A.ChildItem;
+    NumElements             CDATA "1"
+    SizeSem                 (Fix|Var) "Fix"
+    ElementName             CDATA ""
+    DataTypeLink            NMTOKEN #FIXED "&ti.DataType;"
+    CalAccess               (RO | NA | RW | NS) "NA"
+>
+
+<!ATTLIST ArrImpl4Primitive  %A.ChildItem;
+    NumElements             CDATA "1"
+    SizeSem                 (Fix|Var) "Fix"
+    ElementName             CDATA ""
+    Alignment               CDATA '0'
+    UseAlignment            CDATA '0'
+    AdditionalNativeTypeQualifier CDATA ''
+    CalAccess               (RO | NA | RW | NS) "NA"
+    DisplayFormat           CDATA ""
+    SymbolProps             CDATA ""
+    SymbolName              CDATA ""
+    TypeEmitter             CDATA ""
+    UseInvalidValue         CDATA '0'
+    InvalidValue            CDATA ''
+    IVLiteralName           CDATA ''
+>
+
+<!ATTLIST RecApp4Primitive %A.ChildItem;
+    CalAccess                (RO | NA | RW | NS) "NA"
+>
+
+<!ATTLIST RecElementApp4 %A.ChildItem;
+    DataTypeLink            NMTOKEN #FIXED "&ti.DataType;"
+    OrderIndex              CDATA '0'
+>
+
+<!ATTLIST RecImpl4Primitive %A.ChildItem;
+    CalAccess                (RO | NA | RW | NS) "NA"
+    AdditionalNativeTypeQualifier CDATA ''
+    DisplayFormat           CDATA ""
+    Alignment               CDATA "0"
+    UseAlignment            CDATA '0'
+    SymbolProps             CDATA ""
+    SymbolName              CDATA ""
+    TypeEmitter             CDATA ""
+>
+
+<!ATTLIST RecElementImpl4 %A.ChildItem;
+    OrderIndex            CDATA '0'
+>
+
+<!-- Links -->
+
+<!ELEMENT DataTypeLink EMPTY>
+
+<!ATTLIST DataTypeLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.DataType;"
+>

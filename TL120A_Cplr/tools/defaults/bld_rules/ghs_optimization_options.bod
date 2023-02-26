@@ -1,0 +1,1256 @@
+###############################################################################
+# ghs_optimization_options.bod
+#
+#
+#
+###############################################################################
+
+CommandOptions {
+    GhsCompilerOptions {
+
+    ################ Optimization Options #######################
+
+	    OptimizationStrategy {
+		    # -Omaxdebug
+		    {
+			name="-Omaxdebug"
+			value=0
+			enumLabel="Maximum Debugging And No Inlining"
+			flags={"NOTWOPASSINLINE"}			
+		    }
+		    # -Omoredebug
+		    {
+			name="-Omoredebug"
+			value=1
+			enumLabel="Maximum Debugging And Limited Optimizations"
+		    }
+		    # -Odebug
+		    {
+			name="-Odebug"
+			value=2
+			enumLabel="Optimize for Debuggability"
+		    }
+		    # -Ogeneral
+		    {
+			name="-Ogeneral"
+			value=3
+			enumLabel="Optimize for General Use"
+		    }
+		    {
+			name="-O"
+			value=3
+			enumLabel="Optimize for General Use"
+		    }
+		    # -Osize
+		    {
+			name="-Osize"
+			value=4
+			enumLabel="Optimize for Size"
+		    }
+		    {
+			name="-Ospace"
+			value=4
+			enumLabel="Optimize for Size"
+		    }
+		    {
+			name="-OS"
+			value=4
+			enumLabel="Optimize for Size"
+		    }
+		    # -Ospeed
+		    {
+			name="-Ospeed"
+			value=5
+			enumLabel="Optimize for Speed"
+		    }
+		    {
+			name="-Otime"
+			value=5
+			enumLabel="Optimize for Speed"
+		    }
+		    {
+			name="--optimize"
+			value=5
+			enumLabel="Optimize for Speed"
+		    }
+		    # -Onone
+		    {
+			name="-Onone"
+			value=6
+			enumLabel="No Optimizations"
+		    }
+		    {
+			name="-ZO"
+			value=6
+			enumLabel="No Optimizations"
+		    }
+		    #
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Optimization Strategy"
+		    guiCategory="Optimization"
+		    commonLevel=1
+	    }
+	    InliningOptimizations {
+		    {
+			    name="-OI"
+			    value=0
+			    enumLabel="On"
+			    flags={"TWOPASSINLINE"}
+		    }
+		    {
+			    name="-Oinline"
+			    value=0
+			    enumLabel="On"
+			    flags={"TWOPASSINLINE"}
+		    }
+		    {
+			    name="-finline"
+			    value=0
+			    enumLabel="On"
+			    flags={"TWOPASSINLINE"}
+		    }
+		    {
+			    name="-Onoinline"
+			    value=1
+			    enumLabel="Off"
+			    flags={"NOTWOPASSINLINE"}
+		    }
+		    {
+			    name="-ZOI"
+			    value=1
+			    enumLabel="Off"
+			    flags={"NOTWOPASSINLINE"}
+		    }
+		    {
+			    name="-fno-inline"
+			    value=1
+			    enumLabel="Off"
+			    flags={"NOTWOPASSINLINE"}
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Intermodule Inlining"
+		    guiCategory="Optimization"
+		    commonLevel=1
+	    }
+
+	    VectorOptimizations {
+		    {
+			    name="-OV"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Ovector"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onovector"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Automatic Vector Optimization"
+		    guiCategory="Optimization"
+		    commonLevel=101
+	    }
+	    LinkOptimizations {
+	    #### elxr only
+		    {
+			    name="-Olink"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onolink"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Linker Optimizations"
+		    guiCategory="Optimization"
+		    commonLevel=101
+	    }
+
+	    InterproceduralOptimizations {
+		    {
+			    name="-Owholeprogram"
+			    value=0
+			    enumLabel="Wholeprogram"
+			    flags={"TWOPASSINTERPROC", "BLOCKONFIRSTFILE", "WHOLEPROG"}
+		    }
+		    {
+			    name="-Ointerproc"
+			    value=1
+			    enumLabel="Interprocedural"
+			    flags={"TWOPASSINTERPROC", "BLOCKONFIRSTFILE"}
+		    }
+		    {
+			    name="-Oip_analysis_only"
+			    value=2
+			    enumLabel="Analysis without optimizations"
+			    flags={"TWOPASSINTERPROC", "BLOCKONFIRSTFILE"}
+		    }
+		    {
+			    name="-Owholeprogram_libs"
+			    value=3
+			    enumLabel="Wholeprogram including libraries"
+			    flags={"TWOPASSINTERPROC", "BLOCKONFIRSTFILE", "INTERPROCLIBS", "WHOLEPROG"}
+			    hidden=true
+		    }
+		    {
+			    name="-Onoipa"
+			    value=4
+			    enumLabel="Off"
+			    flags={"NOTWOPASSINTERPROC"}
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Interprocedural Optimizations"
+		    guiCategory="Optimization"
+		    commonLevel=101
+	    }
+	    
+    ################ Optimization Scope #######################
+
+	    OptimizationScopeRestriction {
+		    name="-Olimit"
+		    enumList {
+			{
+			    name="peephole"
+			    value=0
+			    enumLabel="Restrict peephole optimization scope to increase debuggability"
+			}
+			{
+			    name="nopeephole"
+			    value=0
+			    enumLabel="Restrict peephole optimization scope to increase debuggability"
+			    antonym=true
+			}
+			{
+			    name="pipeline"
+			    value=1
+			    enumLabel="Restrict pipeline optimization scope to increase debuggability"
+			}
+			{
+			    name="nopipeline"
+			    value=1
+			    enumLabel="Restrict pipeline optimization scope to increase debuggability"
+			    antonym=true
+			}
+			}
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="EnumList"
+		    pass={"All"}
+		    guiLabel="Pipeline and Peephole Scope"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    InliningThresholds {
+		    {
+			    name="-OB"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onobig"
+			    value=1
+			    enumLabel="Off"
+			    flags={"FAKEOPTION"}
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Inline Larger Functions"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+    	    LoopUnrollBig {
+		    {
+			    name="-Ounrollbig"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onounrollbig"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Unroll Larger Loops"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    LoopUnroll8 {
+		    {
+			    name="-Ounroll8"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onounroll8"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Unroll Loops Up To 8 Times"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    LoopUnrollWithCondition {
+	    	{
+			name="--unroll_with_loop_cond_factor"
+		}
+		delimiter="Equal"
+		merge="Replace"
+		optionType="String"
+		pass={"All"}
+		guiLabel="Unroll Factor for Unrolling by Duplicating Loop Condition"
+		guiCategory="Optimization;Optimization Scope"
+		commonLevel=101
+		hidden=true
+	    }
+	    CompileSpeedVsOptimization {
+		    {
+			    name="-Omax"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Oslowcompile"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fexpensive-optimizations"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onomax"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Onoslowcompile"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-expensive-optimizations"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Maximize Optimizations"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    ExternalSymbols {
+		    name="-external"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Symbols Referenced Externally"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    ExternalSymbolFiles {
+		    name="-external_file"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    valueIsFilename=true
+		    disabled=true
+		    guiLabel="Files Listing External Symbols"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPOnesiteInliningOptimizations {
+		    {
+			    name="-Oiponesiteinlining"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoiponesiteinlining"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP One-Site Inlining"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPDeleteFunctionsOptimizations {
+		    {
+			    name="-Oipdeletefunctions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipdeletefunctions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Delete Functions"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPDeleteGlobalsOptimizations {
+		    {
+			    name="-Oipdeleteglobals"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipdeleteglobals"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Delete Globals"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPLocalizeGlobalsOptimizations {
+		    {
+			    name="-Oiplocalizeglobals"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoiplocalizeglobals"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Localize Globals"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPConstantGlobalsOptimizations {
+		    {
+			    name="-Oipconstglobals"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipconstglobals"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Constant Globals"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPSmallInliningOptimizations {
+		    {
+			    name="-Oipsmallinlining"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipsmallinlining"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Small Inlining"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPConstPropOptimizations {
+		    {
+			    name="-Oipconstprop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipconstprop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Constant Propagation"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPRemoveParamsOptimizations {
+		    {
+			    name="-Oipremoveparams"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipremoveparams"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Remove Parameters"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPLimitInliningOptimizations {
+		    {
+			    name="-Oiplimitinlining"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoiplimitinlining"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Limit Inlining"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPConstReturnsOptimizations {
+		    {
+			    name="-Oipconstantreturns"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipconstantreturns"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Constant Returns"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPRemoveReturnsOptimizations {
+		    {
+			    name="-Oipremovereturns"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipremovereturns"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Remove Returns"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPAliasReadsOptimizations {
+		    {
+			    name="-Oipaliasreads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipaliasreads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Alias Reads"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPAliasWritesOptimizations {
+		    {
+			    name="-Oipaliaswrites"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipaliaswrites"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Alias Writes"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPAliasLibFuncsOptimizations {
+		    {
+			    name="-Oipaliaslibfuncs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipaliaslibfuncs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Alias Lib Functions"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+	    IPAllocVariablesOptimizations {
+		    {
+			    name="-Oipallocvars"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoipallocvars"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="IP Allocate Variables"
+		    guiCategory="Optimization;Optimization Scope"
+		    commonLevel=101
+	    }
+
+    ################ Individual Functions #######################
+
+	    Fast {
+		    {
+			    name="--fast"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--fast"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-fast"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-fast"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Optimize Specific Functions for Speed"
+		    guiCategory="Optimization;Individual Functions"
+		    commonLevel=101
+	    }
+	    Small{
+		    {
+			    name="--small"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--small"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-small"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-small"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Optimize Specific Functions for Size"
+		    guiCategory="Optimization;Individual Functions"
+		    commonLevel=101
+	    }
+	    InliningFunctions {
+		    name="-OI"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Inline Specific Functions"
+		    guiCategory="Optimization;Individual Functions"
+		    flags={"TWOPASSINLINE"}
+		    commonLevel=101
+	    }
+	    LoopFunctions {
+		    name="-OL"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Loop Optimize Specific Functions"
+		    guiCategory="Optimization;Individual Functions"
+		    commonLevel=101
+	    }
+
+
+    ################ Minor Optimizations #######################
+
+	    InlineTiny{
+		    {
+			    name="--inline_tiny_functions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_inline_tiny_functions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Inline Tiny Functions"
+		    guiCategory="Optimization"
+	    }
+	    InliningConstantMathFunctions {
+		    {
+			    name="-Oinline_constant_math"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Ono_inline_constant_math"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Inline Constant Math Functions"
+		    guiCategory="Optimization"
+	    }
+	    InliningCMemoryFunctions {
+		    {
+			    name="-Omemfuncs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onomemfuncs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Inline C Memory Functions"
+		    guiCategory="Optimization"
+	    }
+	    ConvertCMemsetToMemclr {
+		    {
+			    name="-Omemclr"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onomemclr"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Convert C Memset to Memclr"
+		    guiCategory="Optimization"		    
+		    hidden=true
+	    }
+	    InliningCStringFunctions {
+		    {
+			    name="-Ostrfuncs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onostrfuncs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Onostrcpy"
+			    value=1
+			    enumLabel="Off"
+		    }		    
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Inline C String Functions"
+		    guiCategory="Optimization"
+	    }
+	    SimplifyCPrintFunctions {
+		    {
+			    name="-Oprintfuncs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoprintfuncs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"} 
+		    guiLabel="Simplify C Print Functions"
+		    guiCategory="Optimization"
+	    }
+	    ExplodeJumps {
+		    {
+			    name="-Oexplodejumps"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoexplodejumps"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Explode Jumps"
+		    guiCategory="Optimization"
+	    }
+	    LoopUnrolling {
+		    {
+			    name="-Ounroll"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-funroll-loops"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onounroll"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-unroll-loops"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Loop Unrolling"
+		    guiCategory="Optimization"
+	    }
+	    RegisterAllocationByColoring {
+		    {
+			    name="-overload"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nooverload"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Register Allocation by Coloring"
+		    guiCategory="Optimization"
+	    }
+	    AutoRegisterAlloc {
+		    {
+			    name="-autoregister"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noautoregister"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Automatic Register Allocation"
+		    guiCategory="Optimization"
+	    }
+	    CommonSubexpressionElimination {
+		    {
+			    name="-Ocse"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onocse"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Common Subexpression Elimination"
+		    guiCategory="Optimization"
+	    }
+	    TailRecursion {
+		    {
+			    name="-Otailrecursion"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onotailrecursion"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Tail Calls"
+		    guiCategory="Optimization"
+	    }
+	    ConstantPropagation {
+		    {
+			    name="-Oconstprop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoconstprop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Constant Propagation"
+		    guiCategory="Optimization"
+	    }
+	    MinMaxOptimization {
+		    {
+			    name="-Ominmax"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onominmax"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C/C++ Minimum/Maximum Optimization"
+		    guiCategory="Optimization"
+	    }
+	    MemoryOptimization {
+		    {
+			    name="-OM"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Omemory"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fno-volatile"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onomemory"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fvolatile"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Memory Optimization"
+		    guiCategory="Optimization"
+	    }
+	    OInitializers {
+	    #### 68K, ARM
+		    {
+			    name="-Oinitializers"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onoinitializers"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Data Definition Movement"
+		    guiCategory="Optimization"
+	    }
+	    LoopOptimizations {
+		    { 	name="-OL"
+			    value=0
+			    enumLabel="On"
+		    }
+		    { 	name="-Oloop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {	name="-Onoloop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Optimize All Appropriate Loops"
+		    guiCategory="Optimization"
+	    }
+	    PeepholeOptimizations {
+		    {
+			    name="-Opeep"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fpeephole"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onopeephole"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Onopeep"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-peephole"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Peephole Optimization"
+		    guiCategory="Optimization"
+	    }
+	    PipelineOptimizations {
+		    {
+			    name="-Opipeline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onopipeline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Pipeline Instruction Scheduling"
+		    guiCategory="Optimization"
+	    }
+	    CondOptimizations {
+		    {
+			    name="-Ocond"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onocond"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Conditional Instructions"
+		    guiCategory="Optimization"
+	    }
+	    DelayedFrame {
+		    {
+			    name="-Odelayframe"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onodelayframe"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Delayed Frame"
+		    guiCategory="Optimization"
+	    }
+	    GnuCompatibilityOptimizationOptions {
+		    {
+			    name="-O1"
+			    value=0
+			    enumLabel="O1"
+		    }
+		    {
+			    name="-O2"
+			    value=1
+			    enumLabel="O2"
+		    }
+		    {
+			    name="-O3"
+			    value=2
+			    enumLabel="O3"
+			    flags={"TWOPASSINLINE"}
+		    }
+		    {
+			    name="-O0"
+			    value=3
+			    enumLabel="O0"
+			    flags={"NOTWOPASSINLINE"}
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="GNU Compatibility Optimizations"
+		    guiCategory="Optimization"
+	    }
+	    VectorPeelOptimizations {
+		    {
+			    name="-Ovectorpeel"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onovectorpeel"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Vector Peeling"
+		    guiCategory="Optimization"
+	    }
+      }
+}

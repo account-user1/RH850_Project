@@ -1,0 +1,835 @@
+###############################################################################
+# ghs_message_options.bod
+#
+#
+#
+###############################################################################
+
+%if defined (FORTRAN_DRIVER)
+% define fortran_disabled false
+%else
+% define fortran_disabled true
+%endif
+
+CommandOptions {
+    GhsCompilerOptions {
+
+	    Warnings {
+		    {
+			    name="--warnings"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="-w"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    {
+			    name="--no_warnings"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Warnings"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }	
+	    Remarks {
+		    {
+			    name="--remarks"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="--no_remarks"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Remarks"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }	
+	    ErrMax {
+		    {
+			    name="-errmax"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-errormax"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--error_limit"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--error_limit"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    guiLabel="Maximum Number of Errors to Display"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+	    RedirectStdErr {
+		    {
+			    name="-stderr"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Redirect Error Output to File"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+	    # This is put into advanced since it's not normally useful for
+	    # GUI except for individual files since each file overwrites the
+	    # last.  Normally used with makefiles.
+	    RedirectStdErrOverwrite {
+		    {
+			    name="-stderr_overwrite"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Redirect Error Output to Overwriting File"
+		    guiCategory="Compiler Diagnostics"
+	    }
+    	    QuitAfterWarnings {
+		    {
+  	    		    name="--quit_after_warnings"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+  	    		    name="--no_quit_after_warnings"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Quit Building if Warnings are Generated"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+    	    }
+	    VersionInformation {
+		    {
+			    name="-V"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--version"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_version"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Display Version Information"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+	    VersionInfo {
+	    	    {
+			    name="-version_info"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_version_info"
+			    value=1
+			    enumLabel="Off"
+			    
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Write Version Info To .comment section"		    
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+    ################ Varying Message Format #######################
+
+	    BriefDiagnostics {
+		    {
+			    name="--brief_diagnostics"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_brief_diagnostics"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Brief Error Message Mode"
+		    guiCategory="Compiler Diagnostics;Varying Message Format"
+		    commonLevel=101
+	    }	
+	    WrapDiagnostics {
+		    {
+			    name="--wrap_diagnostics"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_wrap_diagnostics"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Line Wrap Messages"
+		    guiCategory="Compiler Diagnostics;Varying Message Format"
+		    commonLevel=101
+	    }	
+	    ErrorBasename{
+		    {
+			    name="-error_basename"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_error_basename"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Display Error Message Paths"
+		    guiCategory="Compiler Diagnostics;Varying Message Format"
+		    commonLevel=101
+	    }
+
+    ################ C/C++ Messages #######################
+
+	    FunctionsWithoutPrototypes {
+		    {
+			    name="--prototype_errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-needprototype"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-Xneedprototype"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-Werror-implicit-function-declaration"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--prototype_warnings"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-wantprototype"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-Xwantprototype"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-Wimplicit-function-declaration"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--prototype_silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-nowantprototype"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-noneedprototype"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-Zwantprototype"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-Zneedprototype"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Functions Without Prototypes"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+	    AsmMessages {
+		    {
+			    name="--asm_errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--asm_error"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--asm_illegal"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--asm_warnings"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-asmwarn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--asm_warn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--asm_silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-noasmwarn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="--no_asm_warn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="--no_asm_illegal"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Asm Statements"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }	
+    	    UnknownPragmaMessages {
+		    {
+			    name="--unknown_pragma_errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--unknown_pragma_warnings"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {		
+			    name="-unknownpragmawarn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {		
+			    name="-Wunknown-pragmas"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {		
+			    name="-Xunknownpragmawarn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--unknown_pragma_silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-nounknownpragmawarn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-Wno-unknown-pragmas"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-Zunknownpragmawarn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Unknown Pragma Directives"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }	
+	    IncorrectPragmaMessages {
+		    {
+			    name="--incorrect_pragma_errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--incorrect_pragma_warnings"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-pragmawarn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-Znopragmawarn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--incorrect_pragma_silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-nopragmawarn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="-Xnopragmawarn"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Incorrect Pragma Directives"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }		
+	    Ecom_Gnu_WFormat {
+		    #### ecom only ####
+		    {
+			    name="-Wformat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wno-format"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="printf and scanf Argument Type Checking"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+	    Ecom_Gnu_WImplicitInt {
+		    #### ecom only ####
+		    {
+			    name="-Wimplicit-int"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wno-implicit-int"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Implicit Int Return Type"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+	    Ecom_Gnu_WShadow {
+		    #### ecom only ####
+		    {
+			    name="-Wshadow"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wno-shadow"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Shadow Declarations"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+	    Ecom_Gnu_WTrigraphs {
+		    #### ecom only ####
+		    {
+			    name="-Wtrigraphs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wno-trigraphs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Trigraphs"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+	    Ecom_Gnu_WUndef {
+		    #### ecom only ####
+		    {
+			    name="-Wundef"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wno-undef"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Undefined Preprocessor Symbols"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+	    }
+    ################ Toolchain Diagnostics    #######################
+
+    	    SymbolBlacklistFile {
+	    #### elxr
+	    	    {
+			   name="-symbol_blacklist_file"
+			   delimiter="Equal"
+			   enumLabel="Use Symbol Blacklist"
+		    }
+		    optionType="String"
+		    merge="Replace"
+		    pass={"All"}
+		    disabled=false;
+		    guiLabel="Symbol Blacklist"
+		    guiCategory="Compiler Diagnostics"
+		    flags={"RELATIVEPATH"}
+		    valueIsFilename=true
+	    }
+    	    IdentifierBlacklistFile {
+	    #### elxr
+	    	    {
+			   name="-identifier_blacklist_file"
+			   delimiter="Equal"
+			   enumLabel="Use Identifier Blacklist"
+		    }
+		    optionType="String"
+		    merge="Replace"
+		    pass={"Compile"}
+		    disabled=false;
+		    guiLabel="Identifier Blacklist"
+		    guiCategory="Compiler Diagnostics"
+		    flags={"RELATIVEPATH"}
+		    valueIsFilename=true
+	    }	    
+
+    ################ Varying Message Severity #######################
+	    GreenHillsStandardMode {
+		    {
+		    	    name="--ghstd=none"
+			    value=0
+			    enumLabel="None"
+		    }
+		    {
+		    	    name="--ghstd=2008"
+			    value=1
+			    enumLabel="2008"
+		    }
+		    {
+		    	    name="--ghstd=2010"
+			    value=2
+			    enumLabel="2010"
+		    }
+		    {
+		    	    name="--ghstd=last"
+			    value=3
+			    enumLabel="last"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Green Hills Standard Mode"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+	    CodingStandard {
+		    {
+			    name="--coding_standard"
+			    delimiter="space"
+		    }
+		    {
+			    name="--coding_standard"
+			    delimiter="equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    valueIsFilename=true
+		    guiLabel="Coding Standard Profile"
+		    guiCategory="Compiler Diagnostics"
+		    commonLevel=101
+	    }
+	    DiagError {
+		    {
+			    name="--diag_error"
+			    delimiter="space"
+		    }
+		    {
+			    name="--diag_error"
+			    delimiter="equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Message to Error"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages;Varying Message Severity"
+		    commonLevel=101
+	    }
+	    DiagWarning {
+		    {
+			    name="--diag_warning"
+			    delimiter="space"
+		    }
+		    {
+			    name="--diag_warning"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Message to Warning"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages;Varying Message Severity"
+		    commonLevel=101
+	    }
+	    DiagRemark {
+		    {
+			    name="--diag_remark"
+			    delimiter="space"
+		    }
+		    {
+			    name="--diag_remark"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Message to Remark"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages;Varying Message Severity"
+		    commonLevel=101
+	    }
+	    DiagSuppress {
+		    {
+			    name="--diag_suppress"
+			    delimiter="space"
+		    }
+		    {
+			    name="--diag_suppress"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Message to Silent"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages;Varying Message Severity"
+		    commonLevel=101
+	    }
+	    AsmDiagError {
+		    {
+			    name="-asm_diag_error"
+			    delimiter="space"
+		    }
+		    {
+			    name="-asm_diag_error"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Assembler Message to Error"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    disabled=true
+		    commonLevel=101
+	    }
+	    AsmDiagWarning {
+		    {
+			    name="-asm_diag_warning"
+			    delimiter="space"
+		    }
+		    {
+			    name="-asm_diag_warning"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Assembler Message to Warning"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    disabled=true
+		    commonLevel=101
+	    }
+	    AsmDiagSuppress {
+		    {
+			    name="-asm_diag_suppress"
+			    delimiter="space"
+		    }
+		    {
+			    name="-asm_diag_suppress"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Set Assembler Message to Silent"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    disabled=true
+		    commonLevel=101
+	    }
+	    ElxrDiagError {
+		    {
+			    name="-elxr_diag_error"
+			    delimiter="space"
+		    }
+		    {
+			    name="-elxr_diag_error"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Set Linker Message to Error"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    commonLevel=101
+	    }
+	    ElxrDiagWarning {
+		    {
+			    name="-elxr_diag_warning"
+			    delimiter="space"
+		    }
+		    {
+			    name="-elxr_diag_warning"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Set Linker Message to Warning"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    commonLevel=101
+	    }
+	    ElxrDiagSuppress {
+		    {
+			    name="-elxr_diag_suppress"
+			    delimiter="space"
+		    }
+		    {
+			    name="-elxr_diag_suppress"
+			    delimiter="equal"
+		    }
+		    delimiter="space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Set Linker Message to Silent"
+		    guiCategory="Compiler Diagnostics;Toolchain Messages"
+		    commonLevel=101
+	    }
+	    DisplayErrorNumber {
+		    {
+			    name="--display_error_number"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_display_error_number"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Display Error Message Numbers"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages;Varying Message Severity"
+		    commonLevel=101
+	    }	
+	    
+    }
+}

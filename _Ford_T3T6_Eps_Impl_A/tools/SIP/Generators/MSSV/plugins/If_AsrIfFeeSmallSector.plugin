@@ -1,0 +1,121 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                            All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  If_AsrIfFeeSmallSector.plugin
+*  Module     :  Elisa
+*
+*  Description:  Checking rule for If_AsrIfFeeSmallSector
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Michael Goﬂ                    virgmi       Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2016-06-14    virgmi   -                Initial version
+*  
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x010000)
+  reg.SetPackageName("If_AsrIfFeeSmallSector")
+  reg.SetInputFiles(["Fee_30_SmallSector_Cfg.c"])
+  return reg
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : This function checks the correct module version
+**********************************************************************************************************************/
+def CheckVersions()
+{
+  var DEF_CFG_MAJOR = Define("FEE_30_SMALL_SECTOR_CFG_MAJOR_VERSION")
+  var DEF_CFG_MINOR = Define("FEE_30_SMALL_SECTOR_CFG_MINOR_VERSION")
+  
+  Assert(DEF_CFG_MAJOR.GetValueAsNumber, Equal, 1)
+  Assert(DEF_CFG_MINOR.GetValueAsNumber, Equal, 0)
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+* Requirements : 
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Verify that size of all configured write alignments is equal or smaller than FEE_30_SMALL_SECTOR_MAX_WRITE_ALIGNMENT", CheckAlignmentSize)
+  InvokeRule("Check QM inactive", CheckQMDefines)
+}
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : CheckAlignmentSize
+* Parameter    : None
+* Return value : None
+* Description  : Verifies that size of all configured write alignments is equal or smaller than FEE_30_SMALL_SECTOR_MAX_WRITE_ALIGNMENT
+* Requirements : SBSW_FEE_30_SMALL_SECTOR_26 (TCASE-395214)
+**********************************************************************************************************************/
+def CheckAlignmentSize()
+{
+  var DEF_MAX_ALIGNMENT = Define("FEE_30_SMALL_SECTOR_MAX_WRITE_ALIGNMENT")
+  var MaxAlignmentValue = DEF_MAX_ALIGNMENT.GetValueAsNumber()
+  
+  var DEF_NUMBER_PARTITIONS = Define("FEE_30_SMALL_SECTOR_NUMBER_OF_PARTITIONS") 
+  var NumberPartitionsValue = DEF_NUMBER_PARTITIONS.GetValueAsNumber()
+  
+  var partitionConfigList = Array("Fee_30_SmallSector_PartitionConfigList")
+  
+  for (var i = 0; i < NumberPartitionsValue; ++i)
+  {
+	var partitionStruct = partitionConfigList.GetElemAsStruct(i)
+	
+	var writeAlignment = partitionStruct.GetMemberAsNumber("PartitionWriteAlignment")
+	
+	Assert(writeAlignment, LessEqual, MaxAlignmentValue)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks the setting of QM-related preprocessor defines.
+*                Typically it checks that QM features are inactive in safety context.
+* Requirements : N/A
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  AssertDefineEquals("FEE_30_SMALL_SECTOR_DEV_ERROR_DETECT", "(STD_ON)")
+}

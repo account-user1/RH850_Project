@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+============================================================================
+
+Copyright (c) 2015 by Vector Informatik GmbH. All rights reserved.
+
+This software is copyright protected and proprietary to Vector Informatik GmbH.
+Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+All other rights remain with Vector Informatik GmbH.
+
+============================================================================
+
+This file is needed for internal use.
+Please do not modify this file, otherwise the software may behave in
+unexpected way.
+
+============================================================================
+                P R O J E C T
+============================================================================
+Module
+=======================
+Rh850P1xCAsr4Sub
+============================================================================
+                A U T H O R   I D E N T I T Y
+============================================================================
+Initials	Name                        	Company
+===== 	==============  =======================================================
+virgaj		Andrej Gazvoda   		Vector Informatik GmbH
+============================================================================
+                R E V I S I O N   H I S T O R Y
+===========================================================================
+Date        		Ver           Author		Description
+========    =======  ======= =================================================
+2015-01-12 	1.00.00   	virgaj			Integration of package AUTOSAR_RH850_P1x-C_MCAL_E4.40
+*************************************************************************************************************************
+-->
+<Settings>
+  <!-- external generator -->
+  <Settings Name="com.vector.cfg.gui.core.generators.ExtGenSteps">
+    <Settings Name="Dio">
+      <Setting Name="Active" Value="true"/>
+			<Setting Name="CommandLine" Value="C:\Renesas\CodeGenerator\code_generator\MCALGenerator.exe"/>
+			<Setting Name="GenerationParameters" Value="$(ProcessingEcuCFile) Dio ActiveEcuC ..\generate -o $(GenDataFolder)\Dio -ref Dio_Impl .\R403_DIO_P1x-C_BSWMDT.arxml"/>
+      <Setting Name="SupportsStandAloneValidation" Value="false"/>
+      <Setting Name="TransformationRequired" Value="false"/>
+			<Setting Name="WorkingDir" Value="$(DpaProjectFolder)\..\..\Dio\generate"/>
+      <Setting Name="SpecificAsVersionRequired" Value="false"/>
+      <Setting Name="RequiredAsVersion" Value="4.0.3"/>
+    </Settings>
+  </Settings>
+  <!-- internal behavior -->
+  <Settings Name="com.vector.cfg.model.services.bswintbehavior.synchronization.Settings">
+    <Settings Name="ModuleList">
+      <Settings Name="Dio">
+        <XmlSetting Name="Xml"><![CDATA[
+          <Synchronization>
+            <BswImplementationName>/Renesas/EcucDefs_Dio/Dio_Impl</BswImplementationName>
+            <ModuleName>Dio</ModuleName>
+            <ExclusiveAreas>
+              <ExclusiveArea name="DIO_REGISTER_PROTECTION"/>
+            </ExclusiveAreas>
+            <TimingEvents>
+            </TimingEvents>
+          </Synchronization>
+          ]]></XmlSetting>
+      </Settings>
+    </Settings>
+  </Settings>
+</Settings>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+	<AR-PACKAGES>
+		<AR-PACKAGE UUID="1a558d5f-22b4-45518-b46b-79a97233bf1d">
+			<SHORT-NAME>Nexteer</SHORT-NAME>
+			<ELEMENTS>
+				<ECUC-MODULE-DEF UUID="e844ce6b-b9e6-407b-925f-8fadc04bd789">
+					<SHORT-NAME>EcuTMeas</SHORT-NAME>
+					<DESC>
+						<L-2 L="EN">Ecuc Module for EcuTMeas configuration parameters</L-2>
+					</DESC>
+					<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+					<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+					<SUPPORTED-CONFIG-VARIANTS>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+					</SUPPORTED-CONFIG-VARIANTS>
+					<CONTAINERS>
+                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-beef-a0b7-9b75d12bc950">
+                            <SHORT-NAME>EcuTMeasGeneral</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">Misc configurations for EcuTMeas</L-2>
+                            </DESC>
+                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                            <PARAMETERS>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_DFTT_DEGCGRD_F32: Default Temp when at fault -->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbf31233aa">
+									<SHORT-NAME>DftTemp</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_DFTT_DEGCGRD_F32 : Default Temperature used under Fault Conditions</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>60</DEFAULT-VALUE>
+									<MAX>150</MAX>
+									<MIN>-50</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_FILTAU_HZ_F32: Filter Time Constant for TMeas filter -->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-aeaef31233aa">
+									<SHORT-NAME>FilTau</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_FILTAU_HZ_F32 : Sets the time constant for filtering the temperature measurement</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>100</DEFAULT-VALUE>
+									<MAX>100</MAX>
+									<MIN>0.1</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                            </PARAMETERS>
+                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-beef-a0b7-9b75d12bc950">
+                            <SHORT-NAME>EcuTMeasConversionTables</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">This is the container for configuring the tables that translate input analog measurements in volts to temperature</L-2>
+                            </DESC>
+                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                            <PARAMETERS>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_ECUTX_VOLT_U3P13: VoltsToTemperature X Table-->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbf31233aa">
+									<SHORT-NAME>EcuTx</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_ECUTX_VOLT_U3P13 : This is the X table used as part of a linear interoplation to translate input analog measurements in volts to temperature. Input Values should be in Single point precision.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>8</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>8</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>5</MAX>
+									<MIN>0</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_ECUTY_DEGCGRD_S8P7: VoltsToTemperature Y Table-->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbf31233aa">
+									<SHORT-NAME>EcuTy</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_ECUTY_DEGCGRD_S8P7 : This is the Y table used as part of a linear interoplation to translate input analog measurements in volts to temperature. Input Values should be in Single point precision.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>8</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>8</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>150</MAX>
+									<MIN>-50</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                            </PARAMETERS>
+                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-feed-a0b7-9b75d12bc950">
+                            <SHORT-NAME>EcuTMeasDiagc</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">This is the container for configuring the diagnostics setting for failure modes and NTCs of EcuT</L-2>
+                            </DESC>
+                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                            <PARAMETERS>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_NTC0X045FAILSTEP_CNT_U16-->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>Ntc0x045FailStep</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_NTC0X045FAILSTEP_CNT_U16 : Error Accumulator Test Step Size for Failed Ecu Temperature Test</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>3000</DEFAULT-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_NTC0X045PASSSTEP_CNT_U16-->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>Ntc0x045PassStep</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_NTC0X045PASSSTEP_CNT_U16 : Error Accumulator Test Step Size for Pass Ecu Temperature Test</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>3000</DEFAULT-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_RNGDIAGCMAX_DEGCGRD_F32-->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbfbb233aa">
+									<SHORT-NAME>MaxTLim</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_RNGDIAGCMAX_DEGCGRD_F32 : Diagnostic Maximum Temperature Limit. Identifies the max temperature allowed to accumulate a diagnostic error. </L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                    <DEFAULT-VALUE>145</DEFAULT-VALUE>
+									<MAX>151</MAX>
+									<MIN>-51</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                                <!-- PARAMETER DEFINITION: ECUTMEAS_RNGDIAGCMIN_DEGCGRD_F32-->
+                                <ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-beebee1233aa">
+									<SHORT-NAME>MinTLim</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ECUTMEAS_RNGDIAGCMIN_DEGCGRD_F32 : Diagnostic Minimum Temperature Limit. Identifies the min temperature allowed to accumulate a diagnostic error. </L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                    <DEFAULT-VALUE>-45</DEFAULT-VALUE>
+									<MAX>151</MAX>
+									<MIN>-51</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+                            </PARAMETERS>
+                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+					</CONTAINERS>
+				</ECUC-MODULE-DEF>
+			</ELEMENTS>
+		</AR-PACKAGE>
+	</AR-PACKAGES>
+</AUTOSAR>

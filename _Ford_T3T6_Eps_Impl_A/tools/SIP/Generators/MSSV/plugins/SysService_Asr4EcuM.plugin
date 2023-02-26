@@ -1,0 +1,115 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  SysService_Asr4EcuM.plugin
+*  Module     :  EcuM
+*  Description:  Entry point of Elisa Core.
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Jochen Vorreiter              visvjn        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2015-08-04    visvjn                    First version
+*  02.00.00   2016-03-11    visvjn   ESCAN00086779    Removed EcuMFixedDisabled check
+*             2016-03-11    visvjn   ESCAN00087793    Added Development error check
+*             2016-03-21    visvjn   ESCAN00087793    Added check for inactive defensive behavior
+*  3.00.00    2016-11-04    visvjn   FEATC-319        Added check for not configured PND references in wakeup sources
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x030000)
+  reg.SetPackageName("SysService_Asr4EcuM")
+  reg.SetInputFiles(["EcuM.c"])
+  return reg 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : Elisa_core calls this function to allow the plugin a version check against the BSW sources.
+**********************************************************************************************************************/
+def CheckVersions()
+{
+  AssertDefineEquals("SYSSERVICE_ASR4ECUM_VERSION", "0x0800u")
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+* Requirements : ADAPT: Enter here the references to the corresponding requirements
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check QM inactive", CheckQMDefines)
+  InvokeRule("Checks that defensive bahevior is inactive", EcuMDefBehaviorDisabled)
+  InvokeRule("Checks that no PNC is referenced", EcuMPNCRefDisabled)
+}
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks the setting of QM-related preprocessor defines.
+*                Typically it checks that QM features are inactive in safety context.
+* Requirements : N/A
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  AssertDefineIsStdOn("ECUM_DEV_ERROR_DETECT")
+}
+
+/**********************************************************************************************************************
+* Name         : EcuMDefBehaviorDisabled
+* Parameter    : None
+* Return value : None
+* Description  : Checks that EcuM Def Behavior is inactive.
+* Requirements : SMI-36
+**********************************************************************************************************************/
+def EcuMDefBehaviorDisabled()
+{
+  AssertDefineEquals("ECUM_GODOWNALLOWEDOFFLEXUSER", "STD_OFF")
+}
+
+/**********************************************************************************************************************
+* Name         : EcuMPNCRefDisabled
+* Parameter    : None
+* Return value : None
+* Description  : Checks that no Wakeup Source with PNC reference is configured.
+* Requirements : SMI-36
+**********************************************************************************************************************/
+def EcuMPNCRefDisabled()
+{
+  AssertDefineEquals("ECUM_PNCOFCOMMPNCS", "STD_OFF")
+}

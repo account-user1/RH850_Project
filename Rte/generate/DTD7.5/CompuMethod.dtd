@@ -1,0 +1,50 @@
+<!-- Entities -->
+
+<!ENTITY ti.CompuMethod "CompuMethod">
+<!ENTITY ti.Package     "Package">
+<!ENTITY ti.Unit        "Unit">
+
+<!-- Elements -->
+
+<!ELEMENT CompuMethod  (%C.DefAttr;, ATTRLink*, GenAttrList?, CompuScales*)>
+<!ELEMENT CompuScales (NAME,CompuScale*)>
+<!ELEMENT CompuScale  (DESC?,GenAttrList?)>
+
+<!ATTLIST CompuMethod %A.ConfigItem; 
+          DisplayFormat CDATA ''
+          Category      (Identical|Linear|ScaleLinear|TextTable|ScaleLinearTextTable|BitfieldTextTable) "Identical" 
+          UnitLink      NMTOKEN #FIXED "&ti.Unit;"
+          PackageLink   NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST CompuScales %A.ChildItem;
+    DefaultValue     CDATA ''
+>
+
+<!ATTLIST CompuScale %A.ChildItem;
+    OrderIndex       CDATA '0'
+    LowerLimit       CDATA '0'
+    UpperLimit       CDATA '255'
+    LowerLimitClosed CDATA '0'
+    UpperLimitClosed CDATA '0'
+    LowerLimitInfinity CDATA '0'
+    UpperLimitInfinity CDATA '0'
+    Factor           CDATA '1'
+    Offset           CDATA '0'
+    CompuConst       CDATA ''
+    Symbol           CDATA ''
+    Label            CDATA ''
+    Mask             CDATA ''
+>
+
+
+<!-- Links -->
+
+<!ELEMENT CompuMethodLink EMPTY>
+
+<!ATTLIST CompuMethodLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.CompuMethod;"
+>

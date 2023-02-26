@@ -1,0 +1,225 @@
+#
+#  DoubleCheck Default Configuration file
+#  Copyright 2006 (c) Green Hills Software, Inc
+#
+#  This file is always used automatically whenever DoubleCheck is used.
+#
+#  Its advisable to not edit this file and instead make another config file
+#  and add it to your project with -double_check.config=my_config.dcc
+#
+
+# These functions return potentially 0 values.  The return values cannot be
+# safely dereferenced without first being checked to see if they are 0.
+needs_null_check 0 malloc
+needs_null_check 0 calloc
+needs_null_check 0 fopen
+needs_null_check 0 realloc
+needs_null_check 0 strdup
+needs_null_check 0 vec_malloc
+needs_null_check 0 vec_calloc
+needs_null_check 0 vec_realloc
+
+# The return value of these functions must be de-allocated in some manner to
+# avoid resource leaks.
+malloced 0 malloc
+malloced 0 calloc
+malloced 0 realloc
+malloced 0 strdup
+# C++ new operator w/mangled name
+malloced 0 __nw__FUi
+# C++ new[] operator w/mangled name
+malloced 0 __nwa__FUi
+malloced 0 fopen
+malloced 0 vec_malloc
+malloced 0 vec_calloc
+malloced 0 vec_realloc
+malloced 0 rts_allocate
+
+# These functions return pointers to uninitialized pieces of memory
+uninit 0 malloc
+# C++ new operator w/mangled name
+uninit 0 __nw__FUi
+# C++ new[] operator w/mangled name
+uninit 0 __nwa__FUi
+uninit 0 vec_malloc
+
+# These functions return pieces of memory with a specific size indicated by
+# a specific argument.
+malloc_size 1 malloc
+malloc_size 1 calloc
+malloc_size 2 calloc
+malloc_size 2 realloc
+# C++ new operator w/mangled name
+malloc_size 1 __nw__FUi
+# C++ new[] operator w/mangled name
+malloc_size 1 __nwa__FUi
+malloc_size 1 vec_malloc
+malloc_size 1 vec_calloc
+malloc_size 2 vec_calloc
+malloc_size 2 vec_realloc
+
+# These functions free the specific argument resource.
+frees 1 free
+#realloc does not free its first argument when it returns NULL
+#frees 1 realloc
+frees 1 __dl__FPv
+frees 1 __dla__FPv
+frees 1 fclose
+frees 3 freopen
+frees 1 rts_deallocate
+
+# These functions dereference the specific argument.
+derefed 1 strlen
+derefed 1 strcat
+derefed 2 strcat
+derefed 1 strncat
+derefed 2 strncat
+derefed 1 strcmp
+derefed 2 strcmp
+derefed 1 strncmp
+derefed 2 strncmp
+derefed 1 strcpy
+derefed 2 strcpy
+derefed 1 strncpy
+derefed 2 strncpy
+derefed 1 strchr
+derefed 1 strrchr
+derefed 1 strspn
+derefed 2 strspn
+derefed 1 strcspn
+derefed 2 strcspn
+derefed 1 strpbrk
+derefed 2 strpbrk
+derefed 2 strtok
+derefed 1 strstr
+derefed 2 strstr
+derefed 1 strtod
+derefed 1 strtol
+derefed 1 strtoul
+derefed 1 atoi
+derefed 1 atof
+derefed 1 atol
+derefed 1 strcoll
+derefed 2 strcoll
+derefed 2 strxfrm
+derefed 1 memchr
+derefed 1 memcmp
+derefed 2 memcmp
+derefed 1 memcpy
+derefed 2 memcpy
+derefed 1 memmove
+derefed 2 memmove
+derefed 1 memset
+derefed 1 fopen
+derefed 2 fopen
+derefed 1 fclose
+derefed 1 freopen
+derefed 2 freopen
+derefed 3 freopen
+derefed 1 fseek
+derefed 1 fgetc
+derefed 1 getc
+derefed 2 ungetc
+derefed 1 fgets
+derefed 3 fgets
+derefed 1 gets
+derefed 1 fscanf
+derefed 2 fscanf
+derefed 1 scanf
+derefed 1 sscanf
+derefed 2 sscanf
+derefed 1 puts
+derefed 1 fputs
+derefed 2 fputs
+derefed 1 fseek
+derefed 1 fprintf
+derefed 2 fprintf
+derefed 1 printf
+derefed 1 sprintf
+derefed 2 sprintf
+derefed 3 snprintf
+derefed 1 vfprintf
+derefed 2 vfprintf
+derefed 1 vprintf
+derefed 1 vsprintf
+derefed 2 vsprintf
+derefed 3 vsnprintf
+derefed 1 fread
+derefed 1 fwrite
+
+# These functions do not copy the specific argument to global memory.
+unsaved 1 strlen
+unsaved 2 strcat
+unsaved 2 strncat
+unsaved 1 strcmp
+unsaved 2 strcmp
+unsaved 1 strncmp
+unsaved 2 strncmp
+unsaved 2 strcpy
+unsaved 2 strncpy
+unsaved 1 strspn
+unsaved 2 strspn
+unsaved 1 strcspn
+unsaved 2 strcspn
+unsaved 2 strpbrk
+unsaved 2 strtok
+unsaved 2 strstr
+unsaved 1 strtod
+unsaved 2 strtod
+unsaved 1 strtol
+unsaved 2 strtol
+unsaved 1 strtoul
+unsaved 2 strtoul
+unsaved 1 atoi
+unsaved 1 atof
+unsaved 1 atol
+unsaved 1 strcoll
+unsaved 2 strcoll
+unsaved 1 strxfrm
+unsaved 2 strxfrm
+unsaved 1 memcmp
+unsaved 2 memcmp
+unsaved 2 memcpy
+unsaved 2 memmove
+unsaved 1 fopen
+unsaved 2 fopen
+unsaved 1 freopen
+unsaved 2 freopen
+unsaved 2 fscanf
+unsaved 1 scanf
+unsaved 1 sscanf
+unsaved 2 sscanf
+unsaved 1 puts
+unsaved 1 fputs
+unsaved 1 fprintf
+unsaved 2 fprintf
+unsaved 1 printf
+unsaved 1 sprintf
+unsaved 2 sprintf
+unsaved 1 snprintf
+unsaved 3 snprintf
+unsaved 1 vfprintf
+unsaved 2 vfprintf
+unsaved 1 vprintf
+unsaved 1 vsprintf
+unsaved 2 vsprintf
+unsaved 1 vsnprintf
+unsaved 3 vsnprintf
+unsaved 1 fread
+unsaved 1 fwrite
+
+# These functions never return.
+no_return 0 exit
+no_return 0 abort
+no_return 0 _exit
+no_return 0 longjmp
+no_return_when_zero 1 assert
+no_return 0 _assert
+no_return 0 _wassert
+no_return 0 __assert
+no_return 0 __assert_fail
+no_return 0 __assert_perror_fail
+
+no_return_when_zero 1 __DoubleCheckAssertNonZero
+no_return_when_non_zero 1 __DoubleCheckAssertZero
+

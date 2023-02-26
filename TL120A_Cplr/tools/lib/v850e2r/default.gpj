@@ -1,0 +1,15 @@
+#!gbuild
+macro FLOAT_FUNCTIONS=true
+macro HARDWARE_SQRT=true
+macro DO_FHARD=true
+macro DO_FSOFT=true
+macro DO_FSINGLE=true
+macro TRGLIBDIR=${%expand_path(.)}
+primaryTarget=v800_standalone.tgt
+[Project]
+	-cpu=v850e2r
+	-no_callt
+	-no_divq
+	-v850e_mul_errata
+	-new_assembler
+../v850/v850lib.gpj	[Project]

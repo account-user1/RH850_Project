@@ -1,0 +1,44 @@
+DESCRIPTION:
+
+    The Green Hills C run-time libraries offer the option of run-time
+    error checking of common (but potentially nasty) programming bugs
+    such as null pointers, memory allocation errors, array boundary
+    overflows and others.
+
+    Normally these run-time error checks are reported in the debugger,
+    execution will halt, and an error message will be displayed in
+    the debugger's command pane.
+
+    Certain applications may require these run-time error tests to be
+    performed during in-field testing, without a debugger connection.
+
+    This example shows how to create a custom run-time error checking
+    handler function for this purpose.  If a run-time error condition
+    is detected, the user can supply their own function to handle and
+    report the condition.
+
+DEMO SCRIPT:
+
+1. Build Project, Connect to a Remote Target, and Open Debugger.
+
+    Build the project by selecting "Build->Rebuild All".
+
+    Connect to a remote target by clicking the Connect button in the Builder.
+
+    Open the Debugger on the Current Project.  This can be done by selecting 
+    the menu option "Debug->Debug Current Project..." or Click on the "Debug" 
+    icon in the tool bar.
+    
+2. Running the Application
+
+   Start the application by pressing the "F5" key.   The function 
+   "_rnerr" will be called when it detects a run-time error.  Set breakpoints in 
+   the switch statement to halt only on particular run-time errors.
+
+   
+   Some targets will generate a hardware exception when dividing by zero.  If 
+   you choose to continue after hitting this run-time error the behavior of 
+   the target may be unpredictable and keep the target application from 
+   completing the example.
+
+   See MULTI documentation for more information on run-time error checking.

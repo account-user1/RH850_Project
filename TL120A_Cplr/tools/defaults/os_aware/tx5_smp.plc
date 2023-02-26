@@ -1,0 +1,728 @@
+Placer 1.6
+Items=ThreadXInfo
+ ColWind(,,,838,486,"threadx.TX_ThreadXInformation","ThreadX Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =ThreadXInfo > -1
+ Text(0,0,0,NULL,"ThreadX Component",PNone)0xffffffff =tx_txinfo_component >-1
+ Text(0,0,0,NULL,"Count",PNone)0xffffffff =tx_txinfo_count >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Threads",0,0,0,0,"cli\"if(!((ULONG)_tx_thread_created_count & 0xc0000000)) {osaexplorer};\"")0xffffffff =bt_txinfo_thread >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Message Queues",0,0,0,0,"cli\"obr Queue_List TX_QUEUE_STRUCT; if(!((ULONG)_tx_queue_created_count & 0xc0000000)) {view *(struct TX_QUEUE_STRUCT *)&_tx_queue_created_ptr};obr Queue_Information TX_QUEUE_STRUCT\"")0xffffffff =bt_txinfo_queue >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Semaphores",0,0,0,0,"cli\"obr Semaphore_List TX_SEMAPHORE_STRUCT; if(!((ULONG)_tx_semaphore_created_count & 0xc0000000)) {view *(struct TX_SEMAPHORE_STRUCT *)&_tx_semaphore_created_ptr};obr Semaphore_Information TX_SEMAPHORE_STRUCT\"")0xffffffff =bt_txinfo_sem >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Event Flag Groups",0,0,0,0,"cli\"obr Event_Flags_List TX_EVENT_FLAGS_GROUP_STRUCT; if(!((ULONG)_tx_event_flags_created_count & 0xc0000000)) {view *(struct TX_EVENT_FLAGS_GROUP_STRUCT *)&_tx_event_flags_created_ptr};obr Event_Flags_Info TX_EVENT_FLAGS_GROUP_STRUCT\"")0xffffffff =bt_txinfo_ef >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Application Timers",0,0,0,0,"cli\"obr App_Timer_List TX_TIMER_STRUCT; if(!((ULONG)_tx_timer_created_count & 0xc0000000)) {view *(struct TX_TIMER_STRUCT *)&_tx_timer_created_ptr};obr App_Timer_Info TX_TIMER_STRUCT\"")0xffffffff =bt_txinfo_timer >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_thread_created_count + 0`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_txinfo_thread >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_queue_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_queue >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_semaphore_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_sem >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_event_flags_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_ef >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_block_pool_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_block >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_byte_pool_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_byte >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_timer_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_timer >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vdummy_ef >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy6 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy7 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy0 >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Block Pools",0,0,0,0,"cli\"obr Block_Pool_List TX_BLOCK_POOL_STRUCT; if(!((ULONG)_tx_block_pool_created_count & 0xc0000000)) {view *(struct TX_BLOCK_POOL_STRUCT *)&_tx_block_pool_created_ptr};obr Block_Pool_Info TX_BLOCK_POOL_STRUCT\"")0xffffffff =bt_txinfo_block >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Byte Pools",0,0,0,0,"cli\"obr Byte_Pool_List TX_BYTE_POOL_STRUCT; if(!((ULONG)_tx_byte_pool_created_count & 0xc0000000)) {view *(struct TX_BYTE_POOL_STRUCT *)&_tx_byte_pool_created_ptr};obr Byte_Pool_Info TX_BYTE_POOL_STRUCT\"")0xffffffff =bt_txinfo_byte >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy2 >-1
+ Text(0,0,0,NULL,"Version ID:",PNone)0xffffffff =tx_txinfo_version_id >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy8 >-1
+ TextField(0,0,0,1,19,"`print/a (char *)(_tx_version_id + 0)`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_version_id >-1
+ Text(0,0,0,NULL,"System Clock:",PNone)0xffffffff =tx_txinfo_sys_clock >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_timer_system_clock + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_sys_clock >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy9 >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy10 >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy11 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy3 >-1
+ ButtonSet(0,0,0,1,21,NULL,NULL,NULL,
+    (2,"Stack Check List","Ready List"),
+    (2,"cli(\"obr Thread_Stack_Check_List TX_THREAD_STRUCT; if(!((ULONG)_tx_thread_created_count & 0xc0000000)) {view *(struct TX_THREAD_STRUCT *)&_tx_thread_created_ptr; obrfreeze;};obr Thread_Information TX_THREAD_STRUCT\")","cli(\"obr Thread_Ready_List TX_THREAD_STRUCT; if(!((ULONG)_tx_thread_created_count & 0xc0000000)) {view *(struct TX_THREAD_STRUCT *)&_tx_thread_current_ptr[$tcbind.CurVPE]};obr Thread_Information TX_THREAD_STRUCT\")"),
+    -1,2,2,0,0,0,0,
+    (2,NULL,NULL),
+    (0),
+    (2,NULL,NULL),
+    (2,NULL,NULL),0,0)0xffffffff =bs_txinfo_threads >-1
+ Button(0,5,0,1,21,NULL,NULL,NULL,"Mutexes",0,0,0,0,"cli\"obr Mutex_List TX_MUTEX_STRUCT; if(!((ULONG)_tx_mutex_created_count & 0xc0000000)) {view *(struct TX_MUTEX_STRUCT *)&_tx_mutex_created_ptr};obr Mutex_Information TX_MUTEX_STRUCT\"")0xffffffff =bt_txinfo_mu >-1
+ TextField(0,0,0,1,19,"`print/d (ULONG)_tx_mutex_created_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_txinfo_mu >-1
+ Line(0,-200,0,0,1,NULL,PNone)0xffffffff =vdummy_mu >-1
+ MScrollList(0,0,0,1,125,"$vpe_counter = 0;$vpe_counter < ( sizeof(_tx_thread_current_ptr)/sizeof(*_tx_thread_current_ptr));$vpe_counter = $vpe_counter + 1;`print /x (unsigned short)($vpe_counter +0)`;`if(_tx_thread_current_ptr[$vpe_counter] != 0) { print /x _tx_thread_current_ptr[$vpe_counter]} else {print \"Idle\"}`;`if(_tx_thread_current_ptr[$vpe_counter] != 0) { print /a (_tx_thread_current_ptr[$vpe_counter]->tx_thread_name + 0)} else {print \" \"}`;`if(_tx_thread_current_ptr[$vpe_counter] != 0) { print /x _tx_thread_system_stack_ptr[$vpe_counter]} else {print \" \"}`;`if(_tx_thread_current_ptr[$vpe_counter] != 0) { print /d (((struct TX_THREAD_STRUCT *)(_tx_thread_current_ptr[$vpe_counter]))->tx_thread_run_count) + 0} else {print \" \"}`;if(_tx_thread_current_ptr[$vpe_counter] != 0){view *(struct TX_THREAD_STRUCT *)_tx_thread_current_ptr[$vpe_counter]}",NULL,NULL,0,1,2,(0,5),NULL,NULL,(1,"Processor",,"Current Thread",,"Name   ",,"SP     ",,"Run Count",),0)0xffffffff =current_VPE_threads >-1
+MinSizes
+Sizes
+ 40,(0),(),-10,0,0,0,0,1,1,Horizontal
+ 0,(40,22,15,16,17,18,19,20,21,28,32,33,34,36,39),(),120,0,0,0,0,1,1,Vertical
+ 31,(0),(35),-5,0,0,0,0,1,1,Horizontal
+ 35,(27),(),0,0,0,0,0,1,1,((30),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,)))Horizontal
+ 34,(),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,)Vertical
+ 33,(30),(),0,0,0,0,0,1,1,((31),(),0,0,0,0,0,1,1,)Vertical
+ 32,(),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,)Vertical
+ 29,(0),(35),-5,0,0,0,0,1,1,Horizontal
+ 28,(27),(),0,0,0,0,0,1,1,((29),(),0,0,0,0,0,1,1,)Vertical
+ 26,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 14,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 13,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 11,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 9,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 38,(0),(25),-5,0,0,0,0,1,1,Horizontal
+ 25,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,((23),(),0,0,0,0,0,1,1,((24),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,))))))Horizontal
+ 24,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 7,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 23,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 6,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 5,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 4,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 3,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 37,(0),(),-8,0,0,0,0,3,4,Horizontal
+ 21,(7),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 20,(24),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,)Vertical
+ 19,(23),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 18,(6),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,)Vertical
+ 17,(5),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 16,(4),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,)Vertical
+ 22,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 15,(3),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 36,(0),(),-5,0,0,0,0,1,1,Horizontal
+ 39,(37),(),0,0,0,0,0,1,1,((38),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (40),30,20,0,0,0,0,Top,Top,Bottom
+ (35),0,-200,0,0,0,0,Top,Top,Top
+ (34,33,32,28),0,-200,0,0,0,0,Left,Left,Left
+ (26,25),0,-200,0,0,0,0,Top,Top,Top
+ (22,21,20,19,18,17,16,15),0,-200,0,0,0,0,Left,Left,Left
+ (31),35,0,0,0,0,0,Left,Left,Right
+ (30,27,35),0,5,0,0,0,0,Right,Left,Left
+ (34),33,5,0,0,0,0,TBCenter,Top,Bottom
+ (33,30,31),28,5,0,0,0,0,TBCenter,Top,Bottom
+ (32),36,5,0,0,0,0,TBCenter,Top,Bottom
+ (29),35,0,0,0,0,0,Left,Left,Right
+ (28,27,29),32,5,0,0,0,0,TBCenter,Top,Bottom
+ (2),26,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (26),25,0,0,0,0,0,Left,Left,Right
+ (1),25,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (38,14,13,12,11,10,9,8),25,0,0,0,0,0,Left,Left,Right
+ (40,25,3,4,5,6,23,24,7),0,5,0,0,0,0,Left,Left,Left
+ (14,7,21),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (24,20,13),19,5,0,0,0,0,TBCenter,Top,Bottom
+ (23,19,12),39,5,0,0,0,0,TBCenter,Top,Bottom
+ (18,6,11),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (39,38,37),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,5,17),16,5,0,0,0,0,Top,Top,Bottom
+ (9,4,16),15,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,22),0,10,0,0,0,0,TBCenter,Top,Top
+ (15,3,8),22,10,0,0,0,0,Top,Top,Bottom
+ (36),21,15,0,0,0,0,TBCenter,Top,Bottom
+ (36),0,5,0,0,0,0,Left,Left,Left
+
+Items=Thread_Ready_List
+ ColWind(,,,625,112,"threadx.TX_ThreadReadyList","Thread Ready List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Thread_Ready_List > -1
+ MScrollList(0,0,0,1,1,"obrThreadReadyListInit(),$thrl_temp=(struct TX_THREAD_STRUCT *)$obrThreadReadyListPtr;obrThreadReadyListTerminate();obrThreadReadyListIterate(),$thrl_temp=(struct TX_THREAD_STRUCT *)$obrThreadReadyListPtr;`if($thrl_temp->tx_thread_name) {print/a ($thrl_temp->tx_thread_name + 0)} else {print/x $thrl_temp+0}`;`if ($thrl_temp == _tx_thread_current_ptr[$thrl_temp->tx_thread_mips32_mapped_vpe]) {print \"Executing\"} else {if ($thrl_temp->tx_thread_state == 0) {print \"Ready\"} else {if ($thrl_temp->tx_thread_state > 2) {print \"Suspended\"} else {if ($thrl_temp->tx_thread_state == 2) {print \"Terminated\"} else {print \"Completed\"}}}}`;`print/d (struct TX_THREAD_STRUCT *)$thrl_temp->tx_thread_time_slice + 0`/`print/d (struct TX_THREAD_STRUCT *)$thrl_temp->tx_thread_new_time_slice + 0`;`if ($thrl_temp == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($thrl_temp->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $thrl_temp->tx_thread_stack_end-$thrl_temp->tx_thread_stack_ptr+1}`/`print/d $thrl_temp->tx_thread_stack_end-$thrl_temp->tx_thread_stack_start+1`;`print/x (unsigned short)($thrl_temp->tx_thread_mips32_vpe_control & 0x00007fff)`;`print/d $thrl_temp->tx_thread_run_count + 0`;`print/x (unsigned short) $thrl_temp->tx_thread_mips32_mapped_vpe`;view *(struct TX_THREAD_STRUCT *)$thrl_temp",NULL,NULL,0,1,2,(0,7),NULL,NULL,(1,"Name            ",,"State     ",,"Time Slice",,"Stack Use   ",,"Excluded Cores",,"Run Count",,"Core    ",),1)0xffffffff =msl_ready >-1
+MinSizes
+Sizes
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=Queue_List
+ ColWind(,,,375,150,"threadx.TX_QueueList","Queue List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Queue_List > -1
+ MScrollList(0,0,0,1,1,"$ql_tempcont=((ULONG)_tx_queue_created_count && !((ULONG)_tx_queue_created_count & 0xc0000000) && (_tx_queue_created_ptr != 0)),$ql_temp = (struct TX_QUEUE_STRUCT *)_tx_queue_created_ptr;$ql_tempcont;$ql_temp = $ql_temp->tx_queue_created_next,$ql_tempcont = (($ql_temp != (struct TX_QUEUE_STRUCT *)_tx_queue_created_ptr) && ($ql_temp->tx_queue_id == 0x51554555));`if($ql_temp->tx_queue_name) {print/a ($ql_temp->tx_queue_name + 0)} else {print/x $ql_temp+0}`;`print/b (TX_QUEUE *)$ql_temp->tx_queue_message_size + 0;print \" ULONG\"; if($ql_temp->tx_queue_message_size != 1) {print \"s\"}`;`print/d $ql_temp->tx_queue_enqueued + 0`/`print/d $ql_temp->tx_queue_capacity + 0`;`if ($ql_temp->tx_queue_suspended_count) {print/d $ql_temp->tx_queue_suspended_count + 0} else {print \"None\"}`;view *(struct TX_QUEUE_STRUCT *)$ql_temp",NULL,NULL,0,1,2,(0,4),NULL,NULL,(1,"Name            ",,"Msg Size  ",,"Full     ",,"Suspended",),1)0xffffffff =msl_queue >-1
+MinSizes
+Sizes
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=Queue_Information
+ ColWind(,,,300,375,"threadx.TX_QueueInformation","Queue Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Queue_Information > -1
+ Text(0,0,0,NULL,"Queue Name:",PNone)0xffffffff =tx_q_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_queue_name) {print/a ($self->tx_queue_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_q_name >-1
+ Text(0,0,0,NULL,"Message Size:",PNone)0xffffffff =tx_q_message_size >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_queue_message_size + 0` ULONG`if($self.tx_queue_message_size != 1) {print \"s\"}`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_message_size >-1
+ Text(0,0,0,NULL,"Filled:",PNone)0xffffffff =tx_q_capacity >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_queue_enqueued + 0`/`print/d $self.tx_queue_capacity + 0` (`print/d $self.tx_queue_available_storage + 0` Remaining)",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_capacity >-1
+ Button(0,0,0,46,21,"memview ($self.tx_queue_read)",NULL,NULL,"Read",0,0,0,0,NULL)0xffffffff =bt_q_read >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_queue_read + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_read >-1
+ Button(0,0,0,44,21,"memview ($self.tx_queue_write)",NULL,NULL,"Write",0,0,0,0,NULL)0xffffffff =tx_q_write >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_queue_write + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_write >-1
+ Button(0,0,0,42,21,"memview ($self.tx_queue_start)",NULL,NULL,"Start",0,0,0,0,NULL)0xffffffff =tx_q_start >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_queue_start + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_start >-1
+ Text(0,0,0,NULL,"Queue End:",PNone)0xffffffff =tx_q_end >-1
+ TextField(0,0,0,1,19,"`print/x ($self.tx_queue_end + 0)`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_end >-1
+ Button(0,0,0,92,21,"obr -delete TX_QUEUE_STRUCT; view $self; obr Queue_Information TX_QUEUE_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_q_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_addr >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_q_susp_count >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_queue_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_q_susp_count >-1
+ MScrollList(0,0,0,1,1,"$qi_temp=0,$qi_temps=$self.tx_queue_suspension_list;$qi_temp<$self.tx_queue_suspended_count;++$qi_temp,$qi_temps=((struct TX_THREAD_STRUCT *)$qi_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$qi_temps)->tx_thread_name + 0`;`if(((struct TX_THREAD_STRUCT *)$qi_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$qi_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($qi_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($qi_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $qi_temps->tx_thread_stack_end-$qi_temps->tx_thread_stack_ptr+1}`/`print/d $qi_temps->tx_thread_stack_end-$qi_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$qi_temps",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_q_list >-1
+ Button(0,0,0,78,21,NULL,NULL,NULL,"Queue List",0,0,0,0,"cli\"obr Queue_List TX_QUEUE_STRUCT; if((ULONG)_tx_queue_created_count && !((ULONG)_tx_queue_created_count & 0xc0000000)) {view (struct TX_QUEUE_STRUCT *)_tx_queue_created_ptr};obr Queue_Information TX_QUEUE_STRUCT\"")0xffffffff =bt_q_list >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy6 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy7 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy8 >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =dummy9 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+MinSizes
+Sizes
+ 0,(21,22,23,24,25,26,27,28,29,20),(),65,0,0,7,1,1,1,Vertical
+ 19,(0),(21,22,23,24,25,26,27,28,29,20),-69,0,0,0,0,1,1,Vertical
+ 19,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 18,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 16,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 14,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(30),-5,0,0,0,0,1,1,Horizontal
+ 30,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,((15),(),0,0,0,0,0,1,1,((17),(),0,0,0,0,0,1,1,)))))))))Horizontal
+ 29,(17),(),0,0,0,0,0,1,1,((18),(),0,0,0,0,0,1,1,)Vertical
+ 28,(15),(),0,0,0,0,0,1,1,((16),(),0,0,0,0,0,1,1,)Vertical
+ 27,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 26,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 25,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 24,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 23,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 22,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 21,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (30),0,-200,0,0,0,0,Top,Top,Top
+ (29),0,-200,0,0,0,0,Left,Left,Left
+ (28),0,-200,0,0,0,0,Left,Left,Left
+ (27),0,-200,0,0,0,0,Left,Left,Left
+ (26),0,-200,0,0,0,0,Left,Left,Left
+ (25),0,-200,0,0,0,0,Left,Left,Left
+ (24),0,-200,0,0,0,0,Left,Left,Left
+ (23),0,-200,0,0,0,0,Left,Left,Left
+ (22),0,-200,0,0,0,0,Left,Left,Left
+ (21),0,-200,0,0,0,0,Left,Left,Left
+ (20),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (19),30,0,0,0,0,0,Left,Left,Left
+ (19),29,5,0,0,0,0,Top,Top,Bottom
+ (20),19,5,0,0,0,0,Top,Top,Bottom
+ (18),30,0,0,0,0,0,Left,Left,Right
+ (16),30,0,0,0,0,0,Left,Left,Right
+ (14),30,0,0,0,0,0,Left,Left,Right
+ (12),30,0,0,0,0,0,Left,Left,Right
+ (10),30,0,0,0,0,0,Left,Left,Right
+ (8),30,0,0,0,0,0,Left,Left,Right
+ (6),30,0,0,0,0,0,Left,Left,Right
+ (4),30,0,0,0,0,0,Left,Left,Right
+ (2),30,0,0,0,0,0,Left,Left,Right
+ (17,15,13,11,9,7,5,3,1,30),0,5,0,0,0,0,Right,Left,Left
+ (18,17,29),28,5,0,0,0,0,TBCenter,Top,Bottom
+ (16,15,28),27,5,0,0,0,0,TBCenter,Top,Bottom
+ (14,13,27),26,5,0,0,0,0,TBCenter,Top,Bottom
+ (12,11,26),25,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9,25),24,5,0,0,0,0,TBCenter,Top,Bottom
+ (8,7,24),23,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,23),22,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,22),21,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,21),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Mutex_List
+ ColWind(,,,375,150,"threadx.TX_MutexList","Mutex List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Mutex_List > -1
+ MScrollList(0,0,0,1,1,"$ml_tempcont=((ULONG)_tx_mutex_created_count && !((ULONG)_tx_mutex_created_count & 0xc0000000) && (_tx_mutex_created_ptr != 0)),$ml_temp = (struct TX_MUTEX_STRUCT *)_tx_mutex_created_ptr;$ml_tempcont;$ml_temp = $ml_temp->tx_mutex_created_next,$ml_tempcont = (($ml_temp != (struct TX_MUTEX_STRUCT *)_tx_mutex_created_ptr) && ($ml_temp->tx_mutex_id == 0x4d555445));`if($ml_temp->tx_mutex_name) {print/a ($ml_temp->tx_mutex_name + 0)} else {print/x $ml_temp+0}`;`if($ml_temp->tx_mutex_ownership_count) {if((TX_MUTEX *)$ml_temp->tx_mutex_owner->tx_thread_name) {print/a $ml_temp->tx_mutex_owner->tx_thread_name + 0} else {print (TX_MUTEX *)$ml_temp->tx_mutex_owner + 0}} else {print \"(None)\"}`;`print/d $ml_temp->tx_mutex_ownership_count + 0`;`if ($ml_temp->tx_mutex_suspended_count) {print/d $ml_temp->tx_mutex_suspended_count + 0} else {print \"None\"}`;view *(struct TX_MUTEX_STRUCT *)$ml_temp",NULL,NULL,0,1,2,(0,4),NULL,NULL,(1,"Name            ",,"Owner           ",,"Count    ",,"Suspended",),1)0xffffffff =msl_mutex >-1
+MinSizes
+Sizes
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=Mutex_Information
+ ColWind(,,,300,314,"threadx.TX_MutexInformation","Mutex Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Mutex_Information > -1
+ Text(0,0,0,NULL,"Mutex Name:",PNone)0xffffffff =tx_mu_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_mutex_name) {print/a ($self->tx_mutex_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_mu_name >-1
+ Button(0,0,0,54,21,"if($self->tx_mutex_ownership_count) {view *(struct TX_THREAD_STRUCT *)$self->tx_mutex_owner}",NULL,NULL,"Owner",0,0,0,0,NULL)0xffffffff =bt_mu_owner >-1
+ TextField(0,0,0,1,19,"`if ($self->tx_mutex_ownership_count) {  if($self->tx_mutex_owner->tx_thread_name) {    print/a ((($self->tx_mutex_owner)->tx_thread_name + 0) + 0)  } else {    print /x $self->tx_mutex_owner + 0  }} else {  print \"(None)\"}`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_owner >-1
+ Text(0,0,0,NULL,"Ownership Count:",PNone)0xffffffff =tx_mu_own_count >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_mutex_ownership_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_own_count >-1
+ Text(0,0,0,NULL,"Priority Inheritance:",PNone)0xffffffff =tx_mu_pri_inh_flag >-1
+ TextField(0,0,0,1,19,"`if($self.tx_mutex_inherit) {print \"Yes\"} else {print \"No\"}`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_pri_inh_flag >-1
+ Text(0,0,0,NULL,"Original Priority (PT):",PNone)0xffffffff =tx_mu_orig_pri >-1
+ TextField(0,0,0,1,19,"`if($self.tx_mutex_inherit) {print/d $self->tx_mutex_original_priority + 0; print \" (\"; print/d $self->tx_mutex_original_threshold + 0; print \")\"} else {print \"(N/A)\"}`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_orig_pri >-1
+ Button(0,0,0,92,21,"obr -delete TX_MUTEX_STRUCT; view $self; obr Mutex_Information TX_MUTEX_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =bt_mu_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_addr >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_mu_susp_count >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_mutex_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_mu_susp_count >-1
+ MScrollList(0,0,0,1,1,"$mi_temp=0,$mi_temps=$self.tx_mutex_suspension_list;$mi_temp<$self.tx_mutex_suspended_count;++$mi_temp,$mi_temps=((struct TX_THREAD_STRUCT *)$mi_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$mi_temps)->tx_thread_name + 0`;`if(((struct TX_THREAD_STRUCT *)$mi_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$mi_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($mi_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($mi_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $mi_temps->tx_thread_stack_end-$mi_temps->tx_thread_stack_ptr+1}`/`print/d $mi_temps->tx_thread_stack_end-$mi_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$mi_temps",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_mu_list >-1
+ Button(0,0,0,74,21,NULL,NULL,NULL,"Mutex List",0,0,0,0,"cli\"obr Mutex_List TX_MUTEX_STRUCT; if((ULONG)_tx_mutex_created_count && !((ULONG)_tx_mutex_created_count & 0xc0000000)) {view (struct TX_MUTEX_STRUCT *)_tx_mutex_created_ptr};obr Mutex_Information TX_MUTEX_STRUCT\"")0xffffffff =bt_mu_list >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =dummy9 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+ Line(0,-200,0,1,1,NULL,PNone)0xffffffff =vdummy_addr >-1
+MinSizes
+Sizes
+ 24,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 0,(17,18,19,20,24,22,16),(),65,0,0,7,1,1,1,Vertical
+ 15,(0),(16,22,24,20,19,18,17),-74,0,0,0,0,1,1,Vertical
+ 15,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 14,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(23),-5,0,0,0,0,1,1,Horizontal
+ 23,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,)))))))))Horizontal
+ 22,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 21,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 20,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 19,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 18,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 17,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (24,12,11),21,5,0,0,0,0,TBCenter,Top,Bottom
+ (23),0,-200,0,0,0,0,Top,Top,Top
+ (22),0,-200,0,0,0,0,Left,Left,Left
+ (21),0,-200,0,0,0,0,Left,Left,Left
+ (20),0,-200,0,0,0,0,Left,Left,Left
+ (19),0,-200,0,0,0,0,Left,Left,Left
+ (18),0,-200,0,0,0,0,Left,Left,Left
+ (17),0,-200,0,0,0,0,Left,Left,Left
+ (16),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (15),23,0,0,0,0,0,Left,Left,Left
+ (15),22,5,0,0,0,0,Top,Top,Bottom
+ (16),15,5,0,0,0,0,Top,Top,Bottom
+ (14),23,0,0,0,0,0,Left,Left,Right
+ (12),23,0,0,0,0,0,Left,Left,Right
+ (10),23,0,0,0,0,0,Left,Left,Right
+ (8),23,0,0,0,0,0,Left,Left,Right
+ (6),23,0,0,0,0,0,Left,Left,Right
+ (4),23,0,0,0,0,0,Left,Left,Right
+ (2),23,0,0,0,0,0,Left,Left,Right
+ (13,11,9,7,5,3,1,23),0,5,0,0,0,0,Right,Left,Left
+ (22,13,14),24,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9,21),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (8,7,20),19,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,19),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,18),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,17),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Semaphore_List
+ ColWind(,,,300,150,"threadx.TX_SemaphoreList","Semaphore List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Semaphore_List > -1
+ MScrollList(0,0,0,1,1,"$sl_tempcont=((ULONG)_tx_semaphore_created_count && !((ULONG)_tx_semaphore_created_count & 0xc0000000) && (_tx_semaphore_created_ptr != 0)),$sl_temp = (struct TX_SEMAPHORE_STRUCT *)_tx_semaphore_created_ptr;$sl_tempcont;$sl_temp = $sl_temp->tx_semaphore_created_next,$sl_tempcont = (($sl_temp != (struct TX_SEMAPHORE_STRUCT *)_tx_semaphore_created_ptr) && ($sl_temp->tx_semaphore_id == 0x53454d41));`if($sl_temp->tx_semaphore_name) {print/a ($sl_temp->tx_semaphore_name + 0)} else {print/x $sl_temp+0}`;`print/d $sl_temp->tx_semaphore_count + 0`;`if ($sl_temp->tx_semaphore_suspended_count > 0) {print/d $sl_temp->tx_semaphore_suspended_count + 0} else {print \"None\"}`;view *(struct TX_SEMAPHORE_STRUCT *)$sl_temp",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Count    ",,"Suspended",),1)0xffffffff =msl_sem_list >-1
+MinSizes
+Sizes
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+Positions
+ (1),0,7,0,0,0,0,Left,Left,Left
+ (1),0,15,0,0,0,0,Top,Top,Top
+
+Items=Semaphore_Information
+ ColWind(,,,300,249,"threadx.TX_SemaphoreInformation","Semaphore Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Semaphore_Information > -1
+ Button(0,0,0,102,21,NULL,NULL,NULL,"Semaphore List",0,0,0,0,"cli\"obr Semaphore_List TX_SEMAPHORE_STRUCT; if((ULONG)_tx_semaphore_created_count && !((ULONG)_tx_semaphore_created_count & 0xc0000000)) {view (struct TX_SEMAPHORE_STRUCT *)_tx_semaphore_created_ptr};obr Semaphore_Information TX_SEMAPHORE_STRUCT\"")0xffffffff =bt_sem_list >-1
+ Text(0,0,0,NULL,"Semaphore Name:",PNone)0xffffffff =tx_sem_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_semaphore_name) {print/a ($self->tx_semaphore_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_sem_name >-1
+ Text(0,0,0,NULL,"Semaphore Count:",PNone)0xffffffff =tx_sem_count >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_semaphore_count + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_sem_count >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_susp_list >-1
+ MScrollList(0,0,0,1,1,"$si_temp=0,$si_temps=$self.tx_semaphore_suspension_list;$si_temp<$self.tx_semaphore_suspended_count;++$si_temp,$si_temps=((struct TX_THREAD_STRUCT *)$si_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$si_temps)->tx_thread_name + 0`;`if(((struct TX_THREAD_STRUCT *)$si_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$si_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($si_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($si_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $si_temps->tx_thread_stack_end-$si_temps->tx_thread_stack_ptr+1}`/`print/d $si_temps->tx_thread_stack_end-$si_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$si_temps",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_susp_list >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+ Button(0,0,0,92,21,"obr -delete TX_SEMAPHORE_STRUCT; view $self; obr Semaphore_Information TX_SEMAPHORE_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_sem_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_sem_addr >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_semaphore_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_susp_count >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+MinSizes
+Sizes
+ 0,(8,9,13,15,1),(),40,0,0,7,1,1,1,Vertical
+ 14,(0),(10),-5,0,0,0,0,1,1,Horizontal
+ 15,(6),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 12,(0),(10),-5,0,0,0,0,1,1,Horizontal
+ 13,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 7,(0),(8,9,13,15,1),-44,0,0,0,0,1,1,Vertical
+ 7,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 5,(0),(10),-5,0,0,0,0,1,1,Horizontal
+ 3,(0),(10),-5,0,0,0,0,1,1,Horizontal
+ 10,(2),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,((1),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,))))Horizontal
+ 9,(4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,)Vertical
+ 8,(2),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (15),0,-200,0,0,0,0,Left,Left,Left
+ (14),10,0,0,0,0,0,Left,Left,Right
+ (15,6,14),13,5,0,0,0,0,TBCenter,Top,Bottom
+ (13),0,-200,0,0,0,0,Left,Left,Left
+ (1),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (12),10,0,0,0,0,0,Left,Left,Right
+ (12,11,13),9,5,0,0,0,0,TBCenter,Top,Bottom
+ (10),0,-200,0,0,0,0,Top,Top,Top
+ (9),0,-200,0,0,0,0,Left,Left,Left
+ (8),0,-200,0,0,0,0,Left,Left,Left
+ (7),15,5,0,0,0,0,Top,Top,Bottom
+ (7),10,0,0,0,0,0,Left,Left,Left
+ (5),10,0,0,0,0,0,Left,Left,Right
+ (3),10,0,0,0,0,0,Left,Left,Right
+ (6,4,2,10,11),0,5,0,0,0,0,Right,Left,Left
+ (5,4,9),8,5,0,0,0,0,TBCenter,Top,Bottom
+ (3,2,8),0,10,0,0,0,0,TBCenter,Top,Top
+ (1),7,5,0,0,0,0,Top,Top,Bottom
+
+Items=Event_Flags_List
+ ColWind(,,,300,150,"threadx.TX_EventFlagsList","Event Flags List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Event_Flags_List > -1
+ MScrollList(0,0,0,1,1,"$efl_tempcont=((ULONG)_tx_event_flags_created_count && !((ULONG)_tx_event_flags_created_count & 0xc0000000) && (_tx_event_flags_created_ptr != 0)),$efl_temp = (struct TX_EVENT_FLAGS_GROUP_STRUCT *)_tx_event_flags_created_ptr;$efl_tempcont;$efl_temp = $efl_temp->tx_event_flags_group_created_next,$efl_tempcont = (($efl_temp != (struct TX_EVENT_FLAGS_GROUP_STRUCT *)_tx_event_flags_created_ptr) && ($efl_temp->tx_event_flags_group_id == 0x4456444e));`if($efl_temp->tx_event_flags_group_name) {print/a ($efl_temp->tx_event_flags_group_name + 0)} else {print/x $efl_temp+0}`;`print/x $efl_temp->tx_event_flags_group_current + 0`;`if ($efl_temp->tx_event_flags_group_suspended_count > 0) {print/d $efl_temp->tx_event_flags_group_suspended_count+0} else {print \"None\"}`;view *(struct TX_EVENT_FLAGS_GROUP_STRUCT *)$efl_temp",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Flags      ",,"Suspended",),1)0xffffffff =msl_ef_list >-1
+MinSizes
+Sizes
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,15,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=Event_Flags_Info
+ ColWind(,,,400,244,"threadx.TX_EventFlagsInformation","Event Flags Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Event_Flags_Info > -1
+ Text(0,0,0,NULL,"Event Flags Name:",PNone)0xffffffff =tx_ef_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_event_flags_group_name) {print/a ($self->tx_event_flags_group_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_ef_name >-1
+ Text(0,0,0,NULL,"Current Event Flags:",PNone)0xffffffff =tx_ef_current >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_event_flags_group_current + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_ef_current >-1
+ Button(0,0,0,92,21,"obr -delete TX_EVENT_FLAGS_GROUP_STRUCT; view $self; obr Event_Flags_Info TX_EVENT_FLAGS_GROUP_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_ef_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_ef_addr >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_ef_susp >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_event_flags_group_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_ef_susp >-1
+ MScrollList(0,0,0,1,1,"$efi_temp=0,$efi_temps=$self.tx_event_flags_group_suspension_list;$efi_temp<$self.tx_event_flags_group_suspended_count;++$efi_temp,$efi_temps=((struct TX_THREAD_STRUCT *)$efi_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$efi_temps)->tx_thread_name + 0`;`print/x ((struct TX_THREAD_STRUCT *)$efi_temps)->tx_thread_suspend_info + 0` `eval($efi_tempaddl=((struct TX_THREAD_STRUCT *)$efi_temps)->tx_thread_suspend_option); if($efi_tempaddl & 0x02) {print \"&\"} else {print \"|\"}``if($efi_tempaddl & 0x01) {print \"C\"}`;`if(((struct TX_THREAD_STRUCT *)$efi_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$efi_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($efi_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($efi_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $efi_temps->tx_thread_stack_end-$efi_temps->tx_thread_stack_ptr+1}`/`print/d $efi_temps->tx_thread_stack_end-$efi_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$efi_temps",NULL,NULL,0,1,2,(0,4),NULL,NULL,(1,"Name            ",,"Flags Selected",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_ef_susp >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+ Button(0,0,0,106,21,NULL,NULL,NULL,"Event Flags List",0,0,0,0,"cli\"obr Event_Flags_List TX_EVENT_FLAGS_GROUP_STRUCT; if((ULONG)_tx_event_flags_created_count && !((ULONG)_tx_event_flags_created_count & 0xc0000000)) {view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)_tx_event_flags_created_ptr};obr Event_Flags_Info TX_EVENT_FLAGS_GROUP_STRUCT\"")0xffffffff =bt_ef_list >-1
+MinSizes
+Sizes
+ 0,(15,13,12,11,10),(),35,0,0,7,1,1,1,Vertical
+ 9,(0),(15,14,13,12,11,10),-39,0,0,0,0,1,1,Vertical
+ 9,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 8,(0),(14),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(14),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(14),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(14),-5,0,0,0,0,1,1,Horizontal
+ 14,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,)))Horizontal
+ 13,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 12,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 11,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 10,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (13),0,-200,0,0,0,0,Left,Left,Left
+ (15),9,5,0,0,0,0,Top,Top,Bottom
+ (9),13,5,0,0,0,0,Top,Top,Bottom
+ (14),0,-200,0,0,0,0,Top,Top,Top
+ (8,13,7),12,5,0,0,0,0,TBCenter,Top,Bottom
+ (12,5,6),11,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,11),10,5,0,0,0,0,TBCenter,Top,Bottom
+ (6),14,0,0,0,0,0,Left,Left,Right
+ (4),14,0,0,0,0,0,Left,Left,Right
+ (8),14,0,0,0,0,0,Left,Left,Right
+ (2),14,0,0,0,0,0,Left,Left,Right
+ (15),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (7,5,3,1,14),0,5,0,0,0,0,Right,Left,Left
+ (9),14,0,0,0,0,0,Left,Left,Left
+ (10),0,-200,0,0,0,0,Left,Left,Left
+ (12),0,-200,0,0,0,0,Left,Left,Left
+ (11),0,-200,0,0,0,0,Left,Left,Left
+ (2,1,10),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Block_Pool_List
+ ColWind(,,,375,150,"threadx.TX_BlockPoolList","Block Pool List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Block_Pool_List > -1
+ MScrollList(0,0,0,1,1,"$bll_tempcont=((ULONG)_tx_block_pool_created_count && !((ULONG)_tx_block_pool_created_count & 0xc0000000) && (_tx_block_pool_created_ptr != 0)),$bll_temp = (struct TX_BLOCK_POOL_STRUCT *)_tx_block_pool_created_ptr;$bll_tempcont;$bll_temp = $bll_temp->tx_block_pool_created_next,$bll_tempcont = (($bll_temp != (struct TX_BLOCK_POOL_STRUCT *)_tx_block_pool_created_ptr) && ($bll_temp->tx_block_pool_id == 0x424c4f43));`if($bll_temp->tx_block_pool_name) {print/a ($bll_temp->tx_block_pool_name + 0)} else {print/x $bll_temp+0}`;`print/d $bll_temp->tx_block_pool_block_size + 0`;`print/d $bll_temp->tx_block_pool_total - $bll_temp->tx_block_pool_available`/`print/d $bll_temp->tx_block_pool_total + 0`;`if ($bll_temp->tx_block_pool_suspended_count > 0) {print/d $bll_temp->tx_block_pool_suspended_count+0} else {print \"None\"}`;view *(struct TX_BLOCK_POOL_STRUCT *)$bll_temp",NULL,NULL,0,1,2,(0,4),NULL,NULL,(1,"Name            ",,"Block Size",,"Full     ",,"Suspended",),1)0xffffffff =msl_block_pool_list >-1
+MinSizes
+Sizes
+ 1,(0),(),-15,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,5,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Top,Top,Top
+
+Items=Block_Pool_Info
+ ColWind(,,,300,323,"threadx.TX_BlockPoolInformation","Block Pool Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Block_Pool_Info > -1
+ Text(0,0,0,NULL,"Block Pool Name:",PNone)0xffffffff =tx_block_pool_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_block_pool_name) {print/a ($self->tx_block_pool_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_block_pool_name >-1
+ Text(0,0,0,NULL,"Block Size:",PNone)0xffffffff =tx_block_pool_block_size >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_block_pool_block_size + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_block_size >-1
+ Button(0,0,0,52,21,"obr Block_Pool_Contents TX_BLOCK_POOL_STRUCT; view $self; obr Block_Pool_Info TX_BLOCK_POOL_STRUCT",NULL,NULL,"In Use",0,0,0,0,NULL)0xffffffff =tx_block_pool_free >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_block_pool_total - $self.tx_block_pool_available`/`print/d $self.tx_block_pool_total + 0` (`print/d $self.tx_block_pool_available + 0` Avail.)",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_free >-1
+ Text(0,0,0,NULL,"First Available:",PNone)0xffffffff =tx_block_pool_available_list >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_block_pool_available_list + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_available_list >-1
+ Text(0,0,0,NULL,"Pool Size:",PNone)0xffffffff =tx_block_pool_start >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_block_pool_size + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_start >-1
+ Button(0,0,0,92,21,"obr -delete TX_BLOCK_POOL_STRUCT; view $self; obr Block_Pool_Info TX_BLOCK_POOL_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_block_pool_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_addr >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_block_pool_susp >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_block_pool_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_block_pool_susp >-1
+ MScrollList(0,0,0,1,1,"$bli_temp=0,$bli_temps=$self.tx_block_pool_suspension_list;$bli_temp<$self.tx_block_pool_suspended_count;++$bli_temp,$bli_temps=((struct TX_THREAD_STRUCT *)$bli_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$bli_temps)->tx_thread_name + 0`;`if(((struct TX_THREAD_STRUCT *)$bli_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$bli_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($bli_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($bli_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $bli_temps->tx_thread_stack_end-$bli_temps->tx_thread_stack_ptr+1}`/`print/d $bli_temps->tx_thread_stack_end-$bli_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$bli_temps",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_block_pool_susp >-1
+ Button(0,0,0,100,21,NULL,NULL,NULL,"Block Pool List",0,0,0,0,"cli\"obr Block_Pool_List TX_BLOCK_POOL_STRUCT; if((ULONG)_tx_block_pool_created_count && !((ULONG)_tx_block_pool_created_count & 0xc0000000)) {view (struct TX_BLOCK_POOL_STRUCT *)_tx_block_pool_created_ptr};obr Block_Pool_Info TX_BLOCK_POOL_STRUCT\"")0xffffffff =bt_block_pool_list >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy6 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy7 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+MinSizes
+Sizes
+ 0,(16,23,22,21,20,19,18,17),(),55,0,0,7,1,1,1,Vertical
+ 15,(0),(16,23,22,21,20,19,18,17),-59,0,0,0,0,1,1,Vertical
+ 15,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 14,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 24,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,))))))Horizontal
+ 23,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 22,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 21,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 20,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 19,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 18,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 17,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 17,(),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (24),0,-200,0,0,0,0,Top,Top,Top
+ (23),0,-200,0,0,0,0,Left,Left,Left
+ (22),0,-200,0,0,0,0,Left,Left,Left
+ (21),0,-200,0,0,0,0,Left,Left,Left
+ (20),0,-200,0,0,0,0,Left,Left,Left
+ (19),0,-200,0,0,0,0,Left,Left,Left
+ (18),0,-200,0,0,0,0,Left,Left,Left
+ (17),0,-200,0,0,0,0,Left,Left,Left
+ (16),15,5,0,0,0,0,Top,Top,Bottom
+ (16),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (15),23,5,0,0,0,0,Top,Top,Bottom
+ (15),24,0,0,0,0,0,Left,Left,Left
+ (14),24,0,0,0,0,0,Left,Left,Right
+ (12),24,0,0,0,0,0,Left,Left,Right
+ (10),24,0,0,0,0,0,Left,Left,Right
+ (8),24,0,0,0,0,0,Left,Left,Right
+ (6),24,0,0,0,0,0,Left,Left,Right
+ (4),24,0,0,0,0,0,Left,Left,Right
+ (2),24,0,0,0,0,0,Left,Left,Right
+ (13,11,9,7,5,3,1,24),0,5,0,0,0,0,Right,Left,Left
+ (14,13,23),22,5,0,0,0,0,TBCenter,Top,Bottom
+ (12,11,22),21,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9,21),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (8,7,20),19,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,19),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,18),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,17),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Block_Pool_Contents
+ ColWind(,,,300,170,"threadx.TX_BlockPoolContents","Block Pool Contents",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Block_Pool_Contents > -1
+ Button(0,0,0,112,21,"view $self;",NULL,NULL,"Block Pool Name",0,0,0,0,NULL)0xffffffff =b_block_pool_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_block_pool_name) {print/a ($self->tx_block_pool_name + 0)} else {print/x $self + 0}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_block_pool_name >-1
+ MScrollList(0,5,0,1,1,"$blc_tempcont=$self->tx_block_pool_total,$blc_temp=$self->tx_block_pool_start;$blc_tempcont;$blc_temp = (int)$blc_temp + ($self->tx_block_pool_block_size + sizeof (void *)),$blc_tempcont -= 1;`print/x $blc_temp + sizeof(void *)`;`if (*(int *)($blc_temp) == $self) {print \"In Use\"} else {print \"Available\"}`;memview ((int *)($blc_temp + sizeof(void *)))",NULL,NULL,0,1,2,(0,2),NULL,NULL,(1,"Address     ",,"Status   ",),0)0xffffffff =msl_block_contents >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+MinSizes
+Sizes
+ 3,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 3,(0),(4),-20,0,0,0,0,1,1,Vertical
+ 2,(3),(1),10,0,0,0,0,1,1,Horizontal
+ 4,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (3),4,5,0,0,0,0,Top,Top,Bottom
+ (4),0,-200,0,0,0,0,Left,Left,Left
+ (4),0,5,0,0,0,0,Top,Top,Top
+ (2),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),3,0,0,0,0,0,Left,Left,Left
+
+Items=Byte_Pool_List
+ ColWind(,,,330,150,"threadx.TX_BytePoolList","Byte Pool List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Byte_Pool_List > -1
+ MScrollList(0,0,0,1,1,"$byl_tempcont=((ULONG)_tx_byte_pool_created_count && !((ULONG)_tx_byte_pool_created_count & 0xc0000000) && (_tx_byte_pool_created_ptr != 0)),$byl_temp = (struct TX_BYTE_POOL_STRUCT *)_tx_byte_pool_created_ptr;$byl_tempcont;$byl_temp = $byl_temp->tx_byte_pool_created_next,$byl_tempcont = (($byl_temp != (struct TX_BYTE_POOL_STRUCT *)_tx_byte_pool_created_ptr) && ($byl_temp->tx_byte_pool_id == 0x42595445));`if($byl_temp->tx_byte_pool_name) {print/a ($byl_temp->tx_byte_pool_name + 0)} else {print/x $byl_temp+0}`;`print/d $byl_temp->tx_byte_pool_size - $byl_temp->tx_byte_pool_available`/`print/d $byl_temp->tx_byte_pool_size + 0`;`if ($byl_temp->tx_byte_pool_suspended_count > 0) {print/d $byl_temp->tx_byte_pool_suspended_count + 0} else {print \"None\"}`;view *(struct TX_BYTE_POOL_STRUCT *)$byl_temp",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Full       ",,"Suspended",),1)0xffffffff =msl_byte_pool_list >-1
+MinSizes
+Sizes
+ 1,(0),(),-15,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=Byte_Pool_Info
+ ColWind(,,,350,323,"threadx.TX_BytePoolInformation","Byte Pool Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Byte_Pool_Info > -1
+ Text(0,0,0,NULL,"Byte Pool Name:",PNone)0xffffffff =tx_byte_pool_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_byte_pool_name) {print/a ($self->tx_byte_pool_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_byte_pool_name >-1
+ Button(0,0,0,52,21,"obr Byte_Pool_Contents TX_BYTE_POOL_STRUCT; view $self; obr Byte_Pool_Info TX_BYTE_POOL_STRUCT",NULL,NULL,"In Use",0,0,0,0,NULL)0xffffffff =tx_byte_pool_free >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_byte_pool_size - $self.tx_byte_pool_available`/`print/d $self.tx_byte_pool_size + 0` (`print/d $self.tx_byte_pool_available + 0` Avail.)",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_free >-1
+ Text(0,0,0,NULL,"Fragments:",PNone)0xffffffff =tx_byte_pool_fragments >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_byte_pool_fragments + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_fragments >-1
+ Text(0,0,0,NULL,"Search Address:",PNone)0xffffffff =tx_byte_pool_search >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_byte_pool_search +0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_search >-1
+ Text(0,0,0,NULL,"Memory Start:",PNone)0xffffffff =tx_byte_pool_start >-1
+ TextField(0,0,0,1,19,"`print/x $self.tx_byte_pool_start + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_start >-1
+ Button(0,0,0,92,21,"obr -delete TX_BYTE_POOL_STRUCT; view $self; obr Byte_Pool_Info TX_BYTE_POOL_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_byte_pool_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_addr >-1
+ Text(0,0,0,NULL,"Suspended Threads:",PNone)0xffffffff =tx_byte_pool_susp >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_byte_pool_suspended_count+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_byte_pool_susp >-1
+ MScrollList(0,0,0,1,1,"$byi_temp=0,$byi_temps=$self.tx_byte_pool_suspension_list;$byi_temp<$self.tx_byte_pool_suspended_count;++$byi_temp,$byi_temps=((struct TX_THREAD_STRUCT *)$byi_temps)->tx_suspended_next;`print/a ((struct TX_THREAD_STRUCT *)$byi_temps)->tx_thread_name + 0`;`print/d ((struct TX_THREAD_STRUCT *)$byi_temps)->tx_thread_suspend_info + 0`;`if(((struct TX_THREAD_STRUCT *)$byi_temps->tx_thread_timer.tx_timer_internal_remaining_ticks + 0) != 0xffffffff) {print/d ((struct TX_THREAD_STRUCT *)$byi_temps)->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"Forever\"}`;`if ($byi_temps == _tx_thread_current_ptr[$tcbind.CurVPE]) {print/d ($byi_temps->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $byi_temps->tx_thread_stack_end-$byi_temps->tx_thread_stack_ptr+1}`/`print/d $byi_temps->tx_thread_stack_end-$byi_temps->tx_thread_stack_start+1`;view *(struct TX_THREAD_STRUCT *)$byi_temps",NULL,NULL,0,1,2,(0,4),NULL,NULL,(1,"Name            ",,"Request",,"Timeout ",,"Stack Use   ",),0)0xffffffff =msl_byte_pool_susp >-1
+ Button(0,0,0,94,21,NULL,NULL,NULL,"Byte Pool List",0,0,0,0,"cli\"obr Byte_Pool_List TX_BYTE_POOL_STRUCT; if((ULONG)_tx_byte_pool_created_count && !((ULONG)_tx_byte_pool_created_count & 0xc0000000)) {view (struct TX_BYTE_POOL_STRUCT *)_tx_byte_pool_created_ptr};obr Byte_Pool_Info TX_BYTE_POOL_STRUCT\"")0xffffffff =bt_byte_pool_list >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy6 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy7 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy8 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+MinSizes
+Sizes
+ 0,(17,18,19,20,21,22,23,16),(),55,0,0,7,1,1,1,Vertical
+ 15,(0),(17,18,19,20,21,22,23,16),-59,0,0,0,0,1,1,Vertical
+ 15,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 14,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(24),-5,0,0,0,0,1,1,Horizontal
+ 24,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,)))))))Horizontal
+ 23,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 22,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 21,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 20,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 19,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 18,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 17,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (24),0,-200,0,0,0,0,Top,Top,Top
+ (23),0,-200,0,0,0,0,Left,Left,Left
+ (22),0,-200,0,0,0,0,Left,Left,Left
+ (21),0,-200,0,0,0,0,Left,Left,Left
+ (20),0,-200,0,0,0,0,Left,Left,Left
+ (19),0,-200,0,0,0,0,Left,Left,Left
+ (18),0,-200,0,0,0,0,Left,Left,Left
+ (17),0,-200,0,0,0,0,Left,Left,Left
+ (16),15,5,0,0,0,0,Top,Top,Bottom
+ (16),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (15),23,5,0,0,0,0,Top,Top,Bottom
+ (15),24,0,0,0,0,0,Left,Left,Left
+ (14),24,0,0,0,0,0,Left,Left,Right
+ (12),24,0,0,0,0,0,Left,Left,Right
+ (10),24,0,0,0,0,0,Left,Left,Right
+ (8),24,0,0,0,0,0,Left,Left,Right
+ (6),24,0,0,0,0,0,Left,Left,Right
+ (4),24,0,0,0,0,0,Left,Left,Right
+ (2),24,0,0,0,0,0,Left,Left,Right
+ (13,11,9,7,5,3,1,24),0,5,0,0,0,0,Right,Left,Left
+ (14,13,23),22,5,0,0,0,0,TBCenter,Top,Bottom
+ (12,11,22),21,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9,21),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (20,7,8),19,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,19),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,18),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,17),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Byte_Pool_Contents
+ ColWind(,,,360,201,"threadx.TX_BytePoolContents","Byte Pool Contents",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =Byte_Pool_Contents > -1
+ Button(0,0,0,106,21,"view $self;",NULL,NULL,"Byte Pool Name",0,0,0,0,NULL)0xffffffff =b_byte_pool_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_byte_pool_name) {print/a ($self->tx_byte_pool_name + 0)} else {print/x $self+0}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_byte_pool_name >-1
+ MScrollList(0,5,0,1,1,"$byc_tempcont=$self->tx_byte_pool_fragments,$byc_temp=$self->tx_byte_pool_start,$byc_tempcorrupt=0;($byc_tempcont>0);$byc_temp=(*(int *)$byc_temp),$byc_tempcont -= 1,$byc_tempcont=( $byc_tempcorrupt ? 0 : $byc_tempcont);`print/x $byc_temp + 2*sizeof(void *)`;`if(($byc_temp-$self->tx_byte_pool_start) > $self->tx_byte_pool_size) {$byc_tempcont=1;$byc_tempcorrupt=1;print \"Corrupted\"} else {if (*((int *)($byc_temp)+1) != 0xffffeeee) {print \"In Use\"} else {print \"Available\"}}`;`if($byc_tempcorrupt) {print \"Unknown\"} else {if ($byc_tempcont != 1) {eval($byc_tempsize = (int)(*(int *)$byc_temp) - (int)$byc_temp - 2*sizeof(void *));print/d $byc_tempsize + 0} else {eval($byc_tempsize = 0); print \"0 (End)\"}}`;memview ((int *)($byc_temp + 2*sizeof(void *)))",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Address     ",,"Status   ",,"Size  ",),0)0xffffffff =msl_byte_contents >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+MinSizes
+Sizes
+ 3,(0),(),-15,0,0,0,0,1,1,Horizontal
+ 3,(0),(4),-20,0,0,0,0,1,1,Vertical
+ 2,(3),(1),10,0,0,0,0,1,1,Horizontal
+ 4,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (3),4,5,0,0,0,0,Top,Top,Bottom
+ (4),0,-200,0,0,0,0,Left,Left,Left
+ (4),0,5,0,0,0,0,Top,Top,Top
+ (2),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),3,0,0,0,0,0,Left,Left,Left
+
+Items=App_Timer_List
+ ColWind(,,,300,150,"threadx.TX_AppTimerList","Timer List",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =App_Timer_List > -1
+ MScrollList(0,0,0,1,1,"$til_tempcont=((ULONG)_tx_timer_created_count && !((ULONG)_tx_timer_created_count & 0xc0000000) && (_tx_timer_created_ptr != 0)),$til_temp=(struct TX_TIMER_STRUCT *)_tx_timer_created_ptr;$til_tempcont;$til_temp = $til_temp->tx_timer_created_next,$til_tempcont = (($til_temp != (struct TX_TIMER_STRUCT *)_tx_timer_created_ptr) && ($til_temp->tx_timer_id == 0x4154494d));`if($til_temp->tx_timer_name) {print/a ($til_temp->tx_timer_name + 0)} else {print/x $til_temp+0}`;`if($til_temp->tx_timer_internal.tx_timer_internal_list_head) {print/d $til_temp->tx_timer_internal.tx_timer_internal_remaining_ticks + 0; print \"/\";print/d $til_temp->tx_timer_internal.tx_timer_internal_re_initialize_ticks + 0} else {print \"Inactive\"}`;`print/pb $til_temp->tx_timer_internal.tx_timer_internal_timeout_function + 0`;view *(struct TX_TIMER_STRUCT *)$til_temp",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Ticks   ",,"Callback     ",),1)0xffffffff =msl_timer_list >-1
+MinSizes
+Sizes
+ 1,(0),(),-10,0,0,0,0,1,1,Horizontal
+ 1,(0),(),-15,0,0,0,0,1,1,Vertical
+Positions
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left
+
+Items=App_Timer_Info
+ ColWind(,,,300,184,"threadx.TX_AppTimerInformation","Timer Information",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =App_Timer_Info > -1
+ Text(0,0,0,NULL,"Timer Name:",PNone)0xffffffff =tx_timer_name >-1
+ TextField(0,0,0,1,19,"`if($self->tx_timer_name) {print/a ($self->tx_timer_name + 0)} else {print \"(None)\"}`",NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tf_timer_name >-1
+ Text(0,0,0,NULL,"Ticks:",PNone)0xffffffff =tx_timer_ticks >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_timer_internal.tx_timer_internal_remaining_ticks + 0`/`print/d $self.tx_timer_internal.tx_timer_internal_re_initialize_ticks + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_timer_ticks >-1
+ Button(0,0,0,66,21,"eval($etopc = $self.tx_timer_internal.tx_timer_internal_timeout_function); e $etopc;",NULL,NULL,"Callback",0,0,0,0,NULL)0xffffffff =tx_timer_callback >-1
+ TextField(0,0,0,1,19,"`print/pb $self.tx_timer_internal.tx_timer_internal_timeout_function + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_timer_callback >-1
+ Button(0,0,0,70,21,NULL,NULL,NULL,"Timer List",0,0,0,0,"cli\"obr App_Timer_List TX_TIMER_STRUCT; if((ULONG)_tx_timer_created_count && !((ULONG)_tx_timer_created_count & 0xc0000000)) {view (struct TX_TIMER_STRUCT *)_tx_timer_created_ptr};obr App_Timer_Info TX_TIMER_STRUCT\"")0xffffffff =bt_timer_list >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hdummy1 >-1
+ Button(0,0,0,92,21,"obr -delete TX_TIMER_STRUCT; view $self; obr App_Timer_Info TX_TIMER_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_timer_addr >-1
+ TextField(0,0,0,1,19,"`print/x $self+0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_timer_addr >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy4 >-1
+ Text(0,0,0,NULL,"Parameter:",PNone)0xffffffff =tx_timer_param >-1
+ TextField(0,0,0,1,19,"`print/d $self.tx_timer_internal.tx_timer_internal_timeout_param + 0`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_timer_param >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy5 >-1
+ Text(0,0,0,NULL,"State:",PNone)0xffffffff =tx_timer_state >-1
+ TextField(0,0,0,1,19,"`if($self.tx_timer_internal.tx_timer_internal_list_head) {print \"Active\"} else {print \"Inactive\"}`",NULL,NULL,0xc1acc10,0,NULL)0xffffffff =tf_timer_state >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =dummy6 >-1
+MinSizes
+Sizes
+ 19,(0),(11),-5,0,0,0,0,1,1,Horizontal
+ 20,(18),(),0,0,0,0,0,1,1,((19),(),0,0,0,0,0,1,1,)Vertical
+ 0,(7,17,14,10,9,8,20),(),45,0,0,0,0,1,1,Vertical
+ 16,(0),(11),-5,0,0,0,0,1,0,Horizontal
+ 17,(15),(),0,0,0,0,0,1,1,((16),(),0,0,0,0,0,1,1,)Vertical
+ 13,(0),(11),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(11),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(11),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(11),-5,0,0,0,0,1,1,Horizontal
+ 11,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,((15),(),0,0,0,0,0,1,1,))))Horizontal
+ 14,(12),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,)Vertical
+ 10,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 9,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 8,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (20),0,-200,0,0,0,0,Left,Left,Left
+ (19),11,0,0,0,0,0,Left,Left,Right
+ (19,18,20),9,5,0,0,0,0,TBCenter,Top,Bottom
+ (17),0,-200,0,0,0,0,Left,Left,Left
+ (16),11,0,0,0,0,0,Left,Left,Right
+ (16,15,17),10,5,0,0,0,0,TBCenter,Top,Bottom
+ (14),0,-200,0,0,0,0,Left,Left,Left
+ (11),0,-200,0,0,0,0,Top,Top,Top
+ (10),0,-200,0,0,0,0,Left,Left,Left
+ (9),0,-200,0,0,0,0,Left,Left,Left
+ (8),0,-200,0,0,0,0,Left,Left,Left
+ (7),14,5,0,0,0,0,Top,Top,Bottom
+ (7),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (13),11,0,0,0,0,0,Left,Left,Right
+ (6),11,0,0,0,0,0,Left,Left,Right
+ (4),11,0,0,0,0,0,Left,Left,Right
+ (2),11,0,0,0,0,0,Left,Left,Right
+ (18,12,5,3,1,11,15),0,5,0,0,0,0,Right,Left,Left
+ (14,12,13),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,5,6),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,9),8,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,8),0,10,0,0,0,0,TBCenter,Top,Top

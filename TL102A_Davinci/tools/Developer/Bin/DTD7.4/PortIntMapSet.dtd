@@ -1,0 +1,80 @@
+<!-- Entities -->
+
+<!ENTITY ti.PortIntMapSet           "PortIntMapSet">
+<!ENTITY ti.PortInterfaceMap        "PortInterfaceMap">
+<!ENTITY ti.Package                 "Package">
+<!ENTITY ti.PortInterface           "PortInterface">
+<!ENTITY ti.DataElementPrototype    "DataElementPrototype">
+<!ENTITY ti.RecElementApp4          "RecElementApp4">
+<!ENTITY ti.RecElementImpl4         "RecElementImpl4">
+<!ENTITY ti.TypeReference4Primitive "TypeReference4Primitive">
+<!ENTITY ti.UnionElement            "UnionElement">
+
+<!-- Elements -->
+
+<!ELEMENT PortIntMapSet         (%C.DefAttr;, ATTRLink*, GenAttrList?, PortInterfaceMap*)>
+<!ELEMENT PortInterfaceMap      (%C.DefAttr;,ATTRLink*, GenAttrList?, DataProtMap* )>
+<!ELEMENT DataProtMap           (ATTRLink*, DataProtSubMap*, TxtTblMap* )>
+<!ELEMENT TxtTblMap             ( TxtTblPair* )>
+<!ELEMENT TxtTblPair            EMPTY>
+<!ELEMENT DataProtSubMap        ( FirstInstRef, SecondInstRef )>
+<!ELEMENT FirstInstRef          ( DPElemRef* )>
+<!ELEMENT SecondInstRef         ( DPElemRef* )>
+<!ELEMENT DPElemRef             ( ATTRLink*  )>
+
+<!ATTLIST PortIntMapSet %A.ConfigItem;
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST PortInterfaceMap %A.ChildItem;
+    FirstPILink    NMTOKEN #FIXED "&ti.PortInterface;"
+    SecondPILink   NMTOKEN #FIXED "&ti.PortInterface;"
+>
+
+<!ATTLIST DataProtMap %A.ChildItem;
+    FirstDEPLink    NMTOKEN #FIXED "&ti.DataElementPrototype;"
+    SecondDEPLink   NMTOKEN #FIXED "&ti.DataElementPrototype;"
+>
+
+<!ATTLIST DataProtSubMap %A.ChildItem;>
+<!ATTLIST FirstInstRef   %A.ChildItem;>
+<!ATTLIST SecondInstRef  %A.ChildItem;>
+
+<!ATTLIST DPElemRef %A.ChildItem;
+        OrderIndex      CDATA "0"
+        REApp4Link        NMTOKEN #FIXED "&ti.RecElementApp4;"
+        REImpl4Link       NMTOKEN #FIXED "&ti.RecElementImpl4;"
+        TypeRefLink       NMTOKEN #FIXED "&ti.TypeReference4Primitive;"
+        UnionElementLink  NMTOKEN #FIXED "&ti.UnionElement;"
+>
+
+<!ATTLIST TxtTblMap %A.ChildItem;
+        IdentMap        CDATA "0"
+        MapDir          (Both|First2Second|Second2First) "First2Second"
+        FirstMask       CDATA ""
+        SecondMask      CDATA ""
+>
+
+<!ATTLIST TxtTblPair %A.ChildItem;
+        FirstVal       CDATA ""
+        SecondVal      CDATA ""
+>
+
+<!-- Links -->
+
+<!ELEMENT PortIntMapSetLink EMPTY>
+<!ELEMENT PortInterfaceMapLink EMPTY>
+
+<!ATTLIST PortIntMapSetLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PortIntMapSet;"
+>
+
+<!ATTLIST PortInterfaceMapLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PortInterfaceMap;"
+>

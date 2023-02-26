@@ -1,0 +1,23 @@
+<!-- Entities -->
+
+<!ENTITY ti.PBVCriterion          "PBVCriterion">
+<!ENTITY ti.CompuMethod           "CompuMethod">
+<!ENTITY ti.Package               "Package">
+
+<!-- Elements -->
+
+<!ELEMENT PBVCriterion       (%C.DefAttr;, ATTRLink*, GenAttrList?)>
+
+<!ATTLIST PBVCriterion        %A.ConfigItem;
+    PackageLink          NMTOKEN #FIXED "&ti.Package;"
+    CompuMethodLink      NMTOKEN #FIXED "&ti.CompuMethod;"
+>
+
+<!-- Links -->
+
+<!ELEMENT PBVCriterionLink EMPTY>
+<!ATTLIST PBVCriterionLink 
+          %A.LinkGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PBVCriterion;"
+  >

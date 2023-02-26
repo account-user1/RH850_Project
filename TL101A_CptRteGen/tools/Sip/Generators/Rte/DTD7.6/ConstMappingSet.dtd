@@ -1,0 +1,31 @@
+<!-- Entities -->
+
+<!ENTITY ti.ConstMappingSet       "ConstMappingSet">
+<!ENTITY ti.ConstantMap           "ConstantMap">
+<!ENTITY ti.Package               "Package">
+<!ENTITY ti.Constant              "Constant">
+
+<!-- Elements -->
+
+<!ELEMENT ConstMappingSet (%C.DefAttr;, ATTRLink?, GenAttrList?, ConstantMap*)>
+<!ELEMENT ConstantMap     (ATTRLink*)>
+
+<!ATTLIST ConstMappingSet %A.ConfigItem;
+          PackageLink     NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST ConstantMap %A.ChildItem;
+    AppConstantLink   NMTOKEN #FIXED "&ti.Constant;"
+    ImplConstantLink  NMTOKEN #FIXED "&ti.Constant;"
+>
+
+<!-- Links -->
+
+<!ELEMENT ConstMappingSetLink EMPTY>
+
+<!ATTLIST ConstMappingSetLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.ConstMappingSet;"
+>

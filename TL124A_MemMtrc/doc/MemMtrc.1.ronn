@@ -1,0 +1,197 @@
+MemMtrc(1) -- Nexteer Embedded Software Memory Metrics Tool
+========================================================================================================================
+
+## SYNOPSIS ##
+MemMtrc.py [-h] [-v] [-V] [-d DIR] [-e ELF] [-f FEE] [-l LINKER] [-o OUTPUT] [-t {text,html}]
+
+
+
+## DESCRIPTION ##
+This tool was designed to extract information regarding memory utilization metrics from EA4 software projects and
+generate documentation detailing the utilization.  The tool automatically parses information from a series of
+configuration and output files in an integration project to produce an output report.
+
+
+## ARGUMENTS ##
+The memory metrics tool does not take any positional arguments.  For information on the optional arguments, see below.
+
+
+
+## OPTIONS ##
+* `-h`, `--help`:
+    Print a help message and exit.
+
+* `-v`, `--verbose`:
+    Output detailed information to console.  This option can be doubled (i.e. `-vv` or `--verbose --verbose`) to emit
+    even more information.  Be aware that all commands issued to Synergy CCM will be printed to the console when this
+    argument is doubled.  This includes the `start` command which includes a plain-text copy of your password.
+
+* `-V`, `--version`:
+    Display version information and exit.
+
+* `-d DIR`, `--dir DIR`:
+    The path to the integration prject.  If omitted, the tool will search '../../' for a subdirectory containing
+    *_EPS_* in the name.  The path will be used to search for the input files listed below according to the standard
+    project structure.  If absolute pathes to each of the inputs are supplied using optional arguments for `--fee`,
+    `--linker`, and `--elf` then this argument may be omitted as it will be ignored by the tool.
+
+* `-e ELF`, `--elf ELF`:
+    Specify the absolute path to the .elf file generated when the project is compiled.  This file will be parsed for
+    information pertaining to the size of sections as well as the software name and version number.  If omitted, the
+    tool will search within the output directory in the integration project.  See `--dir` for more information about how
+    the integration project path is specified or derrived.
+
+* `-f FEE`, `--fee FEE`:
+    Specify the path to the FEE configuration file.  The tool parses this file to gather information regarding the FEE
+    block configuration and usage for the project.  If omitted, the autosar/Config/ECUC directory will be searched
+    within the integration project for a file named EPS_Fee_ecuc.arxml.  See `--dir` for more information about how
+    the integration project path is specified or derrived.
+
+* `-l LINKER`, `--linker LINKER`:
+    Specify the path to the linker command file for the project.  This file is used to parse memory sections to
+    understand how Flash memory has been divided and to provide information about the utilization of each of the
+    sections.  This tool expects specific formatting of part of this file to work properly, see the
+    [LINKER COMMAND FILE FORMAT][] section below for additional information.  If omitted, the tool will search within
+    the tools directory of the integration project for a single file ending with a *.ld extension.  Further, the
+    filename of the linker command file is expected to be the model number of the processor for the project.  This
+    information is used to select the proper Processor class within the tool which defines the memory ranges that are
+    available for the program..  See `--dir` for more information about how the integration project path is specified
+    or derrived.
+
+* `-o OUTPUT`, `--output OUTPUT`:
+    Report output path and/or filename.  Defaults to ../output/MemoryMetrics_<Timestamp> if omitted.  The output
+    directory will be created if it does not exist.
+
+* `-t {text,html}`, `--type {text,html}`:
+    Report output format.  The filename extension will automatically be updated if incorrect to apply the proper
+    extension for the selected format.  The text format does not produce a file as output but rather prints the results
+    to the terminal through stdout.
+
+
+
+## RETURN VALUES ##
+* `1`:
+    Either the path specified by `--dir` is invalid or the tool was unable to locate the integration project directory
+    in the folder up two directories from the tool script.  If `--dir` is omitted, the tool will search the directory
+    that is located two directories up from `MemMtrc.py` for a directory containing *_EPS_* in the name.  If not found
+    this return code will be given.  If the integration project does not reside in a folder with EPS in the name, then
+    the `--dir` switch must be used to manually specify the integration project folder path.
+
+* `2`:
+    Either the .elf file provided using the `--elf` switch is invalid or the tool was unable to automatically locate
+    an .elf file in the output folder of the integration project.  This can happen if the project has never been built.
+
+* `3`:
+    Either the .arxml file specified for the `--fee` switch is invalid or the tool was unable to find the file in the
+    ECUC config file directory (see `--fee` in the [OPTIONS][] section for more information about the default, expected
+    filename and path).
+
+* `4`:
+    Either the linker command file specified with the `--linker` switch is invalid or the tool was unable to find a
+    linker command file (file with a .ld extension) in the tools folder of the integration project.
+
+* `5`:
+    The tool attempted to find the linker command file in the tools folder of the integration project automatically but
+    found more than one file with a .ld extension.  To respolve this issue, use the `--linker` switch so manually
+    specify the linker command file that should be used.
+
+* `6`:
+    Invalid output filename provided for the `--output` switch.  Ensure that the filename is provided or omit the
+    `--output` option.
+
+* `7`:
+    Invalid report format type specified.  The only supported report output formats are text and html.
+
+* `8`:
+    The processor type, as determined from the linker command file name, is unknown by this tool.  An update to this
+    tool to define the processor type is required.  Without this change the tool is not aware of the memory types or
+    ranges for the processor.
+
+
+
+## LINKER COMMAND FILE FORMAT ##
+The linker command file must follow a specific format for the memory metrics tool to properly parse information from the
+file.  The MEMORY section within the file must be split into sections separated by two newline characters.  The sctions
+may also start with a comment (/&ast; ... &ast;/) containing a textual description of the section.  Below is an example
+configuration taken from the T1xx GA project:
+
+    MEMORY
+    {
+        /* Bootloader 0x0000 0000 - 0x0000 17FFF */
+
+        /* Application */
+        GMAPPHEADER      (RX) : ORIGIN=0x00018000, LENGTH=0x00000200
+        APPVECTOR        (RX) : ORIGIN=0x00018200, LENGTH=0x00000800
+        APP_FLASH        (RX) : ORIGIN=0x00018A00, LENGTH=0x0009F3F0
+        APP_CRC          (RX) : ORIGIN=0x000B7DF0, LENGTH=0x00000010
+        APPPRESENCE      (RX) : ORIGIN=0x000B7E00, LENGTH=0x00000100
+        APP_VALDBLK      (RX) : ORIGIN=0x000B7F00, LENGTH=0x00000100
+
+        /* Calibration 2 - Feature Cals */
+        GMCAL2HEADER     (RX) : ORIGIN=0x000B8000, LENGTH=0x00000020
+        CAL2_FLASH       (RX) : ORIGIN=0x000B8020, LENGTH=0x00007DD0
+        CAL2_CRC         (RX) : ORIGIN=0x000BFDF0, LENGTH=0x00000010
+        CAL2PRESENCE     (RX) : ORIGIN=0x000BFE00, LENGTH=0x00000100
+        CAL2_VALDBLK     (RX) : ORIGIN=0x000BFF00, LENGTH=0x00000100
+
+        /* Calibration 1 - System Cals */
+        GMCAL1HEADER     (RX) : ORIGIN=0x000C0000, LENGTH=0x00000020
+        CAL1_FLASH       (RX) : ORIGIN=0x000C0020, LENGTH=0x0001FDD0
+        CAL1_CRC         (RX) : ORIGIN=0x000DFDF0, LENGTH=0x00000010
+        CAL1PRESENCE     (RX) : ORIGIN=0x000DFE00, LENGTH=0x00000100
+        CAL1_VALDBLK     (RX) : ORIGIN=0x000DFF00, LENGTH=0x00000100
+
+        /* Calibration 3 - Performance Cals */
+        GMCAL3HEADER     (RX) : ORIGIN=0x000E0000, LENGTH=0x00000020
+        CAL3_FLASH       (RX) : ORIGIN=0x000E0020, LENGTH=0x0001FDD0
+        CAL3_CRC         (RX) : ORIGIN=0x000FFDF0, LENGTH=0x00000010
+        CAL3PRESENCE     (RX) : ORIGIN=0x000FFE00, LENGTH=0x00000100
+        CAL3_VALDBLK     (RX) : ORIGIN=0x000FFF00, LENGTH=0x00000100
+
+        iROM_1         : ORIGIN = 0x01000000,  LENGTH = 32k
+        iRAM_0         : ORIGIN = 0xFEBE0000,  LENGTH = 124k
+        iRAM_DMAWRITE  : ORIGIN = 0xFEBFF000,  LENGTH = 4k
+    }
+
+Important notes from this configuration:
+
+1. The tool will see the bootloader comment as a "section" but becuase it contains no ORIGIN or LENGTH it will be
+   ignored.
+2. The iRxM entries at the bottom of the MEMORY section reside outside of the Flash memory region for this processor
+   and will therefore be ignored.
+3. This configuration would produce 4 sections in the resultant report, one each for the Application, and three
+   calibration regions.  The sections would be labelled "Application", "Calibration 2 - Feature Cals", "Calibration 1 -
+   System Cals", and "Calibration 3 - Performance Cals", respectively in the report.
+4. It is critical that the newlines between sections are back-to-back to ensure the proper split.  This means that the
+   lines between sections must **not** contain any whitespace characters such as tabs or spaces.
+
+
+
+## BUGS ##
+Bugs should be reported and tracked using the Anomaly system in [Change Synergy](http://10.199.100.212:8603/change).
+The use of a "Continuous Improvement" CR is recommended in favor of writing an anomaly against a particular program.
+
+
+
+## HISTORY ##
+- `01.00.00 - 2017-12-31`
+    - First release of tool.
+    - Runs against EA4 programs to generate Flash, RAM, and FEE usage information.
+    - Works with both Fee and SmallSector Fee.
+
+
+## DOCUMENTATION ##
+This documentation was generated using [ronn](http://rtomayko.github.io/ronn).  `ronn` converts a text file with a
+format similar to Markdown into an HTML file with a format typical of a standard manpage.  For more information about
+`ronn` see it's manpage: [ronn(1)](http://rtomayko.github.io/ronn/ronn.1.html).  For more information on the syntax see
+that manpage: [ronn-format(7)](http://rtomayko.github.io/ronn/ronn-format.7.html).
+
+
+
+## AUTHOR ##
+Jared Julien <jared.julien@nexteer.com>
+
+
+
+## COPYRIGHT ##
+(c) 2017 Nexteer Automotive

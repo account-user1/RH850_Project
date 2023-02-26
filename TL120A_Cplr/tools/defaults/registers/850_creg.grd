@@ -1,0 +1,1200 @@
+##############################################################################
+#
+# This file contains the fundamental description of V850 control registers.
+#
+##############################################################################
+
+# General information
+general {
+    version = 1
+}
+
+%if (_TARGET == RH850G3M || _TARGET == RH850G3H || _TARGET == RH850G3K)
+%define ISRH850 1
+%endif
+
+# Bitfield definitions
+bitfield {
+    eipsw_bitfield {
+        "Z" {loc="0..0"}
+        "S" {loc="1..1"}
+        "OV" {loc="2..2"}
+        "CY" {loc="3..3"}
+        "SAT" {loc="4..4"}
+        "ID" {loc="5..5"}
+        "EP" {loc="6..6"}
+        "NP" {loc="7..7"}
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+        "IMP" {loc="16..16"}
+        "DMP" {loc="17..17"}
+        "NPV" {loc="18..18"}
+%if (_TARGET == V850E2RV3)
+	"PP"  {loc="19..19"}
+%endif
+%endif
+%if (defined(ISRH850))
+	"Debug" {loc="9..11"}
+	"EBV" {loc="15..15"}
+	"CU0" {loc="16..16"}
+	"CU1" {loc="17..17"}
+	"CU2" {loc="18..18"}
+	"HVC" {loc="19..19"}
+	"UM"  {loc="30..30"}
+	"VM"  {loc="31..31"}
+%endif
+    }
+    ecr_bitfield {
+        "EICC" {loc="0..15"}
+        "FECC" {loc="16..31"}
+    }
+    efg_bitfield {
+	"Z"  {loc="0..0"}
+	"S"  {loc="1..1"}
+	"OV" {loc="2..2"}
+	"TR" {loc="4..4"}
+	"PR" {loc="8..8"}
+	"UD" {loc="9..9"}
+	"VF" {loc="10..10"}
+	"ZD" {loc="11..11"}
+	"IV" {loc="12..12"}
+	"RO" {loc="13..13"}
+    }
+    ect_bitfield {
+	"PT" {loc="8..8"}
+	"UT" {loc="9..9"}
+	"VT" {loc="10..10"}
+	"ZT" {loc="11..11"}
+	"IT" {loc="12..12"}
+    }
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3 || _TARGET == V850E3V5 || defined(ISRH850))
+    bsel_bitfield {
+        "BNK" {loc="0..7"}
+        "GRP" {loc="8..15"}
+    }
+    mpm_bitfield {
+	"MPE" {loc="0..0"}
+	"AUE" {loc="1..1"}
+	"SPS" {loc="2..2"}
+    }
+    ppc_bitfield {
+        "PPC0" {loc="0..0"}
+        "PPC1" {loc="1..1"}
+        "PPC2" {loc="2..2"}
+        "PPC3" {loc="3..3"}
+        "PPC4" {loc="4..4"}
+        "PPC5" {loc="5..5"}
+        "PPC6" {loc="6..6"}
+        "PPC7" {loc="7..7"}
+        "PPC8" {loc="8..8"}
+        "PPC9" {loc="9..9"}
+        "PPC10" {loc="10..10"}
+        "PPC11" {loc="11..11"}
+        "PPC12" {loc="12..12"}
+        "PPC13" {loc="13..13"}
+        "PPC14" {loc="14..14"}
+        "PPC15" {loc="15..15"}
+        "PPC16" {loc="16..16"}
+        "PPC17" {loc="17..17"}
+        "PPC18" {loc="18..18"}
+        "PPC19" {loc="19..19"}
+        "PPC20" {loc="20..20"}
+        "PPC21" {loc="21..21"}
+        "PPC22" {loc="22..22"}
+        "PPC23" {loc="23..23"}
+        "PPC24" {loc="24..24"}
+        "PPC25" {loc="25..25"}
+        "PPC26" {loc="26..26"}
+        "PPC27" {loc="27..27"}
+        "PPC28" {loc="28..28"}
+        "PPC29" {loc="29..29"}
+        "PPC30" {loc="30..30"}
+        "PPC31" {loc="31..31"}
+    }
+%if (_TARGET == V850E2RV3)
+    ipal_bitfield {
+	"E" {loc="0..0"}
+	"S" {loc="1..1"}
+	"T" {loc="2..2"}
+	"AL4" {loc="4..4"}
+	"AL5" {loc="5..5"}
+	"AL6" {loc="6..6"}
+        "AL7" {loc="7..7"}
+        "AL8" {loc="8..8"}
+        "AL9" {loc="9..9"}
+        "AL10" {loc="10..10"}
+        "AL11" {loc="11..11"}
+        "AL12" {loc="12..12"}
+        "AL13" {loc="13..13"}
+        "AL14" {loc="14..14"}
+        "AL15" {loc="15..15"}
+        "AL16" {loc="16..16"}
+        "AL17" {loc="17..17"}
+        "AL18" {loc="18..18"}
+        "AL19" {loc="19..19"}
+        "AL20" {loc="20..20"}
+        "AL21" {loc="21..21"}
+        "AL22" {loc="22..22"}
+        "AL23" {loc="23..23"}
+        "AL24" {loc="24..24"}
+        "AL25" {loc="25..25"}
+        "AL26" {loc="26..26"}
+        "AL27" {loc="27..27"}
+        "AL28" {loc="28..28"}
+        "AL29" {loc="29..29"}
+        "AL30" {loc="30..30"}
+        "AL31" {loc="31..31"}
+    }
+    ipau_bitfield {
+        "X" {loc="0..0"}
+        "R" {loc="1..1"}
+        "AU4" {loc="4..4"}
+        "AU5" {loc="5..5"}
+        "AU6" {loc="6..6"}
+        "AU7" {loc="7..7"}
+        "AU8" {loc="8..8"}
+        "AU9" {loc="9..9"}
+        "AU10" {loc="10..10"}
+        "AU11" {loc="11..11"}
+        "AU12" {loc="12..12"}
+        "AU13" {loc="13..13"}
+        "AU14" {loc="14..14"}
+        "AU15" {loc="15..15"}
+        "AU16" {loc="16..16"}
+        "AU17" {loc="17..17"}
+        "AU18" {loc="18..18"}
+        "AU19" {loc="19..19"}
+        "AU20" {loc="20..20"}
+        "AU21" {loc="21..21"}
+        "AU22" {loc="22..22"}
+        "AU23" {loc="23..23"}
+        "AU24" {loc="24..24"}
+        "AU25" {loc="25..25"}
+        "AU26" {loc="26..26"}
+        "AU27" {loc="27..27"}
+        "AU28" {loc="28..28"}
+        "AU29" {loc="29..29"}
+        "AU30" {loc="30..30"}
+        "AU31" {loc="31..31"}
+    }
+    dpal_bitfield {
+	"E" {loc="0..0"}
+	"S" {loc="1..1"}
+	"T" {loc="2..2"}
+        "AL4" {loc="4..4"}
+        "AL5" {loc="5..5"}
+        "AL6" {loc="6..6"}
+        "AL7" {loc="7..7"}
+        "AL8" {loc="8..8"}
+        "AL9" {loc="9..9"}
+        "AL10" {loc="10..10"}
+        "AL11" {loc="11..11"}
+        "AL12" {loc="12..12"}
+        "AL13" {loc="13..13"}
+        "AL14" {loc="14..14"}
+        "AL15" {loc="15..15"}
+        "AL16" {loc="16..16"}
+        "AL17" {loc="17..17"}
+        "AL18" {loc="18..18"}
+        "AL19" {loc="19..19"}
+        "AL20" {loc="20..20"}
+        "AL21" {loc="21..21"}
+        "AL22" {loc="22..22"}
+        "AL23" {loc="23..23"}
+        "AL24" {loc="24..24"}
+        "AL25" {loc="25..25"}
+        "AL26" {loc="26..26"}
+        "AL27" {loc="27..27"}
+        "AL28" {loc="28..28"}
+        "AL29" {loc="29..29"}
+        "AL30" {loc="30..30"}
+        "AL31" {loc="31..31"}
+    }
+    dpau_bitfield {
+	"R" {loc="1..1"}
+	"W" {loc="2..2"}
+        "AU4" {loc="4..4"}
+        "AU5" {loc="5..5"}
+        "AU6" {loc="6..6"}
+        "AU7" {loc="7..7"}
+        "AU8" {loc="8..8"}
+        "AU9" {loc="9..9"}
+        "AU10" {loc="10..10"}
+        "AU11" {loc="11..11"}
+        "AU12" {loc="12..12"}
+        "AU13" {loc="13..13"}
+        "AU14" {loc="14..14"}
+        "AU15" {loc="15..15"}
+        "AU16" {loc="16..16"}
+        "AU17" {loc="17..17"}
+        "AU18" {loc="18..18"}
+        "AU19" {loc="19..19"}
+        "AU20" {loc="20..20"}
+        "AU21" {loc="21..21"}
+        "AU22" {loc="22..22"}
+        "AU23" {loc="23..23"}
+        "AU24" {loc="24..24"}
+        "AU25" {loc="25..25"}
+        "AU26" {loc="26..26"}
+        "AU27" {loc="27..27"}
+        "AU28" {loc="28..28"}
+        "AU29" {loc="29..29"}
+        "AU30" {loc="30..30"}
+        "AU31" {loc="31..31"}
+    }
+%else
+    ipal_bitfield {
+	"IPE" {loc="0..0"}
+	"IPX" {loc="1..1"}
+	"IPR" {loc="2..2"}
+	"IPS" {loc="4..4"}
+	"IPT" {loc="5..5"}
+        "IPAL7" {loc="7..7"}
+        "IPAL8" {loc="8..8"}
+        "IPAL9" {loc="9..9"}
+        "IPAL10" {loc="10..10"}
+        "IPAL11" {loc="11..11"}
+        "IPAL12" {loc="12..12"}
+        "IPAL13" {loc="13..13"}
+        "IPAL14" {loc="14..14"}
+        "IPAL15" {loc="15..15"}
+        "IPAL16" {loc="16..16"}
+        "IPAL17" {loc="17..17"}
+        "IPAL18" {loc="18..18"}
+        "IPAL19" {loc="19..19"}
+        "IPAL20" {loc="20..20"}
+        "IPAL21" {loc="21..21"}
+        "IPAL22" {loc="22..22"}
+        "IPAL23" {loc="23..23"}
+        "IPAL24" {loc="24..24"}
+        "IPAL25" {loc="25..25"}
+        "IPAL26" {loc="26..26"}
+        "IPAL27" {loc="27..27"}
+        "IPAL28" {loc="28..28"}
+    }
+    ipau_bitfield {
+        "IPAU7" {loc="7..7"}
+        "IPAU8" {loc="8..8"}
+        "IPAU9" {loc="9..9"}
+        "IPAU10" {loc="10..10"}
+        "IPAU11" {loc="11..11"}
+        "IPAU12" {loc="12..12"}
+        "IPAU13" {loc="13..13"}
+        "IPAU14" {loc="14..14"}
+        "IPAU15" {loc="15..15"}
+        "IPAU16" {loc="16..16"}
+        "IPAU17" {loc="17..17"}
+        "IPAU18" {loc="18..18"}
+        "IPAU19" {loc="19..19"}
+        "IPAU20" {loc="20..20"}
+        "IPAU21" {loc="21..21"}
+        "IPAU22" {loc="22..22"}
+        "IPAU23" {loc="23..23"}
+        "IPAU24" {loc="24..24"}
+        "IPAU25" {loc="25..25"}
+        "IPAU26" {loc="26..26"}
+        "IPAU27" {loc="27..27"}
+        "IPAU28" {loc="28..28"}
+    }
+    dpal_bitfield {
+	"DPE" {loc="0..0"}
+	"DPR" {loc="2..2"}
+	"DPW" {loc="3..3"}
+	"DPS" {loc="4..4"}
+	"DPT" {loc="5..5"}
+        "DPAL7" {loc="7..7"}
+        "DPAL8" {loc="8..8"}
+        "DPAL9" {loc="9..9"}
+        "DPAL10" {loc="10..10"}
+        "DPAL11" {loc="11..11"}
+        "DPAL12" {loc="12..12"}
+        "DPAL13" {loc="13..13"}
+        "DPAL14" {loc="14..14"}
+        "DPAL15" {loc="15..15"}
+        "DPAL16" {loc="16..16"}
+        "DPAL17" {loc="17..17"}
+        "DPAL18" {loc="18..18"}
+        "DPAL19" {loc="19..19"}
+        "DPAL20" {loc="20..20"}
+        "DPAL21" {loc="21..21"}
+        "DPAL22" {loc="22..22"}
+        "DPAL23" {loc="23..23"}
+        "DPAL24" {loc="24..24"}
+        "DPAL25" {loc="25..25"}
+        "DPAL26" {loc="26..26"}
+        "DPAL27" {loc="27..27"}
+        "DPAL28" {loc="28..28"}
+    }
+    dpau_bitfield {
+        "DPAU7" {loc="7..7"}
+        "DPAU8" {loc="8..8"}
+        "DPAU9" {loc="9..9"}
+        "DPAU10" {loc="10..10"}
+        "DPAU11" {loc="11..11"}
+        "DPAU12" {loc="12..12"}
+        "DPAU13" {loc="13..13"}
+        "DPAU14" {loc="14..14"}
+        "DPAU15" {loc="15..15"}
+        "DPAU16" {loc="16..16"}
+        "DPAU17" {loc="17..17"}
+        "DPAU18" {loc="18..18"}
+        "DPAU19" {loc="19..19"}
+        "DPAU20" {loc="20..20"}
+        "DPAU21" {loc="21..21"}
+        "DPAU22" {loc="22..22"}
+        "DPAU23" {loc="23..23"}
+        "DPAU24" {loc="24..24"}
+        "DPAU25" {loc="25..25"}
+        "DPAU26" {loc="26..26"}
+        "DPAU27" {loc="27..27"}
+        "DPAU28" {loc="28..28"}
+    }
+%endif
+    vmecr_bitfield {
+	"VMX" {loc="1..1"}
+	"VMR" {loc="2..2"}
+	"VMW" {loc="3..3"}
+	"VMS" {loc="4..4"}
+	"VMRMW" {loc="5..5"}
+	"VMMS" {loc="6..6"}
+    }
+    vip_bitfield {
+	"PP" {loc="0..0"}
+    }
+    fpsr_bitfield {
+        "XP_I" {loc="0..0"}
+        "XP_U" {loc="1..1"}
+        "XP_O" {loc="2..2"}
+        "XP_Z" {loc="3..3"}
+        "XP_V" {loc="4..4"}
+        "XE_I" {loc="5..5"}
+        "XE_U" {loc="6..6"}
+        "XE_O" {loc="7..7"}
+        "XE_Z" {loc="8..8"}
+        "XE_V" {loc="9..9"}
+        "XC_I" {loc="10..10"}
+        "XC_U" {loc="11..11"}
+        "XC_O" {loc="12..12"}
+        "XC_Z" {loc="13..13"}
+        "XC_V" {loc="14..14"}
+        "XC_E" {loc="15..15"}
+%if !defined(ISRH850)
+        "PR" {loc="16..16"}
+%endif
+        "FS" {loc="17..17"}
+        "RM" {loc="18..19"}
+%if defined(ISRH850)
+        "PEM" {loc="21..21"}
+        "IF" {loc="22..22"}
+        "FN" {loc="23..23"}
+%else
+        "SEM" {loc="20..20"}
+        "DEM" {loc="21..21"}
+%endif
+        "CC0" {loc="24..24"}
+        "CC1" {loc="25..25"}
+        "CC2" {loc="26..26"}
+        "CC3" {loc="27..27"}
+        "CC4" {loc="28..28"}
+        "CC5" {loc="29..29"}
+        "CC6" {loc="30..30"}
+        "CC7" {loc="31..31"}
+    }
+    fpst_bitfield {
+        "XP_I" {loc="0..0"}
+        "XP_U" {loc="1..1"}
+        "XP_O" {loc="2..2"}
+        "XP_Z" {loc="3..3"}
+        "XP_V" {loc="4..4"}
+%if defined(ISRH850)
+        "IF"   {loc="5..5"}
+%endif
+        "XC_I" {loc="8..8"}
+        "XC_U" {loc="9..9"}
+        "XC_O" {loc="10..10"}
+        "XC_Z" {loc="11..11"}
+        "XC_V" {loc="12..12"}
+        "XC_E" {loc="13..13"}
+%if !defined(ISRH850)
+	"PR" {loc="15..15"}
+%endif	
+    }
+    fpcc_bitfield {
+        "CC0" {loc="0..0"}
+        "CC1" {loc="1..1"}
+        "CC2" {loc="2..2"}
+        "CC3" {loc="3..3"}
+        "CC4" {loc="4..4"}
+        "CC5" {loc="5..5"}
+        "CC6" {loc="6..6"}
+        "CC7" {loc="7..7"}
+    }
+    fpcfg_bitfield {
+        "XE_I" {loc="0..0"}
+        "XE_U" {loc="1..1"}
+        "XE_O" {loc="2..2"}
+        "XE_Z" {loc="3..3"}
+        "XE_V" {loc="4..4"}
+        "RM" {loc="8..9"}
+    }
+    sw_ctl_bitfield {
+		"SET" {loc="0..0"}
+    }
+    sw_cfg_bitfield {
+		"RINT" {loc="0..0"}
+    }
+    eh_cfg_bitfield {
+		"RINT" {loc="0..0"}
+    }
+    mpc_bitfield {
+		"ALDS" {loc="0..0"}
+    }
+%endif
+%if (_TARGET == V850E2RV3 || _TARGET == V850E3V5 || defined(ISRH850))
+    sccfg_bitfield {
+    	"SIZE" {loc="0..7"}
+    }
+    sesr_bitfield {
+    	"V"	{loc="0..0"}
+	"SOV"	{loc="1..1"}
+	"NSAT"	{loc="9..9"}
+    }
+%endif
+%if (_TARGET == V850E3V5 || defined(ISRH850))
+    tcsel_bitfield {
+	"TCID"	{loc="0..5"}
+	"NC"	{loc="31..31"}
+    }
+    htctl_bitfield {
+	"HLT"	{loc="30..30"}
+	"EN"	{loc="31..31"}
+    }
+    htscctl_bitfield {
+	"RND"	{loc="0..4"}
+    }
+    htscptr_bitfield {
+	"HTSCPTR" {loc="0..4"}
+    }
+    mctl_bitfield {
+	"EN" {loc="31..31"}
+	"MT" {loc="30..30"}
+	"STID" {loc="16..21"}
+	"MA" {loc="1..1"}
+	"UIC" {loc="0..0"}
+    }
+%endif
+%if (defined(ISRH850) && (_TARGET_COPROCESSOR & RH850_FPSIMD))
+    fpvecreg_bitfield {
+	"w0" {loc="0..31"}
+	"w1" {loc="32..63"}
+	"w2" {loc="64..95"}
+	"w3" {loc="96..127"}
+    }
+%endif
+}
+
+# Register definitions
+register {
+    pc {address=32; type="code *"}
+%if (_TARGET != V850E2RV3 && _TARGET != V850E3V5 && !defined(ISRH850))
+    eipc {address=33; type="code *"}
+    eipsw {address=34; type="eipsw_bitfield"}
+    fepc {address=35; type="code *"}
+    fepsw {address=36; type="eipsw_bitfield"}
+    ecr {address=37; type="ecr_bitfield"; permission="write/none"}
+    psw {address=38; type="eipsw_bitfield"}
+%endif
+%if (_TARGET == V850E2R)
+    eiic {address=46}
+    feic {address=47}
+    dbic {address=48}
+%endif
+%if (_TARGET != V850 && _TARGET != V850E3V5 && !defined(ISRH850))
+    ctpc {address=49; type="code *"}
+    ctpsw {address=50; type="eipsw_bitfield"}
+    dbpc {address=51; type="code *"}
+    dbpsw {address=52; type="eipsw_bitfield"}
+    ctbp {address=53}
+    dir {address=54}
+%endif
+%if (_TARGET == V850E2R)
+    eiwr {address=61}
+    fewr {address=62}
+    dbwr {address=63}
+    bsel {address=64; type="bsel_bitfield"}
+%endif
+%if (_TARGET == V850E1F)
+    efg {address=73; type="efg_bitfield"}
+    ect {address=74; type="ect_bitfield"}
+%endif
+%if (_TARGET == V850E2R)
+    sw_ctl {address=84; type="sw_ctl_bitfield"}
+    sw_cfg {address=85; type="sw_cfg_bitfield"}
+    sw_base {address=87}
+    eh_cfg {address=113 type="eh_cfg_bitfield"}
+    eh_reset {address=114}
+    eh_base {address=115}
+    mpm {address=168; type="mpm_bitfield"}
+    mpc {address=169; type="mpc_bitfield"}
+    tid {address=170}
+    ppc {address=171; type="ppc_bitfield"}
+    ipa0L {address=176; type="ipal_bitfield"}
+    ipa0U {address=177; type="ipau_bitfield"}
+    ipa1L {address=178; type="ipal_bitfield"}
+    ipa1U {address=179; type="ipau_bitfield"}
+    ipa2L {address=180; type="ipal_bitfield"}
+    ipa2U {address=181; type="ipau_bitfield"}
+    ipa3L {address=182; type="ipal_bitfield"}
+    ipa3U {address=183; type="ipau_bitfield"}
+    dpa0L {address=184; type="dpal_bitfield"}
+    dpa0U {address=185; type="dpau_bitfield"}
+    dpa1L {address=186; type="dpal_bitfield"}
+    dpa1U {address=187; type="dpau_bitfield"}
+    dpa2L {address=188; type="dpal_bitfield"}
+    dpa2U {address=189; type="dpau_bitfield"}
+    dpa3L {address=190; type="dpal_bitfield"}
+    dpa3U {address=191; type="dpau_bitfield"}
+    dpa4L {address=192; type="dpal_bitfield"}
+    dpa4U {address=193; type="dpau_bitfield"}
+    dpa5L {address=194; type="dpal_bitfield"}
+    dpa5U {address=195; type="dpau_bitfield"}
+    vip {address=140; type="vip_bitfield"}
+    vmecr {address=144; type="vmecr_bitfield"}
+    vmtid {address=145}
+    vmadr {address=146}
+    vpecr {address=148}
+    vptid {address=149}
+    vpadr {address=150}
+    
+    fpsr {address=230; type="fpsr_bitfield"}
+    fpepc {address=231}
+    fpst {address=232; type="fpst_bitfield"}
+    fpcc {address=233; type="fpcc_bitfield"}
+    fpcfg {address=234; type="fpcfg_bitfield"}
+%endif
+%if (_TARGET == V850E2RV3 || _TARGET == V850E3V5 || defined(ISRH850)) && (_TARGET_COPROCESSOR & RH850_SIMD)
+    vr0 {address=252; width=64}
+    vr1 {address=254; width=64}
+    vr2 {address=256; width=64}
+    vr3 {address=258; width=64}
+    vr4 {address=260; width=64}
+    vr5 {address=262; width=64}
+    vr6 {address=264; width=64}
+    vr7 {address=266; width=64}
+    vr8 {address=268; width=64}
+    vr9 {address=270; width=64}
+    vr10 {address=272; width=64}
+    vr11 {address=274; width=64}
+    vr12 {address=276; width=64}
+    vr13 {address=278; width=64}
+    vr14 {address=280; width=64}
+    vr15 {address=282; width=64}
+    vr16 {address=284; width=64}
+    vr17 {address=286; width=64}
+    vr18 {address=288; width=64}
+    vr19 {address=290; width=64}
+    vr20 {address=292; width=64}
+    vr21 {address=294; width=64}
+    vr22 {address=296; width=64}
+    vr23 {address=298; width=64}
+    vr24 {address=300; width=64}
+    vr25 {address=302; width=64}
+    vr26 {address=304; width=64}
+    vr27 {address=306; width=64}
+    vr28 {address=308; width=64}
+    vr29 {address=310; width=64}
+    vr30 {address=312; width=64}
+    vr31 {address=314; width=64}
+%endif
+%if defined(ISRH850) && (_TARGET_COPROCESSOR & RH850_FPSIMD)
+    wr0 {address=817; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr1 {address=821; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr2 {address=825; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr3 {address=829; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr4 {address=833; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr5 {address=837; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr6 {address=841; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr7 {address=845; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr8 {address=849; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr9 {address=853; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr10 {address=857; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr11 {address=861; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr12 {address=865; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr13 {address=869; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr14 {address=873; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr15 {address=877; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr16 {address=881; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr17 {address=885; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr18 {address=889; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr19 {address=893; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr20 {address=897; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr21 {address=901; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr22 {address=905; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr23 {address=909; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr24 {address=913; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr25 {address=917; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr26 {address=921; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr27 {address=925; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr28 {address=929; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr29 {address=933; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr30 {address=937; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+    wr31 {address=941; width=128; bit_0_is_msb=true; type="fpvecreg_bitfield"}
+%endif
+%if (_TARGET == V850E2RV3)
+    # Main Bank
+    eipc {address=333; type="code *"}
+    eipsw {address=334; type="eipsw_bitfield"}
+    fepc {address=335; type="code *"}
+    fepsw {address=336; type="eipsw_bitfield"}
+    ecr {address=337; type="ecr_bitfield"}
+    psw {address=338; type="eipsw_bitfield"}
+    sccfg {address=344; type="sccfg_bitfield"}
+    scbp {address=345}
+    eiic {address=346}
+    feic {address=347}
+    dbic {address=348}
+    ctpc {address=349; type="code *"}
+    ctpsw {address=350; type="eipsw_bitfield"}
+    dbpc {address=351; type="code *"}
+    dbpsw {address=352; type="eipsw_bitfield"}
+    ctbp {address=353}
+    dir {address=354}
+    eiwr {address=361}
+    fewr {address=362}
+    dbwr {address=363}
+    bsel {address=364; type="bsel_bitfield"}
+    # Exception Handler Switching Function Bank 0
+    sw_ctl {address=365; type="sw_ctl_bitfield"}
+    sw_cfg {address=366; type="sw_cfg_bitfield"}
+    sw_base {address=368}
+    # Exception Handler Switching Function Bank 1
+    eh_cfg {address=394; type="eh_cfg_bitfield"}
+    eh_reset {address=395}
+    eh_base {address=396}
+    # MPU Violation Bank
+    vsecr {address=421}
+    vstid {address=422}
+    vsadr {address=423}
+    vmecr {address=425}
+    vmtid {address=426}
+    vmadr {address=427}
+    mca {address=445}
+    mcs {address=446}
+    mcc {address=447}
+    mcr {address=448}
+    # MPU Settings Bank
+    mpm {address=449; type="mpm_bitfield"}
+    mpc {address=450; type="mpc_bitfield"}
+    tid {address=451}
+    ipa0L {address=455; type="ipal_bitfield"}
+    ipa0U {address=456; type="ipau_bitfield"}
+    ipa1L {address=457; type="ipal_bitfield"}
+    ipa1U {address=458; type="ipau_bitfield"}
+    ipa2L {address=459; type="ipal_bitfield"}
+    ipa2U {address=460; type="ipau_bitfield"}
+    ipa3L {address=461; type="ipal_bitfield"}
+    ipa3U {address=462; type="ipau_bitfield"}
+    ipa4L {address=463; type="ipal_bitfield"}
+    ipa4U {address=464; type="ipau_bitfield"}
+    dpa0L {address=465; type="dpal_bitfield"}
+    dpa0U {address=466; type="dpau_bitfield"}
+    dpa1L {address=467; type="dpal_bitfield"}
+    dpa1U {address=468; type="dpau_bitfield"}
+    dpa2L {address=469; type="dpal_bitfield"}
+    dpa2U {address=470; type="dpau_bitfield"}
+    dpa3L {address=471; type="dpal_bitfield"}
+    dpa3U {address=472; type="dpau_bitfield"}
+    dpa4L {address=473; type="dpal_bitfield"}
+    dpa4U {address=474; type="dpau_bitfield"}
+    dpa5L {address=475; type="dpal_bitfield"}
+    dpa5U {address=476; type="dpau_bitfield"}
+    # FPU Status
+    fpsr {address=511; type="fpsr_bitfield"}
+    fpepc {address=512}
+    fpst {address=513; type="fpst_bitfield"}
+    fpcc {address=514; type="fpcc_bitfield"}
+    fpcfg {address=515; type="fpcfg_bitfield"}
+    fpec {address=516}
+    #SIMD-DSP status
+    sesr {address=539; type="sesr_bitfield"}
+%endif
+%if (_TARGET == V850E3V5 || defined(ISRH850))
+    # Selection ID 0
+    eipc {address=333; type="code *"}
+    eipsw {address=334; type="eipsw_bitfield"}
+    fepc {address=335; type="code *"}
+    fepsw {address=336; type="eipsw_bitfield"}
+    psw {address=338; type="eipsw_bitfield"}
+%if (_TARGET_COPROCESSOR & RH850_FPU)
+    fpsr {address=511; type="fpsr_bitfield"}
+    fpepc {address=512}
+    fpst {address=513; type="fpst_bitfield"}
+    fpcc {address=514; type="fpcc_bitfield"}
+    fpcfg {address=515; type="fpcfg_bitfield"}
+    fpec {address=516}
+%endif
+%if (_TARGET_COPROCESSOR & RH850_SIMD)
+    sesr {address=539; type="sesr_bitfield"}
+%endif
+    eiic {address=346}
+    feic {address=347}
+    ctpc {address=349; type="code *"}
+    ctpsw {address=350; type="eipsw_bitfield"}
+    ctbp {address=353}
+    eiwr {address=361}
+    fewr {address=362}
+    bsel {address=364; type="bsel_bitfield"}
+
+    # Selection ID 1
+    mcfg0 {address=561}
+    mcfg1 {address=562}
+    rbase {address=563}
+    ebase {address=564}
+    intbp {address=565}
+%if (_TARGET == V850E3V5 || defined(ISRH850))
+    mctl {address=566 type="mctl_bitfield"}
+%endif
+    mctl {address=566}
+    pid {address=567}
+    fpipr {address=568}
+    tcsel {address=571 type="tcsel_bitfield"}
+    sccfg {address=572}
+    scbp {address=573}
+    hvccfg {address=574}
+    hvcbp {address=575}
+    vcsel {address=576}
+    vmprt0 {address=577}
+    vmprt1 {address=578}
+    vmprt2 {address=579}
+    vmscctl {address=584}
+    vmsctbl0 {address=585}
+    vmsctbl1 {address=586}
+    vmsctbl2 {address=587}
+    vmsctbl3 {address=588}
+
+    # Selection ID 2
+    htcfg0 {address=593}
+    htctl {address=598 type="htctl_bitfield"}
+    mea {address=599}
+    asid {address=600}
+    mei {address=601}
+    ispr {address=603}
+    pmr {address=604}
+    icsr {address=605}
+    intcfg {address=606}
+%if (!defined(ISRH850) || (_TARGET_COPROCESSOR & RH850_MMU))
+    tlbsch {address=609}
+%endif
+    htscctl {address=616 type="htscctl_bitfield"}
+    htsctbl0 {address=617}
+    htsctbl1 {address=618}
+    htsctbl2 {address=619}
+    htsctbl3 {address=620}
+    htsctbl4 {address=621}
+    htsctbl5 {address=622}
+    htsctbl6 {address=623}
+    htsctbl7 {address=624}
+
+    # Selection ID 3
+    vmscptr {address=625; hide=true}
+    htscptr {address=626 type="htscptr_bitfield"; hide=true}
+    dbic {address=640; hide=true}
+    dbcmc {address=642; hide=true}
+    dbpc {address=643; hide=true}
+    dbpsw {address=644; hide=true}
+    dir0 {address=645; hide=true}
+    dir1 {address=646; hide=true}
+    bpc {address=647; hide=true}
+    bpav {address=649; hide=true}
+    bpam {address=650; hide=true}
+    bpdv {address=651; hide=true}
+    bpdm {address=652; hide=true}
+    dbwr {address=655; hide=true}
+
+    # Selection ID 4
+%if (!defined(ISRH850) || (_TARGET_COPROCESSOR & RH850_MMU))
+    tlbidx {address=657}
+    telo0 {address=661}
+    telo1 {address=662}
+    tehi0 {address=663}
+    tehi1 {address=664}
+    tlbcfg {address=667}
+%endif
+    bwerrl {address=669}
+    bwerrh {address=670}
+    brerrl {address=671}
+    brerrh {address=672}
+    ictagl {address=673}
+    ictagh {address=674}
+    icdatl {address=675}
+    icdath {address=676}
+    dctagl {address=677}
+    dctagh {address=678}
+    dcdatl {address=679}
+    dcdath {address=680}
+    icctrl {address=681}
+    dcctrl {address=682}
+    iccfg {address=683}
+    dccfg {address=684}
+    icerr {address=685}
+    dcerr {address=686}
+
+    # Selection ID 5
+%if (!defined(ISRH850) || (_TARGET_COPROCESSOR & RH850_MPU))
+    mpm {address=689}
+    mprc {address=690}
+    mpbrgn {address=693}
+    mptrgn {address=694}
+    mca {address=697}
+    mcs {address=698}
+    mcc {address=699}
+    mcr {address=700}
+    mpprt0 {address=709}
+    mpprt1 {address=710}
+    mpprt2 {address=711}
+%endif
+
+    # Selection ID 6
+    mpla0 {address=721}
+    mpua0 {address=722}
+    mpat0 {address=723}
+    mpla1 {address=725}
+    mpua1 {address=726}
+    mpat1 {address=727}
+    mpla2 {address=729}
+    mpua2 {address=730}
+    mpat2 {address=731}
+    mpla3 {address=733}
+    mpua3 {address=734}
+    mpat3 {address=735}
+    mpla4 {address=737}
+    mpua4 {address=738}
+    mpat4 {address=739}
+    mpla5 {address=741}
+    mpua5 {address=742}
+    mpat5 {address=743}
+    mpla6 {address=745}
+    mpua6 {address=746}
+    mpat6 {address=747}
+    mpla7 {address=749}
+    mpua7 {address=750}
+    mpat7 {address=751}
+
+    # Selection ID 7
+    mpla8 {address=753}
+    mpua8 {address=754}
+    mpat8 {address=755}
+    mpla9 {address=757}
+    mpua9 {address=758}
+    mpat9 {address=759}
+    mpla10 {address=761}
+    mpua10 {address=762}
+    mpat10 {address=763}
+    mpla11 {address=765}
+    mpua11 {address=766}
+    mpat11 {address=767}
+    mpla12 {address=769}
+    mpua12 {address=770}
+    mpat12 {address=771}
+    mpla13 {address=773}
+    mpua13 {address=774}
+    mpat13 {address=775}
+    mpla14 {address=777}
+    mpua14 {address=778}
+    mpat14 {address=779}
+    mpla15 {address=781}
+    mpua15 {address=782}
+    mpat15 {address=783}
+%endif
+%if (defined(ISRH850) && (_TIMEMACHINE != 1))
+    # Fake informational registers
+    opmode  { access="command"; address="if (PSW.VM) { if (PSW.UM) { echo Virtual User Mode } else { echo Virtual Supervisor Mode } } else { if (PSW.UM) { echo Native User Mode } else { echo Native Supervisor Mode }}"}
+%endif
+}
+
+# Group definitions
+group {
+    control {
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+        sn = "Main Bank"
+        ln = "Main Bank"
+%else
+        sn = "Control"
+        ln = "Control Registers"
+%endif
+	top_level_index = 14 
+        register += {"pc"}
+%if (_TARGET == V850E3V5 || defined(ISRH850))
+        register += {"eipc", "eipsw", "fepc", "fepsw", "psw"}
+        register += {"eiic", "feic", "ctpc", "ctpsw"}
+	register += {"ctbp", "eiwr", "fewr", "dbwr", "bsel"}
+	register += {"mcfg0", "mcfg1", "rbase", "ebase"}
+	register += {"intbp", "mctl", "pid", "sccfg", "scbp"}
+	register += {"htcfg0", "mea", "asid", "mei"}
+
+%if (!defined(ISRH850))
+	register += {"bpam", "bpav", "dbpc", "dir0", "dir1"}
+	register += {"bpdm", "bpdv", "dbic", "bpc", "dbpsw", "dbcmc"}
+%endif
+%else	
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+        register += {"eipc", "eipsw", "fepc", "fepsw", "ecr", "psw"}
+%else
+        register += {"psw", "eipc", "eipsw", "fepc", "fepsw", "ecr"}
+	register += {"bpam", "bpav", "dir0", "dir1", "bpdm", "bpdv", "bpc", "dbcmc"}
+%endif
+%if (_TARGET == V850E2RV3)
+	register += {"sccfg", "scbp"}
+%endif
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+        register += {"eiic", "feic", "dbic" }
+%endif
+        register += {"ctpc", "ctpsw", "dbpc", "dbpsw", "ctbp"}
+%if (_TARGET != V850)
+	register += {"dir" }
+%endif
+%if (_TARGET == V850E1F)
+	register += {"efg", "ect"}
+%endif
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+	register += {"eiwr", "fewr", "dbwr", "bsel"}
+%endif
+%endif
+    }
+%if (_TARGET == V850E2R || _TARGET == V850E2RV3)
+    except0 {
+	top_level_index = 15
+	collapse = true
+        sn = "EHSF Bank 0"
+        ln = "Exception handler switching function bank 0"
+        register += {"sw_ctl", "sw_cfg", "sw_base"}
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+    except1 {
+	top_level_index = 20
+	collapse = true
+        sn = "EHSF Bank 1"
+        ln = "Exception handler switching function bank 1"
+        register += {"eh_cfg", "eh_reset", "eh_base"}
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+    mpu0 {
+	top_level_index = 30
+	collapse = true
+        sn = "MPU violation"
+        ln = "MPU violation bank"
+%if (_TARGET == V850E2RV3)
+	register += {"vsecr", "vstid", "vsadr"};
+%endif
+%if (_TARGET == V850E2R)
+        register += {"vip"}
+%endif
+	register += {"vmecr", "vmtid", "vmadr"}
+%if (_TARGET == V850E2R)
+	register += {"vpecr", "vptid", "vpadr"}
+%endif
+%if (_TARGET == V850E2RV3)
+	register += {"mca", "mcs", "mcc", "mcr"}
+%endif
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+%if (!defined(ISRH850) || (_TARGET_COPROCESSOR & RH850_MPU))
+    mpu1 {
+	top_level_index = 40
+	collapse = true
+        sn = "MPU setting"
+        ln = "MPU setting bank"
+        register += {"mpm", "mpc", "tid"}
+%if (_TARGET == V850E2R)
+	register += {"ppc" }
+%endif
+	register += {"ipa0L", "ipa0U", "ipa1L", "ipa1U", "ipa2L", "ipa2U"}
+	register += {"ipa3L", "ipa3U"}
+%if (_TARGET == V850E2RV3)
+	register += {"ipa4L", "ipa4U"}
+%endif
+	register += {"dpa0L", "dpa0U", "dpa1L", "dpa1U"}
+	register += {"dpa2L", "dpa2U", "dpa3L", "dpa3U", "dpa4L", "dpa4U"}
+	register += {"dpa5L", "dpa5U"}
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+%endif
+%if (_TARGET == V850E2RV3)
+    sftpg {
+	top_level_index = 45
+	collapse = true
+        sn = "Software Paging"
+        ln = "Software Paging bank"
+        register += {"mpm", "mpc", "tid", "vmecr", "vmtid", "vmadr"}
+	register += {"ipa0L", "ipa0U", "ipa1L", "ipa1U", "ipa2L", "ipa2U"}
+	register += {"ipa3L", "ipa3U", "ipa4L", "ipa4U"}
+	register += {"dpa0L", "dpa0U", "dpa1L", "dpa1U"}
+	register += {"dpa2L", "dpa2U", "dpa3L", "dpa3U", "dpa4L", "dpa4U"}
+	register += {"dpa5L", "dpa5U"}
+	register += {"eiwr", "fewr", "dbwr", "bsel"}
+    }
+%endif
+    fpu {
+	top_level_index = 60
+	collapse = true
+        sn = "FPU Status"
+        ln = "FPU Status bank"
+	register += { "fpsr", "fpepc", "fpst", "fpcc", "fpcfg" }
+%if (_TARGET == V850E2RV3)
+	register += {"fpec"}
+%endif
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+%if (_TARGET == V850E2RV3)
+    simd_reg {
+    	top_level_index = 65
+	collapse = true
+	sn = "SIMD-DSP Status"
+	ln = "SIMD-DSP Status bank"
+	register += {"sesr"}
+	register += {"eiwr", "fewr", "dbwr", "bsel"}
+    }
+%endif
+    user0 {
+	top_level_index = 70
+	collapse = true
+        sn = "User 0"
+        ln = "User 0 bank"
+	register += { "psw", "fpst", "fpcc", "fpcfg" }
+	register += { "ctpc", "ctpsw", "ctbp" }
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+
+    user_compat {
+	top_level_index = 80
+	collapse = true
+        sn = "User Compatible"
+        ln = "User Compatible bank"
+	register += { "eipc", "eipsw", "fepc", "fepsw" }
+	register += { "ecr", "psw", "fpst", "fpcc", "fpcfg" }
+	register += { "eiic", "feic" }
+	register += { "ctpc", "ctpsw", "ctbp" }
+	register += { "eiwr", "fewr", "dbwr", "bsel"}
+    }
+
+%endif
+%if (_TARGET == V850E2RV3 || _TARGET == V850E3V5 || defined(ISRH850))
+    v3vr_regs {
+	top_level_index=90
+    	sn= "Vector Registers"
+	ln="SIMD Vector Registers"
+        register += {"vr0", "vr1", "vr2", "vr3"}
+        register += {"vr4", "vr5", "vr6", "vr7"}
+        register += {"vr8", "vr9", "vr10", "vr11"}
+        register += {"vr12", "vr13", "vr14", "vr15"}
+        register += {"vr16", "vr17", "vr18", "vr19"}
+        register += {"vr20", "vr21", "vr22", "vr23"}
+        register += {"vr24", "vr25", "vr26", "vr27"}
+        register += {"vr28", "vr29", "vr30", "vr31"}
+    }
+%endif
+%if (defined(ISRH850))
+    v3wr_regs {
+	top_level_index=100
+    	sn= "FP Vector Registers"
+	ln="FPSIMD Vector Registers"
+        register += {"wr0", "wr1", "wr2", "wr3"}
+        register += {"wr4", "wr5", "wr6", "wr7"}
+        register += {"wr8", "wr9", "wr10", "wr11"}
+        register += {"wr12", "wr13", "wr14", "wr15"}
+        register += {"wr16", "wr17", "wr18", "wr19"}
+        register += {"wr20", "wr21", "wr22", "wr23"}
+        register += {"wr24", "wr25", "wr26", "wr27"}
+        register += {"wr28", "wr29", "wr30", "wr31"}
+    }
+%endif
+%if (_TARGET == V850E3V5 || defined(ISRH850))
+    fpu {
+	top_level_index = 60
+	collapse = true
+        sn = "FPU Status"
+        ln = "FPU Status Registers"
+	register += { "fpsr", "fpepc", "fpst", "fpcc", "fpcfg" }
+	register += {"fpec"}
+    }
+    simd_reg {
+    	top_level_index = 65
+	collapse = true
+	sn = "SIMD-DSP Status"
+	ln = "SIMD-DSP Status Registers"
+	register += {"sesr"}
+    }
+    interrupt {
+	top_level_index = 90
+	collapse = true
+        sn = "Interrupt"
+        ln = "Interrupt Control Registers"
+	register += {"fpipr", "ispr", "pmr", "icsr", "intcfg"}
+    }
+    hwthread {
+	top_level_index = 100
+	collapse = true
+        sn = "Hardware Thread"
+        ln = "Hardware Thread Control Registers"
+	register += {"tcsel", "htctl", "htscctl"}
+	register += {"htsctbl0", "htsctbl1", "htsctbl2", "htsctbl3"}
+	register += {"htsctbl4", "htsctbl5", "htsctbl6", "htsctbl7"}
+	register += {"htscptr"}
+    }
+    virtual {
+	top_level_index = 110
+	collapse = true
+        sn = "Virtual Machine"
+        ln = "Virtual Machine Control Registers"
+	register += {"hvccfg", "hvcbp", "vcsel"}
+	register += {"vmprt0", "vmprt1", "vmprt2", "vmscctl"}
+	register += {"vmsctbl0", "vmsctbl1", "vmsctbl2", "vmsctbl3"}
+	register += {"vmscptr"}
+    }
+%if (!defined(ISRH850) || (_TARGET_COPROCESSOR & RH850_MMU))
+    mmu {
+	top_level_index = 120
+	collapse = true
+        sn = "MMU"
+        ln = "MMU Function Control Registers"
+	register += {"pfaddr", "tlbsch", "tlbidx", "telo0", "telo1"}
+	register += {"tehi0", "tehi1", "tlbcfg"}
+    }
+%endif
+    mpu {
+	top_level_index = 130
+	collapse = true
+        sn = "MPU"
+        ln = "MPU Function Control Registers"
+	register += {"mpm", "mprc", "mpbrgn", "mptrgn"}
+	register += {"mca", "mcs", "mcc", "mcr"}
+	register += {"mpvc", "mpvadr", "mpprt0", "mpprt1", "mpprt2"}
+	register += {"mpla0", "mpua0", "mpat0", "mpla1", "mpua1", "mpat1"}
+	register += {"mpla2", "mpua2", "mpat2", "mpla3", "mpua3", "mpat3"}
+	register += {"mpla4", "mpua4", "mpat4", "mpla5", "mpua5", "mpat5"}
+	register += {"mpla6", "mpua6", "mpat6", "mpla7", "mpua7", "mpat7"}
+	register += {"mpla8", "mpua8", "mpat8", "mpla9", "mpua9", "mpat9"}
+	register += {"mpla10", "mpua10", "mpat10", "mpla11", "mpua11", "mpat11"}
+	register += {"mpla12", "mpua12", "mpat12", "mpla13", "mpua13", "mpat13"}
+	register += {"mpla14", "mpua14", "mpat14", "mpla15", "mpua15", "mpat15"}
+    }
+    cache {
+	top_level_index = 140
+	collapse = true
+        sn = "cache"
+        ln = "Cache Operation Control Registers"
+	register += {"bwerrl", "bwerrh", "brerrl", "brerrh"}	
+	register += {"ictagl", "ictagh", "icdatl", "icdath"}
+	register += {"dctagl", "dctagh", "dcdatl", "dcdath"}
+	register += {"icctrl", "dcctrl", "iccfg", "dccfg", "icerr", "dcerr"}
+    }
+%endif
+%if (defined(ISRH850) && (_TIMEMACHINE != 1))
+    info {
+	top_level_index = 150
+	collapse = true
+        sn = "information"
+        ln = "Processor Information"
+	register += {"opmode"}	
+    }
+%endif
+}

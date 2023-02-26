@@ -1,0 +1,3977 @@
+    /**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  Os_CoreGen7.plugin
+*  Module     :  Elisa
+*
+*  Description:  Checking rule for Os_CoreGen7
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Fabian Wild                   viszfa        Vector Informatik GmbH
+*  Michael Kock                  vismkk        Vector Informatik GmbH
+*  David Feuerstein              visdfe        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2016-01-22    viszfa   -                Initial version
+*  01.05.00   2016-12-01    vismkk   WORKITEM11170    Extended naming convention for HAL context interface.
+*                           visdfe   ESCAN00092195    Unpredictable behavior caused by racing condition when starting 
+*                                                     the OS
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+
+add_global(Map(),"contextEntry");
+add_global(Map(),"contextExit");
+add_global(Map(),"threadDynType");
+add_global(Map(),"specFunctions");
+add_global(Map(),"symbolTable");
+
+var maxTickType;
+add_global(maxTickType,"maxTickType");
+
+
+var indent = "";
+add_global(indent,"indent");
+
+add_global(true,"debug");
+add_global(false,"stackTraceOnAssertionFail");
+add_global(true,"stopOnAssertionFail");
+
+
+def RegisterPlugin()
+{
+
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x010000)                              /* version number of the plugin */
+  reg.SetPackageName("Os_CoreGen7")                     /* package name of the module (as in ALM). */
+  reg.SetInputFiles(["Os_AccessCheck_Lcfg.c", "Os_Alarm_Lcfg.c", "Os_Application_Lcfg.c", "Os_Barrier_Lcfg.c", "Os_Core_Lcfg.c", "Os_Counter_Lcfg.c", "Os_Hal_Context_Lcfg.c", "Os_Hal_Core_Lcfg.c", "Os_Hal_Entry_Lcfg.c", "Os_Hal_Interrupt_Lcfg.c", "Os_Hal_Kernel_Lcfg.c", "Os_Hal_MemoryProtection_Lcfg.c", "Os_Hal_Timer_Lcfg.c", "Os_Hook_Lcfg.c", "Os_Ioc_Lcfg.c", "Os_Isr_Lcfg.c", "Os_MemoryProtection_Lcfg.c", "Os_Peripheral_Lcfg.c", "Os_Resource_Lcfg.c", "Os_Scheduler_Lcfg.c", "Os_ScheduleTable_Lcfg.c", "Os_ServiceFunction_Lcfg.c", "Os_Spinlock_Lcfg.c", "Os_Stack_Lcfg.c", "Os_Task_Lcfg.c", "Os_Trace_Lcfg.c", "Os_TimingProtection_Lcfg.c", "Os_XSignal_Lcfg.c"])    /* list of all required C-files to be checked */
+
+  reg.SetIncludeFiles(["Util.ext", "Os_Hal.ext"])
+  return reg // Mandatory
+}
+
+
+/**********************************************************************************************************************
+ * Name         : CheckVersions
+ * Parameter    : None
+ * Return value : None
+ * Description  : Elisa_core calls this function to query necessary information about the plugin.
+ *                This function is mandatory.
+ *********************************************************************************************************************/
+def CheckVersions()
+{
+  /* ESCAN00074837 : Name of the BSW module header which contains the version defines of the module, aswell as the 
+                     major/minor and release version of the BSW module to be checked */
+  
+  /* AssertDefineEquals("IF_ASRIFFR_VERSION", "0x0311u")   */
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def main()
+{
+  Init();
+  HalInit();
+
+  try
+  { 
+    InvokeRule("CheckSystem", CheckSystem)
+    InvokeRule("CheckTasks", CheckTasks)
+    InvokeRule("CheckResources", CheckResources)
+    InvokeRule("CheckSpinlocks", CheckSpinlocks)
+    InvokeRule("CheckCores", CheckCores)
+    InvokeRule("CheckApps", CheckApps)
+    InvokeRule("CheckAlarms", CheckAlarms)
+    InvokeRule("CheckScheduleTables", CheckScheduleTables)
+    InvokeRule("CheckCounters", CheckCounters)  
+    InvokeRule("CheckStacks", CheckStacks)  
+    InvokeRule("CheckIOCs", CheckIOCs)
+    InvokeRule("CheckTrustedFunctions", CheckTrustedFunctions)
+    InvokeRule("CheckNonTrustedFunctions", CheckNonTrustedFunctions)
+    InvokeRule("CheckISRs", CheckISRs)
+    InvokeRule("CheckSpinlocks", CheckSpinlocks)
+    InvokeRule("CheckMisc", CheckMisc);
+    //InvokeRule("CheckHookCallbackConfigs", CheckHookCallbackConfigs);
+    
+  }
+  catch(e) : is_type(e, "string")
+  {
+    ReportError(indent+ e);
+  }
+  catch(e)
+  {
+    ReportError(indent+"Fatal Error: "+ e.what());
+  }
+}
+
+
+def Init()
+{
+    contextEntry ["StartupHook"] = "Os_HookWrapperCallback";
+    contextExit  ["StartupHook"] = "Os_TrapHookReturn";
+    threadDynType["StartupHook"] = "Os_HookType";
+    
+    contextEntry ["ShutdownHook"] = "Os_HookWrapperStatusHook";
+    contextExit  ["ShutdownHook"] = "Os_TrapHookReturn";
+    threadDynType["ShutdownHook"] = "Os_HookType";
+    
+    contextEntry ["ErrorHook"] = "Os_HookWrapperStatusHook";
+    contextExit  ["ErrorHook"] = "Os_TrapHookReturn";
+    threadDynType["ErrorHook"] = "Os_HookType";
+    
+    contextEntry ["ProtectionHook"] = "Os_HookWrapperProtectionHook";
+    threadDynType["ProtectionHook"] = "Os_HookType";
+    
+    contextExit  ["InitHook"] = "Os_TrapHookReturn";
+    threadDynType["InitHook"] = "Os_HookType";
+    
+    contextEntry ["HookCallback"] = "Os_HookWrapperCallback";
+    contextExit  ["HookCallback"] = "Os_TrapHookReturn";
+    threadDynType["HookCallback"] = "Os_HookType";
+    
+    contextExit  ["Os_IsrConfigType"] = "Os_TrapIsrEpilogue";
+    threadDynType["Os_IsrConfigType"] = "Os_IsrType";
+
+    contextEntry ["Os_TimerIsrConfigType.HRT"] = "Os_Isr_Os_TimerHrtIsr";
+    contextExit  ["Os_TimerIsrConfigType.HRT"] = "Os_TrapIsrEpilogue";
+    threadDynType["Os_TimerIsrConfigType.HRT"] = "Os_IsrType";
+   
+    contextEntry ["Os_TimerIsrConfigType.PIT"] = "Os_Isr_Os_TimerPitIsr";
+    contextExit  ["Os_TimerIsrConfigType.PIT"] = "Os_TrapIsrEpilogue";
+    threadDynType["Os_TimerIsrConfigType.PIT"] = "Os_IsrType";
+    
+    contextEntry ["Os_XSigIsrConfigType"] = "Os_Isr_Os_XSigRecvIsrHandler";
+    contextExit  ["Os_XSigIsrConfigType"] = "Os_TrapIsrEpilogue";
+    threadDynType["Os_XSigIsrConfigType"] = "Os_IsrType";
+
+    threadDynType["Task"] = "Os_TaskType";
+    threadDynType["Task.IOC"] = "Os_IocCallbackType";
+    
+    contextEntry["TrustedFunction"]    = "Os_ServiceTfWrapper";
+   
+    contextEntry["NonTrustedFunction"] = "Os_ServiceNtfWrapper";
+    
+    
+    /* Init special functions array */
+    [contextEntry, contextExit].for_each(fun(elem)
+    {
+      elem.for_each(fun(kv)
+      {
+        var funcName = kv.second().to_string()
+        specFunctions[funcName] = 0;
+      });
+    });
+    
+    specFunctions["Os_AlarmActionActivateTask"] = 0;
+    specFunctions["Os_AlarmActionCallback"] = 0;
+    specFunctions["Os_AlarmActionIncrementCounter"] = 0;
+    specFunctions["Os_AlarmActionIncrementCounter"] = 0;
+    specFunctions["Os_AlarmActionSetEvent"] = 0;
+    
+    specFunctions["Os_SchTWorkScheduleTable"] = 0;
+
+    InitSymbolTable();
+    InitTickValues();
+}
+
+def InitSymbolTable()
+{
+  var constSymbols := FindConstSymbol(".*");
+  var variableSymbols := FindVariablesSymbol(".*");
+  
+  for(var i = 0; i < constSymbols.size(); ++i)
+  {
+    
+    symbolTable[constSymbols[i].GetSymbolName()] = constSymbols[i].GetTypeName();
+  }
+
+  for(var i = 0; i < variableSymbols.size(); ++i)
+  {
+    symbolTable[variableSymbols[i].GetSymbolName()] = variableSymbols[i].GetTypeName();
+  }
+}
+
+def InitTickValues()
+{
+    var typeName = HalGetTickType();
+    switch(typeName)
+    {  
+      case("uint32")
+      {
+        maxTickType       = 0xFFFFFFFF;
+        break;
+      }
+      default
+      {
+        AssertionFail("Internal Error: Unknown TickType: "+type);
+      }
+    }
+}
+
+/**********************************************************************************************************************
+* Name         : HalGetXSigInterruptHandlerName
+* Parameter    : hwConfig (type: Os_Hal_XSigInterruptConfigType)
+* Parameter    : contextCfg (type: Os_Hal_ContextConfigType)
+* Return value : The name of the interrupt handler function
+* Description  : Gets the name of the interrupt handler function
+**********************************************************************************************************************/
+def HalGetXSigInterruptHandlerName(hwConfig, contextCfg)
+{
+  return RemovePtrCast(contextCfg.GetMemberAsString("Entry"));
+}
+
+/**********************************************************************************************************************
+* Name         : HalGetContextEntry
+* Parameter    : contextCfg (type: Os_Hal_ContextConfigType)
+* Return value : The name of the context entry function
+* Description  : Gets the name of the context entry function
+**********************************************************************************************************************/
+def HalGetContextEntry(contextCfg)
+{
+  return RemovePtrCast(contextCfg.GetMemberAsString("Entry"));
+}
+
+/**********************************************************************************************************************
+* Name         : HalGetContextExit
+* Parameter    : contextCfg (type: Os_Hal_ContextConfigType)
+* Return value : The name of the context exit function
+* Description  : Gets the name of the context exit function
+**********************************************************************************************************************/
+def HalGetContextExit(contextCfg)
+{
+  return RemovePtrCast(contextCfg.GetMemberAsString("ReturnAddress"));
+}
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+
+
+/**********************************************************************************************************************
+* Name         : CheckSystem
+* Parameter    : None
+* Return value : None
+* Description  : Checks the system configuration (type: Os_SystemConfigType)
+**********************************************************************************************************************/
+def CheckSystem()
+{
+   Begin("Check System");
+   var system = Struct("OsCfg_System");
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_SPINLOCKREFS_M
+  Verify that:
+  1. each system's SpinlockRefs pointer is no NULL_PTR,
+  2. each system's SpinlockRefs size is equal to the systems's SpinlockCount and
+  3. each element in SpinlockRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(system, "SpinlockRefs", "SpinlockCount");
+  
+  /********************************************************************************************************************/
+  CheckPointerArray(system.GetMemberAsArray("SpinlockRefs"), Define("OS_CFG_NUM_SYSTEM_SPINLOCKS").GetValueAsNumber() + 1);
+  
+  /* Note: Spinlocks are checked by separate rule */
+
+  /********************************************************************************************************************/
+  
+  AssertNumericStructMemberEqualsValueFromDefine(system, "SpinlockCount", "OS_CFG_NUM_SYSTEM_SPINLOCKS");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_HWCONFIG_M
+  Verify that the system's HwConfig pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(system, "HwConfig");
+   
+  /********************************************************************************************************************/
+  
+  if(HalCheckSystemConfigNeeded())
+  {
+    HalCheckSystemConfig(system.GetMemberAsStruct("HwConfig"));
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_MEMORYPROTECTION_M
+  Verify that the systems memory protection pointer is valid, if memory protection is enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(system, "MemoryProtection", "OS_CFG_MEMORY_PROTECTION");
+  
+  /********************************************************************************************************************/
+
+  if (IsDefineStdOn("OS_CFG_MEMORY_PROTECTION"))
+  {
+    CheckMpSystemConfig(system.GetMemberAsStruct("MemoryProtection"));
+  }
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_IOCREFS_M
+  Verify that:
+  1. each system's IocRefs pointer is no NULL_PTR,
+  2. each system's IocRefs size is equal to the systems's IocCount and
+  3. each element in IocRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+  
+  CheckPointerArrayStructMember(system, "IocRefs", "IocCount");
+  
+  /* Note: IOcs are checked by separate rule */
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_CORE2THREAD_M
+  Verify that the system's Core2Thread pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(system, "Core2Thread");
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckMpSystemConfig
+* Parameter    : cfg
+* Return value : None
+* Description  : Checks the system-wide memory protection configuration (type: Os_MpSystemConfigType)
+**********************************************************************************************************************/
+def CheckMpSystemConfig(cfg)
+{
+  Begin("Checking system MPU config " + cfg.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_MPSYSTEM_HWCONFIG_M
+  Verify that the HwConfig reference in each Os_MpSystemConfigType instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(cfg, "HwConfig");
+  
+  /********************************************************************************************************************/
+  
+  HalCheckSystemMpuConfig(cfg.GetMemberAsStruct("HwConfig"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckCores
+* Parameter    : None
+* Return value : None
+* Description  : Checks the core reference table. Checks all core objects contained in this table.
+**********************************************************************************************************************/
+def CheckCores()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_COREID2CORE_M
+  Verify that:
+  1. each Core in OsCfg_CoreRefs except the last is a non NULL_PTR,
+  2. OsCfg_CoreRefs has a size equal to OS_COREID_COUNT + 1 and
+  3. each element in CoreIdType has a value lower than OS_COREID_COUNT.
+  *********************************************************************************************************************/
+
+  var coreRefs = Array("OsCfg_CoreRefs");
+  
+  CheckPointerArray(coreRefs, GetEnumValue("CoreIdType", "OS_COREID_COUNT") + 1)
+  CheckEnumValues("CoreIdType", "OS_COREID_COUNT") 
+  
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_CORE_COREBOOTBARRIERREFS_M
+  Verify that: 
+  1. each entry in OsCfg_CoreBootBarrierRefs except the last is a non NULL_PTR and 
+  2. OsCfg_CoreBootBarrierRefs has a size equal to OS_COREID_COUNT + 1.
+  *********************************************************************************************************************/
+
+  var coreBootBarrierRefs = Array("OsCfg_CoreBootBarrierRefs");
+  
+  CheckPointerArray(coreBootBarrierRefs, GetEnumValue("CoreIdType", "OS_COREID_COUNT") + 1)
+  
+  
+  /*********************************************************************************************************************
+  Check each core
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInNullTerminatedArray(coreRefs, CheckCore);  
+}
+
+/**********************************************************************************************************************
+* Name         : CheckCore
+* Parameter    : core
+* Return value : None
+* Description  : Checks the configuration information of a processor core (type: Os_CoreConfigType)
+**********************************************************************************************************************/
+def CheckCore(core)
+{
+  Begin("Checking core " + core.GetName());
+
+  /*********************************************************************************************************************
+  \CM CM_OS_COREGETSTATUS_M
+  Verify that each Status pointer of each core object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "Status");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_CORE_HWCONFIG_M
+  Verify that each core's HwConfig pointer is a non NULL_PTR (this is relevant for core type Os_CoreConfigType
+  incl. derived types, member type Os_Hal_CoreConfigType*).
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(core, "HwConfig");
+  
+  /********************************************************************************************************************/
+   
+  HalCheckCoreConfig(core.GetMemberAsStruct("HwConfig"));
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_INTERRUPTSOURCEREFS_M
+  Verify that:
+  1. each Autosar core's InterruptSourceRefs pointer is no NULL_PTR,
+  2. each Autosar core's InterruptSourceRefs size is equal to the core's InterruptSourceCount and
+  3. each element in InterruptSourceRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "InterruptSourceRefs", "InterruptSourceCount");
+ 
+  /*********************************************************************************************************************
+  Check AUTOSAR core
+  *********************************************************************************************************************/
+  if(core.GetMemberAsNumber("IsAsrCore") != 0)
+  {
+    var parent = SplitPath(core.GetName())[0];
+    CheckAsrCore(Struct(parent));
+  }
+   
+  End();
+  
+}
+
+/**********************************************************************************************************************
+* Name         : CheckAsrCore
+* Parameter    : core
+* Return value : None
+* Description  : Checks the configuration information of an AUTOSAR core (type: Os_CoreAsrConfigType)
+**********************************************************************************************************************/
+def CheckAsrCore(core)
+{
+  Begin("Checking ASR core "+core.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASRGETSTATUS_M
+  Verify that each Status pointer of each core which is an AUTOSAR core, is derived from an AUTOSAR core status
+  object.
+  *********************************************************************************************************************/
+
+  CheckTypeOfStructMember(core.GetMemberAsStruct("Core"), "Status", "Os_CoreAsrStatusType");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASRGETDYN_M
+  Verify that each Autosar core Dyn pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(core, "Dyn");
+
+  /*********************************************************************************************************************  
+  \CM CM_OS_COREGETLASTERROR_M
+  Verify that each Autosar core's Dyn pointer is derived from an Autosar dyn object.
+  *********************************************************************************************************************/
+
+  CheckTypeOfStructMember(core, "Dyn", "Os_CoreAsrType");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREGETSCHEDULER_M
+  Verify that the Scheduler in each core object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "Scheduler");
+  
+  /*********************************************************************************************************************
+  Check the Scheduler
+  *********************************************************************************************************************/
+
+  CheckScheduler(core.GetMemberAsStruct("Scheduler"), core.GetMemberAsNumber("CoreIdx"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_IDLETASK_M
+  Verify that each Autosar core's IdleTask pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "IdleTask");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_KERNELAPP_M
+  Verify that the core's KernelApp pointer is a non NULL_PTR.
+
+  \CM CM_OS_COREASR_KERNELAPP_M
+  Verify that the KernelApp reference of each autosar core is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "KernelApp");
+  
+  /********************************************************************************************************************/
+  
+  CheckApplication(core.GetMemberAsStruct("KernelApp"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_KERNELSTACK_M
+  Verify that the core's KernelStack pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "KernelStack");
+  
+  /*********************************************************************************************************************
+  The PreStartTask may be null --> no check
+  *********************************************************************************************************************/
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SYSTEM_STARTUPHOOKREF_M
+  Verify that the core's StartupHookRef pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "StartupHookRef");
+  
+  /*********************************************************************************************************************
+  Check  hooks
+  *********************************************************************************************************************/
+  
+  CheckHook(core.GetMemberAsStruct("InitHookRef"), "InitHook");
+  CheckHook(core.GetMemberAsStruct("StartupHookRef"), "StartupHook");
+  CheckHook(core.GetMemberAsStruct("ShutdownHookRef"), "ShutdownHook");
+  CheckHook(core.GetMemberAsStruct("ErrorHookRef"), "ErrorHook");
+  if(!IsStructMemberNull(core, "ProtectionHookRef"))
+  {
+    CheckHook(core.GetMemberAsStruct("ProtectionHookRef"), "ProtectionHook");
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_HOOKREFS_M
+  Verify that:
+  1. each Autosar core's HookRefs pointer is no NULL_PTR,
+  2. each Autosar core's HookRefs size is equal to the core's HookCount and
+  3. each element in HookRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "HookRefs", "HookCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_APPREFS_M
+  Verify that:
+  1. each Autosar core's AppRefs pointer is no NULL_PTR,
+  2. each Autosar core's AppRefs size is equal to the core's AppCount and
+  3. each element in AppRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "AppRefs", "AppCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_RESOURCEREFS_M
+  Verify that:
+  1. each Autosar core's ResourceRefs pointer is no NULL_PTR,
+  2. each Autosar core's ResourceRefs size is equal to the core's ResourceCount and
+  3. each element in ResourceRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "ResourceRefs", "ResourceCount");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_HWCONFIG_M
+  Verify that each autosar core's HwConfig pointer in OsCfg_CoreRefs is no NULL_PTR (this is relevant
+  for asr core of type Os_CoreAsrConfigType, member type Os_Hal_CoreAseConfigType*).
+  *********************************************************************************************************************/
+ 
+  AssertStructMemberNotNull(core, "HwConfig");
+  
+  /********************************************************************************************************************/
+   
+  HalCheckAsrCoreConfig(core.GetMemberAsStruct("HwConfig"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_MEMORYPROTECTION_M
+  Verify that the core memory protection pointer is valid, if memory protection is enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(core, "MemoryProtection", "OS_CFG_MEMORY_PROTECTION");
+  
+  if (IsDefineStdOn("OS_CFG_MEMORY_PROTECTION"))
+  {
+    AssertStructMemberNotNull(core, "MemoryProtection");
+    
+    CheckMpCoreConfig(core.GetMemberAsStruct("MemoryProtection"));
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_MPACCESSRIGHTS_01_02_M
+  Verify that the OsMpAccessRights pointer of each Autosar core is valid, if memory protection is enabled for
+  trusted applications.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(core, "OsMpAccessRights", "OS_CFG_MEMORY_PROTECTION");
+  
+  /********************************************************************************************************************/
+  
+  if (IsDefineStdOn("OS_CFG_MEMORY_PROTECTION"))
+  {
+    CheckMpAccessRights(core.GetMemberAsStruct("OsMpAccessRights"));
+  }
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASRGETTIMINGPROTECTION_M
+  Verify that the core timing protection pointer is valid, if timing protection is enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(core, "TimingProtection", "OS_CFG_TIMING_PROTECTION");
+  
+  /********************************************************************************************************************/
+  
+  if (IsDefineStdOn("OS_CFG_TIMING_PROTECTION"))
+  {
+    CheckTimingProtection(core.GetMemberAsStruct("TimingProtection"));
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_STACKREFS_M
+  Verify that:
+  1. each Autosar core's StackRefs pointer is no NULL_PTR,
+  2. each Autosar core's StackRefs size is equal to the core's StackCount and
+  3. each element in StackRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "StackRefs", "StackCount");
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGGETSENDPORTTOCORE_01_02_M
+  Verify that the CoreIdx of each CoreAsr instance is lower than OS_COREASRCOREIDX_COUNT.
+
+  \CM CM_OS_XSIGGETSENDPORT_M
+  The caller ensures, that the returned pointer is not used for write accesses, if the pointer is NULL_PTR.
+  Precondition ensures that the SendPortIdx is valid. The compliance of the precondition is check during review.
+  Verify that each element in Os_CoreAsrCoreIdx has a value lower than OS_COREASRCOREIDX_COUNT.
+  *********************************************************************************************************************/
+
+  AssertNumericStructMemberLessThanValueFromEnumValue(core, "CoreIdx", "Os_CoreAsrCoreIdx", "OS_COREASRCOREIDX_COUNT");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_XSIGNAL_M
+  Verify that the core XSignal pointer of each autosar core is a non NULL_PTR if XSIGNAL is enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(core, "XSignal", "OS_CFG_XSIGNAL");
+  
+  if (IsDefineStdOn("OS_CFG_XSIGNAL"))
+  {
+    CheckXSignal(core.GetMemberAsStruct("XSignal"));
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASR_IOCREFS_M
+  Verify that:
+  1. each Autosar core's IocRefs pointer is no NULL_PTR,
+  2. each Autosar core's IocRefs size is equal to the core's IocCount and
+  3. each element in IocRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(core, "IocRefs", "IocCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COREASRGETTRACE_M
+  Verify that the Trace pointer is of each CoreAsr is valid, if ORTI tracing is enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(core, "Trace", "OS_CFG_ORTI");
+  AssertStructMemberValidIfConfigured(core, "Trace", "OS_CFG_ORTI");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_CORE_BARRIER_M
+  Verify that each core's Barrier pointer is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(core, "Barrier");
+  
+  /********************************************************************************************************************/
+   
+  CheckBarrier(core.GetMemberAsStruct("Barrier"));
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckHook
+* Parameter    : hook
+* Parameter    : type: StartupHook; ShutdownHook; ErrorHook; ProtectionHook
+* Return value : None
+* Description  : Checks a Hook configuration object (type: Os_Hook[Error|Startup|Shutdown|Protection]HookConfigType)
+**********************************************************************************************************************/
+def CheckHook(hook, type)
+{
+  Begin("Checking Hook "+hook.GetName()+" (type: "+type+")");
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_HOOKTHREAD2STARTUPHOOK_M
+  Verify that the thread context of each StartupHook refers to Os_HookWrapperStartupHook and that there is no other
+  reference to Os_HookWrapperStartupHook from other objects.
+
+  \CM CM_OS_HOOK2STATUSHOOK_M
+  Verify that the thread context of each StatusHook refers to Os_HookWrapperStatusHook and that there is 
+  no other reference to Os_HookWrapperStatusHook from other objects. 
+
+  \CM CM_OS_HOOKTHREAD2PROTECTIONHOOK_M
+  Verify that the thread context of each ProtectionHook refers to Os_HookWrapperProtectionHook and that there is
+  no other reference to Os_HookWrapperProtectionHook from other objects.
+  
+  \CM CM_OS_HOOKTHREAD2HOOK_M
+  Verify that the thread context of each Hook refers to Os_HookReturn and that there is 
+  no other reference to Os_HookReturn. 
+  *********************************************************************************************************************/
+  
+  var thread = hook.GetMemberAsStruct("Hook").GetMemberAsStruct("Thread");
+  
+  CheckThread(thread, type);
+  
+   /*********************************************************************************************************************
+  \CM CM_OS_HOOKGETDYN_M
+  Verify that the Hook Dyn pointer of each Os_HookConfigType object is initialized with a 
+  dynamic hook object. 
+  *********************************************************************************************************************/
+  
+  //var expectedHookTypeName = "Os_Hook"+type+"Type"; /* Example "StartupHook" --> "Os_HookStartupHookType" */
+  
+  var expectedHookTypeName = "Os_HookType";
+  CheckTypeOfStructMember(thread, "Dyn", expectedHookTypeName);
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_HOOK_STARTUPHOOK_CALLBACK_M
+  Verify that the callback pointer of each Os_HookStartupHookConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_HOOK_PROTECTIONHOOK_CALLBACK_M
+  Verify that the callback pointer of each Os_HookProtectionHookConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_HOOK_STATUS_CALLBACK_M
+  Verify that the callback pointer of each Os_HookStatusHookConfigType object is initialized with a valid function 
+  pointer.
+  
+  \CM CM_OS_HOOK_INITHOOK_CALLBACK_M
+  Verify that the callback pointer of each Os_HookInitHookConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertFunctionPointerStructMemberStartsWith(hook, "Callback", type);
+
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckHookCallbackConfigs
+* Parameter    : None
+* Return value : None
+* Description  : Checks all hook callback configs
+**********************************************************************************************************************/
+def CheckHookCallbackConfigs()
+{
+  var hookCallbackRefs = Array("OsCfg_HookRefs");
+  
+  CheckPointerArray(hookCallbackRefs, Define("OS_CFG_NUM_HOOKCALLBACKS").GetValueAsNumber() + 1)
+ 
+  ForEachStructElementInNullTerminatedArray(hookCallbackRefs, CheckHookCallbackConfig);
+}
+
+/**********************************************************************************************************************
+* Name         : CheckHookCallbackConfig
+* Parameter    : config
+* Return value : None
+* Description  : Checks a Hook callback configuration object (type: Os_HookCallbackConfigType)
+**********************************************************************************************************************/
+def CheckHookCallbackConfig(config)
+{
+  Begin("Checking Hook Callback config "+config.GetName());
+  
+  var hook = config.GetMemberAsStruct("Hook");
+  var hookThread = hook.GetMemberAsStruct("Thread");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_HOOKTHREAD2CALLBACK_M
+  Assert that the thread context of each Callback refers to Os_HookWrapperCallback
+  and that there is no other reference to Os_HookWrapperCallback for other objects.
+  *********************************************************************************************************************/
+  
+  CheckThread(hookThread, "HookCallback");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_HOOK_CALLBACK_CALLBACK_M
+  Verify that the callback pointer of each Os_HookCallbackType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(config, "Callback");
+  
+  /*********************************************************************************************************************
+  Assert that Callback does not point to a special function
+  *********************************************************************************************************************/
+
+  AssertFunctionPointerStructMemberNotSpecial(config, "Callback");
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckMpCoreConfig
+* Parameter    : mpCoreConfig
+* Return value : None
+* Description  : Checks the core memory protection configuration (type: Os_MpCoreConfigType)
+**********************************************************************************************************************/
+def CheckMpCoreConfig(mpCoreConfig)
+{
+  Begin("Checking MP core config "+mpCoreConfig.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_MPCORE_HWCONFIG_M
+  Verify that the HwConfig reference in each Os_MpCoreConfigType instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(mpCoreConfig, "HwConfig");
+
+  /********************************************************************************************************************/
+  
+  HalCheckMpCoreConfig(mpCoreConfig.GetMemberAsStruct("HwConfig"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckMpAccessRights
+* Parameter    : mpAccessRights
+* Return value : None
+* Description  : Checks the operating system access rights in case of trusted with memory protection 
+*                (type: Os_MpAccessRightsType)
+**********************************************************************************************************************/
+def CheckMpAccessRights(mpAccessRights)
+{
+  Begin("Checking MP access rights "+mpAccessRights.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_MPACCESSRIGHTS_APPACCESSRIGHTS_M
+  Verify that the AppAccessRights reference in each Os_MpAccessRightsType instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(mpAccessRights, "AppAccessRights");
+  
+  /********************************************************************************************************************/
+  
+  HalCheckAppAccessRights(mpAccessRights.GetMemberAsStruct("AppAccessRights"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_MPACCESSRIGHTS_THREADACCESSRIGHTS_M
+  Verify that the ThreadAccessRights reference in each Os_MpAccessRightsType instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(mpAccessRights, "ThreadAccessRights");
+  
+  /********************************************************************************************************************/
+  
+  HalCheckThreadAccessRights(mpAccessRights.GetMemberAsStruct("ThreadAccessRights"));
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckAccessCheckConfig
+* Parameter    : accessRights
+* Return value : None
+* Description  : Checks the access check configuration (type: Os_AccessCheckConfigType)
+**********************************************************************************************************************/
+def CheckAccessCheckConfig(accessRights)
+{
+   Begin("Checking Access Check Configuration "+accessRights.GetName());
+   
+   if(accessRights.GetMemberAsNumber("RegionCount") > 0)
+   {
+     CheckPointerArrayStructMember2(accessRights, "Regions", "RegionCount");
+   }
+   
+   End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTimingProtection
+* Parameter    : tpConfig
+* Return value : None
+* Description  : Checks core timing protection configuration (type: Os_TpConfigType)          
+**********************************************************************************************************************/
+def CheckTimingProtection(tpConfig)
+{
+   Begin("Checking TP config "+tpConfig.GetName());
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_TP_TIMER_M
+  Verify that the Timer object of each Os_TpConfigType is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(tpConfig, "Timer");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_TP_DYN_M
+  Verify that the Dyn object of each Os_TpConfigType is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(tpConfig, "Dyn");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckScheduler
+* Parameter    : scheduler
+* Parameter    : core
+* Return value : None
+* Description  : Checks a scheduler configuration object (type: Os_SchedulerConfigType)
+**********************************************************************************************************************/
+def CheckScheduler(scheduler, core)
+{
+  Begin("Checking Scheduler "+scheduler.GetName()+" (core: "+core.to_string()+")");
+
+  /*********************************************************************************************************************
+  Check Bit Array
+  *********************************************************************************************************************/
+
+  CheckBitArray(scheduler.GetMemberAsStruct("BitArray"));
+
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHEDULERGETDYN_M
+  Verify that the Dyn pointer of the Os_SchedulerConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(scheduler, "Dyn");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHEDULERPRIORITY2DEQUE_M
+  Precondition ensures that the given index is in range. The compliance of the precondition is check during review.
+  Verify that:
+  1. the TaskQueues pointer of each scheduler  is no NULL_PTR,
+  2. the size of the TaskQueues is equal to OS_CFG_NUM_TASKQUEUES and
+  3. the NumberOfPriorities value in each scheduler is equal to OS_CFG_NUM_TASKQUEUES.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(scheduler, "TaskQueues");
+  
+  CheckArrayStructMemberSizeFromDefine(scheduler, "TaskQueues", "OS_CFG_NUM_TASKQUEUES");
+  
+  AssertNumericStructMemberEqualsValueFromDefine(scheduler, "NumberOfPriorities", "OS_CFG_NUM_TASKQUEUES"); 
+  
+  /*********************************************************************************************************************
+  Check all task queues
+  *********************************************************************************************************************/
+  
+  var taskQueues = scheduler.GetMemberAsArray("TaskQueues");
+  for(var i = 0; i < taskQueues.GetSize(); ++i)
+  {  
+      var taskQueue := taskQueues.GetElemAsStruct(i);
+      CheckTaskQueue(taskQueue, i, core);
+  }
+   
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTaskQueue
+* Parameter    : taskQueue
+* Parameter    : priority
+* Parameter    : core
+* Return value : None
+* Description  : Checks  the configuration data of a deque (type: Os_DequeConfigType)
+**********************************************************************************************************************/
+def CheckTaskQueue(taskQueue, priority, core)
+{
+  Begin("Checking Task Queue "+taskQueue.GetName()+"(priority: "+priority.to_string()+")");
+   
+  var fifoRead = taskQueue.GetMemberAsStruct("FifoRead");
+  var fifoWrite = taskQueue.GetMemberAsStruct("FifoWrite")
+  
+  /*********************************************************************************************************************
+  Check that read and write fifo refer to the same buffer
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(fifoWrite, "Data");
+  var writeBuffer = fifoWrite.GetMemberAsString("Data");
+  
+  AssertStructMemberNotNull(fifoRead, "Data");
+  var readBuffer = fifoRead.GetMemberAsString("Data");
+  
+  if(writeBuffer != readBuffer)
+  {
+     AssertionFail("Reading and writing FIFO do not refer to the same buffer.");
+  }
+  
+  /*********************************************************************************************************************
+  Check FifoWrite
+  *********************************************************************************************************************/
+
+  CheckFifo(fifoWrite, 0, false);
+
+  /*********************************************************************************************************************
+  Check FifoRead
+  *********************************************************************************************************************/
+
+  CheckFifo(fifoRead, 1, false);
+
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_SCHEDULERQUEUESIZE_M
+  Verify that the the size of a scheduler queue for priority P on core C equals the expected size ExpectedQueueSize(P,C)
+  which is calculated as follows:
+  # TaskInstance(P,C)     := The sum of MaxActivations of all tasks on core C with priority == P.
+  # RunningPriority(P,C)  := Equals 1, if there is at least one task on core C with running priority == P, and HomePriority Q with Q != P, otherwise 0.
+  # LockPriority(P,C)     := Equals 1, if there is at least one Spinlock or Resource on core C with ceiling priority == P, otherwise 0.
+  # AdditionalSlot(P,C)   := Equals always 1, due to queue implementation.
+  # ExpectedQueueSize(P,C):= TaskInstance(P,C) + RunningPriority(P,C) + LockPriority(P,C) + AdditionalSlot(P,C)
+  *********************************************************************************************************************/
+  
+  var queueSize = taskQueue.GetMemberAsStruct("FifoWrite").GetMemberAsNumber("Size");
+  
+  var taskInstance = 0;
+  var runningPriority = 0;
+  var lockPriority = 0;
+  var additionalSlots = 1;
+  var taskRefs = Array("OsCfg_TaskRefs");
+  for(var i = 0; i < taskRefs.GetSize()-1; ++i)
+  {
+    var task = GetArrayElementAsStruct(taskRefs, i);
+    var taskCore = task.GetMemberAsStruct("Thread").GetMemberAsStruct("Core").GetMemberAsNumber("CoreIdx");
+    if(taskCore == core)
+    {
+      var homePrio = task.GetMemberAsNumber("HomePriority")
+      var runPrio = task.GetMemberAsNumber("RunningPriority")
+      if(homePrio == priority)
+      {    
+        var maxActivations = task.GetMemberAsNumber("MaxActivations");
+        taskInstance += task.GetMemberAsNumber("MaxActivations");
+        //Debug("Found task with home prio "+priority.to_string()+"; maxActivations = "+maxActivations.to_string()+". Task: "+task.GetName()+" -> TaskInstance = "+taskInstance.to_string());
+      }
+      if((runPrio == priority) && (homePrio != priority))
+      {
+        runningPriority = 1;
+        //Debug("Found task with running prio "+priority.to_string()+" and home prio != running prio -> RunningPriority = "+runningPriority.to_string());
+      }
+    }
+  }
+
+  var spinlockRefs = Array("OsCfg_SpinlockRefs");
+  for(var i = 0; i < spinlockRefs.GetSize()-1; ++i)
+  {
+    var spinlock = GetArrayElementAsStruct(spinlockRefs, i);
+    if(spinlock.GetMemberAsNumber("CeilingPriority") == priority)
+    {
+      lockPriority = 1;
+      //Debug("Found spinlock with ceiling prio "+priority.to_string()+". Spinlock: "+spinlock.GetName()+" -> LockPriority = "+lockPriority.to_string());
+    }
+  }
+ 
+  var resourceRefs = Array("OsCfg_ResourceRefs");
+  for(var i = 0; i < resourceRefs.GetSize()-1; ++i)
+  {
+    var resource = GetArrayElementAsStruct(resourceRefs, i);
+    var resourceCore = GetStructMemberAsStruct(resource,"Core").GetMemberAsNumber("CoreIdx");
+    if(resourceCore == core)
+    {
+      if(resource.GetMemberAsNumber("CeilingPriority") == priority)
+      {
+        lockPriority = 1;
+        //Debug("Found resource with ceiling prio "+priority.to_string()+". Resource: "+resource.GetName()+" -> LockPriority = "+lockPriority.to_string());
+      }
+    }
+  }
+ 
+  var expectedQueueSize = taskInstance + runningPriority + lockPriority + additionalSlots;
+  
+  if(queueSize != expectedQueueSize)
+  {
+    AssertionFail("Wrong queue size: "+queueSize.to_string()+". Expected: "+expectedQueueSize.to_string());
+  }
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckThreadTrace
+* Parameter    : trace
+* Return value : None
+* Description  : Checks a thread trace object (type: Os_TraceThreadConfigType)
+**********************************************************************************************************************/
+def CheckThreadTrace(trace)
+{ 
+  Begin("Checking Trace "+trace.GetName());
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_TRACETHREAD_DYN_M
+  Verify that the Dyn object of each trace object is a non NULL_PTR.
+  *********************************************************************************************************************/
+ 
+  AssertStructMemberNotNull(trace, "Dyn");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckXSignal
+* Parameter    : xsig
+* Return value : None
+* Description  : Checks an XSignal communication object (type: Os_XSigConfigType)          
+**********************************************************************************************************************/
+def CheckXSignal(xsig)
+{
+  Begin("Checking XSignal "+xsig.GetName());
+  
+  /*********************************************************************************************************************
+  Check all send ports
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInArrayWithNullElements(xsig.GetMemberAsArray("SendPorts"), CheckSendPort);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGGETRECVISR_01_02_M
+  Verify that:
+  1. RecvIsrRefs of each Os_XSigConfigType object is a non NULL_PTR except the last one,
+  2. RecvIsrRefs has a size equal to RecvIsrCount + 1 and
+  3. that each XSignal's RecvIsrRefs pointer is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(xsig, "RecvIsrRefs", "RecvIsrCount");
+
+  /*********************************************************************************************************************
+  Check all receive ISRs
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInArrayWithNullElements(xsig.GetMemberAsArray("RecvIsrRefs"), CheckXSigIsr);
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckSendPort
+* Parameter    : port
+* Return value : None
+* Description  : Checks an XSignal send communication object object (type: Os_XSigSendPortConfigType)          
+**********************************************************************************************************************/
+def CheckSendPort(port)
+{ 
+  Begin("Checking SendPort "+port.GetName());
+
+  /*********************************************************************************************************************
+  Check the send channel
+  *********************************************************************************************************************/
+  
+  CheckXSigChannelSend( port.GetMemberAsStruct("SendChannel"));
+
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGSENDPORT_ISR_M
+  Verify that the XSigIsr reference of each SendPort instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  AssertStructMemberNotNull(port, "XSigIsr");
+  
+  /* XSigIsr is checked in rule CheckISRs */
+  
+  /*********************************************************************************************************************
+  Check RecvPort
+  *********************************************************************************************************************/
+  CheckRecvPort(port.GetMemberAsStruct("RecvPort"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckRecvPort
+* Parameter    : port
+* Return value : None
+* Description  : Checks an XSignal receive communication object object (type: Os_XSigRecvPortConfigType)          
+**********************************************************************************************************************/
+def CheckRecvPort(port)
+{
+  Begin("Checking RecvPort "+port.GetName());
+  
+  /*********************************************************************************************************************
+  Check Check RecvChannel
+  *********************************************************************************************************************/
+  
+  CheckXSigChannelRecv(port.GetMemberAsStruct("RecvChannel"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckXSigIsr
+* Parameter    : xsigIsr
+* Return value : None
+* Description  : Checks a XSignal interrupt configuration (type: Os_XSigIsrConfigType)
+**********************************************************************************************************************/
+def CheckXSigIsr(xsigIsr)
+{
+  Begin("Checking XSignal ISR "+xsigIsr.GetName());
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGISR_FUNCTIONTABLE_M
+  Verify that the FunctionTable reference of each XSigIsr is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(xsigIsr, "FunctionTable");
+  
+  /*********************************************************************************************************************
+  Check Function Table
+  *********************************************************************************************************************/
+
+  CheckXSigFunctionTable(xsigIsr.GetMemberAsStruct("FunctionTable"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGISR_RECVPORTREFS_01_03_M
+  Verify that the RecvPortRefs reference of each XSigIsr instance is a non NULL_PTR.
+
+  \CM CM_OS_XSIGISR_RECVPORTREFS_02_03_M
+  Verify that the size of the RecvPortRefs array is equal to the RecvPortCount+1 of each XSigIsr.
+  
+  \CM CM_OS_XSIGRECVPORT_M
+  Verify that each entry of each RecvPort instance is a non NULL_PTR except the last one.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(xsigIsr, "RecvPortRefs", "RecvPortCount");
+  
+  /*********************************************************************************************************************
+  Check each Port
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInArrayWithNullElements(xsigIsr.GetMemberAsArray("RecvPortRefs"), CheckRecvPort); 
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGISR_HWCONFIG_M
+  Verify that the HwConfig reference of each XSigIsr instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  AssertStructMemberNotNull(xsigIsr, "HwConfig");
+
+  /********************************************************************************************************************/
+
+  HalCheckXSigInterruptConfig(xsigIsr.GetMemberAsStruct("HwConfig"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGTHREAD2XSIGISR_M
+  Verify that Os_XSigRecvIsrHandler is referenced in the object HwConfig of each XSigIsr and only in XSigIsrs.
+  *********************************************************************************************************************/
+
+  var handlerName = HalGetXSigInterruptHandlerName(xsigIsr.GetMemberAsStruct("HwConfig"), xsigIsr.GetMemberAsStruct("IsrCfg").GetMemberAsStruct("Thread").GetMemberAsStruct("ContextConfig"));
+  var expectedName =  "Os_Isr_Os_XSigRecvIsrHandler"; 
+  
+  if(handlerName != expectedName)
+  {
+    AssertionFail("XSignal Interrupt Handler is not "+expectedName+". Found: "+handlerName);
+  }
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckXSigFunctionTable
+* Parameter    : functab
+* Return value : None
+* Description  : Checks an XSignal function table (type: Os_XSigFunctionTableConfigType)
+**********************************************************************************************************************/
+def CheckXSigFunctionTable(functab)
+{
+  Begin("Checking XSig Function Table "+functab.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGFUNCTIONTABLE_FUNCTIONDESCRIPTION_M
+  Verify that each function refers either to the receive callback function which belongs to the corresponding
+  enum identifier or that the function reference is a NULL_PTR.
+  *********************************************************************************************************************/
+
+  var funcDescriptions = functab.GetMemberAsArray("FunctionDescription");
+  
+  /* Get the enum containing the function IDs */
+  var en = Enum("Os_XSigFunctionIdx");
+  
+  /* Get a map containing the function-name to function-ID mapping */
+  var xsigFunctionIdxMap = en.GetEnumValues();
+  
+  for(var i = 0; i < funcDescriptions.GetSize()-1; ++i)
+  {
+    if(!IsNull(funcDescriptions.GetElemAsString(i)))
+    {  
+      var elem = funcDescriptions.GetElemAsStruct(i);
+      
+      /* Get the function reference. Example: "Os_XSigRecv_ActivateTask" */
+      var funcName = elem.GetMemberAsString("FunctionRef");
+
+      /* The table may contain null pointers */
+      if(IsNull(funcName))
+      {
+        continue;
+      }
+      
+      /* Remove the prefix to get the target function name. Example: "Os_XSigRecv_ActivateTask" --> "ActivateTask" */
+      var prefix = "Os_XSigRecv_";
+      var pos = funcName.find(prefix);
+      var targetFuncName = funcName.substr(pos+prefix.size(),-1);
+
+      /* Get the function ID from the enum */
+      var idx = GetMapEntry(xsigFunctionIdxMap, "XSigFunctionIdx_"+targetFuncName);
+
+      /* Check if the array index corresponds with the function ID */
+      if(idx != i)
+      {
+        AssertionFail("Function table entry '"+ funcName+"' at wrong position.");
+      }
+    }
+  }
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckXSigChannelSend
+* Parameter    : sendChannel
+* Return value : None
+* Description  : Checks an XSignal configuration data object of a send channel (type: Os_XSigChannelSendConfigType)
+**********************************************************************************************************************/
+def CheckXSigChannelSend(sendChannel)
+{
+  Begin("Checking XSig Send Channel "+sendChannel.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGSENDPORT_DYN_M
+  Verify that the Dyn reference of each XSigSendPort instance is a non NULL_PTR.
+  
+  \CM CM_OS_XSIGCHANNELSEND_DYN_M
+  Verify that the Dyn reference of each XSigChannelSend instance is a non NULL_PTR.
+
+  \CM CM_OS_XSIGCHANNELGETRESULT_03_04_M
+  Verify that the Dyn reference of each XSigSendPort instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(sendChannel, "Dyn");
+  
+  /********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(sendChannel, "Receive");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGCHANNELGETRESULT_01_04_M
+  Verify that the Buffer reference of each XSigSendPort instance is a non NULL_PTR.
+
+  \CM CM_OS_XSIGCHANNELGETRESULT_02_04_M
+  Verify that the Buffer of each XSigSendPort instance has a size equal to the BufferSize member.
+
+  \CM CM_OS_XSIGCHANNELSEND_BUFFER_01_02_M
+  Verify that the Buffer reference of each XSigChannelSend instance is a non NULL_PTR.
+
+  \CM CM_OS_XSIGCHANNELSEND_BUFFER_02_02_M
+  Verify that the Buffer of each XSigChannelSend instance has a size equal to the BufferSize member.
+  *********************************************************************************************************************/
+
+  CheckArrayStructMemberSize(sendChannel, "Buffer", "BufferSize");
+  
+  /* Check buffer elements */
+  ForEachStructElementInArray(sendChannel.GetMemberAsArray("Buffer"), CheckXSigCom);
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckXSigChannelRecv
+* Parameter    : port
+* Return value : None
+* Description  : Checks an XSignal configuration data object of a receive channel (type: Os_XSigChannelRecvConfigType)          
+**********************************************************************************************************************/
+def CheckXSigChannelRecv(recvChannel)
+{
+  Begin("Checking XSig Recv Channel "+recvChannel.GetName());
+
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGCHANNELRECV_DYN_M
+  Verify that the Dyn reference of each XSigChannelRecv instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(recvChannel, "Dyn");
+  
+  /********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(recvChannel, "Send");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGCHANNELGETRECEIVEELEMENT_01_03_M
+  Verify that the Buffer reference of each XSigChannelRecv instance is a non NULL_PTR.
+
+  \CM CM_OS_XSIGCHANNELGETRECEIVEELEMENT_02_03_M
+  Verify that the Buffer of each XSigChannelRecv instance has a size equal to the BufferSize member.
+  *********************************************************************************************************************/
+
+  CheckArrayStructMemberSize(recvChannel, "Buffer", "BufferSize");
+
+  /* Check buffer elements */
+  ForEachStructElementInArray(recvChannel.GetMemberAsArray("Buffer"), CheckXSigCom);
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckXSigCom
+* Parameter    : com
+* Return value : None
+* Description  : Checks an XSignal com data configuration  object (type: Os_XSigComDataConfigType)          
+**********************************************************************************************************************/
+def CheckXSigCom(com)
+{
+  Begin("Checking XSig Com "+com.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGCOM_SENDDATA_M
+  Verify that each SendData reference of each XSigCom instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(com, "SendData");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_XSIGCOM_RECEIVCEDATA_M
+  Verify that each RecvData reference of each XSigCom instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(com, "RecvData");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckApps
+* Parameter    : None
+* Return value : None
+* Description  : Checks the application reference table. Checks all application objects contained in this table.
+**********************************************************************************************************************/
+def CheckApps()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_APPID2APP_M
+  Verify that:
+  1. each Application in OsCfg_AppRefs except the last is a non NULL_PTR,
+  2. OsCfg_AppRefs has a size equal to OS_APPID_COUNT + 1 and
+  3. each element in ApplicationType has a value lower than OS_APPID_COUNT.
+  *********************************************************************************************************************/
+  
+  var appRefs = Array("OsCfg_AppRefs");
+  
+  CheckPointerArray(appRefs, GetEnumValue("ApplicationType", "OS_APPID_COUNT") + 1)
+  CheckEnumValues("ApplicationType", "OS_APPID_COUNT", ["INVALID_OSAPPLICATION"])
+  
+  /*********************************************************************************************************************
+  Check each application
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInNullTerminatedArray(appRefs, CheckApplication); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckApplication
+* Parameter    : appl
+* Return value : None
+* Description  : Checks the configuration information of an application (type: Os_AppConfigType)
+**********************************************************************************************************************/
+def CheckApplication(appl)
+{
+  Begin("Checking application "+appl.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHEDULERGETCURRENTTASK_M
+  Precondition ensures that the pointer is valid. The compliance of the precondition is check during review.
+  Verify that the Dyn reference in each application instance is a non NULL_PTR.
+
+  \CM CM_OS_APPDYN_M
+  Verify that the Dyn pointer of each application is no NULL_PTR. An initialization of this pointer
+  with an incorrect type is expected to be checked by the compiler.
+  *********************************************************************************************************************/
+
+
+  AssertStructMemberNotNull(appl, "Dyn");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APPGETCORE_M
+  Verify that the Core reference in each application instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(appl, "Core");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_TASKREF_M
+  Verify that:
+  1. each application's TaskRefs pointer is no NULL_PTR,
+  2. each application's TaskRefs size is equal to the TaskCount + 1 and
+  3. each element in TaskRefs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "TaskRefs", "TaskCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_ISRCAT2REF_M
+  Verify that:
+  1. each application's IsrCat2Refs pointer is no NULL_PTR,
+  2. each application's IsrCat2Refs size is equal to the IsrCat2Count + 1 and
+  3. each element in IsrCat2Refs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+  
+  CheckPointerArrayStructMember(appl, "IsrCat2Refs", "IsrCat2Count");
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_NOCAT1WHENTP_M
+  Assert that no Cat1 ISRs are used when timing protection is enabled.
+  *********************************************************************************************************************/
+
+  if((IsDefineStdOn("OS_CFG_TIMING_PROTECTION")) && (appl.GetMemberAsNumber("IsrCat1Count") > 0))
+  {
+     AssertionFail("Cat. 1 ISRs shall not be used if TP is enabled");
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_ISRCAT1REF_M
+  Verify that:
+  1. each application's IsrCat1Refs pointer is no NULL_PTR,
+  2. each application's IsrCat1Refs size is equal to the IsrCat1Count + 1 and
+  3. each element in IsrCat1Refs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "IsrCat1Refs", "IsrCat1Count");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_COUNTERREF_M
+  Verify that:
+  1. each application's CounterRefs pointer is no NULL_PTR,
+  2. each application's CounterRefs size is equal to the CounterCount + 1 and
+  3. each element in CounterRefs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "CounterRefs", "CounterCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_ALARMREF_M
+  Verify that:
+  1. each application's AlarmRefs pointer is no NULL_PTR,
+  2. each application's AlarmRefs size is equal to the AlarmCount + 1 and
+  3. each element in AlarmRefs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "AlarmRefs", "AlarmCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_SCHTREF_M
+  Verify that:
+  1. Verify that each application's SchTRefs pointer is no NULL_PTR,
+  2. each application's SchTRefs size is equal to the SchTCount + 1 and
+  3. each element in SchTRefs of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "SchTRefs", "SchTCount");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_APP_SERIVCEFUNCTION_M
+  Verify that:
+  1. each application's ServiceFunctions pointer is no NULL_PTR,
+  2. that each application's ServiceFunctions size is equal to the ServiceFunctionCount + 1 and
+  3. each element in ServiceFunctions of each application is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMember(appl, "ServiceFunctions", "ServiceFunctionCount");
+    
+   
+  /*********************************************************************************************************************
+  Check application specific hooks if configured
+  *********************************************************************************************************************/
+  if(!IsStructMemberNull(appl, "StartupHookRef"))
+  {
+    CheckHook(appl.GetMemberAsStruct("StartupHookRef"), "StartupHook");
+  }
+  
+  if(!IsStructMemberNull(appl, "ShutdownHookRef"))
+  {
+    CheckHook(appl.GetMemberAsStruct("ShutdownHookRef"), "ShutdownHook");
+  }
+  
+  if(!IsStructMemberNull(appl, "ErrorHookRef"))
+  {
+    CheckHook(appl.GetMemberAsStruct("ErrorHookRef"), "ErrorHook");
+  }
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTasks
+* Parameter    : None
+* Return value : None
+* Description  : Checks the task reference table. Checks all task objects contained in this table.
+**********************************************************************************************************************/
+def CheckTasks()
+{
+
+  /*********************************************************************************************************************
+  \CM CM_OS_TASKID2TASK_M
+  Verify that:
+  1. each task pointer in OsCfg_TaskRefs except the last is no NULL_PTR,
+  2. the size of OsCfg_TaskRefs is equal to OS_TASKID_COUNT + 1 and
+  3. each element in TaskType has a lower value than OS_TASKID_COUNT.
+  *********************************************************************************************************************/
+  
+  var taskRefs = Array("OsCfg_TaskRefs");
+  
+  CheckPointerArray(taskRefs, GetEnumValue("TaskType", "OS_TASKID_COUNT") + 1)
+  CheckEnumValues("TaskType", "OS_TASKID_COUNT", ["INVALID_TASK"])
+  
+  /*********************************************************************************************************************
+  Check each task
+  *********************************************************************************************************************/
+
+  ForEachConstStructVariableOfType(["Os_TaskConfigType"], CheckTask);
+  
+  /*********************************************************************************************************************
+  Check each ioc task
+  *********************************************************************************************************************/
+
+  ForEachConstStructVariableOfType(["Os_IocCallbackConfigType"], CheckIocTask);
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckTask
+* Parameter    : task
+* Parameter    : type
+* Return value : None
+* Description  : Checks the configuration information of a task (type: Os_TaskConfigType)
+**********************************************************************************************************************/
+def CheckTask(task, type)
+{
+  Begin("Checking Task " + task.GetName());
+  
+  /*********************************************************************************************************************
+  Check Thread
+  *********************************************************************************************************************/
+  
+  CheckThread(task.GetMemberAsStruct("Thread"), "Task");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTask
+* Parameter    : cfg
+* Parameter    : type
+* Return value : None
+* Description  : Checks the configuration information of an IOC callback task (type: Os_IocCallbackConfigType)
+**********************************************************************************************************************/
+def CheckIocTask(iocTask, type)
+{
+  Begin("Checking IOC Task " + iocTask.GetName());
+  
+  var task = iocTask.GetMemberAsStruct("Task");
+  
+  /*********************************************************************************************************************
+  Check Thread
+  *********************************************************************************************************************/
+  
+  CheckThread(task.GetMemberAsStruct("Thread"), "Task.IOC");
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckThread
+* Parameter    : thread
+* Return value : None
+* Description  : Checks the configuration information of thread (type: Os_ThreadConfigType)
+**********************************************************************************************************************/
+def CheckThread(thread, type)
+{
+  Begin("Checking Thread "+thread.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETCONTEXTCONFIG_M
+  Verify that the ContextConfig reference in each thread instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(thread, "ContextConfig");
+  
+  /********************************************************************************************************************/
+  
+  CheckContextConfig(thread.GetMemberAsStruct("ContextConfig"), type);
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETCONTEXT_M
+  Verify that the Context reference in each thread instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+   AssertStructMemberNotNull(thread, "Context");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETSTACK_M
+  Verify that the Stack reference of each thread is no NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(thread, "Stack");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_TASKGETDYN_M
+  Verify that the Task Dyn pointer of each Os_TaskConfigType object is initialized with a
+  dynamic Task derived from an Os_TaskType object.
+
+  \CM CM_OS_TASKGETEVENT_M
+  Verify that the Task Dyn pointer of each Os_TaskConfigType object is initialized with a
+  dynamic Task derived from an Os_TaskType object.
+  *********************************************************************************************************************/
+  
+  CheckKeyExists(threadDynType, type);
+  
+  CheckTypeOfStructMember(thread, "Dyn", threadDynType[type]);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETOWNERAPPLICATION_M
+  Verify that the OwnerApplication reference in each thread instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(thread, "OwnerApplication");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETCORE_M
+  Verify that the Core reference in each thread instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(thread, "Core");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETINTERRUPTAPISTATE_M
+  Verify that the IntApiState reference in each thread instance is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(thread, "IntApiState");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETTPCONFIG_M
+  Verify that the TimingProtection reference in each thread instance is no NULL_PTR, if timing protection is
+  enabled.
+  *********************************************************************************************************************/
+
+  AssertStructMemberValidIfConfigured(thread, "TimeProtConfig", "OS_CFG_TIMING_PROTECTION");
+
+  /*********************************************************************************************************************
+  Check TimeProtConfig
+  *********************************************************************************************************************/
+  if (IsDefineStdOn("OS_CFG_TIMING_PROTECTION"))
+  {
+    CheckTpThreadConfig(GetStructMemberAsStruct(thread, "TimeProtConfig"), thread.GetMemberAsStruct("Core"));
+  }
+
+  if (IsDefineStdOn("OS_CFG_MEMORY_PROTECTION"))
+  {
+    /*********************************************************************************************************************
+    \CM CM_OS_THREADGETMPACCESSRIGHTSINITIAL_M
+    Verify that the MpAccessRightsInitial reference in each thread instance is no NULL_PTR, if memory protection
+    is enabled.
+    *********************************************************************************************************************/
+  
+    AssertStructMemberNotNull(thread, "MpAccessRightsInitial");
+  
+    /********************************************************************************************************************/
+    
+    CheckMpAccessRights(thread.GetMemberAsStruct("MpAccessRightsInitial"));
+  
+    /*********************************************************************************************************************
+    \CM CM_OS_THREADGETACCESSRIGHTS_M
+    Verify that the AccessRights reference in each thread instance is no NULL_PTR.
+    *********************************************************************************************************************/
+
+    AssertStructMemberNotNull(thread, "AccessRights");
+    
+    /********************************************************************************************************************/
+    
+    CheckAccessCheckConfig(thread.GetMemberAsStruct("AccessRights"));
+  
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_THREADGETTRACE_M
+  Verify that the Trace reference in each thread instance, except hook threads,  is no NULL_PTR,
+  if tracing is enabled.
+  *********************************************************************************************************************/
+
+  if(IsDefineStdOn("OS_CFG_ORTI") && !EndsWith(type, "Hook") && !EndsWith(type, "HookCallback"))
+  {
+    /*********************************************************************************************************************
+    \CM CM_OS_THREADGETTRACE_M
+    Verify that the Trace reference in each thread instance is no NULL_PTR, if tracing is enabled.
+    *********************************************************************************************************************/
+  
+    AssertStructMemberNotNull(thread, "Trace");
+    
+    CheckThreadTrace(thread.GetMemberAsStruct("Trace"));
+  }
+  else
+  {
+    AssertStructMemberNull(thread, "Trace");
+  }
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckThreadContextConfig
+* Parameter    : contextCfg
+* Return value : None
+* Description  : Checks context configuration (type: Os_Hal_ContextConfigType)
+**********************************************************************************************************************/
+def CheckContextConfig(contextCfg, type)
+{
+  Begin("Checking Context Config "+contextCfg.GetName()+" (type: "+type+")");
+  
+  /*********************************************************************************************************************
+  Do HAL specific tests
+  *********************************************************************************************************************/
+  
+  HalCheckContextConfig(contextCfg);
+  
+  /*********************************************************************************************************************
+  Check Entry
+  *********************************************************************************************************************/
+  
+  /* Get the entry point of the context */
+  var entry = HalGetContextEntry(contextCfg);
+  
+  /* Check if there is a special entry point for this context type */
+  if(KeyExists(contextEntry,type))
+  {
+    /* Check for the correct entry point */
+    var expectedEntry = contextEntry[type];
+    if(entry != expectedEntry)
+    {
+      if((type != "Os_TimerIsrConfigType.HRT") || (entry != "Os_Isr_Os_TpIsr")) /* special case */
+      {
+        AssertionFail("Wrong thread entry point: "+entry+". Expected: "+expectedEntry);
+      }
+    }
+  }
+  else
+  {
+    /* Check if the entry point is no special entry-function */
+    if(KeyExists(specFunctions, entry))
+    {
+      AssertionFail("Forbidden thread entry point: "+entry);
+    }
+  }
+  
+  /*********************************************************************************************************************
+  Check Exit
+  *********************************************************************************************************************/
+
+  /* Get the exit point of the context */
+  var exit = HalGetContextExit(contextCfg);
+  
+  /* Check if there is a special exit point for this context type */
+  if(KeyExists(contextExit, type))
+  {
+    /* Check for the correct exit point */
+    var expectedExit = contextExit[type];
+    if(exit != expectedExit)
+    {
+      if(entry == "Os_Isr_Os_TpIsr") /* special case */
+      {
+        if(exit != "Os_IsrEpilogueTp")
+        {
+          AssertionFail("Wrong thread exit point: "+exit+". Expected: Os_IsrEpilogueTp");
+        }
+      }
+      else
+      {
+        AssertionFail("Wrong thread exit point: "+exit+". Expected: "+expectedExit);
+      }
+    }
+  }
+  else
+  {
+    /* Check if exit point is no special exit-function */
+    if(KeyExists(specFunctions, exit))
+    {
+      AssertionFail("Forbidden thread exit point: "+exit);
+    }
+  }
+  
+  End();
+}
+
+
+
+/**********************************************************************************************************************
+* Name         : CheckTpThreadConfig
+* Parameter    : cfg
+* Parameter    : core
+* Return value : None
+* Description  : Checks the thread timing protection settings (type: Os_TpThreadConfigType, Os_TpOwnerThreadConfigType)
+**********************************************************************************************************************/
+def CheckTpThreadConfig(cfg, core)
+{
+  Begin("Checking TpThreadConfig " + cfg.GetName());
+  
+  var kind = cfg.GetMemberAsString("ThreadKind");
+  
+  if(kind != "OS_TPTHREADKIND_OWNER")
+  {
+      End();
+      return;
+  }
+
+  var tpOwnerThreadCfg = GetParentStruct(cfg);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_TPOWNERTHREAD_DYN_M
+  Verify that the Dyn object of each Os_TpOwnerThreadConfigType is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(tpOwnerThreadCfg, "Dyn");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_TPGETRESOURCEBUDGET_02_02_M
+  Verify that:
+  1. the ResourceLockBudgets of each TpOwnerThread is no NULL_PTR,
+  2. each TpOwnerThread's ResourceLockBudgets size is equal to the OS_RESOURCEID_COUNT + 1.
+  *********************************************************************************************************************/
+
+  CheckArrayStructMemberSizeFromEnum(tpOwnerThreadCfg, "ResourceLockBudgets", "ResourceType", "OS_RESOURCEID_COUNT", 1);
+
+  /********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(core, "TimingProtection");
+  var tpTimer = GetStructMemberAsStruct(core.GetMemberAsStruct("TimingProtection"), "Timer");
+  var tpTimerMaxAllowedValue = tpTimer.GetMemberAsStruct("Counter").GetMemberAsStruct("Characteristics").GetMemberAsNumber("MaxAllowedValue");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_TP_TIMEFRAME_M
+  Assert that each TP thread's TimeFrame is is lower than or equal to the MaxAllowedValue of the corresponding TP timer.
+  *********************************************************************************************************************/
+
+  AssertNumericStructMemberLessThanOrEqualToValue(tpOwnerThreadCfg, "TimeFrame", tpTimerMaxAllowedValue);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_TP_EXECUTIONBUDGET_M
+  Assert that each TP thread's ExecutionBudget is lower than or equal to the MaxAllowedValue of the corresponding TP timer.
+  *********************************************************************************************************************/
+
+  CheckTpBudgetConfig(tpOwnerThreadCfg.GetMemberAsStruct("ExecutionBudget"), tpTimerMaxAllowedValue);
+      
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_TP_ALLINTERRUPTLOCKBUDGET_M
+  Assert that each TP thread's AllInterruptLockBudget is lower than or equal to the MaxAllowedValue of the corresponding TP timer.
+  *********************************************************************************************************************/
+
+  CheckTpBudgetConfig(tpOwnerThreadCfg.GetMemberAsStruct("AllInterruptLockBudget"), tpTimerMaxAllowedValue);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_TP_OSINTERRUPTLOCKBUDGET_M
+  Assert that each TP thread's  OsInterruptLockBudget is lower than or equal to the MaxAllowedValue of the corresponding TP timer.
+  *********************************************************************************************************************/
+
+  CheckTpBudgetConfig(tpOwnerThreadCfg.GetMemberAsStruct("OsInterruptLockBudget"), tpTimerMaxAllowedValue);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_TP_RESOURCELOCKBUDGETS_M
+  Assert that each TP thread's ResourceLockBudget is lower than or equal to the MaxAllowedValue of the corresponding TP timer.
+  *********************************************************************************************************************/
+
+  ForEachStructElementInArrayWithNullElements2(tpOwnerThreadCfg.GetMemberAsArray("ResourceLockBudgets"), CheckTpBudgetConfig, tpTimerMaxAllowedValue);
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTpBudgetConfig
+* Parameter    : cfg
+* Parameter    : expectedBudget
+* Return value : None
+* Description  : Checks the timing timing protection budget configuration (type: Os_TpBudgetConfigType)
+**********************************************************************************************************************/
+def CheckTpBudgetConfig(cfg, budgetMaxValue)
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_TP_TPBUDGET_DYN_M
+  Verify that the Dyn object of each Os_TpBudgetConfigType object is a non NULL_PTR.
+ 
+  \CM CM_OS_TPOWNERTHREAD_EXECUTIONBUDGET_DYN_M
+  Verify for each Os_TpOwnerThreadConfigType which is not of type OS_TPMONITORINGTYPE_NONE, that the Dyn
+  object is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  if(cfg.GetMemberAsString("BudgetKind") != "OS_TPMONITORINGTYPE_NONE")
+  {
+    AssertStructMemberNotNull(cfg, "Dyn");
+  }
+  
+  AssertNumericStructMemberLessThanOrEqualToValue(cfg, "Budget", budgetMaxValue);
+}
+
+/**********************************************************************************************************************
+* Name         : CheckCounters
+* Parameter    : None
+* Return value : None
+* Description  : Checks the counter reference table. Checks all counter objects contained in this table.
+**********************************************************************************************************************/
+def CheckCounters()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_COUNTERID2COUNTER_M
+  Verify that:
+  1. each counter pointer in OsCfg_CounterRefs is no NULL_PTR,
+  2. each the size of OsCfg_CounterRefs is equal to OS_COUNTERID_COUNT + 1 and
+  3. each element in CounterType has a lower value than OS_COUNTERID_COUNT.
+  *********************************************************************************************************************/
+
+  var counterRefs = Array("OsCfg_CounterRefs");
+  
+  CheckPointerArray(counterRefs, GetEnumValue("CounterType", "OS_COUNTERID_COUNT") + 1)
+  CheckEnumValues("CounterType", "OS_COUNTERID_COUNT")
+  
+  /*********************************************************************************************************************
+  Check each counter
+  *********************************************************************************************************************/
+  ForEachStructElementInNullTerminatedArray(counterRefs, CheckCounter);
+  
+}
+
+/**********************************************************************************************************************
+* Name         : CheckCounter
+* Parameter    : counter
+* Return value : None
+* Description  : Checks the configuration information of a counter (type: Os_CounterConfigType)
+**********************************************************************************************************************/
+def CheckCounter(counter)
+{
+  var name := counter.GetName();
+  Begin("Checking counter " + name);
+  var typeName = GetSymbolType(name);
+    
+  /********************************************************************************************************************/
+  
+  var characteristics = counter.GetMemberAsStruct("Characteristics");
+  var maxAllowedValue = characteristics.GetMemberAsNumber("MaxAllowedValue");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_COUNTER_MINCYCLE_M
+  Assert that each counter's MinCycle is lower than or equal to it's MaxAllowedValue.
+  *********************************************************************************************************************/
+  
+  AssertNumericStructMemberLessThanOrEqualToValue(characteristics, "MinCycle", maxAllowedValue);
+    
+  /*********************************************************************************************************************
+   Check JobQueue
+  *********************************************************************************************************************/
+
+  CheckPriorityQueue(counter.GetMemberAsStruct("JobQueue"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COUNTERGETCORE_M
+  Verify that the Core pointer of each counter in OsCfg_CounterRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(counter, "Core");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_COUNTERGETAPPLICATION_M
+  Verify that the OwnerApplication pointer of each counter in OsCfg_CounterRefs is no NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(counter, "OwnerApplication");
+  
+  var expectedDriverType;
+  var base = Struct(SplitPath(name)[0]);  /* Example: OsCfg_Counter_Counter_PIT_Core0.SwCounter.Counter --> OsCfg_Counter_Counter_PIT_Core0 */
+  switch(typeName)
+  {  
+    case("const Os_TimerSwConfigType")
+    {
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERSW_MAXALLOWEDVALUE_M
+      Assert that MaxAllowedValue of each SW timer is lower than (max(TickType)+1)/2.
+      *********************************************************************************************************************/
+      
+      var expectedMaximumMaxAllowedValue = (uint64_t(maxTickType)+1)/2;
+      AssertNumericStructMemberLessThanValue(characteristics, "MaxAllowedValue", expectedMaximumMaxAllowedValue);
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERSW_MAXCOUNTINGVALUE_M
+      Assert that MaxAllowedValue equals (MaxCountingValue + 1) / 2 - 1.
+      *********************************************************************************************************************/
+
+      var expectedMaxAllowedValue = ((uint64_t(characteristics.GetMemberAsNumber("MaxCountingValue")) + 1) / 2) - 1;
+      AssertNumericStructMemberEqualsValue(characteristics, "MaxAllowedValue", expectedMaxAllowedValue);
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_COUNTER2TIMERSW_01_02_M
+      Verify that:
+      1. each generated object of type Os_TimerSwConfigType has the DriverType set to OS_TIMERTYPE_SOFTWARE and
+      2. that the Dyn member of each Os_TimerSwConfigType object is initialized with a Os_TimerSwType.Dyn.
+       
+      \CM CM_OS_COUNTER2TIMERSW_M
+      Verify that:
+      1. each generated object of type Os_TimerSwConfigType has the DriverType set to OS_TIMERTYPE_SOFTWARE and
+      2. that the Dyn member of each Os_TimerSwConfigType object is initialized with a Os_TimerSwType.Dyn.
+      *********************************************************************************************************************/
+      
+      AssertStringStructMemberEqualsValue(counter, "DriverType", "OS_TIMERTYPE_SOFTWARE");
+      
+      CheckTypeOfStructMember(base, "Dyn", "Os_TimerSwType");
+      
+      break;
+    }
+    case("const Os_TimerPitConfigType")
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERPIT_MAXALLOWEDVALUE_M
+      Assert that MaxAllowedValue of each PIT timer is lower than (max(TickType)+1)/2.
+      *********************************************************************************************************************/
+
+      var expectedMaximumMaxAllowedValue = (uint64_t(maxTickType)+1)/2;
+      AssertNumericStructMemberLessThanValue(characteristics, "MaxAllowedValue", expectedMaximumMaxAllowedValue);
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERPIT_MAXCOUNTINGVALUE_M
+      Assert that MaxAllowedValue equals (MaxCountingValue + 1) / 2 - 1.
+      *********************************************************************************************************************/
+
+      var expectedMaxAllowedValue = ((uint64_t(characteristics.GetMemberAsNumber("MaxCountingValue")) + 1) / 2) - 1;
+      AssertNumericStructMemberEqualsValue(characteristics, "MaxAllowedValue", expectedMaxAllowedValue);
+
+      /*********************************************************************************************************************
+      \CM CM_OS_COUNTER2TIMERPIT_01_02_M
+      Verify that:
+      1. each generated object of type Os_TimerPitConfigType has the DriverType set to OS_TIMERTYPE_PERIODIC_TICK and
+      2. that the Dyn member of each Os_TimerPitConfigType object is initialized with a Os_TimerSwType.Dyn.
+      *********************************************************************************************************************/
+
+      AssertStringStructMemberEqualsValue(counter, "DriverType", "OS_TIMERTYPE_PERIODIC_TICK");
+          
+      CheckTypeOfStructMember(base.GetMemberAsStruct("SwCounter"), "Dyn", "Os_TimerSwType");
+        
+      /*********************************************************************************************************************
+      \CM CM_OS_TIMERPITHWCONFIG_M
+      Verify that the HwConfig reference in each PIT instance is a non NULL_PTR.
+      *********************************************************************************************************************/
+     
+      AssertStructMemberNotNull(base, "HwConfig");
+      
+      /********************************************************************************************************************/
+      
+      HalCheckPitConfig(base.GetMemberAsStruct("HwConfig"));
+      
+      break;
+    }
+    case("const Os_TimerHrtConfigType")
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERHRT_MAXALLOWEDVALUE_M
+      Assert that MaxAllowedValue of each HRT equals (2^n)-1, where n is a native number.
+      *********************************************************************************************************************/
+
+      AssertStructMemberIsPowerOfTwoMinus1(characteristics, "MaxAllowedValue");
+            
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_TIMERHRT_MAXCOUNTINGVALUE_M
+      Assert that MaxCountingValue of each HRT equals (2^n)-1, where n is a native number, that MaxAllowedValue equals (MaxCountingValue + 1) / 4 - 1.
+      *********************************************************************************************************************/
+      
+      AssertStructMemberIsPowerOfTwoMinus1(characteristics, "MaxCountingValue");
+      
+      var expectedMaxAllowedValue = ((uint64_t(characteristics.GetMemberAsNumber("MaxCountingValue")) + 1) / 4) - 1;
+      AssertNumericStructMemberEqualsValue(characteristics, "MaxAllowedValue", expectedMaxAllowedValue);
+      
+      /*********************************************************************************************************************     
+      \CM CM_OS_COUNTER2TIMERHRT_01_02_M
+      Verify that:
+      1. each generated object of type Os_TimerHrtConfigType has the DriverType set to OS_TIMERTYPE_HIGH_RESOLUTION
+      and
+      2. that the Dyn member of each Os_TimerHrtConfigType object is initialized with a Os_TimerHrtType.Dyn.
+      *********************************************************************************************************************/
+
+      AssertStringStructMemberEqualsValue(counter, "DriverType", "OS_TIMERTYPE_HIGH_RESOLUTION");
+      
+      CheckTypeOfStructMember(base, "Dyn", "Os_TimerHrtType");
+
+      /*********************************************************************************************************************
+      \CM CM_OS_TIMERHRTHWCONFIG_M
+      Verify that the HwConfig reference in each HRT instance is a non NULL_PTR.
+      *********************************************************************************************************************/
+
+      AssertStructMemberNotNull(base, "HwConfig");
+      
+      /********************************************************************************************************************/
+      
+      HalCheckHrtConfig(base.GetMemberAsStruct("HwConfig"));
+      
+      break;
+    }
+    default
+    {
+      AssertionFail("Unknown counter type: "+typeName);
+    }
+  }
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckJob
+* Parameter    : job
+* Parameter    : expectedDynType:  The expected dyn type
+* Parameter    : expectedCallback: The expected callback function
+* Return value : None
+* Description  : Checks the configuration information of a job (type: Os_JobConfigType)
+**********************************************************************************************************************/
+def CheckJob(job, expectedDynType, expectedCallback)
+{
+  Begin("Checking Job " + job.GetName());
+   
+  CheckTypeOfStructMember(job, "Dyn", expectedDynType);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_JOBGETCOUNTER_M
+  Verify that the Counter reference in each job instance is a non NULL_PTR.
+
+  \CM CM_OS_JOBGETCORE_M
+  Verify that the Counter reference in each job instance is a non NULL_PTR.
+  Verify also [CM_OS_COUNTERGETCORE_M].
+  *********************************************************************************************************************/
+
+
+  AssertStructMemberNotNull(job, "Counter");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_JOB_CALLBACK_M
+  Verify that the Callback reference in each job instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(job, "Callback");
+  
+  /*********************************************************************************************************************
+  Check Callback
+  *********************************************************************************************************************/
+  
+  var callback = job.GetMemberAsString("Callback");
+  if(callback != expectedCallback)
+  {
+    AssertionFail("Wrong callback function: "+callback+". Expected: "+expectedCallback);
+  }
+   
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckPriorityQueue
+* Parameter    : queue
+* Return value : None
+* Description  : Checks the configuration information of a priority queue (type: Os_PriorityQueueConfigType)
+**********************************************************************************************************************/
+def CheckPriorityQueue(queue)
+{
+  var name = queue.GetName();
+  
+  
+  Begin("Checking Priority Queue " + name);
+  
+   /*********************************************************************************************************************
+  \CM CM_OS_PRIORITYQUEUE_QUEUE_DATA_M
+  Verify that:
+  1. Verify that the Queue pointer of each priority queue is no NULL_PTR and
+  2. the size of the Queue is equal QueueSize + 1.
+  3. Verify that the queue size is sufficient to handle all client data (in case of counters, the queue size
+  has to be at least equal to the number of jobs + 1, handled by the counter).
+  *********************************************************************************************************************/
+
+  CheckPointerArrayStructMemberSize(queue, "Queue", "QueueSize");
+  
+  var counterName =  SplitPath(name)[0]; /* Name of the counter this queue belongs to */
+ 
+  var alarmRefs = Array("OsCfg_AlarmRefs");
+  var alarmCount = 0  /* The number of alarms referencing the counter this queue belongs to */
+  for(var i = 0; i < alarmRefs.GetSize()-1; ++i)
+  {
+     var alarmCounterName = SplitPath(GetArrayElementAsStruct(alarmRefs,i).GetMemberAsStruct("Job").GetMemberAsString("Counter"))[0];
+     
+     if(alarmCounterName == counterName)
+     {
+      ++alarmCount;
+     }
+  }
+  
+  var schtRefs = Array("OsCfg_SchTRefs");
+  var schtCount = 0  /* The number of schedule tables referencing the counter this queue belongs to */
+  for(var i = 0; i < schtRefs.GetSize()-1; ++i)
+  {
+     var schtCounterName = SplitPath(GetArrayElementAsStruct(schtRefs,i).GetMemberAsStruct("Job").GetMemberAsString("Counter"))[0];
+     
+     if(schtCounterName == counterName)
+     {
+      ++schtCount;
+     }
+  }
+  
+  var expectedQueueSize = alarmCount + schtCount;
+  
+  AssertNumericStructMemberEqualsValue(queue, "QueueSize", expectedQueueSize);
+  
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_PRIORITYQUEUE_DYN_M
+  Verify that the Dyn pointer of each PriorityQueue object is valid.
+  *********************************************************************************************************************/
+
+   AssertStructMemberNotNull(queue, "Dyn");
+   
+   End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckAlarms
+* Parameter    : None
+* Return value : None
+* Description  : Checks the alarm reference table. Checks all alarms objects contained in this table.
+**********************************************************************************************************************/
+def CheckAlarms()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_ALARMID2ALARM_M
+  Verify that:
+  1. each alarm pointer except the last in OsCfg_AlarmRefs is no NULL_PTR,
+  2. the size of OsCfg_AlarmRefs is equal to OS_ALARMID_COUNT + 1 and
+  3. each element in AlarmType has a lower value than OS_ALARMID_COUNT.
+  *********************************************************************************************************************/
+  
+  var alarmRefs = Array("OsCfg_AlarmRefs");
+  
+  CheckPointerArray(alarmRefs, GetEnumValue("AlarmType", "OS_ALARMID_COUNT") + 1)
+  CheckEnumValues("AlarmType", "OS_ALARMID_COUNT")
+  
+  /*********************************************************************************************************************
+  Check each alarm
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInNullTerminatedArray(alarmRefs, CheckAlarm); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckAlarm
+* Parameter    : alarm
+* Return value : None
+* Description  : Checks the configuration information of a alarm (type: Os_AlarmConfigType)
+**********************************************************************************************************************/
+def CheckAlarm(alarm)
+{
+  var name := alarm.GetName();
+  Begin("Checking alarm " + name);
+  
+  var typeName = GetSymbolType(name);
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_ALARMGETAPPLICATION_M
+  Verify that the OwnerApplication reference in each alarm instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(alarm, "OwnerApplication");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_ALARMGETACCESSINGAPPLICATIONS_M
+  Verify that the AccessingApplications reference in each alarm instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(alarm, "AccessingApplications");
+  
+  /********************************************************************************************************************/
+
+  var expectedJobCallback;
+  var expectedAlarmObject;
+  switch(typeName)
+  {  
+    case("const Os_AlarmCallbackConfigType")
+    {
+      expectedJobCallback = "Os_AlarmActionCallback";
+      expectedAlarmObject = "AlarmCallback";
+      break;
+    }
+    case("const Os_AlarmIncrementCounterConfigType")
+    {
+      expectedJobCallback = "Os_AlarmActionIncrementCounter";
+      expectedAlarmObject = "Counter";
+      break;
+    }
+    case("const Os_AlarmActivateTaskConfigType")
+    {
+      expectedJobCallback = "Os_AlarmActionActivateTask";
+      expectedAlarmObject = "Task";
+      break;
+    }
+    case("const Os_AlarmSetEventConfigType")
+    {
+      expectedJobCallback = "Os_AlarmActionSetEvent";
+      expectedAlarmObject = "Task";
+      break;
+    }
+    default
+    {
+      AssertionFail("Unknown alarm type: "+typeName);
+    }
+  }
+
+  /*********************************************************************************************************************
+  \CM CM_OS_ALARMJOB2ALARMSETEVENT_M
+  Verify that the alarm callback of each set event alarm is Os_AlarmActionSetEvent and that Os_AlarmActionSetEvent
+  is referenced by no other object.
+
+  \CM CM_OS_ALARMJOB2ALARMACTIVATETASK_M
+  Verify that the alarm callback of each activate task alarm is Os_AlarmActionActivateTask and that
+  Os_AlarmActionActivateTask is referenced by no other object.
+
+  \CM CM_OS_ALARMJOB2ALARMINCREMENTCOUNTER_M
+  Verify that the alarm callback of each increment counter alarm is Os_AlarmActionIncrementCounter and that
+  Os_AlarmActionIncrementCounter is referenced by no other object.
+
+  \CM CM_OS_ALARMJOB2ALARMCALLBACK_M
+  Verify that the alarm callback of each callback alarm is Os_AlarmActionCallback and that
+  Os_AlarmActionCallback is referenced by no other object.
+
+  \CM CM_OS_ALARM_DYN_M
+  Verify that the Job Dyn pointer of each alarm in OsCfg_AlarmRefs is initialized with the correct type according to
+  the type of the alarm.  
+  *********************************************************************************************************************/
+
+  var job = alarm.GetMemberAsStruct("Job");
+  
+  CheckJob(job, "Os_AlarmType", expectedJobCallback);
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_ALARM_EVENTTASK_M
+  Verify that each alarm in OsCfg_AlarmRefs of type Os_AlarmSetEventConfigType has a valid Task pointer.
+
+  \CM CM_OS_ALARM_TASK_M
+  Verify that each alarm in OsCfg_AlarmRefs of type Os_AlarmActivateTaskConfigType has a valid Task pointer.
+
+  \CM CM_OS_ALARM_COUNTER_M
+  Verify that each alarm in OsCfg_AlarmRefs of type Os_AlarmIncrementCounterConfigType has a Counter  pointer.
+
+  \CM CM_OS_ALARM_CALLBACK_M
+  Verify that each alarm in OsCfg_AlarmRefs of type Os_AlarmCallbackConfigType has a AlarmCallback pointer.
+  *********************************************************************************************************************/
+ 
+  var baseName := SplitPath(name)[0];
+  var base := Struct(baseName);
+  
+  AssertStructMemberNotNull(base, expectedAlarmObject);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_ALARM_ALARMTIME_M
+  Assert that each alarm's autostart AlarmTime is lower than or equal to the MaxAllowedValue of the corresponding timer.
+  *********************************************************************************************************************/
+
+  var maxAllowedValue = GetStructMemberAsStruct(job, "Counter").GetMemberAsStruct("Characteristics").GetMemberAsNumber("MaxAllowedValue");
+  var autoStart = alarm.GetMemberAsStruct("Autostart");
+  AssertNumericStructMemberLessThanOrEqualToValue(autoStart, "AlarmTime", maxAllowedValue);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_ALARM_CYCLE_M
+  Assert that each alarm's autostart Cycle is lower than or equal to the MaxAllowedValue of the corresponding timer.
+  *********************************************************************************************************************/
+  
+  AssertNumericStructMemberLessThanOrEqualToValue(autoStart, "Cycle", maxAllowedValue);
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckScheduleTables
+* Parameter    : None
+* Return value : None
+* Description  : Checks the schedule table reference table. Checks all schedule table objects contained in this table.
+**********************************************************************************************************************/
+def CheckScheduleTables()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHTID2SCHT_M
+  Verify that:
+  1. each schedule table pointer in OsCfg_SchTRefs is no NULL_PTR,
+  2. the size of OsCfg_SchTRefs is equal to OS_SCHTID_COUNT + 1 and
+  3. each element in ScheduleTableType has a lower value than OS_SCHTID_COUNT.
+  *********************************************************************************************************************/
+
+  var schtRefs = Array("OsCfg_SchTRefs");
+  
+  CheckPointerArray(schtRefs, GetEnumValue("ScheduleTableType", "OS_SCHTID_COUNT") + 1)
+  CheckEnumValues("ScheduleTableType", "OS_SCHTID_COUNT")
+  
+  /*********************************************************************************************************************
+  Check each schedule table
+  *********************************************************************************************************************/
+  
+  ForEachStructElementInNullTerminatedArray2(schtRefs, CheckScheduleTable); 
+  
+}
+
+/**********************************************************************************************************************
+* Name         : CheckScheduleTable
+* Parameter    : schedTab
+* Return value : None
+* Description  : Checks the configuration information of a schedule table (type: Os_SchTConfigType)
+**********************************************************************************************************************/
+def CheckScheduleTable(schedTab, type)
+{
+  var name := schedTab.GetName();
+  
+  Begin("Checking schedule table " + name+" (type: "+type+")");
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHTGETDYN_M
+  Verify that the schedule table Dyn pointer of each Os_SchTConfigType object is initialized with a valid
+  dynamic schedule table.
+ 
+  \CM CM_OS_SCHTJOB2SCHT_M
+  Verify that the Callback of each schedule table job refers to Os_SchTWorkScheduleTable and that no other
+  Object refers to Os_SchTWorkScheduleTable.
+  
+  \CM CM_OS_SCHTSYNCGETDYN_M
+  Verify that the schedule table Dyn pointer of each Os_SchTSyncConfigType object is initialized with a
+  dynamic schedule table derived from an Os_SchTSyncType object.
+  *********************************************************************************************************************/
+  
+  var job = schedTab.GetMemberAsStruct("Job");
+  var maxAllowedValue = GetStructMemberAsStruct(job, "Counter").GetMemberAsStruct("Characteristics").GetMemberAsNumber("MaxAllowedValue");
+  var expectedDynType;
+  var syncKind = schedTab.GetMemberAsString("SyncKind");
+
+  switch(syncKind)
+  {
+    case("OS_SCHT_SYNC_KIND_NON")
+    {
+      expectedDynType  = "Os_SchTType";
+      break;
+    }
+    case("OS_SCHT_SYNC_KIND_IMPLICIT")
+    {
+      expectedDynType  = "Os_SchTType";
+      break;
+    }
+    case("OS_SCHT_SYNC_KIND_EXPLICIT")
+    {
+      var base := GetParentStruct(schedTab);
+            
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_SCHT_PRECISION_M
+      Assert that each schedule table's Precision is lower than or equal to the MaxAllowedValue of the corresponding timer.
+      *********************************************************************************************************************/
+
+      AssertNumericStructMemberLessThanOrEqualToValue(base, "Precision", maxAllowedValue);
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_SCHT_DURATION_M
+      Assert that each schedule table's Duration is lower than or equal to the MaxAllowedValue of the corresponding timer.
+      *********************************************************************************************************************/
+
+      AssertNumericStructMemberLessThanOrEqualToValue(base, "Duration", maxAllowedValue);
+      
+      /*********************************************************************************************************************
+      \CM CM_OS_FMEA_SCHT_DURATIONHALF_M
+      Assert that each schedule table's DurationHalf is lower than or equal to the MaxAllowedValue of the corresponding timer.
+      *********************************************************************************************************************/
+
+      AssertNumericStructMemberLessThanOrEqualToValue(base, "DurationHalf", maxAllowedValue);
+      
+      /********************************************************************************************************************/
+      
+      expectedDynType  = "Os_SchTSyncType";
+      break;
+    }
+    default
+    {
+      AssertionFail("Unknown Sync Kind: "+syncKind);
+    }
+  }
+  
+  CheckJob(job, expectedDynType, "&Os_SchTWorkScheduleTable");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHTGETAPPLICATION_M
+  Verify that the OwnerApplication reference in each schedule table instance is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(schedTab, "OwnerApplication");
+  
+  /*********************************************************************************************************************
+  Check all expiry points
+  *********************************************************************************************************************/
+  
+  var numberOfCyclicExpiryPoints = ForEachStructInLinkedList(schedTab, "ExPoHead", "Next", CheckExpiryPoint, maxAllowedValue);
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SCHTGETNEXT_M
+  Verify that the initial next pointer of each schedule table which has a cyclic expiry point is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  if(numberOfCyclicExpiryPoints > 0)
+  {
+     AssertStructMemberNotNull(schedTab, "InitialNext");
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_SCHT_STARTTIME_M
+  Assert that each schedule table's autostart StartTime is lower than or equal to the MaxAllowedValue of the corresponding timer.
+  *********************************************************************************************************************/
+
+  AssertNumericStructMemberLessThanOrEqualToValue(schedTab.GetMemberAsStruct("Autostart"), "StartTime", maxAllowedValue);
+    
+  End(); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckExpiryPoint
+* Parameter    : exp
+* Parameter    : maxAllowedValue
+* Return value : None
+* Description  : Checks the configuration information of a schedule table expiry point
+                (types: Os_SchTExPo[Sync]ConfigType)
+**********************************************************************************************************************/
+def CheckExpiryPoint(exp, maxAllowedValue)
+{
+  var name := exp.GetName();
+  var cyclic = 0;
+  
+  if(exp.GetMemberAsString("Kind") == "OS_SCHT_EXPO_KIND_EXECUTE_SYNC") 
+  {
+    var parent = GetParentStruct(exp);
+    
+    /*********************************************************************************************************************
+    \CM CM_OS_FMEA_SCHTSYNCEXPO_MAXLENGTHOFNEXT_M
+    Assert that each schedule table sync expiry point's MaxLengthOfNext is lower than or equal to the MaxAllowedValue of the corresponding timer.
+    *********************************************************************************************************************/
+
+    AssertNumericStructMemberLessThanOrEqualToValue(parent, "MaxLengthOfNext", maxAllowedValue);
+    
+    /*********************************************************************************************************************
+    \CM CM_OS_FMEA_SCHTSYNCEXPO_MAXSHORTENOFNEXT_M
+    Assert that each schedule table sync expiry point's MaxShortenOfNext is lower than or equal to the MaxAllowedValue of the corresponding timer.
+    *********************************************************************************************************************/
+
+    var maxShortenOfNext;
+    switch(HalGetTickType())
+    {  
+      case("uint32")
+      {
+        maxShortenOfNext  = Abs(int32_t(parent.GetMemberAsNumber("MaxShortenOfNext")));
+        break;
+      }
+      default
+      {
+        AssertionFail("Internal Error: Unknown TickType: "+type);
+      }
+    }
+
+    if(maxShortenOfNext > maxAllowedValue)
+    {
+      AssertionFail(exp.GetName()+".MaxShortenOfNext = "+maxShortenOfNext.to_string()+". Expected: less than or equal to "+maxAllowedValue.to_string());
+    }
+  }
+  else if(exp.GetMemberAsString("Kind") == "OS_SCHT_EXPO_KIND_EXECUTE_CYCLIC") 
+  {
+    cyclic = 1;
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_EXPO_TASKS_M
+  Verify that:
+  1. each the Tasks pointer of each configured expiry point is a non NULL_PTR, if the TaskCount is not '0',
+  2. the size of the Tasks array is equal to TaskCount, if TaskCount is not '0' and
+  3. each task reference is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  var taskCount = exp.GetMemberAsNumber("TaskCount");
+  if(taskCount > 0)
+  {
+    CheckPointerArrayStructMember2(exp, "Tasks", "TaskCount");
+    ForEachStructElementInArray(exp.GetMemberAsArray("Tasks"), CheckExpActivateTask);
+  }
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_EXPO_EVENTS_M
+  Verify that:
+  1. each the Events pointer of each configured expiry point is a non NULL_PTR, if the EventCount is not '0',
+  2. the size of the Events array is equal to EventCount, if EventCount is not '0' and
+  3. the task reference in each element is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  var eventCount = exp.GetMemberAsNumber("EventCount");
+  if(eventCount > 0)
+  {
+    CheckPointerArrayStructMember2(exp, "Events", "EventCount");
+    ForEachStructElementInArray(exp.GetMemberAsArray("Events"), CheckExpSetEvent);
+  }
+
+  /*********************************************************************************************************************
+  \CM CM_OS_FMEA_SCHTEXPO_RELOFFSETTONEXT_M
+  Assert that each schedule table expiry point's RelOffsetToNext is lower than or equal to the MaxAllowedValue of the corresponding timer.
+  *********************************************************************************************************************/
+
+  AssertNumericStructMemberLessThanOrEqualToValue(exp, "RelOffsetToNext", maxAllowedValue);
+  
+  End();
+  return cyclic;
+}
+
+def CheckExpSetEvent(event)
+{
+  Begin("Checking SetEvent expiry point " + event.GetName());
+  
+  /*********************************************************************************************************************
+  Check that the Task reference is not null
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(event, "Task");
+    
+  End();
+}
+
+def CheckExpActivateTask(task)
+{
+  Begin("Checking ActivateTask expiry point " + task.GetName());
+  
+  /*********************************************************************************************************************
+  Check that the Task reference is not null
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(task, "Task");
+  
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckResources
+* Parameter    : None
+* Return value : None
+* Description  : Checks the resource reference table. Checks all resource objects contained in this table.
+**********************************************************************************************************************/
+def CheckResources()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_RESOURCEID2RESOURCE_M
+  Verify that:
+  1. each resource pointer in OsCfg_ResourceRefs is no NULL_PTR,
+  2. the size of OsCfg_ResourceRefs is equal to OS_RESOURCEID_COUNT + 1 and
+  3. each element in ResourceType has a lower value than OS_RESOURCEID_COUNT.
+  *********************************************************************************************************************/
+
+  var resourceRefs = Array("OsCfg_ResourceRefs");
+  
+  CheckPointerArray(resourceRefs, GetEnumValue("ResourceType", "OS_RESOURCEID_COUNT") + 1)
+  CheckEnumValues("ResourceType", "OS_RESOURCEID_COUNT")
+  
+  /*********************************************************************************************************************
+   Check each resource
+  *********************************************************************************************************************/
+  
+  ForEachConstStructVariableOfType(["Os_ResourceConfigType", "Os_ResourceInterruptConfigType"], CheckResource); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckResource
+* Parameter    : resource
+* Parameter    : type
+* Return value : None
+* Description  : Checks the configuration information of a resource (type: Os_ResourceConfigType)
+**********************************************************************************************************************/
+def CheckResource(res, type)
+{
+  var name := res.GetName();
+  Begin("Checking resource " + name+ "(type: "+type+")");
+  var resource;
+  var expectedLockDynType;
+
+    switch(type)
+    {
+      case("const Os_ResourceConfigType")
+      {
+        expectedLockDynType = "Os_ResourceType";
+        
+        resource = res;
+        break;
+      }
+      case("const Os_ResourceInterruptConfigType")
+      {
+        /*********************************************************************************************************************
+        \CM CM_OS_RESOURCEINTERRUPT_INTERRUPTLEVEL_M
+        Verify that the InterruptLevel pointer of each Os_ResourceInterruptConfigType object is initialized with a
+        valid Os_Hal_IntLevelType object.
+        *********************************************************************************************************************/
+
+        CheckTypeOfStructMember(res, "InterruptLevel","const Os_Hal_IntLevelType");
+  
+        /*********************************************************************************************************************
+        \CM CM_OS_RESOURCEINTERRUPTGETDYN_M
+        Verify that the Lock Dyn pointer of each Os_ResourceInterruptConfigType object is initialized with a
+        dynamic resource derived from an Os_ResourceInterruptType object.
+        *********************************************************************************************************************/
+
+        expectedLockDynType = "Os_ResourceInterruptType";
+        
+        resource = res.GetMemberAsStruct("Resource");
+        break;
+      }
+
+      default
+      {
+        AssertionFail("Unknown Resource Type: "+type);
+      }
+    }
+  
+  
+  var lock = resource.GetMemberAsStruct("Lock");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_RESOURCEGETDYN_M
+  Verify that the Dyn pointer of each Os_ResourceConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckLockConfig(lock, expectedLockDynType)
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_RESOURCE_CORE_M
+  Verify that the Core pointer of each Os_ResourceConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(resource, "Core");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckBarrier
+* Parameter    : barrier
+* Return value : None
+* Description  : Checks the configuration information of a barrier (type: Os_BarrierBaseConfigType)
+**********************************************************************************************************************/
+def CheckBarrier(barrier)
+{
+  Begin("Checking  barrier " + barrier.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_BARRIER_DYN_M
+  Verify that the Barrier Dyn pointer of each Barrier object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(barrier, "Dyn");
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckStacks
+* Parameter    : None
+* Return value : None
+* Description  : Checks all stack objects
+**********************************************************************************************************************/
+def CheckStacks()
+{
+  ForEachConstStructVariableOfType(["Os_StackConfigType"], CheckStack);
+}
+
+/**********************************************************************************************************************
+* Name         : CheckStack
+* Parameter    : stack
+* Parameter    : type
+* Return value : None
+* Description  : Checks the configuration information of a stack (type: Os_StackConfigType)
+**********************************************************************************************************************/
+def CheckStack(stack, type)
+{
+  Begin("Checking stack " + stack.GetName());
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_STACK_LOWADDRESS_M
+  Verify that the LowAddress of each Os_StackConfigType object is initialized with the macro OS_STACK_GETLOWADDRESS
+  and a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(stack, "LowAddress");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_STACK_HIGHADDRESS_M
+  Verify that the HighAddress of each Os_StackConfigType object is initialized with the macro
+  OS_STACK_GETHIGHADDRESS and a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(stack, "HighAddress");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTrustedFunctions
+* Parameter    : None
+* Return value : None
+* Description  : Checks the trusted function reference table. Checks all trusted function objects 
+*                contained in this table.
+**********************************************************************************************************************/
+def CheckTrustedFunctions()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_SERVICETFID2TF_M
+  The index's type correctness is checked by compiler and and ensures that the given index is in range.
+  If the value is retrieved from a user interface, a range check is requied.
+  Verify that:
+  1. each TF in OsCfg_TrustedFunctionRefs is a non NULL_PTR,
+  2. OsCfg_NonTrustedFunctionRefs has a size equal to OS_TRUSTEDFUNCTIONID_COUNT + 1 and
+  3. each element in TrustedFunctionIndexType has a value lower than OS_TRUSTEDFUNCTIONID_COUNT.
+  *********************************************************************************************************************/
+
+  var tfRefs = Array("OsCfg_TrustedFunctionRefs")
+  
+  CheckPointerArray(tfRefs, GetEnumValue("TrustedFunctionIndexType", "OS_TRUSTEDFUNCTIONID_COUNT") + 1)
+  CheckEnumValues("TrustedFunctionIndexType", "OS_TRUSTEDFUNCTIONID_COUNT")
+  
+  /*********************************************************************************************************************
+  Check each trusted function
+  *********************************************************************************************************************/
+
+  ForEachStructElementInNullTerminatedArray(tfRefs, CheckTrustedFunction); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckTrustedFunction
+* Parameter    : tf
+* Return value : None
+* Description  : Checks the configuration information of a trusted function (type: Os_ServiceTfConfigType)
+**********************************************************************************************************************/
+def CheckTrustedFunction(tf)
+{
+  var name := tf.GetName();
+  Begin("Checking trusted function " + name);
+
+  /*********************************************************************************************************************
+  Check base
+  *********************************************************************************************************************/
+
+  CheckServiceConfig(tf.GetMemberAsStruct("Base"));
+
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_TF_CALLBACKPOINTER_M
+  Verify that the Callback pointer of each Os_ServiceTfConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertFunctionPointerStructMemberNotSpecial(tf, "Callback");
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_TF_CALLBACK_M
+  Verify that the context of each trusted function, which is assigned to a non privileged application, refers
+  to Os_ServiceTfWrapper and that no other object refers to Os_ServiceTfWrapper.
+  *********************************************************************************************************************/
+
+  if(GetBooleanFromString(tf.GetMemberAsStruct("Base").GetMemberAsStruct("OwnerApplication").GetMemberAsString("IsPrivileged")))
+  {
+    AssertStructMemberNull(tf, "Context");
+  }  
+  else
+  {
+    /*********************************************************************************************************************
+    \CM CM_OS_SF_TF_CONTEXT_M
+    Verify that the Context pointer of each Os_ServiceTfConfigType object is a non NULL_PTR.
+    *********************************************************************************************************************/
+    
+    AssertStructMemberNotNull(tf, "Context");
+    
+    /********************************************************************************************************************/
+    
+    CheckContextConfig(tf.GetMemberAsStruct("Context"), "TrustedFunction");
+  }
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckNonTrustedFunctions
+* Parameter    : None
+* Return value : None
+* Description  : Checks the non-trusted function reference table. Checks all non-trusted function objects 
+*                contained in this table.
+**********************************************************************************************************************/
+def CheckNonTrustedFunctions()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_SERVICENTFID2NTF_M
+  Verify that:
+  1. each NTF in OsCfg_NonTrustedFunctionRefs is a non NULL_PTR,
+  2. OsCfg_NonTrustedFunctionRefs has a size equal to OS_NONTRUSTEDFUNCTIONID_COUNT + 1 and
+  3. each element in Os_NonTrustedFunctionIndexType has a value lower than OS_NONTRUSTEDFUNCTIONID_COUNT.
+  *********************************************************************************************************************/
+
+  var ntfRefs = Array("OsCfg_NonTrustedFunctionRefs");
+  
+  CheckPointerArray(ntfRefs, GetEnumValue("Os_NonTrustedFunctionIndexType", "OS_NONTRUSTEDFUNCTIONID_COUNT") + 1)
+  CheckEnumValues("Os_NonTrustedFunctionIndexType", "OS_NONTRUSTEDFUNCTIONID_COUNT")
+  
+  /* Check each non-trusted function */
+  ForEachStructElementInNullTerminatedArray(ntfRefs, CheckNonTrustedFunction); 
+
+}
+
+/**********************************************************************************************************************
+* Name         : CheckNonTrustedFunction
+* Parameter    : ntf
+* Return value : None
+* Description  : Checks the configuration information of a non-trusted function (type: Os_ServiceNtfConfigType)
+**********************************************************************************************************************/
+def CheckNonTrustedFunction(ntf)
+{
+   var name := ntf.GetName();
+   Begin("Checking non-trusted function " + name);
+  
+   /* Check base */
+   CheckServiceConfig(ntf.GetMemberAsStruct("Base"));
+
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_NTF_CALLBACKPOINTER_M
+  Verify that the Callback pointer of each Os_ServiceNtfConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertFunctionPointerStructMemberNotSpecial(ntf, "Callback");
+   
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_CONTEXT_M
+  Verify that the Context pointer of each Os_ServiceNtfConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(ntf, "Context");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_NTF_CALLBACK_M
+  Verify that the context of each non trusted function object refers to Os_ServiceNtfWrapper and that no other
+  object refers to Os_ServiceNtfWrapper.
+  *********************************************************************************************************************/
+  
+  CheckContextConfig(ntf.GetMemberAsStruct("Context"), "NonTrustedFunction");
+  
+  /*********************************************************************************************************************
+  Check StackPool
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(ntf, "StackPool");
+  
+  CheckStackPool(ntf.GetMemberAsStruct("StackPool"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckServiceConfig
+* Parameter    : service
+* Return value : None
+* Description  : Checks the configuration information of a service function (type: Os_ServiceConfigType)
+**********************************************************************************************************************/
+def CheckServiceConfig(service)
+{
+  Begin("Checking Service Configuration " + service.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_OWNERAPPLICATION_M
+  Verify that the OwnerApplication pointer of each Os_ServiceConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(service, "OwnerApplication");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_MPACCESSRIGHTS_M
+  Verify that the MpAccessRights pointer of each Os_ServiceConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(service, "MpAccessRights");
+
+  /********************************************************************************************************************/
+  
+  CheckMpAccessRights(service.GetMemberAsStruct("MpAccessRights"));
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckStackPool
+* Parameter    : stackPool
+* Return value : None
+* Description  : Checks the configuration information of a stack pool (type: Os_ServiceStackPoolConfigType)
+**********************************************************************************************************************/
+def CheckStackPool(stackPool)
+{
+  Begin("Checking Stack Pool " + stackPool.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SF_STACKPOOL_DYN_M
+  Verify that the Dyn pointer of each StackPoolConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(stackPool, "Dyn");
+  
+  /*********************************************************************************************************************
+   Check AvailabilityMap
+   *********************************************************************************************************************/
+  
+  CheckBitArray(stackPool.GetMemberAsStruct("AvailabilityMap"));
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SERVICESTACKPOOL_M
+  Verify that:
+  1. that the StackPool of each Os_ServiceNtfConfigType is non NULL_PTR,
+  2. the Stacks reference of each Os_ServiceStackPoolConfigType is a non NULL_PTR,
+  3. each Stacks array has a size equal to StackCount
+  4. that the Stack pointer of each Stack in each StackPool is a non NULL_PTR and
+  5. that the HwConfig pointer of each Stack in each StackPool is a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertStructMemberNotNull(stackPool, "Stacks");
+  
+  CheckPointerArrayStructMember2(stackPool, "Stacks", "StackCount");
+  
+  ForEachStructElementInArray(stackPool.GetMemberAsArray("Stacks"), CheckServiceStack);
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckServiceStack
+* Parameter    : serviceStack
+* Return value : None
+* Description  : Checks the configuration information of a service stack (type: Os_ServiceStackConfigType)
+**********************************************************************************************************************/
+def CheckServiceStack(serviceStack)
+{
+  Begin("Checking Service Stack " + serviceStack.GetName());
+    
+  /*********************************************************************************************************************
+  Check Stack
+  *********************************************************************************************************************/
+   
+  AssertStructMemberNotNull(serviceStack, "Stack");
+  
+  
+  /*********************************************************************************************************************
+  Check HwConfig
+  *********************************************************************************************************************/
+   
+  AssertStructMemberNotNull(serviceStack, "HwConfig");
+  
+  HalCheckContextStackConfig(serviceStack.GetMemberAsStruct("HwConfig"));
+    
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckISRs
+* Parameter    : None
+* Return value : None
+* Description  : Checks the ISR reference table. Checks all ISR objects contained in this table.
+**********************************************************************************************************************/
+def CheckISRs()
+{
+  /*********************************************************************************************************************
+  \CM CM_OS_ISRID2ISR_M
+  Verify that:
+  1. each ISR pointer in OsCfg_IsrRefs except the last is no NULL_PTR,
+  2. the size of OsCfg_IsrRefs is equal to OS_ISRID_COUNT + 1 and
+  3. each element in ISRType has a lower value than OS_ISRID_COUNT.
+  *********************************************************************************************************************/
+
+  var isrRefs = Array("OsCfg_IsrRefs");
+  
+  CheckPointerArray(isrRefs, GetEnumValue("ISRType", "OS_ISRID_COUNT") + 1)
+  CheckEnumValues("ISRType", "OS_ISRID_COUNT",["INVALID_ISR"])
+  
+  /*********************************************************************************************************************
+  Check each ISR
+  *********************************************************************************************************************/
+
+  ForEachConstStructVariableOfType(["Os_IsrConfigType", "Os_TimerIsrConfigType", "Os_XSigIsrConfigType"], CheckISR); 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckISR
+* Parameter    : isr
+* Parameter    : type: Os_IsrConfigType, Os_TimerIsrConfigType, Os_XSigIsrConfigType
+* Return value : None
+* Description  : Checks the configuration information of a ISR (type: Os_IsrConfigType)
+**********************************************************************************************************************/
+def CheckISR(cfg, type)
+{
+  var name := cfg.GetName();
+  var isr;
+  Begin("Checking ISR " + name +"(type: "+type+")");
+  
+  var typeName = RemoveConst(type);
+  
+  var suffix = "";
+  switch(typeName)
+  {  
+    case("Os_TimerIsrConfigType")
+    {
+      isr = cfg.GetMemberAsStruct("Isr");
+      
+      var counter = GetStructFromPath(cfg.GetMemberAsString("Counter"));
+      var driverType = counter.GetMemberAsString("DriverType");
+      if(driverType == "OS_TIMERTYPE_HIGH_RESOLUTION")
+      {
+         suffix = ".HRT";
+      }
+      else if(driverType == "OS_TIMERTYPE_PERIODIC_TICK")
+      {
+         suffix = ".PIT";
+      }
+      else
+      {
+        AssertionFail("Unknown driver type: "+driverType);
+      }
+      break;
+    }
+    case("Os_XSigIsrConfigType")
+    {
+      CheckXSigIsr(cfg);
+      isr = cfg.GetMemberAsStruct("IsrCfg");
+      break;
+    }
+    case("Os_IsrConfigType")
+    {
+      isr = cfg;
+      break;
+    }
+    default
+    {
+      AssertionFail("Unknown ISR type: "+typeName);
+    }
+  }
+   var thread = isr.GetMemberAsStruct("Thread");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_ISRTHREAD2ISR_M
+  Verify that
+  1. the return address of each ISR (except timing protection ISR) and of each object
+     which is derived from ISR is Os_IsrEpilogue and
+  2. the return address of timing protection ISRs is Os_IsrEpilogueTp and
+  3. that Os_IsrEpilogue and Os_IsrEpilogueTp are not the return address of any other thread object.
+  *********************************************************************************************************************/
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_TIMERTHREAD2COUNTERISR_M
+  Verify that Os_TimerHrtIsr is only referenced in ISRs of type Os_TimerHrtConfigType.
+  *********************************************************************************************************************/
+ 
+  CheckThread(thread, typeName+suffix);
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_ISRGETDYN_M
+  Verify that the ISR Dyn pointer of each Os_IsrConfigType object is initialized with a
+  dynamic ISR derived from an Os_IsrType object.
+  *********************************************************************************************************************/
+  
+  CheckTypeOfStructMember(thread, "Dyn", "Os_IsrType");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_ISR_HWCONFIG_M
+  Verify that the ISR HwConfig pointer of each Os_IsrType object is initialized with a
+  dynamic ISR derived from an Os_IsrType object.
+  *********************************************************************************************************************/
+  
+  CheckTypeOfStructMember(isr, "HwConfig", "const Os_Hal_IntIsrConfigType");
+  
+  /********************************************************************************************************************/
+  
+  HalCheckISRConfig(isr.GetMemberAsStruct("HwConfig")); 
+  
+  End(); 
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckCounters
+* Parameter    : None
+* Return value : None
+* Description  : Checks All IOC configurations (types: Os_Ioc[08|16|32|Ref][Send|Receive|MultiReceive]ConfigType)
+**********************************************************************************************************************/
+def CheckIOCs()
+{
+  var iocSymbols := FindConstSymbol("OsCfg_Ioc(Send|Recv).*");
+  
+  for(var i = 0; i < iocSymbols.size(); ++i)
+  {
+    var name = iocSymbols[i].GetSymbolName();
+    var typeName = iocSymbols[i].GetTypeName();
+    
+    switch(typeName)
+    {  
+      case("const Os_Ioc08SendConfigType")
+      {
+        CheckIocConfig(Struct(name), 0, "Os_Ioc08SendType", "", false);
+        break;
+      }
+      case("const Os_Ioc16SendConfigType")
+      {
+        CheckIocConfig(Struct(name), 0, "Os_Ioc16SendType", "", false);
+        break;
+      }
+      case("const Os_Ioc32SendConfigType")
+      {
+        CheckIocConfig(Struct(name), 0, "Os_Ioc32SendType", "", false);
+        break;
+      }
+      case("const Os_IocRefSendConfigType")
+      {
+        CheckIocConfig(Struct(name), 0, "Os_IocRefSendType", "", true);
+        break;
+      }
+      
+      case("const Os_Ioc08ReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 1, "Os_Ioc08ReceiveType", "", false);
+        break;
+      }
+      case("const Os_Ioc16ReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 1, "Os_Ioc16ReceiveType", "", false);
+        break;
+      }
+      case("const Os_Ioc32ReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 1, "Os_Ioc32ReceiveType", "", false);
+        break;
+      }
+      case("const Os_IocRefReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 1, "Os_IocRefReceiveType", "", true);
+        break;
+      }
+      
+      case("const Os_Ioc08MultiReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 2, "Os_IocMultiReceiveType", "Os_Ioc08ReceiveType", false);
+        break;
+      }
+      case("const Os_Ioc16MultiReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 2, "Os_IocMultiReceiveType", "Os_Ioc16ReceiveType", false);
+        break;
+      }
+      case("const Os_Ioc32MultiReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 2, "Os_IocMultiReceiveType", "Os_Ioc32ReceiveType", false);
+        break;
+      }
+      case("const Os_IocRefMultiReceiveConfigType")
+      {
+        CheckIocConfig(Struct(name), 2, "Os_IocMultiReceiveType", "Os_IocRefReceiveType", true);
+        break;
+      }
+      
+      case("const Os_IocReadConfigType")
+      {
+        CheckIocReadConfig(Struct(name));
+        break;
+      }
+      case("const Os_IocWriteConfigType")
+      {
+        CheckIocWriteConfig(Struct(name));
+        break;
+      }
+      default
+      {
+        AssertionFail("Unknown IOC type: "+typeName);
+      }
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CheckIocBaseConfig
+* Parameter    : iocBase
+* Parameter    : dynType
+* Return value : None
+* Description  : Checks the static base type for all IOC configurations (type: Os_IocConfigType)
+**********************************************************************************************************************/
+def CheckIocBaseConfig(iocBase, dynType)
+{
+   Begin("Checking IOC Base config "+iocBase.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOC_SPINLOCK_M
+  Verify that the Spinlock pointer of each IOC, that's LockMode is set to OS_IOCLOCKMODE_SPINLOCKS or
+  OS_IOCLOCKMODE_ALL, is no NULL_PTR.
+  *********************************************************************************************************************/
+
+  var lockMode = iocBase.GetMemberAsString("LockMode");
+  if((lockMode == "OS_IOCLOCKMODE_SPINLOCKS") || (lockMode == "OS_IOCLOCKMODE_ALL"))
+  {
+    AssertStructMemberNotNull(iocBase, "Spinlock");
+  }
+  else
+  {
+    AssertStructMemberNull(iocBase, "Spinlock");
+  }
+
+
+ 
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCSENDGETDYN_M
+  Verify that the IOC Dyn pointer of each Os_IocSendConfigType object is initialized with a
+  dynamic IOC derived from an Os_IocSendType object.
+  *********************************************************************************************************************/     
+
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCRECEIVEGETDYN_M
+  Verify that the IOC Dyn pointer of each Os_IocReceiveConfigType object is initialized with a
+  dynamic IOC derived from an Os_IocReceiveType object.
+  *********************************************************************************************************************/
+
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCMULTIRECEIVEGETDYN_M
+  Verify that the IOC Dyn pointer of each Os_IocMultiReceiveConfigType object is initialized with a
+  dynamic IOC derived from an Os_IocMultiReceiveType object.
+  *********************************************************************************************************************/
+    
+  CheckTypeOfStructMember(iocBase, "Dyn", dynType);
+      
+
+  AssertStructMemberNotNull(iocBase, "Dyn");
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckIocConfig
+* Parameter    : cfg
+* Parameter    : type: 0=Send; 1=Reveive; 2=MultiReceive
+* Parameter    : isRef
+* Return value : None
+* Description  : Checks an IOC configuration (type: Os_Ioc[Send|Reveive|MultiReceive]ConfigType
+**********************************************************************************************************************/
+def CheckIocConfig(cfg, type, dynType, multiReceiversType, isRef)
+{
+  
+  Begin("Checking IOC Config "+cfg.GetName()+ " (type: "+type.to_string()+")");
+  
+  var ioc = cfg.GetMemberAsStruct("Ioc");
+  
+  CheckIocBaseConfig(ioc.GetMemberAsStruct("Base"), dynType);
+  
+  switch(type)
+  {
+    case(0) /* Send */
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_IOCSEND_RECEIVE_M
+      Verify that the Receive pointer of each Os_IocSendConfigType object is initialized with no NULL_PTR.
+      *********************************************************************************************************************/
+
+      AssertStructMemberNotNull(ioc, "Receive");
+      
+      /*********************************************************************************************************************
+      Check Callbacks
+      *********************************************************************************************************************/
+  
+      CheckIocCallbacksConfig(ioc.GetMemberAsStruct("Callbacks"))
+
+      
+      /* Check FifoWrite */
+      CheckFifo(cfg.GetMemberAsStruct("FifoWrite"), 0, isRef);
+      
+      break;
+    }
+    case(1) /* Receive */
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_IOCRECEIVE_SEND_M
+      Verify that the Send pointer of each Os_IocReceiveConfigType object is initialized with no NULL_PTR.
+      *********************************************************************************************************************/
+      
+      AssertStructMemberNotNull(ioc, "Send");
+      
+      /* Check FifoRead */
+      CheckFifo(cfg.GetMemberAsStruct("FifoRead"), 1, isRef);
+      
+      CheckIocRelationship(cfg);
+      
+      break;
+    }
+    case(2) /* MultiReceive */
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_IOC08MULTIRECEIVE_RECEIVERS_M
+      Verify that:
+      1. Verify that each Os_Ioc08MultiReceiveConfigType object's Receivers pointer is no NULL_PTR,
+      2. that the size of the Reveivers array equals the ReceiveChannelCount.
+
+      \CM CM_OS_IOC16MULTIRECEIVE_RECEIVERS_M
+      Verify that:
+      1. Verify that each Os_Ioc16MultiReceiveConfigType object's Receivers pointer is no NULL_PTR,
+      2. that the size of the Reveivers array equals the ReceiveChannelCount.
+
+      \CM CM_OS_IOC32MULTIRECEIVE_RECEIVERS_M
+      Verify that:
+      1. Verify that each Os_Ioc32MultiReceiveConfigType object's Receivers pointer is no NULL_PTR,
+      2. that the size of the Reveivers array equals the ReceiveChannelCount.
+
+      \CM CM_OS_IOCREFMULTIRECEIVE_RECEIVERS_M
+      Verify that:
+      1. Verify that each Os_IocRefMultiReceiveConfigType object's Receivers pointer is no NULL_PTR,
+      2. that the size of the Reveivers array equals the ReceiveChannelCount.
+      *********************************************************************************************************************/
+     
+      var receiveChannelCount = ioc.GetMemberAsNumber("ReceiveChannelCount");
+      CheckArrayStructMemberSize2(cfg, "Receivers", receiveChannelCount);
+      
+      /* Check all receivers */
+      var receivers = cfg.GetMemberAsArray("Receivers");
+      
+      for(var i = 0; i < receiveChannelCount; ++i)
+      {
+        var receiver := receivers.GetElemAsStruct(i);
+        CheckIocConfig(receiver, 1, multiReceiversType, "", isRef);
+      }
+      
+      break;
+    }
+    default
+    {
+      AssertionFail("Internal Error");
+    }
+  }
+  
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckIocRelationship
+* Parameter    : iocRecv
+* Return value : None
+* Description  : Checks if a receiving IOCs sender refers to the same buffer
+**********************************************************************************************************************/
+def CheckIocRelationship(iocRecv)
+{
+  Begin("Checking IOC Relationship "+iocRecv.GetName());
+  
+  var myBuffer = iocRecv.GetMemberAsStruct("FifoRead").GetMemberAsString("Data");
+  var sender = Struct(SplitPath(iocRecv.GetMemberAsStruct("Ioc").GetMemberAsString("Send"))[0]);
+  
+  var fifoWrite = sender.GetMemberAsStruct("FifoWrite");
+  
+  AssertStructMemberNotNull(fifoWrite, "Data");
+  var senderBuffer = fifoWrite.GetMemberAsString("Data");
+  
+  if(myBuffer != senderBuffer)
+  {
+    AssertionFail("The sending IOC of IOC "+iocRecv.GetName()+" does not refer to the same buffer.");
+  }
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckIocWriteConfig
+* Parameter    : cfg
+* Return value : None
+* Description  : Checks an IOC write configuration (type: Os_IocWriteConfigType)
+**********************************************************************************************************************/
+def CheckIocWriteConfig(cfg)
+{
+  Begin("Checking IOC Write Config "+cfg.GetName());
+  
+  /********************************************************************************************************************/
+  
+  CheckIocBaseConfig(cfg.GetMemberAsStruct("Ioc"), "Os_IocWriteType");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCWRITE_DATA_M
+  Verify that the Data pointer of each Os_IocWriteConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(cfg, "Data");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCWRITE_INITVALUE_M
+  Verify that the InitValue pointer of each Os_IocWriteConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(cfg, "InitValue");
+  
+  /*********************************************************************************************************************
+  Check Callbacks
+  *********************************************************************************************************************/
+  
+  CheckIocCallbacksConfig(cfg.GetMemberAsStruct("Callbacks"))
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCWRITE_COPYCBK_M
+  Verify that the CopyCbk pointer of each Os_IocWriteConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertFunctionPointerStructMemberNotSpecial(cfg, "CopyCbk");
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckIocReadConfig
+* Parameter    : cfg
+* Return value : None
+* Description  : Checks an IOC read configuration (type: Os_IocReadConfigType)
+**********************************************************************************************************************/
+def CheckIocReadConfig(cfg)
+{
+  Begin("Checking IOC Read Config "+cfg.GetName());
+  
+  /********************************************************************************************************************/
+  
+  CheckIocBaseConfig(cfg.GetMemberAsStruct("Ioc"), "Os_IocReadType");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCREAD_DATA_M
+  Verify that the Data pointer of each Os_IocReadConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(cfg, "Data");
+    
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCREAD_COPYCBK_M
+  Verify that the CopyCbk pointer of each Os_IocReadConfigType object is initialized with a non NULL_PTR.
+  *********************************************************************************************************************/
+  
+  AssertFunctionPointerStructMemberNotSpecial(cfg, "CopyCbk");
+    
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckIocCallbacksConfig
+* Parameter    : config
+* Return value : None
+* Description  : Checks an IOC callbacks configuration (type: Os_IocCallbacksConfigType)
+**********************************************************************************************************************/
+def CheckIocCallbacksConfig(config)
+{
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_IOCCALLBACKSCONFIG_CALLBACKREFS_01_02_M
+  Verify that
+  1. the callback list of each Os_IocCallbacksConfigType object is a non NULL_PTR if the callback count as not
+  zero
+  2. and the number of entries in each Os_IocCallbackConfigRefType is equal to CallbackCount.
+  *********************************************************************************************************************/
+
+   var callbackCount = config.GetMemberAsNumber("CallbackCount");
+   if(callbackCount > 0)
+   {
+     CheckArrayStructMemberSize2(config, "CallbackRefs", callbackCount);
+        
+      /* Check all callbacks */
+      var callbackRefs = config.GetMemberAsArray("CallbackRefs");
+      for(var i = 0; i < callbackCount; ++i)
+      {
+        var callback := callbackRefs.GetElemAsStruct(i);
+        CheckHookCallbackConfig(callback);
+      }
+   }
+}
+
+/**********************************************************************************************************************
+* Name         : CheckFifo
+* Parameter    : fifo
+* Parameter    : type: 0 = Write ; 1 = Read
+* Return value : None
+* Description  : Checks a FIFO configuration object 
+                (types: Os_Fifo[08|16|32|Ptr|Ref][Read|Write]ConfigType)
+**********************************************************************************************************************/
+def CheckFifo(fifo, type, isRef)
+{
+  var name = fifo.GetName();
+  Begin("Checking fifo " + name + " (type: "+type.to_string()+")");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_FIFO08READ_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo08ReadConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_FIFO16READ_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo16ReadConfigType object is a non NULL_PTR.
+  
+  \CM CM_OS_FIFO32READ_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo32ReadConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_FIFOREFREAD_DYN_M
+  Verify that the Dyn pointer of each Os_FifoRefReadConfigType object is a non NULL_REF.
+  
+  \CM CM_OS_FIFOPTRREAD_DYN_M
+  Verify that the Dyn pointer of each Os_FifoPtrReadConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_FIFO08WRITE_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo08WriteConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_FIFO16WRITE_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo16WriteConfigType object is a non NULL_PTR.
+
+  \CM CM_OS_FIFO32WRITE_DYN_M
+  Verify that the Dyn pointer of each Os_Fifo32WriteConfigType object is a non NULL_PTR.
+  
+  \CM CM_OS_FIFOREFWRITE_DYN_M
+  Verify that the Dyn pointer of each Os_FifoRefWriteConfigType object is a non NULL_REF.
+
+  \CM CM_OS_FIFOPTRWRITE_DYN_M
+  Verify that the Dyn pointer of each Os_FifoPtrWriteConfigType object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(fifo, "Dyn");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_FIFO08READ_DATA_M
+  Verify that the size of the Data array each Os_Fifo08ReadConfigType instance equals Fifo.Size + 1.
+
+  \CM CM_OS_FIFO16READ_DATA_M
+  Verify that the size of the Data array each Os_Fifo16ReadConfigType instance equals Fifo.Size + 1.
+
+  \CM CM_OS_FIFO32READ_DATA_M
+  Verify that the size of the Data array each Os_Fifo32ReadConfigType instance equals Fifo.Size + 1.
+
+  \CM CM_OS_FIFOREFREAD_DATA_M
+  Verify that the size of the Data array each Os_FifoRefReadConfigType instance equals Fifo.Size + 1.
+
+  \CM CM_OS_FIFOPTRREAD_DATA_M
+  Verify that the size of the Data array each Os_FifoPtrReadConfigType instance equals Fifo.Size + 1.
+  
+  \CM CM_OS_FIFO08WRITE_DATA_M
+  Verify that
+  1. the Data pointer of each Os_Fifo08WriteConfigType object is a non NULL_PTR.
+  2. the size of the Data array equals Fifo.Size,
+  3. the corresponding Os_Fifo08ReadConfigType instance refers to the same Data array.
+
+  \CM CM_OS_FIFO16WRITE_DATA_M
+  Verify that
+  1. the Data pointer of each Os_Fifo16WriteConfigType object is a non NULL_PTR.
+  2. the size of the Data array equals Fifo.Size,
+  3. the corresponding Os_Fifo16ReadConfigType instance refers to the same Data array.
+
+  \CM CM_OS_FIFO32WRITE_DATA_M
+  Verify that
+  1. the Data pointer of each Os_Fifo32WriteConfigType object is a non NULL_PTR.
+  2. the size of the Data array equals Fifo.Size,
+  3. the corresponding Os_Fifo32ReadConfigType instance refers to the same Data array.
+
+  \CM CM_OS_FIFOREFWRITE_DATA_M
+  Verify that
+  1. the Data pointer of each Os_FifoRefWriteConfigType object is a non NULL_REF.
+  2. the size of the Data array equals Fifo.Size,
+  3. the corresponding Os_FifoRefReadConfigType instance refers to the same Data array.
+
+  \CM CM_OS_FIFOPTRWRITE_DATA_M
+  Verify that
+  1. the Data pointer of each Os_FifoPtrWriteConfigType object is a non NULL_PTR.
+  2. the size of the Data array equals Fifo.Size,
+  3. the corresponding Os_FifoPtrReadConfigType instance refers to the same Data array.
+  *********************************************************************************************************************/
+  
+  /* Note: subitem 3 is checked by the function CheckIocRelationship() which is called by CheckIocConfig(). */
+    
+  CheckArrayStructMemberSize(fifo, "Data", "Size");
+  
+
+
+  if(type == 0) /* Write */
+  {  
+    if(isRef)
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_FIFOREF_WRITECBK_DATA_M
+      Verify that the WriteCallback of each Os_FifoRefWriteConfigType instance is a non NULL_PTR.
+      *********************************************************************************************************************/
+
+      AssertFunctionPointerStructMemberNotSpecial(fifo, "WriteCbk");
+    }
+  }
+  else  /* Read */
+  {   
+    if(isRef)
+    {
+      /*********************************************************************************************************************
+      \CM CM_OS_FIFOREF_READCBK_DATA_M
+      Verify that the ReadCallback of each Os_FifoRefReadConfigType instance is a non NULL_PTR.
+      *********************************************************************************************************************/
+
+      AssertFunctionPointerStructMemberNotSpecial(fifo, "ReadCbk");
+    }
+  }
+
+  End();
+}
+
+
+/**********************************************************************************************************************
+* Name         : CheckSpinlocks
+* Parameter    : None
+* Return value : None
+* Description  : Checks the spinlock reference table. Checks all spinlock objects contained in this table.
+**********************************************************************************************************************/
+def CheckSpinlocks()
+{
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SPINLOCKID2SPINLOCK_M
+  Verify that:
+  1. each spinlock pointer in OsCfg_SpinlockRefs is not NULL_PTR,
+  2. each the size of OsCfg_SpinlockRefs is equal to OS_SPINLOCKID_COUNT + 1 and
+  3. each element in SpinlockIdType has a lower value than OS_SPINLOCKID_COUNT.
+  *********************************************************************************************************************/
+
+  var spinlockRefs = Array("OsCfg_SpinlockRefs");
+  
+  CheckPointerArray(spinlockRefs, GetEnumValue("SpinlockIdType", "OS_SPINLOCKID_COUNT") + 1)
+  CheckEnumValues("SpinlockIdType", "OS_SPINLOCKID_COUNT", ["INVALID_SPINLOCK"])
+  
+  /*********************************************************************************************************************
+  Check each spinlock
+  *********************************************************************************************************************/
+  ForEachStructElementInNullTerminatedArray(spinlockRefs, CheckSpinlock); 
+  
+}
+
+/**********************************************************************************************************************
+* Name         : CheckSpinlock
+* Parameter    : spinlock
+* Return value : None
+* Description  : Checks the configuration information of a spinlock (type: Os_SpinlockConfigType)
+**********************************************************************************************************************/
+def CheckSpinlock(spinlock)
+{
+  Begin("Checking spinlock " + spinlock.GetName());
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SPINLOCKGETDYN_M
+  Verify that the Dyn pointer of each Spinlock is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  CheckLockConfig(spinlock.GetMemberAsStruct("Lock"), "Os_SpinlockType");
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_SL_SPINLOCK_TIMINGHOOKTRACE_M
+  Verify that the TimingHookTrace of each Spinlock is a non NULL_PTR, if Tracing is enabled.
+  *********************************************************************************************************************/
+  
+
+  if (IsDefineStdOn("OS_CFG_ORTI"))
+  {
+    AssertStructMemberNotNull(spinlock, "TimingHookTrace");
+  }
+  
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckLockConfig
+* Parameter    : lock
+* Parameter    : expectedLockDynType
+* Return value : None
+* Description  : Checks the configuration information of a lock (type: Os_LockConfigType)
+**********************************************************************************************************************/
+def CheckLockConfig(lock, expectedLockDynType)
+{
+  Begin("Checking Lock " + lock.GetName());
+  
+  /*********************************************************************************************************************
+  Check Dyn
+  *********************************************************************************************************************/
+   
+  CheckTypeOfStructMember(lock, "Dyn", expectedLockDynType);
+   
+  End();
+}
+
+
+
+/**********************************************************************************************************************
+* Name         : CheckBitArray
+* Parameter    : bitArray
+* Return value : None
+* Description  : Checks a bit array configuration (type: Os_BitArrayConfigType)
+**********************************************************************************************************************/
+def CheckBitArray(bitArray)
+{
+  Begin("Checking Bit Array " + bitArray.GetName());
+  
+  
+  /*********************************************************************************************************************
+  \CM CM_OS_BITARRAY_DYN_M
+  Verify that the BitArray Dyn pointer of each BitArray object is a non NULL_PTR.
+  *********************************************************************************************************************/
+
+  AssertStructMemberNotNull(bitArray, "Dyn");
+
+  /*********************************************************************************************************************
+  \CM CM_OS_BITARRAY_DATA_M
+  Verify that:
+  1. each bit array Data pointer is no NULL_PTR and
+  2. each bit array's Data array size is equal to the bit array's Size.
+  *********************************************************************************************************************/
+  
+  CheckArrayStructMemberSize(bitArray, "Data", "Size");
+
+  End();
+}
+
+/**********************************************************************************************************************
+* Name         : CheckMisc
+* Parameter    : None
+* Return value : None
+* Description  : Checkss miscellaneous settings
+**********************************************************************************************************************/
+def CheckMisc()
+{
+    Begin("Checking miscellaneous settings");
+    
+    /*********************************************************************************************************************
+    \CM CM_OS_FMEA_ASSERTIONS_M
+    Assert that assertions are disabled.
+    *********************************************************************************************************************/
+  
+    if(IsDefineStdOn("OS_CFG_ASSERTIONS"))
+    {
+      AssertionFail("Os assertions must be disabled.");
+    }
+    
+    /*********************************************************************************************************************
+    \CM CM_OS_FMEA_TIMINGHOOKS_M
+    Assert that timing hooks are disabled.
+    *********************************************************************************************************************/
+
+    if(IsDefineStdOn("OS_CFG_OSTIMINGHOOKS"))
+    {
+      AssertionFail("Os timing hooks must be disabled.");
+    }
+    
+    End();
+}

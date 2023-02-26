@@ -1,0 +1,4398 @@
+# This file describes how to convert the trace execution log into a
+# log for the MULTI EventAnalyzer(tm).
+
+# This file is divided into different types of descriptions.  Each description
+# may contain integer values, or "locations".  A location is a way to find a
+# particular address in the system.
+
+# The following description types are available:
+#
+# Format:
+# Description Name
+# - Brief explanation of description
+# Field - Brief explanation of field
+# Field - Brief explanation of field
+# ...
+
+# An (L) after the field name indicates that the field specifies a location.
+
+# EventExecutionDescription*  (any value can be used where * is indicated,
+#                              allowing for multiple instances of this type)
+# - An EventAnalyzer(tm) event is generated when the specified Location field
+#   is executed.
+# Location (L) - When this location is executed, insert an event into the
+#                EventAnalyzer(tm) log being generated.  This is only checked
+#                for kernel address spaces.
+# OutputTask (optional) - Specifies that the event always be output into the
+#                         task name specified.
+# UserLocation (L) - When this location is executed insert an event into the
+#                    EventAnalyzer(tm) log being generated.  The next execution
+#                    at Location is ignored so that the event is not logged at
+#                    both the user and kernel level.
+# (Alternative form for user location)
+# UserLocation[0-9] (L) - Allows multiple user locations to be specified.  This
+#                         would be used in place of UserLocation above.  The
+#                         numbering must start at zero and progress
+#                         sequentially.
+#                         The first location which can be successfully
+#                         evaluated is used.  Evaluation starts at element zero
+#                         and progresses until either a successful evalution
+#                         is made or the maximum UserLocation value is reached.
+# (For a description of the type/subtype/MEV_Extra parts of the event, see the
+#  corresponding .mc file in defaults/event_analyzer).
+# Type         - The high 16 bits describing the event type
+# Subtype      - The low 16 bit event sub-type
+# ExtraSize     - The total size in bytes of the MEV_Extra fields for this event
+
+# ContextSwitchDescription* (any value can be used where * is indicated,
+#                            allowing for multiple instances of this type)
+# - When the specified variable is written, indicates that a context switch
+#   has been performed, which will cause a ContextSwitch message to be
+#   written into the EventAnalyzer(tm) log.
+# Write (L) - When this variable is written, it indicates that the context has
+#             changed.  Currently, the new task is assumed to be the value
+#             written to the specified location.
+
+# DomainPointerWriteDescription
+# - When the specified variable is written, indicates that the current domain
+#   has been changed.  This is not currently used by the EventAnalyzer(tm),
+#   but is used by other tools.
+# Write (L) - When this variable is written, it indicates that the domain has
+#             changed.  Currently, the new domain is assumed to be the value
+#             written to the specified location.
+
+# The following location types are available:
+# Format:
+# LocationType*
+# - Explanation of location type
+# Field - brief explanation of field
+# Field - brief explanation of field
+# ...
+
+# Any location type specified with a * will require CodeReplay(tm), which may
+# increase processing time significantly.
+
+# GlobalFunctionEnd 
+# - Returns the address of the last instruction in a global function, not
+#   including NOP.
+# - NOTE: Currently, this is only supported for kernel address spaces.
+# Function - a string containing the function name
+# Optional - a string, if set to any value, no error is printed if the symbol
+#            is not found (this field can be omitted)
+
+# AddressExpression
+# - Returns the value of any valid address expression, which is translated
+#   by the MULTI Debugger.  The address expression cannot use any item which
+#   requires TimeMachine (registers, local/static variables, dereferences,
+#   etc.)  The value will only be evaluated once per address space.
+#   Any of the following are valid:
+#   - Hardcoded address values
+#   - Addresses of global symbols
+#   - $entadr(function) / $retadr(function)
+# Expression - a string containing the address expression
+# Optional - a string, if set to any value, no error is printed if the
+#            expression cannot be evaluated (this field can be omitted)
+
+
+EventExecutionDescription00020000 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&ExceptionHandler"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x02
+    Subtype   = 0x00
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030000 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetClockAlarm"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetClockAlarm"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x00
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030000 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetClockAlarm"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib4_______________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x00
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030002 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousSend"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSend"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSynchronousSend"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x02
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030002 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousSend"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSend"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibv_________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x02
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030003 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousReceive"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousReceive"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSynchronousReceive"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x03
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030003 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousReceive"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousReceive"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibu____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x03
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030004 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateActivity"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x04
+    ExtraSize = 16
+}
+EventExecutionDescriptionX00030004 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9y________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x04
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030005 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AsynchronousReceive"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelAsynchronousReceive"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x05
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030005 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AsynchronousReceive"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9l_____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x05
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030006 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetClockTime"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x06
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030006 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib5______________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x06
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030007 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CreateConnection"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateConnection"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateConnection"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x07
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030007 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CreateConnection"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateConnection"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9A__________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x07
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030008 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AsynchronousSend"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelAsynchronousSend"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x08
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030008 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AsynchronousSend"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9m__________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x08
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030009 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CloseWithFlags"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&StartClose"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelStartClose"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x09
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030009 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CloseWithFlags"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&StartClose"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibs____________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x09
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003000a {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CloseWithFlags"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&FinishClose"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelFinishClose"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0a
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003000a {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CloseWithFlags"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&FinishClose"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9O_____________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0a
+    ExtraSize = 8
+}
+
+# Synchronous receieve of clock alarm are only logged as normal synchronous
+# receieves.
+# Event type 0x0003, 0x000b
+
+# Asynchronous receieve of clock alarm are only logged as normal asynchronous
+# receieves.
+# Event type 0x0003, 0x000c
+
+EventExecutionDescription0003000d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AddressSpaceAddressFaultOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelAddressSpaceAddressFaultOverruns"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0d
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003000d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AddressSpaceAddressFaultOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9j__________________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0d
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003000e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ContinueActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelContinueActivity"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0e
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003000e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ContinueActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9q__________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0e
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003000f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyToMemoryRegion"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0f
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003000f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9w____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0f
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030010 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyFromMemoryRegion"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x10
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030010 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9t______________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x10
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030011 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetActivityStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetActivityStatus"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x11
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030011 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetActivityStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9R___________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x11
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030012 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&ResetActivityAndReturnStatus"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ResetActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelResetActivityAndReturnStatus"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x12
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030012 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&ResetActivityAndReturnStatus"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ResetActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelResetActivity"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x12
+    ExtraSize = 8
+}
+EventExecutionDescriptionY00030012 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ResetActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaY______________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x12
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030013 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SuspendActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSuspendActivity"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x13
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030013 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SuspendActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibt_________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x13
+    ExtraSize = 8
+}
+
+
+# CheckForActivity is combined into WaitForActivity events.
+# Event type 0x0003, 0x0014
+
+EventExecutionDescription00030016 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateBinarySemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateBinarySemaphore"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x16
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030016 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateBinarySemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9z_______________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x16
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030017 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateSemaphore"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x17
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030017 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9E_________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x17
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030018 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousReceive"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&TryToObtainSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTryToObtainSemaphore"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x18
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030018 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SynchronousReceive"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&TryToObtainSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&56052916fdd1cb70b8a7faa4d212fe07b0e8a7820000000000"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x18
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030019 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReleaseSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReleaseSemaphore"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x19
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030019 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReleaseSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&fe64537d0c806e75bc9a178a57c7ef0f7d1852080000000000"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x19
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003001a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetSemaphoreValue"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetSemaphoreValue"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1a
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003001a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetSemaphoreValue"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iae___________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1a
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003001b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateIODevice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1b
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003001b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9C________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1b
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003001cLoc1 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_ReadSubBlockFromIODevice"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ReadSubBlockFromIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadSubBlockFromIODevice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1c
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003001cLoc1 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_ReadSubBlockFromIODevice"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ReadSubBlockFromIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaW__________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1c
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003001cLoc2 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSendIORequest"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ReadBuffersFromIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadBuffersFromIODevice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1c
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003001cLoc2 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSendIORequest"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&ReadBuffersFromIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaQ_________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1c
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003001dLoc1 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_WriteSubBlockToIODevice"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WriteSubBlockToIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteSubBlockToIODevice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1d
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003001dLoc1 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_WriteSubBlockToIODevice"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WriteSubBlockToIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbI_________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1d
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003001dLoc2 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSendIORequest"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WriteBuffersToIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteBuffersToIODevice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1d
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003001dLoc2 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&SynchronousSendIORequest"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WriteBuffersToIODevice"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbF________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1d
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003001e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadIODeviceRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadIODeviceRegister"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1e
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003001e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadIODeviceRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaU______________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1e
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003001f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteIODeviceRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteIODeviceRegister"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1f
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003001f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteIODeviceRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbG_______________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1f
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030020 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadIODeviceStatus"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadIODeviceStatus"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x20
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030020 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadIODeviceStatus"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaV____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x20
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030021 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteIODeviceStatus"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteIODeviceStatus"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x21
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030021 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteIODeviceStatus"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbH_____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x21
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030022 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetIODeviceOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetIODeviceOverruns"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x22
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030022 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetIODeviceOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia3_____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x22
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030023 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateLink"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateLink"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x23
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030023 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateLink"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9D____________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x23
+    ExtraSize = 8
+}
+
+# KernelWaitForSemaphore is combined under KernelSynchronousReceive.
+# Event type 0x0003, 0x0024
+
+EventExecutionDescription00030025 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&CreateTaskWithOptionMask"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateTask"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x25
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030025 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&CreateTaskWithOptionMask"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9F____________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x25
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030026 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RunTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelRunTask"
+	Optional = "1"	
+    }
+    Type      = 0x03
+    Subtype   = 0x26
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030026 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RunTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib0_________"
+	Optional = "1"	
+    }
+    Type      = 0x03
+    Subtype   = 0x26
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030027 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&HaltTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelHaltTask"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x27
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030027 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&HaltTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iaw__________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x27
+    ExtraSize = 12
+}
+
+# Non-blocking synchronous sends are only logged as normal synchronous sends.
+# Event type 0x0003, 0x0028
+
+
+# This is supposed to depend on an if for wait vs check.
+EventExecutionDescription00030029 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&TaskCheckForActivity"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WaitForActivityAndReturnStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTaskCheckForActivity"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x29
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030029 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&TaskCheckForActivity"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&WaitForActivityAndReturnStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibx______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x29
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003002a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateVirtualClock"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateVirtualClock"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2a
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003002a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CreateVirtualClock"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9I____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2a
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003002b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CreateVirtualAddressSpace"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateVirtualAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCreateVirtualAddressSpace"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2b
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003002b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_CreateVirtualAddressSpace"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&CreateVirtualAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9H___________________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2b
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003002c {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetCurrentActivity"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetCurrentActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetCurrentActivity"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2c
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003002c {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetCurrentActivity"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetCurrentActivity"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia0____________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2c
+    ExtraSize = 8
+}
+
+
+EventExecutionDescription0003002d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TryToClearSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTryToClearSemaphore"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2d
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003002d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TryToClearSemaphore"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbB_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2d
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003002e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2e
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003002e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibf_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2e
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003002f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2f
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003002f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskInterruptPriorityLevel"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iak_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x2f
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030030 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ContinueActivityWithUserError"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelContinueActivityWithUserError"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x30
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030030 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ContinueActivityWithUserError"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9r_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x30
+    ExtraSize = 8
+}
+
+# This name differs slightly from the event name.
+EventExecutionDescription00030031 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MoveActivityBuffers"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMoveActivityBuffers"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x31
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030031 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MoveActivityBuffers"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaK_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x31
+    ExtraSize = 8
+}
+
+# SetClockName currently is unused in the kernel.
+# Event type 0x0003, 0x003a
+
+EventExecutionDescription00030032 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_PutPageOnAddressSpaceFreeList"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&PutPageOnAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelPutPageOnAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x32
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030032 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_PutPageOnAddressSpaceFreeList"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&PutPageOnAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaN_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x32
+    ExtraSize = 4
+}
+
+# This name differs slightly from the event name.
+EventExecutionDescription00030033 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPageFromAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetPageFromAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x33
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030033 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPageFromAddressSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iaa_________________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x33
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030034 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetAddressSpaceFreeListCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetAddressSpaceFreeListCount"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x34
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030034 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetAddressSpaceFreeListCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9S______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x34
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030035 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetObjectCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetObjectCount"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x35
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030035 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetObjectCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia9________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x35
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030036 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetObjectCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetObjectCount"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x36
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030036 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetObjectCount"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib8________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x36
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030037 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetAddressSpaceUniqueId"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetAddressSpaceUniqueId"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x37
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030037 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetAddressSpaceUniqueId"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9T_________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x37
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030038 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RestartAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelRestartAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x38
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030038 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RestartAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaZ_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x38
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030039 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockTime"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x39
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030039 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9Z______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x39
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003003b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetClockAlarm"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetClockAlarm"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockAlarm"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3b
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003003b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetClockAlarm"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetClockAlarm"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9U_______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3b
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003003c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockAlarmOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockAlarmOverruns"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3c
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003003c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockAlarmOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9V_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3c
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003003d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockPermissions"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockPermissions"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3d
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003003d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockPermissions"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9X_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3d
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003003e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockResolution"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockResolution"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3e
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003003e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockResolution"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9Y____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3e
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003003f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetClockName"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3f
+    ExtraSize = 8
+}
+EventExecutionDescriptionX0003003f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetClockName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9W______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x3f
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030040 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPhysicalAddress"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetPhysicalAddress"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x40
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030040 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPhysicalAddress"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iab____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x40
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030041 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SplitMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSplitMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x41
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030041 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SplitMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibr___________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x41
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030042 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_MergeMemoryRegions"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&MergeMemoryRegions"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMergeMemoryRegions"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x42
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030042 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_MergeMemoryRegions"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&MergeMemoryRegions"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaI____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x42
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030043 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMemoryRegionAddresses"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetMemoryRegionAddresses"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x43
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030043 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMemoryRegionAddresses"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia6__________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x43
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030044 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x44
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030044 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia7___________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x44
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030045 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&Log2PageSize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelLog2PageSize"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x45
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030045 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&Log2PageSize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaB______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x45
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030046 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadFromMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x46
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030046 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaS______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x46
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030047 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteToMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x47
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030047 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbL_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x47
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030048 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelFillMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x48
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030048 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9M__________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x48
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030049 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_TakeObject"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&TakeObject"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTakeObject"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x49
+    ExtraSize = 16
+}
+EventExecutionDescriptionX00030049 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_TakeObject"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&TakeObject"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibw____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x49
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003004a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GiveObject"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGiveObject"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4a
+    ExtraSize = 16
+}
+EventExecutionDescriptionX0003004a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GiveObject"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iav____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4a
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003004b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_MemoryRegionUsage"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&MemoryRegionUsage"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMemoryRegionUsage"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4b
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003004b {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_MemoryRegionUsage"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&MemoryRegionUsage"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaH___________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4b
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003004c {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&DeliverAddressFaultWithAddress"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&DeliverAddressFault"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelDeliverAddressFault"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4c
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003004c {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&DeliverAddressFaultWithAddress"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&DeliverAddressFault"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&0fd8c84319a1ddc4780098da083c5757c7d983f00000000000"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003004d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RaiseCurrentTaskPriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelRaiseCurrentTaskPriority"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4d
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003004d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&RaiseCurrentTaskPriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaP__________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4d
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003004e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&LowerCurrentTaskPriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelLowerCurrentTaskPriority"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4e
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003004e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&LowerCurrentTaskPriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaD__________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4e
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003004f {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4f
+    ExtraSize = 12
+}
+EventExecutionDescriptionX0003004f {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetMemoryRegionAttributes"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib7___________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x4f
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030050 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MapMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMapMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x50
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030050 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MapMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaE_________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x50
+    ExtraSize = 4
+}
+
+# This name differs slightly from the event name.
+EventExecutionDescription00030051 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&UnmapMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelUnmapMemoryRegion"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x51
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030051 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&UnmapMemoryRegion"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbC___________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x51
+    ExtraSize = 4
+}
+
+
+EventExecutionDescription00030052 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelFillTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x52
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030052 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9N__________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x52
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030053 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetProcessorType"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetProcessorType"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x53
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030053 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetProcessorType"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iad__________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x53
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030054 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskIdentification"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskIdentification"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x54
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030054 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskIdentification"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibe_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x54
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030055 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskIdentification"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskIdentification"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x55
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030055 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskIdentification"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iaj_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x55
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030056 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskInterruptVector"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskInterruptVector"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x56
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030056 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskInterruptVector"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibg________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x56
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030057 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatusChangeOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskStatusChangeOverruns"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x57
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030057 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatusChangeOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iar_____________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x57
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030058 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x58
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030058 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibm_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x58
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030059 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x59
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030059 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatusNotificationMask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ias_______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x59
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003005a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5a
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ia5_____________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5a
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003005b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5b
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetMaximumPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib6_____________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5b
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003005c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetPriorityAndWeight"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5c
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iac______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003005d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetPriorityAndWeight"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5d
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetPriorityAndWeight"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ib9______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5d
+    ExtraSize = 4
+}
+
+# These three functions differ slightly from the event name
+EventExecutionDescription0003005e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskCounter"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5e
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iag________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003005f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskCounter"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5f
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003005f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibc________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x5f
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030060 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetActivePriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetActivePriority"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x60
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030060 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetActivePriority"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9Q___________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x60
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030061 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskTimer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskTimer"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x61
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030061 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskTimer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iat______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x61
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030062 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskTimer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskTimer"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x62
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030062 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskTimer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibn______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x62
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030063 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskStatus"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x63
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030063 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStatus"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iaq_______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x63
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030064 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TaskExecuteOneInstruction"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTaskExecuteOneInstruction"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x64
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030064 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TaskExecuteOneInstruction"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iby___________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x64
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030065 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&YieldTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelYieldTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x65
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030065 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&YieldTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbN___________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x65
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030066 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetTaskProgramCounter"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetTaskProgramCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskProgramCounter"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x66
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030066 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetTaskProgramCounter"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetTaskProgramCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ian_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x66
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030067 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskProgramCounter"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskProgramCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskProgramCounter"
+	Optional = "1"	
+    }
+    Type     = 0x03
+    Subtype  = 0x67
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030067 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskProgramCounter"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskProgramCounter"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibj_______________________"
+	Optional = "1"	
+    }
+    Type     = 0x03
+    Subtype  = 0x67
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030068 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetTaskStackPointer"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStackPointer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskStackPointer"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x68
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030068 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_GetTaskStackPointer"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStackPointer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iap_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x68
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030069 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskStackPointer"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStackPointer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskStackPointer"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x69
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030069 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskStackPointer"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStackPointer"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibl_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x69
+    ExtraSize = 4
+}
+
+# These four functions differ slightly from the event name
+EventExecutionDescription0003006a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStackLimits"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskStackLimits"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6a
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskStackLimits"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iao____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6a
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003006b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStackLimits"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskStackLimits"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6b
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&SetTaskStackLimits"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibk____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6b
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003006c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MasterGetTaskRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMasterGetTaskRegister"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6c
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MasterGetTaskRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaF_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003006d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MasterSetTaskRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelMasterSetTaskRegister"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6d
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&MasterSetTaskRegister"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaG_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6d
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003006e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadFromTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6e
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaT______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003006f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteToTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6f
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003006f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbM_____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x6f
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030070 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyToTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x70
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030070 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9x____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x70
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030071 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyFromTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x71
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030071 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9u______________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x71
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030072 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskName"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskName"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x72
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030072 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskName"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibh_____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x72
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030073 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskName"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x73
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030073 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskName"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ial_____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x73
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030074 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskExecutableFile"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskExecutableFile"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelSetTaskExecutableFile"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x74
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030074 {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_SetTaskExecutableFile"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&SetTaskExecutableFile"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibd_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x74
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030075 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskExecutableFile"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelGetTaskExecutableFile"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x75
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030075 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&GetTaskExecutableFile"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Iai_______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x75
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030076 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AdjustClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelAdjustClockTime"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x76
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030076 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&AdjustClockTime"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9k_________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x76
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030077 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ExitTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelExitTask"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x77
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030077 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ExitTask"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9K__________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x77
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030078 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&UserCall"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelUserCall"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x78
+    ExtraSize = 4
+}
+EventExecutionDescriptionX00030078 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&UserCall"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbD__________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x78
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030079 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FinishMove"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelFinishMove"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x79
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00030079 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FinishMove"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9P____________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x79
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003007a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelReadFromAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7a
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ReadFromAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaR______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7a
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003007b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelWriteToAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7b
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&WriteToAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IbK_____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7b
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003007c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelFillAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7c
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&FillAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9L__________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003007d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyToAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7d
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyToAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9v____________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7d
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003007e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelCopyFromAddressSpace"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7e
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&CopyFromAddressSpace"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9s______________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003007f {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_PutPageOnKernelSpaceFreeList"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&PutPageOnKernelSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelPutPageOnKernelSpaceFreeList"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7f
+    ExtraSize = 4
+}
+EventExecutionDescriptionX0003007f {
+    UserLocation0 {
+	Type = "AddressExpression"
+	Expression = "&__ghs_PutPageOnKernelSpaceFreeList"
+	Optional = "1"
+    }
+    UserLocation1 {
+	Type = "AddressExpression"
+	Expression = "&PutPageOnKernelSpaceFreeList"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaO______________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x7f
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030080 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ClearIODeviceOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelClearIODeviceOverruns"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x80
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030080 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ClearIODeviceOverruns"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9p_______________________"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x80
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030081 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ClearClockAlarmOverruns"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelClearClockAlarmOverruns"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x81
+    ExtraSize = 8
+}
+EventExecutionDescriptionX00030081 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&ClearClockAlarmOverruns"
+	Optional = "1"	
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_I9o_________________________"
+	Optional = "1"
+    }
+    Type     = 0x03
+    Subtype  = 0x81
+    ExtraSize = 8
+}
+
+# Asynchronous oneway sends are only logged as normal asynchronous sends.
+# Event type 0x0003, 0x0082
+
+# 0xfade was picked just so that it matches up with the generic catch all
+# user event defined in integrity.mc. The important thing is that the subtype
+# not match any of the specific subtypes defined in integrity.mc.
+EventExecutionDescription0004fade {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&LogUserEvent"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelLogUserEvent"
+	Optional = "1"
+    }
+    Type      = 0x04
+    Subtype   = 0xfade
+    ExtraSize = 0
+}
+EventExecutionDescriptionX0004fade {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&LogUserEvent"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_IaC______________"
+	Optional = "1"
+    }
+    Type      = 0x04
+    Subtype   = 0xfade
+    ExtraSize = 0
+}
+
+EventExecutionDescription0004ffff {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&LogTraceEvent"
+	Optional = "1"
+    }
+    Type     = 0x04
+    Subtype  = 0xffff
+    # Cannot yet retrieve data string, so output a single zero for it.
+    ExtraSize = 9
+}
+
+EventExecutionDescription00090000 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&RecordException"
+	Optional = "1"
+    }
+    Type      = 0x09
+    Subtype   = 0x00
+    ExtraSize = 12
+}
+
+EventExecutionDescription00090000b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TaskSendException"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&KernelTaskSendException"
+	Optional = "1"
+    }
+    Type      = 0x09
+    Subtype   = 0x00
+    ExtraSize = 12
+}
+EventExecutionDescriptionX00090000b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&TaskSendException"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_Ibz___________________"
+	Optional = "1"
+    }
+    Type      = 0x09
+    Subtype   = 0x00
+    ExtraSize = 12
+}
+
+
+#
+#
+# Status change/context switch/domain change descriptions
+#
+#
+
+ContextSwitchDescription0 {
+    Write {
+	Type = "AddressExpression"
+	Expression = "&CurrentTaskContext"
+    }
+}
+
+DomainPointerWriteDescription {
+    Write {
+	Type = "AddressExpression"
+	Expression = "&CurrentDomain"
+    }
+}

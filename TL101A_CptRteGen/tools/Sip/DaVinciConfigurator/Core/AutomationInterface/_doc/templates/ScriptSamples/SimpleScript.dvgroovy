@@ -1,0 +1,55 @@
+/* 
+ * Task: MinimalTask
+ * Type: DV_APPLICATION
+ * -------------------------------------------------------------------------------------------------------
+ * Does nothing
+ * -------------------------------------------------------------------------------------------------------
+ */
+scriptTask("MinimalTask", DV_APPLICATION) {
+    code{
+    
+    }
+}
+
+/* 
+ * Task: SimpleApplTask
+ * Type: DV_APPLICATION
+ * -------------------------------------------------------------------------------------------------------
+ * Prints "HelloApplication" to console and logs a message to the scriptLogger
+ * -------------------------------------------------------------------------------------------------------
+ */
+scriptTask("SimpleApplTask", DV_APPLICATION) {
+    taskDescription 'Prints "HelloApplication" to console and logs a message to the scriptLogger'
+    
+    taskHelp '''Simple Application task to show the creation of a task.
+The task will print  "HelloApplication" to console.
+Logs the message "Logging message from the script" to the scriptLogger.
+    '''
+    
+    code{
+    
+        println "HelloApplication"
+        scriptLogger.info "Logging message from the script"
+    }
+}
+
+/* 
+ * Task: SimpleProjectTask
+ * Type: DV_PROJECT
+ * -------------------------------------------------------------------------------------------------------
+ * Logs HelloProject to scriptLogger.
+ * -------------------------------------------------------------------------------------------------------
+ */
+scriptTask("SimpleProjectTask", DV_PROJECT){  
+    taskDescription 'Logs  "HelloProject" to the scriptLogger'
+    
+    taskHelp '''Simple Project task to show the creation of a task.
+The task will log the message "HelloProject" to the scriptLogger.
+    '''
+    
+    code{
+        scriptLogger.info "HelloProject"
+    }
+}
+
+        

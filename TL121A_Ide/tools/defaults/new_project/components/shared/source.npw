@@ -1,0 +1,379 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component_template.generic_source_file {
+    parent_context_filetypes = { "Subproject", "Program", "Library", "Project" }
+    parent_context_types = { "AnyProject", "Container" }
+#    parent_context_filetypes = { "Program", "Subproject", "INTEGRITY Kernel", "INTEGRITY VirtualAddressSpace", "uvelOSity Application" }
+#    parent_context_types = { "program", "integrity_kernel", "integrity_virtual_address_space", "uvelosity_application" }
+    display_type_name = "Source File"
+#    top_file_type = "Program"    
+    #bg_color="#ff9999"
+    #bg_color="#543f3f"
+    #fg_color="#ffffff"
+    #bg_color="#ff9f7f"
+#    fg_color="#000000"
+
+    use_template = "Commentable"
+    
+    icon_name = "source_file"
+    bg_color = "#9ECEFF"
+
+    dlg_info {
+	edit {
+	    menu_str = "&Rename Source File"
+	    cmd_str = "EditSourceFile"
+	    dlg_filelist =  "${__DIR__}/source.plc" 
+	    dlg_namelist =  "add_source"
+	    dlg_title = "Rename File"
+	}
+    }
+    attributes {
+	filename {
+	    type = "string"
+	    
+	    display_name = true
+	    refreshNode = true
+	    #default = "$LAST_FILENAME"
+	    build_file_setting = "item_filename $build_item_basename"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_c_edit_std" }
+		    }
+		}
+	    }
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "item_filename $build_item_diskname"
+	}
+    }
+    actions {
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_remove_std" }
+	    }
+	}    
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		1000000 += { "defineLocal LAST_FILENAME $filename" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $filename" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}
+	paste_link {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+	    }
+	}
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_local_std" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_parent_local_std" }
+	    }
+	}
+    }
+}
+
+component_template.source_file {
+    use_template = "generic_source_file"
+    filters =  { "Source Files" }
+}
+
+component_template.special_source_file {
+    use_template = "generic_source_file"
+    # don't use the source file filter, so we're visible
+}
+
+default_display_group_name = "Create New ..."
+
+component_template.add_existing_file {
+    use_template = "source_file"
+    sort_key = "zzz"
+    display_group_sort_key = "zzz"
+    display_group_icon_name = "project"
+    display_group = "Add New or Existing ..."
+    #display_group = ""
+    dlg_info {
+	add {
+	    menu_str = "Add New or &Existing File"
+	    cmd_str = "AddExistingFile"
+	    dlg_filelist =  "none" 
+	    dlg_namelist =  "MULTIFileChooser"
+	}	
+    }
+
+    is_parent = false
+
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_file_add_chooser" }
+	    }
+	}
+    }
+
+    attributes {
+        filetype_preset {
+	    type = "string"
+	    display_name = false
+	    default = ""
+	}
+    }
+}
+
+component.source_file_add {
+    use_template = "add_existing_file"
+    display_type_name = "Source File"
+    tags = { "SourceFile" }
+
+    description = "Source code and other files needed to build your executable."
+
+    dlg_info {
+	add {
+	    menu_str = "Add &Source File"
+	    cmd_str = "AddSourceFile"
+	}	
+    }
+    actions.add.standard {
+        8 += { "defineLocal DIALOG_CMD AddSourceFile" }
+    }
+    attributes.filename.default = ""
+    attributes.filetype_preset.default = "BuilderAddSource"
+}
+component.project_add {
+    use_template = "add_existing_file"
+    display_type_name = "MULTI Project File"
+    icon_name = "project"
+
+    
+    description = "A container for grouping files."
+    dlg_info {
+	add {
+	    menu_str = "Add Existing &Project"
+	    cmd_str = "AddExistingProject"
+	}	
+    }
+    actions.add.standard {
+        8 += { "defineLocal DIALOG_CMD AddExistingProject" }
+        9 += { "defineLocal FILE_TYPE Project" }
+    }
+    attributes.filename.default = ""
+    attributes.filetype_preset.default = "Project"
+}
+component.other_file_add {
+    use_template = "add_existing_file"
+    display_type_name = "Other File"
+    icon_name = "generic_blue"
+
+    description = "Add a file of any type."
+
+    dlg_info {
+	add {
+	    menu_str = "Add &Other File"
+	    cmd_str = "AddOtherFile"
+	}	
+    }
+    actions.add.standard {
+        8 += { "defineLocal DIALOG_CMD AddOtherFile" }
+    }
+    attributes.filename.default = ""
+    attributes.filetype_preset.default = "BuilderAddFile"
+}
+
+component.source_file_ada {
+    use_template = "source_file"
+    display_type_name = "Ada File"
+    tags = { "SourceFile", "SourceFileAda" }
+    top_file_type = "Ada"
+
+    default_for_filetypes = { "Ada" }
+
+    dlg_info.edit.cmd_str = "EditAdaFile"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.ada_source" }
+
+    attributes {
+	filename {
+	    actions {
+		readin {
+		    standard {
+			10 += { "defineProject LANG_ADA Ada" }
+		    }
+		}
+	    }
+	}
+	parent_tf_name {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_parent_tf_name_edit_std" }
+		    }
+		}
+	    }
+	}
+    }
+}
+
+component.source_file_c {
+    use_template = "source_file"
+    display_type_name = "C File"
+    tags = { "SourceFile", "SourceFileC" }
+    top_file_type = "C"
+
+    default_for_filetypes = { "C" }
+
+    dlg_info.edit.cmd_str = "EditCFile"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.c_source" }
+
+    attributes {
+	filename {
+	    actions {
+		readin {
+		    standard {
+			10 += { "defineProject LANG_C C" }
+		    }
+		}
+	    }
+	}
+	parent_tf_name {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_parent_tf_name_edit_std" }
+		    }
+		}
+	    }
+	}
+    }
+}
+
+component.source_file_cxx {
+    use_template = "source_file"
+    display_type_name = "C++ File"
+    tags = { "SourceFile", "SourceFileC++" }
+    top_file_type = "C++"
+
+    default_for_filetypes = { "C++" }
+    dlg_info.edit.cmd_str = "EditCxxFile"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.cxx_source" }
+
+    attributes {
+	filename {
+	    actions {
+		readin {
+		    standard {
+			10 += { "defineProject LANG_CXX C++" }
+		    }
+		}		
+	    }
+	}
+	parent_tf_name {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_parent_tf_name_edit_std" }
+		    }
+		}
+	    }
+	}
+    }
+}
+
+component.source_file_target_connections {
+    use_template = "source_file"
+    display_type_name = "Target Connections"
+    top_file_type = "Target Connections"
+    filters = { "Resources" }
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.target_connections" }
+
+    default_for_filetypes = { "Target Connections" }
+    icon_name = "connection_file"
+    bg_color = "#A0CEFF"
+
+    
+    dlg_info.edit.cmd_str = "EditTCFile"
+#    fg_color="#000000"    
+}
+
+component.source_file_integrate_file {
+    use_template = "source_file"
+    display_type_name = "Integrate File"
+    tags = { "SourceFile", "SourceFileINTFile" }
+   
+    parent_context_filetypes = {  "INTEGRITY Application" }
+    parent_context_types = { "integrity_monolith", "integrity_dynamic_download" , "velosity_dynamic_download"}
+    default_for_filetypes = { "Integrate File" }
+    dlg_info.edit.cmd_str = "EditINTFile"
+
+    attributes {
+	parent_tf_name {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_integrate_file_parent_tf_name_edit_std" }
+		    }
+		}
+	    }
+	}
+    }
+    actions {
+	add {
+	    standard {
+		1 += { "defineParent INT_FILE_NAME $filename" }
+		1 += { "defineParent ABS_INT_FILE_NAME $tf_diskname" }
+		1000000 += { "defineParent LAST_INT_FILE_NAME $filename" }
+		1000000 += { "defineParent LAST_ABS_INT_FILE_NAME $tf_diskname" }
+	    }
+	}
+	edit {
+	    standard {
+		20 += { "defineParent INT_FILE_NAME $filename" }
+		20 += { "defineParent ABS_INT_FILE_NAME $tf_diskname" }
+		1000000 += { "defineParent LAST_INT_FILE_NAME $filename" }
+		1000000 += { "defineParent LAST_ABS_INT_FILE_NAME $tf_diskname" }
+	    }
+	}
+	readin {
+	    standard {
+		1 += { "defineParent INT_FILE_NAME $filename" }
+		1 += { "defineParent ABS_INT_FILE_NAME $tf_diskname" }
+		1000000 += { "defineParent LAST_INT_FILE_NAME $filename" }
+		1000000 += { "defineParent LAST_ABS_INT_FILE_NAME $tf_diskname" }
+	    }
+	}  	
+    }
+}
+
+%endif

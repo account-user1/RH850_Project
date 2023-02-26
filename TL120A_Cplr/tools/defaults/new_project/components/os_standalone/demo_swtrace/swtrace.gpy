@@ -1,0 +1,14 @@
+db = self_dbw;
+def GetRemoteName():
+    db.RunCmd("__remotename", printOutput=False);
+    remote = db.cmdExecOutput;
+    remote = remote.split(" ")[0];
+    return os.path.basename(remote);
+
+def CheckRemoteConnection():
+    if (GetRemoteName() != "850eserv2"):
+	db.RunCmd("eval $remote_ok = 0");
+    else:
+	db.RunCmd("eval $remote_ok = 1");
+
+CheckRemoteConnection();

@@ -1,0 +1,42 @@
+import static com.vector.cfg.automation.api.ScriptApi.*
+
+import com.vector.cfg.automation.model.ecuc.microsar.ecuc.EcuC
+import com.vector.cfg.automation.model.ecuc.microsar.ecuc.ecucgeneral.EcucGeneral
+import com.vector.cfg.automation.model.ecuc.microsar.ecuc.ecucgeneral.cputype.CPUType
+import com.vector.cfg.automation.model.ecuc.microsar.ecuc.ecucgeneral.cputype.ECPUType
+
+//daVinci enables the IDE code completion support
+daVinci {
+    scriptDescription "Reads containter/parameter with the BswmdModel"
+
+    /* 
+     * Task: ReadTheActiveEcuC
+     * Type: DV_PROJECT
+     * -------------------------------------------------------------------------------------------------------
+     * Reads containter/parameter with the BswmdModel
+     * -------------------------------------------------------------------------------------------------------
+     */
+	 
+	scriptTask("ReadTheActiveEcuCTask", DV_PROJECT){
+		taskDescription 'Reads containter/parameter with the BswmdModel'
+		
+		taskHelp '''ReadTheActiveEcuC script task
+    The task reads with the bswmdModel the parameter CPUType from the EcucGeneral container which is included 
+	in the EcuC modul configuration. 
+    '''
+		
+        code {
+            // Gets the ecuc module configuration
+            EcuC ecuc = bswmdModel(EcuC.DefRef).single
+
+            // Gets the EcucGeneral container
+            EcucGeneral ecucGeneral = ecuc.ecucGeneral
+
+            // Gets an enum parameter of this container
+            CPUType cpuType = ecucGeneral.CPUType
+            if (cpuType.value == ECPUType.CPU32Bit) {
+                return "DoSomething"
+            } 
+        }
+    }
+}

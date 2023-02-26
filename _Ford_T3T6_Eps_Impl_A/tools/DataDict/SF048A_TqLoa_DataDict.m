@@ -1,0 +1,828 @@
+%%-----------------------------------------------------------------------%
+%% EA4 Component Data Dictionary - Created on 28-Sep-2016 10:31:56       %
+%                                  Created with tool release: 2.46.0     %
+%                                  Synergy file: %version: 1 %           %
+%                                  Derived by: %derived_by: gz324f %          %
+%%-----------------------------------------------------------------------%
+
+SF048A = DataDict.FDD;
+SF048A.Version = '1.4.X';
+SF048A.LongName = 'Torque Loss of Assist';
+SF048A.ShoName  = 'TqLoa';
+SF048A.DesignASIL = 'A';
+SF048A.Description = [...
+  'This function provides a position-based assist command. It also output' ...
+  's a validity flag to indicate if the TrqLOACmd is valid.'];
+
+
+
+%%-------------------------------------------
+%% Runnable Definitions                      
+%%-------------------------------------------
+TqLoaInit1 = DataDict.Runnable;
+TqLoaInit1.Context = 'Rte';
+TqLoaInit1.TimeStep = 0;
+TqLoaInit1.Description = 'Initialize the Low Pass Filter.';
+
+TqLoaPer1 = DataDict.Runnable;
+TqLoaPer1.Context = 'Rte';
+TqLoaPer1.TimeStep = 0.002;
+TqLoaPer1.Description = [...
+  'It provides a position-based assist command and a validity flag.'];
+
+
+%%-------------------------------------------
+%% Client Definitions                        
+%%-------------------------------------------
+
+%%-------------------------------------------
+%% Input Signal Definition                   
+%%-------------------------------------------
+MotAgLoaMtgtnEna = DataDict.IpSignal;
+MotAgLoaMtgtnEna.LongName = 'Motor Angle LOA Mitigation Enable';
+MotAgLoaMtgtnEna.Description = 'It determines the TqLoaAvl flag.';
+MotAgLoaMtgtnEna.DocUnits = 'Cnt';
+MotAgLoaMtgtnEna.EngDT = dt.lgc;
+MotAgLoaMtgtnEna.EngInit = 0;
+MotAgLoaMtgtnEna.EngMin = 0;
+MotAgLoaMtgtnEna.EngMax = 1;
+MotAgLoaMtgtnEna.ReadIn = {'TqLoaPer1'};
+MotAgLoaMtgtnEna.ReadType = 'Rte';
+
+
+MotVelCrf = DataDict.IpSignal;
+MotVelCrf.LongName = 'Motor Velocity CRF';
+MotVelCrf.Description = 'Input of Motor Velocity CRF.';
+MotVelCrf.DocUnits = 'MotRadPerSec';
+MotVelCrf.EngDT = dt.float32;
+MotVelCrf.EngInit = 0;
+MotVelCrf.EngMin = -2000;
+MotVelCrf.EngMax = 2000;
+MotVelCrf.ReadIn = {'TqLoaPer1'};
+MotVelCrf.ReadType = 'Rte';
+
+
+PinionAg = DataDict.IpSignal;
+PinionAg.LongName = 'Pinion Angle';
+PinionAg.Description = 'Input of Pinion Angle';
+PinionAg.DocUnits = 'HwDeg';
+PinionAg.EngDT = dt.float32;
+PinionAg.EngInit = 0;
+PinionAg.EngMin = -1440;
+PinionAg.EngMax = 1440;
+PinionAg.ReadIn = {'TqLoaPer1'};
+PinionAg.ReadType = 'Rte';
+
+
+PinionAgConf = DataDict.IpSignal;
+PinionAgConf.LongName = 'Pinion Angle Confidence';
+PinionAgConf.Description = 'Input of Pinion Angle Confidence';
+PinionAgConf.DocUnits = 'Uls';
+PinionAgConf.EngDT = dt.float32;
+PinionAgConf.EngInit = 0;
+PinionAgConf.EngMin = 0;
+PinionAgConf.EngMax = 1;
+PinionAgConf.ReadIn = {'TqLoaPer1'};
+PinionAgConf.ReadType = 'Rte';
+
+
+VehLatA = DataDict.IpSignal;
+VehLatA.LongName = 'Vehicle Lateral Acceleration';
+VehLatA.Description = [...
+  'Input of Vehicle Lateral Acceleration'];
+VehLatA.DocUnits = 'MtrPerSecSqd';
+VehLatA.EngDT = dt.float32;
+VehLatA.EngInit = 0;
+VehLatA.EngMin = -10;
+VehLatA.EngMax = 10;
+VehLatA.ReadIn = {'TqLoaPer1'};
+VehLatA.ReadType = 'Rte';
+
+
+VehLatAVld = DataDict.IpSignal;
+VehLatAVld.LongName = 'Vehicle Lateral Acceleration Valid';
+VehLatAVld.Description = [...
+  'Input of Vehicle Lateral Acceleration Valid'];
+VehLatAVld.DocUnits = 'Cnt';
+VehLatAVld.EngDT = dt.lgc;
+VehLatAVld.EngInit = 0;
+VehLatAVld.EngMin = 0;
+VehLatAVld.EngMax = 1;
+VehLatAVld.ReadIn = {'TqLoaPer1'};
+VehLatAVld.ReadType = 'Rte';
+
+
+VehSpd = DataDict.IpSignal;
+VehSpd.LongName = 'Vehicle Speed';
+VehSpd.Description = 'Input of Vehicle Speed';
+VehSpd.DocUnits = 'Kph';
+VehSpd.EngDT = dt.float32;
+VehSpd.EngInit = 0;
+VehSpd.EngMin = 0;
+VehSpd.EngMax = 511;
+VehSpd.ReadIn = {'TqLoaPer1'};
+VehSpd.ReadType = 'Rte';
+
+
+VehSpdVld = DataDict.IpSignal;
+VehSpdVld.LongName = 'Vehicle Speed Valid';
+VehSpdVld.Description = 'Input of Vehicle Speed Valid';
+VehSpdVld.DocUnits = 'Cnt';
+VehSpdVld.EngDT = dt.lgc;
+VehSpdVld.EngInit = 0;
+VehSpdVld.EngMin = 0;
+VehSpdVld.EngMax = 1;
+VehSpdVld.ReadIn = {'TqLoaPer1'};
+VehSpdVld.ReadType = 'Rte';
+
+
+
+%%-------------------------------------------
+%% Output Signal Definition                  
+%%-------------------------------------------
+TqLoaAvl = DataDict.OpSignal;
+TqLoaAvl.LongName = 'Torque LOA Available';
+TqLoaAvl.Description = [...
+  'Signal to communicate if Torque LOA if available for use in other comp' ...
+  'onents.'];
+TqLoaAvl.DocUnits = 'Cnt';
+TqLoaAvl.SwcShoName = 'TqLoa';
+TqLoaAvl.EngDT = dt.lgc;
+TqLoaAvl.EngInit = 0;
+TqLoaAvl.EngMin = 0;
+TqLoaAvl.EngMax = 1;
+TqLoaAvl.TestTolerance = 0;
+TqLoaAvl.WrittenIn = {'TqLoaPer1'};
+TqLoaAvl.WriteType = 'Rte';
+
+
+TqLoaCmd = DataDict.OpSignal;
+TqLoaCmd.LongName = 'Torque LOA Command';
+TqLoaCmd.Description = [...
+  'Motor torque command generated by the Torque LOA algorithm.'];
+TqLoaCmd.DocUnits = 'MotNwtMtr';
+TqLoaCmd.SwcShoName = 'TqLoa';
+TqLoaCmd.EngDT = dt.float32;
+TqLoaCmd.EngInit = 0;
+TqLoaCmd.EngMin = -8.8;
+TqLoaCmd.EngMax = 8.8;
+TqLoaCmd.TestTolerance = 0.01;
+TqLoaCmd.WrittenIn = {'TqLoaPer1'};
+TqLoaCmd.WriteType = 'Rte';
+
+
+
+%%-------------------------------------------
+%% Inter-Runnable Variable Definition        
+%%-------------------------------------------
+
+%%-------------------------------------------
+%% Calibrations Definition                   
+%%-------------------------------------------
+TqLoaDrvrTqNom = DataDict.Calibration;
+TqLoaDrvrTqNom.LongName = 'Torque LOA Driver Torque Nominal';
+TqLoaDrvrTqNom.Description = [...
+  'The assist is applied only if it exceeds certain amount of torque- a d' ...
+  'eadzone. This cal defines absolute limit of the deadzone'];
+TqLoaDrvrTqNom.DocUnits = 'MotNwtMtr';
+TqLoaDrvrTqNom.EngDT = dt.float32;
+TqLoaDrvrTqNom.EngVal = 0.0117;
+TqLoaDrvrTqNom.EngMin = 0;
+TqLoaDrvrTqNom.EngMax = 8.8;
+TqLoaDrvrTqNom.Cardinality = 'Cmn';
+TqLoaDrvrTqNom.CustomerVisible = false;
+TqLoaDrvrTqNom.Online = false;
+TqLoaDrvrTqNom.Impact = 'H';
+TqLoaDrvrTqNom.TuningOwner = 'CSE';
+TqLoaDrvrTqNom.GraphLink = {''};
+TqLoaDrvrTqNom.Monotony = 'None';
+TqLoaDrvrTqNom.MaxGrad = 0;
+TqLoaDrvrTqNom.PortName = 'TqLoaDrvrTqNom';
+
+
+TqLoaMotTqCmdLim = DataDict.Calibration;
+TqLoaMotTqCmdLim.LongName = 'Torque LOA Motor Torque Command Limit';
+TqLoaMotTqCmdLim.Description = [...
+  'Limit on the output command of TrqLOA function'];
+TqLoaMotTqCmdLim.DocUnits = 'MotNwtMtr';
+TqLoaMotTqCmdLim.EngDT = dt.float32;
+TqLoaMotTqCmdLim.EngVal = 4.5;
+TqLoaMotTqCmdLim.EngMin = 0;
+TqLoaMotTqCmdLim.EngMax = 8.8;
+TqLoaMotTqCmdLim.Cardinality = 'Cmn';
+TqLoaMotTqCmdLim.CustomerVisible = false;
+TqLoaMotTqCmdLim.Online = false;
+TqLoaMotTqCmdLim.Impact = 'H';
+TqLoaMotTqCmdLim.TuningOwner = 'CSE';
+TqLoaMotTqCmdLim.GraphLink = {''};
+TqLoaMotTqCmdLim.Monotony = 'None';
+TqLoaMotTqCmdLim.MaxGrad = 0;
+TqLoaMotTqCmdLim.PortName = 'TqLoaMotTqCmdLim';
+
+
+TqLoaMotVelAndTqBasdScaFacFallRate = DataDict.Calibration;
+TqLoaMotVelAndTqBasdScaFacFallRate.LongName = 'Torque LOA Motor Velocity and Torque Based Scale Factor Falling Rate';
+TqLoaMotVelAndTqBasdScaFacFallRate.Description = [...
+  'Lower limit on the rate of change of torque-velocity quadrant based sc' ...
+  'ale factor'];
+TqLoaMotVelAndTqBasdScaFacFallRate.DocUnits = 'UlsPerSec';
+TqLoaMotVelAndTqBasdScaFacFallRate.EngDT = dt.float32;
+TqLoaMotVelAndTqBasdScaFacFallRate.EngVal = -15.625;
+TqLoaMotVelAndTqBasdScaFacFallRate.EngMin = -1000;
+TqLoaMotVelAndTqBasdScaFacFallRate.EngMax = 0;
+TqLoaMotVelAndTqBasdScaFacFallRate.Cardinality = 'Cmn';
+TqLoaMotVelAndTqBasdScaFacFallRate.CustomerVisible = false;
+TqLoaMotVelAndTqBasdScaFacFallRate.Online = false;
+TqLoaMotVelAndTqBasdScaFacFallRate.Impact = 'H';
+TqLoaMotVelAndTqBasdScaFacFallRate.TuningOwner = 'CSE';
+TqLoaMotVelAndTqBasdScaFacFallRate.GraphLink = {''};
+TqLoaMotVelAndTqBasdScaFacFallRate.Monotony = 'None';
+TqLoaMotVelAndTqBasdScaFacFallRate.MaxGrad = 0;
+TqLoaMotVelAndTqBasdScaFacFallRate.PortName = 'TqLoaMotVelAndTqBasdScaFacFallRate';
+
+
+TqLoaMotVelAndTqBasdScaFacMax = DataDict.Calibration;
+TqLoaMotVelAndTqBasdScaFacMax.LongName = 'Torque LOA Motor Velocity and Torque Based Scale Factor Maximum';
+TqLoaMotVelAndTqBasdScaFacMax.Description = [...
+  'Maximum allowed value of torque-velocity quadrant based scale factor'];
+TqLoaMotVelAndTqBasdScaFacMax.DocUnits = 'Uls';
+TqLoaMotVelAndTqBasdScaFacMax.EngDT = dt.float32;
+TqLoaMotVelAndTqBasdScaFacMax.EngVal = 1;
+TqLoaMotVelAndTqBasdScaFacMax.EngMin = 0;
+TqLoaMotVelAndTqBasdScaFacMax.EngMax = 1;
+TqLoaMotVelAndTqBasdScaFacMax.Cardinality = 'Cmn';
+TqLoaMotVelAndTqBasdScaFacMax.CustomerVisible = false;
+TqLoaMotVelAndTqBasdScaFacMax.Online = false;
+TqLoaMotVelAndTqBasdScaFacMax.Impact = 'H';
+TqLoaMotVelAndTqBasdScaFacMax.TuningOwner = 'CSE';
+TqLoaMotVelAndTqBasdScaFacMax.GraphLink = {''};
+TqLoaMotVelAndTqBasdScaFacMax.Monotony = 'None';
+TqLoaMotVelAndTqBasdScaFacMax.MaxGrad = 0;
+TqLoaMotVelAndTqBasdScaFacMax.PortName = 'TqLoaMotVelAndTqBasdScaFacMax';
+
+
+TqLoaMotVelAndTqBasdScaFacMin = DataDict.Calibration;
+TqLoaMotVelAndTqBasdScaFacMin.LongName = 'Torque LOA Motor Velocity and Torque Based Scale Factor Minimum';
+TqLoaMotVelAndTqBasdScaFacMin.Description = [...
+  'Minimum allowed value of torque-velocity quadrant based scale factor'];
+TqLoaMotVelAndTqBasdScaFacMin.DocUnits = 'Uls';
+TqLoaMotVelAndTqBasdScaFacMin.EngDT = dt.float32;
+TqLoaMotVelAndTqBasdScaFacMin.EngVal = 0.75;
+TqLoaMotVelAndTqBasdScaFacMin.EngMin = 0;
+TqLoaMotVelAndTqBasdScaFacMin.EngMax = 1;
+TqLoaMotVelAndTqBasdScaFacMin.Cardinality = 'Cmn';
+TqLoaMotVelAndTqBasdScaFacMin.CustomerVisible = false;
+TqLoaMotVelAndTqBasdScaFacMin.Online = false;
+TqLoaMotVelAndTqBasdScaFacMin.Impact = 'H';
+TqLoaMotVelAndTqBasdScaFacMin.TuningOwner = 'CSE';
+TqLoaMotVelAndTqBasdScaFacMin.GraphLink = {''};
+TqLoaMotVelAndTqBasdScaFacMin.Monotony = 'None';
+TqLoaMotVelAndTqBasdScaFacMin.MaxGrad = 0;
+TqLoaMotVelAndTqBasdScaFacMin.PortName = 'TqLoaMotVelAndTqBasdScaFacMin';
+
+
+TqLoaMotVelAndTqBasdScaFacRiseRate = DataDict.Calibration;
+TqLoaMotVelAndTqBasdScaFacRiseRate.LongName = 'Torque LOA Motor Velocity and Torque Based Scale Factor Rise Rate';
+TqLoaMotVelAndTqBasdScaFacRiseRate.Description = [...
+  'Upper limit on the rate of change of torque-velocity quadrant based sc' ...
+  'ale factor'];
+TqLoaMotVelAndTqBasdScaFacRiseRate.DocUnits = 'UlsPerSec';
+TqLoaMotVelAndTqBasdScaFacRiseRate.EngDT = dt.float32;
+TqLoaMotVelAndTqBasdScaFacRiseRate.EngVal = 7.8125;
+TqLoaMotVelAndTqBasdScaFacRiseRate.EngMin = 0;
+TqLoaMotVelAndTqBasdScaFacRiseRate.EngMax = 1000;
+TqLoaMotVelAndTqBasdScaFacRiseRate.Cardinality = 'Cmn';
+TqLoaMotVelAndTqBasdScaFacRiseRate.CustomerVisible = false;
+TqLoaMotVelAndTqBasdScaFacRiseRate.Online = false;
+TqLoaMotVelAndTqBasdScaFacRiseRate.Impact = 'H';
+TqLoaMotVelAndTqBasdScaFacRiseRate.TuningOwner = 'CSE';
+TqLoaMotVelAndTqBasdScaFacRiseRate.GraphLink = {''};
+TqLoaMotVelAndTqBasdScaFacRiseRate.Monotony = 'None';
+TqLoaMotVelAndTqBasdScaFacRiseRate.MaxGrad = 0;
+TqLoaMotVelAndTqBasdScaFacRiseRate.PortName = 'TqLoaMotVelAndTqBasdScaFacRiseRate';
+
+
+TqLoaMotVelMgnThd = DataDict.Calibration;
+TqLoaMotVelMgnThd.LongName = 'Torque LOA Motor Velocity Magnitude Threshold';
+TqLoaMotVelMgnThd.Description = [...
+  'Veloctiy threshold value used for torque-velocity based qudrant detect' ...
+  ''];
+TqLoaMotVelMgnThd.DocUnits = 'MotRadPerSec';
+TqLoaMotVelMgnThd.EngDT = dt.float32;
+TqLoaMotVelMgnThd.EngVal = 1.908;
+TqLoaMotVelMgnThd.EngMin = 0;
+TqLoaMotVelMgnThd.EngMax = 1000;
+TqLoaMotVelMgnThd.Cardinality = 'Cmn';
+TqLoaMotVelMgnThd.CustomerVisible = false;
+TqLoaMotVelMgnThd.Online = false;
+TqLoaMotVelMgnThd.Impact = 'H';
+TqLoaMotVelMgnThd.TuningOwner = 'CSE';
+TqLoaMotVelMgnThd.GraphLink = {''};
+TqLoaMotVelMgnThd.Monotony = 'None';
+TqLoaMotVelMgnThd.MaxGrad = 0;
+TqLoaMotVelMgnThd.PortName = 'TqLoaMotVelMgnThd';
+
+
+TqLoaTqCmdLimY = DataDict.Calibration;
+TqLoaTqCmdLimY.LongName = 'Torque LOA Torque Command Limit Y';
+TqLoaTqCmdLimY.Description = [...
+  'Limits of temporary motor torqe command as a function of vehicle speed' ...
+  '.'];
+TqLoaTqCmdLimY.DocUnits = 'MotNwtMtr';
+TqLoaTqCmdLimY.EngDT = dt.u4p12;
+TqLoaTqCmdLimY.EngVal =  ...
+   [0.703125         0.703125         0.703125         0.546875          0.40625          0.34375         0.296875         0.203125];
+TqLoaTqCmdLimY.EngMin = 0;
+TqLoaTqCmdLimY.EngMax = 8.8;
+TqLoaTqCmdLimY.Cardinality = 'Cmn';
+TqLoaTqCmdLimY.CustomerVisible = false;
+TqLoaTqCmdLimY.Online = false;
+TqLoaTqCmdLimY.Impact = 'H';
+TqLoaTqCmdLimY.TuningOwner = 'CSE';
+TqLoaTqCmdLimY.GraphLink = {'TqLoaVehSpdX'};
+TqLoaTqCmdLimY.Monotony = 'None';
+TqLoaTqCmdLimY.MaxGrad = 8.8;
+TqLoaTqCmdLimY.PortName = 'TqLoaTqCmdLimY';
+
+
+TqLoaTqCmdMgnThd = DataDict.Calibration;
+TqLoaTqCmdMgnThd.LongName = 'Torque LOA Torque Command Magnitude Threshold';
+TqLoaTqCmdMgnThd.Description = [...
+  'Assist threshold value used for torque-velocity based qudrant detect'];
+TqLoaTqCmdMgnThd.DocUnits = 'MotNwtMtr';
+TqLoaTqCmdMgnThd.EngDT = dt.float32;
+TqLoaTqCmdMgnThd.EngVal = 0;
+TqLoaTqCmdMgnThd.EngMin = 0;
+TqLoaTqCmdMgnThd.EngMax = 10;
+TqLoaTqCmdMgnThd.Cardinality = 'Cmn';
+TqLoaTqCmdMgnThd.CustomerVisible = false;
+TqLoaTqCmdMgnThd.Online = false;
+TqLoaTqCmdMgnThd.Impact = 'H';
+TqLoaTqCmdMgnThd.TuningOwner = 'CSE';
+TqLoaTqCmdMgnThd.GraphLink = {''};
+TqLoaTqCmdMgnThd.Monotony = 'None';
+TqLoaTqCmdMgnThd.MaxGrad = 0;
+TqLoaTqCmdMgnThd.PortName = 'TqLoaTqCmdMgnThd';
+
+
+TqLoaVehLatADifScaFacFallRate = DataDict.Calibration;
+TqLoaVehLatADifScaFacFallRate.LongName = 'Torque LOA Vehicle Lateral Acceleration Difference Scale Factor Falling Rate';
+TqLoaVehLatADifScaFacFallRate.Description = [...
+  'Lower limit on the rate of change of DiffScale'];
+TqLoaVehLatADifScaFacFallRate.DocUnits = 'UlsPerSec';
+TqLoaVehLatADifScaFacFallRate.EngDT = dt.float32;
+TqLoaVehLatADifScaFacFallRate.EngVal = -4;
+TqLoaVehLatADifScaFacFallRate.EngMin = -100;
+TqLoaVehLatADifScaFacFallRate.EngMax = 0;
+TqLoaVehLatADifScaFacFallRate.Cardinality = 'Cmn';
+TqLoaVehLatADifScaFacFallRate.CustomerVisible = false;
+TqLoaVehLatADifScaFacFallRate.Online = false;
+TqLoaVehLatADifScaFacFallRate.Impact = 'H';
+TqLoaVehLatADifScaFacFallRate.TuningOwner = 'CSE';
+TqLoaVehLatADifScaFacFallRate.GraphLink = {''};
+TqLoaVehLatADifScaFacFallRate.Monotony = 'None';
+TqLoaVehLatADifScaFacFallRate.MaxGrad = 0;
+TqLoaVehLatADifScaFacFallRate.PortName = 'TqLoaVehLatADifScaFacFallRate';
+
+
+TqLoaVehLatADifScaFacRiseRate = DataDict.Calibration;
+TqLoaVehLatADifScaFacRiseRate.LongName = 'Torque LOA Vehicle Lateral Acceleration Difference Scale Factor Rise Rate';
+TqLoaVehLatADifScaFacRiseRate.Description = [...
+  'Upper limit on the rate of change of DiffScale'];
+TqLoaVehLatADifScaFacRiseRate.DocUnits = 'UlsPerSec';
+TqLoaVehLatADifScaFacRiseRate.EngDT = dt.float32;
+TqLoaVehLatADifScaFacRiseRate.EngVal = 0.1;
+TqLoaVehLatADifScaFacRiseRate.EngMin = 0;
+TqLoaVehLatADifScaFacRiseRate.EngMax = 100;
+TqLoaVehLatADifScaFacRiseRate.Cardinality = 'Cmn';
+TqLoaVehLatADifScaFacRiseRate.CustomerVisible = false;
+TqLoaVehLatADifScaFacRiseRate.Online = false;
+TqLoaVehLatADifScaFacRiseRate.Impact = 'H';
+TqLoaVehLatADifScaFacRiseRate.TuningOwner = 'CSE';
+TqLoaVehLatADifScaFacRiseRate.GraphLink = {''};
+TqLoaVehLatADifScaFacRiseRate.Monotony = 'None';
+TqLoaVehLatADifScaFacRiseRate.MaxGrad = 0;
+TqLoaVehLatADifScaFacRiseRate.PortName = 'TqLoaVehLatADifScaFacRiseRate';
+
+
+TqLoaVehLatADifScaFacX = DataDict.Calibration;
+TqLoaVehLatADifScaFacX.LongName = 'Torque LOA Vehicle Lateral Acceleration Difference Scale Factor X';
+TqLoaVehLatADifScaFacX.Description = [...
+  'X table of lateral acceleration difference for DiffGain calculation'];
+TqLoaVehLatADifScaFacX.DocUnits = 'Grvy';
+TqLoaVehLatADifScaFacX.EngDT = dt.u2p14;
+TqLoaVehLatADifScaFacX.EngVal =  ...
+   [0             0.14             0.32                1];
+TqLoaVehLatADifScaFacX.EngMin = 0;
+TqLoaVehLatADifScaFacX.EngMax = 2;
+TqLoaVehLatADifScaFacX.Cardinality = 'Cmn';
+TqLoaVehLatADifScaFacX.CustomerVisible = false;
+TqLoaVehLatADifScaFacX.Online = false;
+TqLoaVehLatADifScaFacX.Impact = 'H';
+TqLoaVehLatADifScaFacX.TuningOwner = 'CSE';
+TqLoaVehLatADifScaFacX.GraphLink = {''};
+TqLoaVehLatADifScaFacX.Monotony = 'None';
+TqLoaVehLatADifScaFacX.MaxGrad = 2;
+TqLoaVehLatADifScaFacX.PortName = 'TqLoaVehLatADifScaFacX';
+
+
+TqLoaVehLatADifScaFacY = DataDict.Calibration;
+TqLoaVehLatADifScaFacY.LongName = 'Torque LOA Vehicle Lateral Acceleration Difference Scale Factor Y';
+TqLoaVehLatADifScaFacY.Description = [...
+  'Y table of scale factor for DiffGain calculation'];
+TqLoaVehLatADifScaFacY.DocUnits = 'Uls';
+TqLoaVehLatADifScaFacY.EngDT = dt.u1p15;
+TqLoaVehLatADifScaFacY.EngVal =  ...
+   [1                1                1                1                1                1                1                1
+    1                1                1                1                1                1                1                1
+    0                0                0                0                0                0                0                0
+    0                0                0                0                0                0                0                0];
+TqLoaVehLatADifScaFacY.EngMin = 0;
+TqLoaVehLatADifScaFacY.EngMax = 1;
+TqLoaVehLatADifScaFacY.Cardinality = 'Cmn';
+TqLoaVehLatADifScaFacY.CustomerVisible = false;
+TqLoaVehLatADifScaFacY.Online = false;
+TqLoaVehLatADifScaFacY.Impact = 'H';
+TqLoaVehLatADifScaFacY.TuningOwner = 'CSE';
+TqLoaVehLatADifScaFacY.GraphLink = {'TqLoaVehLatADifScaFacX','TqLoaVehSpdX'};
+TqLoaVehLatADifScaFacY.Monotony = 'None';
+TqLoaVehLatADifScaFacY.MaxGrad = 1;
+TqLoaVehLatADifScaFacY.PortName = 'TqLoaVehLatADifScaFacY';
+
+
+TqLoaVehLatAEstimnFilFrq = DataDict.Calibration;
+TqLoaVehLatAEstimnFilFrq.LongName = 'Torque LOA Vehicle Lateral Acceleration Estimation Filter Frequency';
+TqLoaVehLatAEstimnFilFrq.Description = [...
+  'Low-pass filter cut-off frequency. The estimated lateral acceleration ' ...
+  'is filter before calculating its difference with the measured lateral ' ...
+  'acceleration.'];
+TqLoaVehLatAEstimnFilFrq.DocUnits = 'Hz';
+TqLoaVehLatAEstimnFilFrq.EngDT = dt.float32;
+TqLoaVehLatAEstimnFilFrq.EngVal = 2;
+TqLoaVehLatAEstimnFilFrq.EngMin = 0.1;
+TqLoaVehLatAEstimnFilFrq.EngMax = 250;
+TqLoaVehLatAEstimnFilFrq.Cardinality = 'Cmn';
+TqLoaVehLatAEstimnFilFrq.CustomerVisible = false;
+TqLoaVehLatAEstimnFilFrq.Online = false;
+TqLoaVehLatAEstimnFilFrq.Impact = 'H';
+TqLoaVehLatAEstimnFilFrq.TuningOwner = 'CSE';
+TqLoaVehLatAEstimnFilFrq.GraphLink = {''};
+TqLoaVehLatAEstimnFilFrq.Monotony = 'None';
+TqLoaVehLatAEstimnFilFrq.MaxGrad = 0;
+TqLoaVehLatAEstimnFilFrq.PortName = 'TqLoaVehLatAEstimnFilFrq';
+
+
+TqLoaVehLatAGainY = DataDict.Calibration;
+TqLoaVehLatAGainY.LongName = 'Torque LOA Vehicle Lateral Acceleration Gain Y';
+TqLoaVehLatAGainY.Description = [...
+  'Equivalent to traditional assist gain. The assist is calculated by mul' ...
+  'tiplying lateral acceleration with LatAccGain'];
+TqLoaVehLatAGainY.DocUnits = 'MotNwtMtrPerGrvy';
+TqLoaVehLatAGainY.EngDT = dt.u4p12;
+TqLoaVehLatAGainY.EngVal =  ...
+   [0              1.5         2.421875          1.65625         1.203125          0.96875         0.859375          0.09375];
+TqLoaVehLatAGainY.EngMin = 0;
+TqLoaVehLatAGainY.EngMax = 15;
+TqLoaVehLatAGainY.Cardinality = 'Cmn';
+TqLoaVehLatAGainY.CustomerVisible = false;
+TqLoaVehLatAGainY.Online = false;
+TqLoaVehLatAGainY.Impact = 'H';
+TqLoaVehLatAGainY.TuningOwner = 'CSE';
+TqLoaVehLatAGainY.GraphLink = {'TqLoaVehSpdX'};
+TqLoaVehLatAGainY.Monotony = 'None';
+TqLoaVehLatAGainY.MaxGrad = 15;
+TqLoaVehLatAGainY.PortName = 'TqLoaVehLatAGainY';
+
+
+TqLoaVehSpdScaFacX = DataDict.Calibration;
+TqLoaVehSpdScaFacX.LongName = 'Torque LOA Vehicle Speed Scale Factor X';
+TqLoaVehSpdScaFacX.Description = [...
+  'Vehicle speed table for high-speed based TLOA blending'];
+TqLoaVehSpdScaFacX.DocUnits = 'Kph';
+TqLoaVehSpdScaFacX.EngDT = dt.u10p6;
+TqLoaVehSpdScaFacX.EngVal =  ...
+   [5               10               30               60              100];
+TqLoaVehSpdScaFacX.EngMin = 0;
+TqLoaVehSpdScaFacX.EngMax = 400;
+TqLoaVehSpdScaFacX.Cardinality = 'Cmn';
+TqLoaVehSpdScaFacX.CustomerVisible = false;
+TqLoaVehSpdScaFacX.Online = false;
+TqLoaVehSpdScaFacX.Impact = 'H';
+TqLoaVehSpdScaFacX.TuningOwner = 'CSE';
+TqLoaVehSpdScaFacX.GraphLink = {''};
+TqLoaVehSpdScaFacX.Monotony = 'None';
+TqLoaVehSpdScaFacX.MaxGrad = 400;
+TqLoaVehSpdScaFacX.PortName = 'TqLoaVehSpdScaFacX';
+
+
+TqLoaVehSpdScaFacY = DataDict.Calibration;
+TqLoaVehSpdScaFacY.LongName = 'Torque LOA Vehicle Speed Scale Factor Y';
+TqLoaVehSpdScaFacY.Description = [...
+  'Blend values for high-speed based TLOA blending'];
+TqLoaVehSpdScaFacY.DocUnits = 'Uls';
+TqLoaVehSpdScaFacY.EngDT = dt.u1p15;
+TqLoaVehSpdScaFacY.EngVal =  ...
+   [0                1                1                1                1];
+TqLoaVehSpdScaFacY.EngMin = 0;
+TqLoaVehSpdScaFacY.EngMax = 1;
+TqLoaVehSpdScaFacY.Cardinality = 'Cmn';
+TqLoaVehSpdScaFacY.CustomerVisible = false;
+TqLoaVehSpdScaFacY.Online = false;
+TqLoaVehSpdScaFacY.Impact = 'H';
+TqLoaVehSpdScaFacY.TuningOwner = 'CSE';
+TqLoaVehSpdScaFacY.GraphLink = {'TqLoaVehSpdScaFacX'};
+TqLoaVehSpdScaFacY.Monotony = 'None';
+TqLoaVehSpdScaFacY.MaxGrad = 1;
+TqLoaVehSpdScaFacY.PortName = 'TqLoaVehSpdScaFacY';
+
+
+TqLoaVehSpdX = DataDict.Calibration;
+TqLoaVehSpdX.LongName = 'Torque LOA Vehicle Speed X';
+TqLoaVehSpdX.Description = 'Vehicle speed vector; X axis';
+TqLoaVehSpdX.DocUnits = 'Kph';
+TqLoaVehSpdX.EngDT = dt.u10p6;
+TqLoaVehSpdX.EngVal =  ...
+   [5               10               20               30               40               50               60              120];
+TqLoaVehSpdX.EngMin = 0;
+TqLoaVehSpdX.EngMax = 400;
+TqLoaVehSpdX.Cardinality = 'Cmn';
+TqLoaVehSpdX.CustomerVisible = false;
+TqLoaVehSpdX.Online = false;
+TqLoaVehSpdX.Impact = 'H';
+TqLoaVehSpdX.TuningOwner = 'CSE';
+TqLoaVehSpdX.GraphLink = {''};
+TqLoaVehSpdX.Monotony = 'None';
+TqLoaVehSpdX.MaxGrad = 400;
+TqLoaVehSpdX.PortName = 'TqLoaVehSpdX';
+
+
+TqLoaVehSteerRat = DataDict.Calibration;
+TqLoaVehSteerRat.LongName = 'Torque LOA Vehicle Steering Ratio';
+TqLoaVehSteerRat.Description = [...
+  'Steer Ratio is the ratio of Handwheel/Steering angle to tire angle'];
+TqLoaVehSteerRat.DocUnits = 'Uls';
+TqLoaVehSteerRat.EngDT = dt.float32;
+TqLoaVehSteerRat.EngVal = 16;
+TqLoaVehSteerRat.EngMin = 1;
+TqLoaVehSteerRat.EngMax = 100;
+TqLoaVehSteerRat.Cardinality = 'Cmn';
+TqLoaVehSteerRat.CustomerVisible = false;
+TqLoaVehSteerRat.Online = false;
+TqLoaVehSteerRat.Impact = 'H';
+TqLoaVehSteerRat.TuningOwner = 'CSE';
+TqLoaVehSteerRat.GraphLink = {''};
+TqLoaVehSteerRat.Monotony = 'None';
+TqLoaVehSteerRat.MaxGrad = 0;
+TqLoaVehSteerRat.PortName = 'TqLoaVehSteerRat';
+
+
+TqLoaVehUnderSteerGrdt = DataDict.Calibration;
+TqLoaVehUnderSteerGrdt.LongName = 'Torque LOA Vehicle Under Steer Gradient';
+TqLoaVehUnderSteerGrdt.Description = [...
+  'Understeer gradient indicates understeer angle of a vehicle per g of l' ...
+  'ateral acceleration'];
+TqLoaVehUnderSteerGrdt.DocUnits = 'RoadWhlRadPerGrvy';
+TqLoaVehUnderSteerGrdt.EngDT = dt.float32;
+TqLoaVehUnderSteerGrdt.EngVal = 0.0211;
+TqLoaVehUnderSteerGrdt.EngMin = 0;
+TqLoaVehUnderSteerGrdt.EngMax = 0.25;
+TqLoaVehUnderSteerGrdt.Cardinality = 'Cmn';
+TqLoaVehUnderSteerGrdt.CustomerVisible = false;
+TqLoaVehUnderSteerGrdt.Online = false;
+TqLoaVehUnderSteerGrdt.Impact = 'H';
+TqLoaVehUnderSteerGrdt.TuningOwner = 'CSE';
+TqLoaVehUnderSteerGrdt.GraphLink = {''};
+TqLoaVehUnderSteerGrdt.Monotony = 'None';
+TqLoaVehUnderSteerGrdt.MaxGrad = 0;
+TqLoaVehUnderSteerGrdt.PortName = 'TqLoaVehUnderSteerGrdt';
+
+
+TqLoaVehWhlBas = DataDict.Calibration;
+TqLoaVehWhlBas.LongName = 'Torque LOA Vehicle Wheel Base';
+TqLoaVehWhlBas.Description = [...
+  'Vehicle wheelbase is front axle to rear axle distance'];
+TqLoaVehWhlBas.DocUnits = 'Mtr';
+TqLoaVehWhlBas.EngDT = dt.float32;
+TqLoaVehWhlBas.EngVal = 2.7305;
+TqLoaVehWhlBas.EngMin = 0.5;
+TqLoaVehWhlBas.EngMax = 20;
+TqLoaVehWhlBas.Cardinality = 'Cmn';
+TqLoaVehWhlBas.CustomerVisible = false;
+TqLoaVehWhlBas.Online = false;
+TqLoaVehWhlBas.Impact = 'H';
+TqLoaVehWhlBas.TuningOwner = 'CSE';
+TqLoaVehWhlBas.GraphLink = {''};
+TqLoaVehWhlBas.Monotony = 'None';
+TqLoaVehWhlBas.MaxGrad = 0;
+TqLoaVehWhlBas.PortName = 'TqLoaVehWhlBas';
+
+
+
+%%-------------------------------------------
+%% Imported Calibrations Definition                   
+%%-------------------------------------------
+
+%%-------------------------------------------
+%% Non-Volatile Memory Definition            
+%%-------------------------------------------
+
+%%-------------------------------------------
+%% Display Variable Definition               
+%%-------------------------------------------
+dTqLoaMotTqCmdPreScag = DataDict.Display;
+dTqLoaMotTqCmdPreScag.LongName = 'Torque LOA Motor Torque Command pre Scaling';
+dTqLoaMotTqCmdPreScag.Description = [...
+  'Motor torque calulated by TqLoa before scaling is applied'];
+dTqLoaMotTqCmdPreScag.DocUnits = 'MotNwtMtr';
+dTqLoaMotTqCmdPreScag.EngDT = dt.float32;
+dTqLoaMotTqCmdPreScag.EngMin = -1000;
+dTqLoaMotTqCmdPreScag.EngMax = 1000;
+dTqLoaMotTqCmdPreScag.InitRowCol = [1  1];
+
+
+dTqLoaMotVelAndTqBasdScaFac = DataDict.Display;
+dTqLoaMotVelAndTqBasdScaFac.LongName = 'Torque LOA Motor Velocity and Torque Based Scale Factor';
+dTqLoaMotVelAndTqBasdScaFac.Description = [...
+  'Scale factor based on motor velocity and the previously calculated mot' ...
+  'or torque.'];
+dTqLoaMotVelAndTqBasdScaFac.DocUnits = 'Uls';
+dTqLoaMotVelAndTqBasdScaFac.EngDT = dt.float32;
+dTqLoaMotVelAndTqBasdScaFac.EngMin = 0;
+dTqLoaMotVelAndTqBasdScaFac.EngMax = 1;
+dTqLoaMotVelAndTqBasdScaFac.InitRowCol = [1  1];
+
+
+dTqLoaScaFacFinal = DataDict.Display;
+dTqLoaScaFacFinal.LongName = 'Torque LOA Scale Factor Final';
+dTqLoaScaFacFinal.Description = [...
+  'Scale factor calculated from the three different scale factor calculat' ...
+  'ions.'];
+dTqLoaScaFacFinal.DocUnits = 'Uls';
+dTqLoaScaFacFinal.EngDT = dt.float32;
+dTqLoaScaFacFinal.EngMin = 0;
+dTqLoaScaFacFinal.EngMax = 1;
+dTqLoaScaFacFinal.InitRowCol = [1  1];
+
+
+dTqLoaVehLatADifScaFac = DataDict.Display;
+dTqLoaVehLatADifScaFac.LongName = 'Torque LOA Vehicle Lateral Acceleration Difference Scale Factor';
+dTqLoaVehLatADifScaFac.Description = [...
+  'Scale factor based on the differenct between the estimated and measure' ...
+  'd vehicle lateral acceleration.'];
+dTqLoaVehLatADifScaFac.DocUnits = 'Uls';
+dTqLoaVehLatADifScaFac.EngDT = dt.float32;
+dTqLoaVehLatADifScaFac.EngMin = 0;
+dTqLoaVehLatADifScaFac.EngMax = 1;
+dTqLoaVehLatADifScaFac.InitRowCol = [1  1];
+
+
+dTqLoaVehLatAEstimn = DataDict.Display;
+dTqLoaVehLatAEstimn.LongName = 'Torque LOA Vehicle Lateral Acceleration Estimation';
+dTqLoaVehLatAEstimn.Description = [...
+  'This is an estimation of the vehicles lateral accleration, calculated ' ...
+  'from vehicle speed and handwheel angle.'];
+dTqLoaVehLatAEstimn.DocUnits = 'Grvy';
+dTqLoaVehLatAEstimn.EngDT = dt.float32;
+dTqLoaVehLatAEstimn.EngMin = -1000;
+dTqLoaVehLatAEstimn.EngMax = 1000;
+dTqLoaVehLatAEstimn.InitRowCol = [1  1];
+
+
+dTqLoaVehSpdBasdScaFac = DataDict.Display;
+dTqLoaVehSpdBasdScaFac.LongName = 'Torque LOA Vehicle Speed Based Scale Factor';
+dTqLoaVehSpdBasdScaFac.Description = [...
+  'Scale factor based on vehicle speed.'];
+dTqLoaVehSpdBasdScaFac.DocUnits = 'Uls';
+dTqLoaVehSpdBasdScaFac.EngDT = dt.float32;
+dTqLoaVehSpdBasdScaFac.EngMin = 0;
+dTqLoaVehSpdBasdScaFac.EngMax = 1;
+dTqLoaVehSpdBasdScaFac.InitRowCol = [1  1];
+
+
+
+%%-------------------------------------------
+%% Per-Instance Memory Definition            
+%%-------------------------------------------
+MotTqCmdPrev = DataDict.PIM;
+MotTqCmdPrev.LongName = 'Motor Torque Command Previous';
+MotTqCmdPrev.Description = [...
+  'State variable for the previously calculated motor torque command.'];
+MotTqCmdPrev.DocUnits = 'MotNwtMtr';
+MotTqCmdPrev.EngDT = dt.float32;
+MotTqCmdPrev.EngMin = -8.8;
+MotTqCmdPrev.EngMax = 8.8;
+MotTqCmdPrev.InitRowCol = [1  1];
+
+
+MotVelAndTqBasdScaFacPrev = DataDict.PIM;
+MotVelAndTqBasdScaFacPrev.LongName = 'Motor Velocity and Torque Based Scale Factor Previous';
+MotVelAndTqBasdScaFacPrev.Description = [...
+  'State variable for the slew rate limiter of the MotVelAndTqBasdScaFac.' ...
+  ''];
+MotVelAndTqBasdScaFacPrev.DocUnits = 'Uls';
+MotVelAndTqBasdScaFacPrev.EngDT = dt.float32;
+MotVelAndTqBasdScaFacPrev.EngMin = 0;
+MotVelAndTqBasdScaFacPrev.EngMax = 1;
+MotVelAndTqBasdScaFacPrev.InitRowCol = [1  1];
+
+
+VehLatADifScaFacPrev = DataDict.PIM;
+VehLatADifScaFacPrev.LongName = 'Vehicle Lateral Acceleration Difference Scale Factor Previous';
+VehLatADifScaFacPrev.Description = [...
+  'State variable for the slew rate limiter of the VehLatADifScaFac.'];
+VehLatADifScaFacPrev.DocUnits = 'Uls';
+VehLatADifScaFacPrev.EngDT = dt.float32;
+VehLatADifScaFacPrev.EngMin = 0;
+VehLatADifScaFacPrev.EngMax = 1;
+VehLatADifScaFacPrev.InitRowCol = [1  1];
+
+
+VehLatAEstimnFil = DataDict.PIM;
+VehLatAEstimnFil.LongName = 'Vehicle Lateral Acceleration Estimation Filter';
+VehLatAEstimnFil.Description = [...
+  'Filter struct state variable for lateral acceleration estimation'];
+VehLatAEstimnFil.DocUnits = 'Cnt';
+VehLatAEstimnFil.EngDT = struct.FilLpRec1;
+VehLatAEstimnFil.EngMin = [struct('FilSt',-3.402823466e+38,'FilGain',0)];
+VehLatAEstimnFil.EngMax = [struct('FilSt',3.402823466e+38,'FilGain',3.402823466e+38)];
+VehLatAEstimnFil.InitRowCol = [1  1];
+
+
+
+%%-------------------------------------------
+%% Constant Definition                       
+%%-------------------------------------------
+ARCHGLBPRM_2MILLISEC_SEC_F32 = DataDict.Constant;
+ARCHGLBPRM_2MILLISEC_SEC_F32.LongName = '2 Milliseconds';
+ARCHGLBPRM_2MILLISEC_SEC_F32.Description = '2ms periodic loop time step';
+ARCHGLBPRM_2MILLISEC_SEC_F32.DocUnits = 'Sec';
+ARCHGLBPRM_2MILLISEC_SEC_F32.EngDT = dt.float32;
+ARCHGLBPRM_2MILLISEC_SEC_F32.EngVal = 0.002;
+ARCHGLBPRM_2MILLISEC_SEC_F32.Define = 'Global';
+
+
+ARCHGLBPRM_PIOVER180_ULS_F32 = DataDict.Constant;
+ARCHGLBPRM_PIOVER180_ULS_F32.LongName = 'Pi Over 180 Degrees';
+ARCHGLBPRM_PIOVER180_ULS_F32.Description = 'Pi divided by 180 ';
+ARCHGLBPRM_PIOVER180_ULS_F32.DocUnits = 'Uls';
+ARCHGLBPRM_PIOVER180_ULS_F32.EngDT = dt.float32;
+ARCHGLBPRM_PIOVER180_ULS_F32.EngVal = 0.017453293;
+ARCHGLBPRM_PIOVER180_ULS_F32.Define = 'Global';
+
+
+GRVYTLCON_MTRPERSECSQD_F32 = DataDict.Constant;
+GRVYTLCON_MTRPERSECSQD_F32.LongName = 'Gravitational Constant';
+GRVYTLCON_MTRPERSECSQD_F32.Description = [...
+  'Constant for the Gravitational Constant 9.81.'];
+GRVYTLCON_MTRPERSECSQD_F32.DocUnits = 'MtrPerSecSqd';
+GRVYTLCON_MTRPERSECSQD_F32.EngDT = dt.float32;
+GRVYTLCON_MTRPERSECSQD_F32.EngVal = 9.81;
+GRVYTLCON_MTRPERSECSQD_F32.Define = 'Local';
+
+
+HWAUTHYMIN_ULS_F32 = DataDict.Constant;
+HWAUTHYMIN_ULS_F32.LongName = 'Handwheel Authority Minimum';
+HWAUTHYMIN_ULS_F32.Description = [...
+  'Minimum value that handwheel authority must be for TqLoa to be availab' ...
+  'le.'];
+HWAUTHYMIN_ULS_F32.DocUnits = 'Uls';
+HWAUTHYMIN_ULS_F32.EngDT = dt.float32;
+HWAUTHYMIN_ULS_F32.EngVal = 0.99;
+HWAUTHYMIN_ULS_F32.Define = 'Local';
+
+
+MOTTQSCAFACMAX_ULS_F32 = DataDict.Constant;
+MOTTQSCAFACMAX_ULS_F32.LongName = 'Motor Torque Scale Factor Max';
+MOTTQSCAFACMAX_ULS_F32.Description = [...
+  'Maximum value that the scale factor may be.'];
+MOTTQSCAFACMAX_ULS_F32.DocUnits = 'Uls';
+MOTTQSCAFACMAX_ULS_F32.EngDT = dt.float32;
+MOTTQSCAFACMAX_ULS_F32.EngVal = 1;
+MOTTQSCAFACMAX_ULS_F32.Define = 'Local';
+
+
+MOTTQSCAFACMIN_ULS_F32 = DataDict.Constant;
+MOTTQSCAFACMIN_ULS_F32.LongName = 'Motor Torque Scale Factor Min';
+MOTTQSCAFACMIN_ULS_F32.Description = [...
+  'Minimum value that the scale factor may be.'];
+MOTTQSCAFACMIN_ULS_F32.DocUnits = 'Uls';
+MOTTQSCAFACMIN_ULS_F32.EngDT = dt.float32;
+MOTTQSCAFACMIN_ULS_F32.EngVal = 0;
+MOTTQSCAFACMIN_ULS_F32.Define = 'Local';
+
+
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32 = DataDict.Constant;
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.LongName = 'Meter per Second Over KPH';
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.Description = [...
+  'Conversion factor to convert Kph to m/s'];
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.DocUnits = 'MtrPerSecPerKph';
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.EngDT = dt.float32;
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.EngVal = 0.2778;
+MTRPERSECOVERKPH_MTRPERSECPERKPH_F32.Define = 'Local';
+
+
+
+%%-------------------------------------------
+%% NTC Definition                            
+%%-------------------------------------------
+%end of Data Dictionary

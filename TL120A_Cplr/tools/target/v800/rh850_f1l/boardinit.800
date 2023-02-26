@@ -1,0 +1,69 @@
+	.weak ___ghs_rambootcodestart
+        .weak ___ghs_rambootcodeend
+        .weak ___ghs_rombootcodestart
+        .weak ___ghs_rombootcodeend
+	.weak ___ghs_ramstart
+	.weak ___ghs_ramend
+
+	.file	"boardinit.800"
+	.text
+	.section ".text", "ax"
+
+	.text
+	.align	2
+	.global	___ghs_board_memory_init
+
+___ghsautoimport_ghs_board_memory_init::
+// void __ghs_board_memory_init(void) 
+___ghs_board_memory_init:
+
+	mov	___ghs_rombootcodestart, r12
+	cmp	r12, lp
+	blt	return
+
+	mov	___ghs_rombootcodeend, r12
+	cmp	lp, r12
+	ble 	return
+
+	mov	___ghs_ramstart, ep
+	mov	___ghs_ramend, r12
+	addi	-32, r12, r14
+	mov	0x0, r13
+
+initmem_16_loop:
+
+	sst.w	r13, 0x00[ep]
+	sst.w	r13, 0x04[ep]
+	sst.w	r13, 0x08[ep]
+	sst.w	r13, 0x0c[ep]
+	sst.w	r13, 0x10[ep]
+	sst.w	r13, 0x14[ep]
+	sst.w	r13, 0x18[ep]
+	sst.w	r13, 0x1c[ep]
+	addi	0x20, ep, ep
+		
+	cmp 	r14, ep
+	ble	initmem_16_loop
+
+	cmp	r12, ep
+	
+initmem_1_loop:
+	be	return
+	sst.w	r13, 0x00[ep]
+	addi	0x4, ep, ep
+
+	cmp	r12, ep
+	bne	initmem_1_loop
+
+return:
+	jmp	[lp]
+
+
+// Reset vector jumps to _start (or the ROM version of _start)
+	.text
+	.section ".reset", "ax"
+
+___ghsautoimport_ghs_board_devices_resetvector::
+___ghs_board_devices_resetvector:
+
+	jr ___ghs_rombootcodestart

@@ -1,0 +1,106 @@
+--
+--	V850 Language Independent Runtime Library
+--
+--	Copyright (C) 2014-2015 by Green Hills Software, Inc.
+--
+--    This program is the property of Green Hills Software, Inc,
+--    its contents are proprietary information and no part of it
+--    is to be disclosed to anyone except employees of Green Hills
+--    Software, Inc., or as agreed in writing signed by the President
+--    of Green Hills Software, Inc.
+--
+-- C callable wrapper for multi-core support routines
+
+#ifdef EMBEDDED
+
+	.file	"ind_multicore_hlp.800"
+
+	.text
+	.align	2
+	.globl ___ghs_coreid
+#ifdef __V850
+..lxtdaG.___ghs_coreid=:0
+#endif
+___ghs_coreid:
+#if defined(__RH850__)
+	stsr	0, r18, 2	-- Read HTCFG0 register
+	shr	16, r18
+	andi	7, r18, r10	-- return the PEID bits
+#else
+	mov	zero, r10
+#endif
+	jmp	[lp]
+	.fsize 0
+	.type ___ghs_coreid,@function
+	.size ___ghs_coreid,.-___ghs_coreid
+
+	.align 2
+	.globl ___ghs_dispatch_syscall
+#ifdef __V850
+..lxtdaG.___ghs_dispatch_syscall=:0
+#endif
+___ghs_dispatch_syscall:
+#if defined(__RH850__)
+	stsr	0, r18, 2	-- Read HTCFG0 register
+	shr	14, r18
+	andi	0x1c, r18, r10	-- PEID<<2
+#else
+	mov	zero, r10
+#endif
+	mov	___ghs_syscall_funcs, r11
+	add	r10, r11
+	ld.w	0[r11], r10
+
+	cmp	zero, r10
+	be	.L1
+	jmp	[r10]
+.L1:
+	jmp	[lp]
+	.fsize 0
+	.type ___ghs_dispatch_syscall,@function
+	.size ___ghs_dispatch_syscall,.-___ghs_dispatch_syscall
+
+
+-- Lock helper
+-- int __test_and_set(int *var, int cmp, int val);
+-- int __ghs_set_if_zero(int *var, int val);
+	.text
+	.align 2
+	.globl ___ghs_set_if_zero
+___ghs_set_if_zero:
+	mov	zero, r10	-- default return value
+	ldl.w	[r6], r2	-- read the variable
+	cmp	zero, r2
+	bne	.L54		-- return false if the variable is not available
+	-- The variable is not in use, so try to set it
+	stc.w	r7,[r6]
+	-- return the result of the store-conditional.  If it succeeded it
+	-- will be 1, otherwise 0
+	mov	r7, r10
+.L54:
+	jmp	[lp]
+        .type   ___ghs_set_if_zero,@function
+        .size   ___ghs_set_if_zero,.-___ghs_set_if_zero
+
+    -- Force references to these so that the linker will generate the
+    -- symbols
+    .weak ___ghsbinfo_clear
+    .need ___ghsbinfo_clear
+    .weak ___ghseinfo_clear
+    .need ___ghseinfo_clear
+    .weak ___ghsbinfo_aclear
+    .need ___ghsbinfo_aclear
+    .weak ___ghsbinfo_copy
+    .need ___ghsbinfo_copy
+    .weak ___ghseinfo_copy
+    .need ___ghseinfo_copy
+    .weak ___ghsbinfo_tcopy
+    .need ___ghsbinfo_tcopy
+    .weak ___ghsbinfo_comcopy
+    .need ___ghsbinfo_comcopy
+    .weak ___ghseinfo_comcopy
+    .need ___ghseinfo_comcopy
+    .weak ___ghsbinfo_comtcopy
+    .need ___ghsbinfo_comtcopy
+
+#endif	/* EMBEDDED */

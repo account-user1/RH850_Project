@@ -1,0 +1,20 @@
+%if !defined(__TOOLS_DIR__)
+% define __TOOLS_DIR__ __MULTI_DIR__
+%endif
+
+Services.trace_nexus {
+    ExecName="${__TOOLS_DIR__}/trace_nexus"
+    PluginName="Nexus Trace Plugin"
+    Persistent=0
+    PluginData {
+        Description="Provides Nexus trace support"
+    }
+    ServicesProvided {
+        {
+            ServiceName="TraceArchPlugin.Nexus"
+            ServiceData {
+                Description="Interface to traceserv"
+            }
+	}
+    }
+}

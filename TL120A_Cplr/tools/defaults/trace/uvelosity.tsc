@@ -1,0 +1,580 @@
+# This file describes how to convert the trace execution log into a
+# log for the MULTI EventAnalyzer(tm).
+
+# This file is divided into different types of descriptions.  Each description
+# may contain integer values, or "locations".  A location is a way to find a
+# particular address in the system.
+
+# The following description types are available:
+#
+# Format:
+# Description Name
+# - Brief explanation of description
+# Field - Brief explanation of field
+# Field - Brief explanation of field
+# ...
+
+# An (L) after the field name indicates that the field specifies a location.
+
+# EventExecutionDescription*  (any value can be used where * is indicated,
+#                              allowing for multiple instances of this type)
+# - An EventAnalyzer(tm) event is generated when the specified Location field
+#   is executed.
+# Location (L) - When this location is executed, insert an event into the
+#                EventAnalyzer(tm) log being generated.  This is only checked
+#                for kernel address spaces.
+# OutputTask (optional) - Specifies that the event always be output into the
+#                         task name specified.
+# UserLocation (L) - When this location is executed insert an event into the
+#                    EventAnalyzer(tm) log being generated.  The next execution
+#                    at Location is ignored so that the event is not logged at
+#                    both the user and kernel level.
+# (For a description of the type/subtype/MEV_Extra parts of the event, see the
+#  corresponding .mc file in defaults/event_analyzer).
+# Type         - The high 16 bits describing the event type
+# Subtype      - The low 16 bit event sub-type
+# ExtraSize     - The total size in bytes of the MEV_Extra fields for this event
+
+# ContextSwitchDescription* (any value can be used where * is indicated,
+#                            allowing for multiple instances of this type)
+# - When the specified variable is written, indicates that a context switch
+#   has been performed, which will cause a ContextSwitch message to be
+#   written into the EventAnalyzer(tm) log.
+# Write (L) - When this variable is written, it indicates that the context has
+#             changed.  Currently, the new task is assumed to be the value
+#             written to the specified location.
+
+# DomainPointerWriteDescription
+# - When the specified variable is written, indicates that the current domain
+#   has been changed.  This is not currently used by the EventAnalyzer(tm),
+#   but is used by other tools.
+# Write (L) - When this variable is written, it indicates that the domain has
+#             changed.  Currently, the new domain is assumed to be the value
+#             written to the specified location.
+
+# The following location types are available:
+# Format:
+# LocationType*
+# - Explanation of location type
+# Field - brief explanation of field
+# Field - brief explanation of field
+# ...
+
+# Any location type specified with a * will require CodeReplay(tm), which may
+# increase processing time significantly.
+
+# GlobalFunctionEnd
+# - Returns the address of the last instruction in a global function, not
+#   including NOP.
+# - NOTE: Currently, this is only supported for kernel address spaces.
+# Function - a string containing the function name
+# Optional - a string, if set to any value, no error is printed if the symbol
+#            is not found (this field can be omitted)
+
+# AddressExpression
+# - Returns the value of any valid address expression, which is translated
+#   by the MULTI Debugger.  The address expression cannot use any item which
+#   requires TimeMachine (registers, local/static variables, dereferences,
+#   etc.)  The value will only be evaluated once per address space.
+#   Any of the following are valid:
+#   - Hardcoded address values
+#   - Addresses of global symbols
+#   - $entadr(function) / $retadr(function)
+# Expression - a string containing the address expression
+# Optional - a string, if set to any value, no error is printed if the
+#            expression cannot be evaluated (this field can be omitted)
+
+
+#
+# Interrupt events are logged only if the program is built with
+# eventanalyzer support.
+#
+
+###############################################################################
+#
+# Interrupts
+#
+###############################################################################
+
+EventExecutionDescription0112 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_cpu_interrupt_enter"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x01
+    Subtype   = 0x12
+    ExtraSize = 4
+}
+
+EventExecutionDescription0113 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_cpu_interrupt_return"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x01
+    Subtype   = 0x13
+    ExtraSize = 4
+}
+
+EventExecutionDescription0112T {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_cpu_timer_tick_enter"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x01
+    Subtype   = 0x12
+    ExtraSize = 4
+}
+
+EventExecutionDescription0113T {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_cpu_timer_tick_return"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x01
+    Subtype   = 0x13
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Tasks
+#
+###############################################################################
+
+EventExecutionDescription0321 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x21
+    ExtraSize = 4
+}
+
+EventExecutionDescription0322 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x22
+    ExtraSize = 4
+}
+
+EventExecutionDescription0323 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_exit"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x23
+    ExtraSize = 4
+}
+
+EventExecutionDescription0324 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_run"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x24
+    ExtraSize = 4
+}
+
+EventExecutionDescription0325 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_halt"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x25
+    ExtraSize = 4
+}
+
+EventExecutionDescription0326 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_yield"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x26
+    ExtraSize = 4
+}
+
+EventExecutionDescription0327 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_sleep"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x27
+    ExtraSize = 4
+}
+
+EventExecutionDescription0328 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_wait_abort"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x28
+    ExtraSize = 4
+}
+
+EventExecutionDescription0329 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_set_priority"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x29
+    ExtraSize = 4
+}
+
+EventExecutionDescription032a {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_task_set_timeslice"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2a
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Mutex
+#
+###############################################################################
+
+EventExecutionDescription0331 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_mutex_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x31
+    ExtraSize = 4
+}
+
+EventExecutionDescription0332 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_mutex_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x32
+    ExtraSize = 4
+}
+
+EventExecutionDescription0333 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_mutex_acquire"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x33
+    ExtraSize = 4
+}
+
+EventExecutionDescription0334 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_mutex_release"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x34
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Semaphore
+#
+###############################################################################
+
+EventExecutionDescription0341 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_sem_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x41
+    ExtraSize = 4
+}
+
+EventExecutionDescription0342 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_sem_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x42
+    ExtraSize = 4
+}
+
+EventExecutionDescription0343 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_sem_acquire"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x43
+    ExtraSize = 4
+}
+
+EventExecutionDescription0344 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_sem_release"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x44
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Queue
+#
+###############################################################################
+
+EventExecutionDescription0351 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_queue_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x51
+    ExtraSize = 4
+}
+
+EventExecutionDescription0352 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_queue_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x52
+    ExtraSize = 4
+}
+
+EventExecutionDescription0353 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_queue_send"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x53
+    ExtraSize = 4
+}
+
+EventExecutionDescription0354 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_queue_receive"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x54
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Event Flags
+#
+###############################################################################
+
+EventExecutionDescription0361 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_eflags_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x61
+    ExtraSize = 4
+}
+
+EventExecutionDescription0362 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_eflags_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x62
+    ExtraSize = 4
+}
+
+EventExecutionDescription0363 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_eflags_set"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x63
+    ExtraSize = 4
+}
+
+EventExecutionDescription0364 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_eflags_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x64
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Block Pool
+#
+###############################################################################
+
+EventExecutionDescription0371 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_bpool_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x71
+    ExtraSize = 4
+}
+
+EventExecutionDescription0372 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_bpool_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x72
+    ExtraSize = 4
+}
+
+EventExecutionDescription0373 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_bpool_allocate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x73
+    ExtraSize = 4
+}
+
+EventExecutionDescription0374 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_bpool_free"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x74
+    ExtraSize = 4
+}
+
+###############################################################################
+#
+# Timer
+#
+###############################################################################
+
+EventExecutionDescription0381 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_timer_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x81
+    ExtraSize = 4
+}
+
+EventExecutionDescription0382 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_timer_close"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x82
+    ExtraSize = 4
+}
+
+EventExecutionDescription0383 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_timer_set"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x83
+    ExtraSize = 4
+}
+
+EventExecutionDescription0384 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&uv_timer_cancel"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x84
+    ExtraSize = 4
+}
+
+
+
+
+#
+#
+# Status change/context switch/domain change descriptions
+#
+# Status change events can't be easily recorded because they occur
+# within particular functions. One possible way would be to record
+# writes to 
+#
+
+ContextSwitchDescription0 {
+    Write {
+	Type = "AddressExpression"
+	Expression = "&uv_kernel_running_task"
+    }
+}

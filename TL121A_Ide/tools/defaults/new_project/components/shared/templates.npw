@@ -1,0 +1,352 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component_template.Commentable {
+	actions {
+	    comment.standard {
+		10 += { "python ${__SHARED_PY_DIR__}/utils.py comment_self_item" }
+	    }
+	    uncomment.standard {
+		10 += { "python ${__SHARED_PY_DIR__}/utils.py uncomment_self_item" }
+	    }
+	}
+}
+
+component_template.ProgramT {
+	display_type_name = "Program"
+
+	top_file_type = "Program"
+
+	context_types += { "Debuggable", "ExecutableProgram", "Container", "AnyProject" }
+	parent_context_types += { "OuterProject" }
+	
+#       icon_name="mpm_gear"
+        #icon_name="comp_program"
+	icon_name="program"
+        bg_color="#ecffce"
+#        fg_color="#000000"
+	
+
+	use_template = "startup2"
+
+	dlg_info.add {
+#		menu_str = "Add &Program..."
+		cmd_str = "SetProgramInfo"
+		dlg_cmdlist = {"SetProgramProperties"}
+	}
+
+	attributes {
+	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties"
+		    	dlg_filelist =  "${__DIR__}/common.plc" 
+		    	dlg_namelist =  "ProjectWizardDirName"
+		    }
+		}
+
+		default="myprogram"
+	        refreshNode = true
+
+		build_file_setting = "filename $build_file_basename"
+
+	        actions {
+		    add {
+  		        intermediate {
+			    10 += { "defineLocal PROJ_TYPE Program" }
+			    10 += { "defineLocal tf_name $tf_ProjectName" }
+ 		        }
+		        standard {
+			    10 += { "python ${__DIR__}/projects.py create_project_file" }
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+			    # Set the object directory to be a subdirectory
+			    # of the global object directory based on the name
+			    # of the subproject's directory to avoid conflicts
+			    # between subprojects.
+			    # This is only done for GHS toolchains here since
+			    # the exact option syntax is different for each
+			    # toolchain.
+			    100 += { "defineLocal OPTION_STRING -object_dir=objs/$BASE_PROJ_NAME" }
+			    101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif
+		        }
+		    }
+#		    edit {
+#  		        intermediate {
+#			    10 += { "copydef tf_name BASE_PROJ_NAME" }
+# 		        }
+#		        standard {
+#			    10 += { "python ${__DIR__}/projects.py create_project_file" }
+#		        }
+#		    }
+#		    readin {
+#		        standard {
+#			    10 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+#			    # very last thing, set variable			    
+#			    1000000 += { "defineLocal LAST_BASE_PROJ_NAME $tf_name" }
+#  		        }
+#		    }
+	        }
+ 	    }
+	    tx_lang {
+		type = "string"
+		show_gui_item = false
+	    }
+	    pd_lang {
+		type = "string"
+		show_gui_item = false
+	    }
+	    filename {
+		type = "string"
+		
+		display_name = true
+		refreshNode = true
+		#default = "$LAST_FILENAME"
+		build_file_setting = "filename $build_file_basename"
+	    }
+	    tf_diskname {
+		type = "string"
+		host_filename = true
+		build_file_setting = "filename $build_file_diskname"
+	    }	    
+	}
+	actions {
+	    copy_link {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "undefineLocal MY_GPJ_COOKIE"}
+		    11 += { "undefineLocal MY_ITEM_COOKIE"}
+		}
+	    }
+
+	    paste_link {
+		standard {
+		    10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+		}
+	    }
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/projects.py proj_remove_std" }
+		}
+	    }  
+	}
+}
+
+
+component_template.ExampleProgramT {
+	use_template = "ProgramT"
+#	display_type_name = "Demo"
+	display_group = "Create New Demo Project ..."
+	display_group_sort_key = "zzz-2"
+}
+
+
+
+component_template.LibraryT {
+	display_type_name = "Library"
+
+	top_file_type = "Library"
+	context_types = { "Library", "Debuggable", "Container", "AnyProject" }
+	parent_context_types = { "ExecutableProgram", "AnyProject" }
+
+	default_for_filetypes = { "Library" }
+
+	icon_name="library"
+	bg_color="#ffedce"
+
+	use_template = "startup2"
+
+	dlg_info.add {
+#		menu_str = "Add &Library..."
+		cmd_str = "SetLibraryInfo"
+		dlg_cmdlist = {"SetLibProperties"}
+	}
+
+	attributes {
+	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetLibProperties"
+		    	dlg_filelist =  "${__DIR__}/common.plc" 
+		    	dlg_namelist =  "ProjectWizardDirName"
+		    }
+		}
+
+		default="libmylibrary"
+	        refreshNode = true
+
+		build_file_setting = "filename $build_file_basename"
+
+	        actions {
+		    add {
+  		        intermediate {
+			    10 += { "defineLocal PROJ_TYPE Library" }
+			    10 += { "defineLocal tf_name $tf_ProjectName" }
+ 		        }
+		        standard {
+			    10 += { "python ${__DIR__}/projects.py create_project_file" }
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+			    # Set the object directory to be a subdirectory
+			    # of the global object directory based on the name
+			    # of the subproject's directory to avoid conflicts
+			    # between subprojects.
+			    # This is only done for GHS toolchains here since
+			    # the exact option syntax is different for each
+			    # toolchain.
+			    100 += { "defineLocal OPTION_STRING -object_dir=objs/$BASE_PROJ_NAME" }
+		    	    101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif
+		        }
+		    }
+#		    edit {
+#  		        intermediate {
+#			    10 += { "copydef tf_name BASE_PROJ_NAME" }
+# 		        }
+#		        standard {
+#			    10 += { "python ${__DIR__}/projects.py create_project_file" }
+#		        }
+#		    }
+#		    readin {
+#		        standard {
+#			    10 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+#			    # very last thing, set variable			    
+#			    1000000 += { "defineLocal LAST_BASE_PROJ_NAME $tf_name" }
+#  		        }
+#		    }
+	        }
+ 	    }
+	    tx_lang {
+		type = "string"
+		show_gui_item = false
+	    }
+	    pd_lang {
+		type = "string"
+		show_gui_item = false
+	    }
+	    filename {
+		type = "string"
+		
+		display_name = true
+		refreshNode = true
+		#default = "$LAST_FILENAME"
+		build_file_setting = "filename $build_file_basename"
+	    }
+	    tf_diskname {
+		type = "string"
+		host_filename = true
+		build_file_setting = "filename $build_file_diskname"
+	    }	    
+	}
+	actions {
+	    copy_link {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "undefineLocal MY_GPJ_COOKIE"}
+		    11 += { "undefineLocal MY_ITEM_COOKIE"}
+		}
+	    }
+
+	    paste_link {
+		standard {
+		    10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+		}
+	    }
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/projects.py proj_remove_std" }
+		}
+	    }  
+	}
+
+}
+
+
+component_template.ExampleLibraryT {
+	use_template = "LibraryT"
+#	display_type_name = "Demo"
+	display_group = "Create New Demo Project ..."
+	display_group_sort_key = "zzz-2"
+}
+
+
+
+component_template.ExampleProjectT {
+	use_template = "projectT"
+#	display_type_name = "Demo"
+	display_group = "Create New Demo Project ..."
+	display_group_sort_key = "zzz-2"
+	parent_context_types += { "OuterProject" }
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+	attributes.tf_ProjectName.actions.add.standard {
+	    # Set the object directory to be a subdirectory
+	    # of the global object directory based on the name
+	    # of the subproject's directory to avoid conflicts
+	    # between subprojects.
+	    # This is only done for GHS toolchains here since
+	    # the exact option syntax is different for each
+	    # toolchain.
+	    100 += { "defineLocal OPTION_STRING -object_dir=objs/$BASE_PROJ_NAME" }
+    	    101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+	}
+%endif
+}
+
+
+
+component_template.ChildProjectT {
+    use_template = "Commentable"
+
+    attributes {
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "filename $build_file_diskname"
+	}
+	filename {
+	    type = "string"
+	    
+	    refreshNode = true
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/common.py childproject_add_std" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $filename" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		13 += { "undefineLocal MY_GPJ_COOKIE"}
+		14 += { "undefineLocal MY_ITEM_COOKIE"}
+	    }
+	}
+	paste_local {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/common.py childproject_paste_local_std" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/common.py childproject_paste_parent_local_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/common.py childproject_remove_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/common.py childproject_delete_std" }
+	    }
+	}	
+    }
+}
+
+%endif

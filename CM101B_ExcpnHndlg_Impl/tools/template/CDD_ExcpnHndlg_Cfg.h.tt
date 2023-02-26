@@ -1,0 +1,32 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   CDD_ExcpnHndlg_Cfg.h
+* Module Description: Integration level Configuration header file for Exception Handling
+* Project           : CBD
+* Author            : Shruthi Raghavan
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       rzk04c %
+*---------------------------------------------------------------------------------------------------------------------
+* Date         Rev     Author    Change Description                                                           SCR #
+* ---------  ------   --------   ------------------------------------------------------------------------- -----------
+* 11/21/17   1        AJM        Initial Version                                                           EA4#12706
+**********************************************************************************************************************/
+<# ChangeContext(Xp.ModuleConfAtDefRefTo("ExcpnHndlg")); #>
+<# string Param_WdgMCfgStrName = ValueOf(Xp.ValueAtDefRefTo("ExcpnHndlgCfg/WdgMCfgStr")); #>
+
+#ifndef _CDD_EXCPNHNDLG_CFG_H_
+#define _CDD_EXCPNHNDLG_CFG_H_
+
+/* Name of structure for WdgMConfig is now a #define as below. Name to be given by integrator */
+#define WDGMCFG_REC      (<#=Param_WdgMCfgStrName#>)
+
+#endif

@@ -1,0 +1,486 @@
+// OSA Integration Package Configuration File for INTEGRITY
+// Copyright 2000-2009-Present Green Hills Software, Inc.
+
+
+OSA_CONFIG:OSA_MULTI_MENU:INTEGRITY OSA Explorer...
+OSA_CONFIG:OSA_EXPLORER_TITLE:INTEGRITY OSA Explorer (MULTI target ID 0x%x)
+// Change the following line to customize the memory access block
+// size(in bytes) to turn up performance for your target.
+OSA_CONFIG:OSA_MEMORY_ACCESS_BLOCK_SIZE:1024
+// Uncomment the following line to generate an OSA log file
+// OSA_CONFIG:OSA_DEBUGGING_LOGFILE:"integrity5.log"
+
+// Object Type List Section
+// ========================
+
+// Define Object Type IDs and configure them for global display
+// Format: OSA_OBJECT_TYPE:object name:object type id:global_display
+OSA_OBJECT_TYPE:"Address Space":0:OSA_GLOBAL
+OSA_OBJECT_TYPE:OSA_TASK:1:OSA_GLOBAL
+OSA_OBJECT_TYPE:Connection:2:OSA_GLOBAL
+OSA_OBJECT_TYPE:Activity:3:OSA_GLOBAL
+OSA_OBJECT_TYPE:Semaphore:4:OSA_GLOBAL
+OSA_OBJECT_TYPE:"Memory Region":5:OSA_GLOBAL
+OSA_OBJECT_TYPE:Link:6:OSA_GLOBAL
+OSA_OBJECT_TYPE:Clock:7:OSA_GLOBAL
+OSA_OBJECT_TYPE:"I/O Device":8:OSA_GLOBAL
+OSA_OBJECT_TYPE:Object:9:OSA_GLOBAL
+OSA_OBJECT_TYPE:Resource:20:OSA_GLOBAL
+
+// Define the top object type, which must have been defined as an OSA_OBJECT_TYPE.
+// All other "global" object types will be shown as tabs, but use one of the
+// instance from the top object type as "parent" or "master".
+// If we configure address space as the top object type, only show its
+// ID and Name attributes, because we don't want to make the strings listed in
+// the top object pulldown list too busy.
+// Format: OSA_TOP_OBJECT_TYPE:object name:string_for_all_top_object_instances: \
+//         prompt_for_top_object_list[:OSA_SHOW_COLUMN_NAME|OSA_NOT_SHOW_COLUMN_NAME]
+OSA_TOP_OBJECT_TYPE:"Address Space":"All AddressSpaces":"Address Space: "
+
+// Address Space Window Format Sections
+// =============================
+// Column Line Format:  type name:OSA_ATTRIBUTE_COLUMN:attribute name:attribute id:display:type
+//   List Line Format:  type name:OSA_REFERENCE_LIST:list type name:list id:list name
+"Address Space":OSA_REFERENCE_LIST:OSA_TASK:0:Tasks
+"Address Space":OSA_REFERENCE_LIST:Connection:1:Connection
+"Address Space":OSA_REFERENCE_LIST:Activity:2:Activity
+"Address Space":OSA_REFERENCE_LIST:Semaphore:3:Semaphore
+"Address Space":OSA_REFERENCE_LIST:"Memory Region":4:"Memory Region"
+"Address Space":OSA_REFERENCE_LIST:Link:5:Link
+"Address Space":OSA_REFERENCE_LIST:Clock:6:Clock
+"Address Space":OSA_REFERENCE_LIST:"I/O Device":7:"I/O Device"
+"Address Space":OSA_REFERENCE_LIST:Object:8:Objects
+// Resources do not belong to any address space. But in order to make it
+// work in the environment when "top" object is supported, we create a
+// fake reference for resources under the "top" object (Address Space).
+"Address Space":OSA_REFERENCE_LIST:Resource:15:Resources
+
+//
+// NOTE:
+// The top object name "Address Space" and its following field names are used in
+// MULTI code, please don't change them:
+//    Virtual
+//    Hardware ID
+//    Executable
+//
+"Address Space":OSA_ATTRIBUTE_COLUMN:OSA_ID="Domain ID":0:OSA_SHOW:OSA_ADDRESS
+"Address Space":OSA_ATTRIBUTE_COLUMN:OSA_NAME=Name:1:OSA_SHOW:OSA_STRING
+// The following address space attributes can be turned into "show" if
+// address space is not defined as the top object type. See comment above
+// in OSA_TOP_OBJECT_TYPE definition.
+"Address Space":OSA_ATTRIBUTE_COLUMN:Virtual:2:OSA_NO_SHOW:OSA_STRING
+"Address Space":OSA_ATTRIBUTE_COLUMN:Objects:3:OSA_NO_SHOW:OSA_LONG
+"Address Space":OSA_ATTRIBUTE_COLUMN:Executable:4:OSA_NO_SHOW:OSA_STRING
+"Address Space":OSA_ATTRIBUTE_COLUMN:"Hardware ID":5:OSA_NO_SHOW:OSA_STRING
+"Address Space":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_OBJ_ID});}
+"Address Space":OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_OBJ_ID}); \
+    } else {print "Domain ID is invalid.\n";}
+
+// Task Space Window Format Section
+// ==========================
+// Column Line Format:  OSA_TASK:OSA_ATTRIBUTE_COLUMN:attribute name:attribute id:display:type
+OSA_TASK:OSA_REFERENCE_LIST:Activity:0:"Interrupt Stack"
+OSA_TASK:OSA_REFERENCE_LIST:Activity:1:"Other Activities"
+OSA_TASK:OSA_REFERENCE_LIST:OSA_SEPARATOR
+OSA_TASK:OSA_REFERENCE_LIST:Semaphore:2:"Owned Binary Semaphores"
+OSA_TASK:OSA_REFERENCE_LIST:Semaphore:3:"Owned HL Semaphores"
+//
+// NOTE:
+// Task's following field names are used in MULTI code, please don't
+// change them:
+//    Address Space
+//
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_NAME=Name:0:OSA_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_ID=TaskID:1:OSA_SHOW:OSA_ADDRESS
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_STATUS=Status:2:OSA_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Priority:3:OSA_SHOW:OSA_LONG
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Weight:10:OSA_SHOW:OSA_LONG
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack Start:4:OSA_NO_SHOW:OSA_ADDRESS
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack End:5:OSA_NO_SHOW:OSA_ADDRESS
+// NOTE: The following attribute for task stack high water mark will
+// cause a lot of memory reading. In the pizza demo, it triples
+// the memory reading from 28.K to 87.5K. Big amount of memory reading
+// is usually very slow in freeze-mode debugging environment.
+//
+// If you really need the this information, you can show it by toggling
+// the corresponding entry in task list's right-click shortcut menu.
+// MULTI will remember your changes to the next debugging sessions, so
+// you should hide it by toggling the entry in task list's right-click
+// shortcut menu again when you don't need it any more.
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack HWM/Size:6:OSA_NO_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Address Space":7:OSA_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_EXEC=Executable:8:OSA_NO_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Object Index:9:OSA_SHOW:OSA_STRING
+//OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack HWM:10:OSA_SHOW:OSA_STRING
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"User's ID":11:OSA_SHOW:OSA_LONG
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"PIC":12:OSA_NO_SHOW:OSA_LONG
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"PID":13:OSA_NO_SHOW:OSA_LONG
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Cpu":14:OSA_NO_SHOW:OSA_LONG
+//OSA_TASK:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+//    {osatask $_OSA_OBJ_ID}
+OSA_TASK:OSA_MENU:"View Task Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {substitute view *((struct TaskContextStruct *)%EVAL{print /x $_OSA_OBJ_ID}); \
+    } else {print "Task ID is invalid.\n";}
+OSA_TASK:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+OSA_TASK:OSA_MENU:"\x01":{}
+OSA_TASK:OSA_MENU:Debug Task:if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID} \
+    else {print "Task ID is invalid.\n";}
+
+//Clocks Window Format Section
+Clock:OSA_ATTRIBUTE_COLUMN:OSA_ID="Clock ID":0:OSA_SHOW:OSA_ADDRESS
+Clock:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:OSA_STRING
+Clock:OSA_ATTRIBUTE_COLUMN:"Address Space":2:OSA_SHOW:OSA_STRING
+Clock:OSA_ATTRIBUTE_COLUMN:Object Index:3:OSA_SHOW:OSA_STRING
+Clock:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Clock)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else { \
+	    obr -delete Clock; obr -delete ClockStruct; \
+	    substitute view *((Clock)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelClockRouter Clock; obr VelClockRouter ClockStruct;\
+	} \
+    }
+//Clock:OSA_MENU:"Clock Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Clock)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else { \
+//	    obr -delete Clock; obr -delete ClockStruct; \
+//	    substitute view *((Clock)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelClockRouter Clock; obr VelClockRouter ClockStruct;\
+//	} \
+//    } else {print "Clock ID is invalid.\n";}
+Clock:OSA_MENU:"View Clock Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Clock; obr -delete ClockStruct; \
+    substitute view *((Clock)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelClockRouter Clock; obr VelClockRouter ClockStruct;\
+    } else {print "Clock ID is invalid.\n";}
+Clock:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//IODevice Window Format Section
+"I/O Device":OSA_ATTRIBUTE_COLUMN:OSA_ID="Device ID":0:OSA_SHOW:OSA_ADDRESS
+"I/O Device":OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:OSA_STRING
+"I/O Device":OSA_ATTRIBUTE_COLUMN:Object Index:2:OSA_SHOW:OSA_STRING
+"I/O Device":OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((IODevice)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else {\
+	    obr -delete IODevice; obr -delete IODeviceStruct; \
+	    substitute view *((IODevice)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelIODeviceRouter IODevice; obr VelIODeviceRouter IODeviceStruct;\
+	} \
+    }
+//"I/O Device":OSA_MENU:"I/O Device Information": \
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((IODevice)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else {\
+//	    obr -delete IODevice; obr -delete IODeviceStruct; \
+//	    substitute view *((IODevice)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelIODeviceRouter IODevice; obr VelIODeviceRouter IODeviceStruct;\
+//	} \
+//    } else {print "I/O Device ID is invalid.\n";}
+"I/O Device":OSA_MENU:"View I/O Device Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete IODevice; obr -delete IODeviceStruct; \
+    substitute view *((IODevice)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelIODeviceRouter IODevice; obr VelIODeviceRouter IODeviceStruct;\
+    } else {print "I/O Device ID is invalid.\n";}
+"I/O Device":OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//Generic Object List format section
+Object:OSA_REFERENCE_LIST:Link:0:"Links to Object"
+Object:OSA_ATTRIBUTE_COLUMN:OSA_ID="Object ID":0:OSA_SHOW:OSA_ADDRESS
+Object:OSA_ATTRIBUTE_COLUMN:Type:1:OSA_SHOW:OSA_STRING
+Object:OSA_ATTRIBUTE_COLUMN:"Address Space":2:OSA_NO_SHOW:OSA_STRING
+Object:OSA_ATTRIBUTE_COLUMN:"Object Index":3:OSA_SHOW:OSA_STRING
+Object:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Object)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else { \
+	    obr -delete Object; obr -delete ObjectStruct; \
+	    substitute view *((Object)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelObjectRouter Object; obr VelObjectRouter ObjectStruct;\
+	} \
+    }
+//Object:OSA_MENU:"Object Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Object)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else { \
+//	    obr -delete Object; obr -delete ObjectStruct; \
+//	    substitute view *((Object)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelObjectRouter Object; obr VelObjectRouter ObjectStruct;\
+//	} \
+//    } else {print "Object ID is invalid.\n";}
+Object:OSA_MENU:"View Object Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Object; obr -delete ObjectStruct; \
+    substitute view *((Object)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelObjectRouter Object; obr VelObjectRouter ObjectStruct;\
+    } else {print "Object ID is invalid.\n";}
+Object:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//Activity list format section
+Activity:OSA_ATTRIBUTE_COLUMN:OSA_ID="Activity ID":0:OSA_SHOW:OSA_ADDRESS
+Activity:OSA_ATTRIBUTE_COLUMN:"Object Index":1:OSA_SHOW:OSA_STRING
+Activity:OSA_ATTRIBUTE_COLUMN:Status:2:OSA_SHOW:OSA_STRING
+Activity:OSA_ATTRIBUTE_COLUMN:Priority:3:OSA_SHOW:OSA_LONG
+Activity:OSA_ATTRIBUTE_COLUMN:"Address Space":4:OSA_SHOW:OSA_STRING
+Activity:OSA_ATTRIBUTE_COLUMN:Task:5:OSA_SHOW:OSA_STRING
+Activity:OSA_ATTRIBUTE_COLUMN:"Waiting On":6:OSA_SHOW:OSA_STRING
+Activity:OSA_ATTRIBUTE_COLUMN:"User's ID":7:OSA_SHOW:OSA_LONG
+Activity:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Activity)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else { \
+	    obr -delete Activity; obr -delete ActivityStruct; \
+	    substitute view *((Activity)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelActivityRouter Activity; obr VelActivityRouter ActivityStruct;\
+	}\
+    }
+//Activity:OSA_MENU:"Activity Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Activity)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else { \
+//	    obr -delete Activity; obr -delete ActivityStruct; \
+//	    substitute view *((Activity)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelActivityRouter Activity; obr VelActivityRouter ActivityStruct;\
+//	}\
+//    } else {print "Activity ID is invalid.\n";}
+Activity:OSA_MENU:"View Activity Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Activity; obr -delete ActivityStruct; \
+    substitute view *((Activity)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelActivityRouter Activity; obr VelActivityRouter ActivityStruct;\
+    } else {print "Activity ID is invalid.\n";}
+Activity:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//Semaphore window format section
+Semaphore:OSA_ATTRIBUTE_COLUMN:OSA_ID="Semaphore ID":0:OSA_SHOW:OSA_ADDRESS
+Semaphore:OSA_ATTRIBUTE_COLUMN:"Object Index":1:OSA_SHOW:OSA_STRING
+Semaphore:OSA_ATTRIBUTE_COLUMN:Type:3:OSA_SHOW:OSA_STRING
+Semaphore:OSA_ATTRIBUTE_COLUMN:Owner:2:OSA_SHOW:OSA_STRING
+Semaphore:OSA_ATTRIBUTE_COLUMN:Value:5:OSA_SHOW:OSA_STRING
+Semaphore:OSA_ATTRIBUTE_COLUMN:Priority:6:OSA_SHOW:OSA_STRING
+Semaphore:OSA_ATTRIBUTE_COLUMN:"Address Space":4:OSA_SHOW:OSA_STRING
+Semaphore:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Semaphore)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else {\
+	    obr -delete Semaphore; obr -delete SemaphoreStruct; \
+	    substitute view *((Semaphore)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelSemaphoreRouter Semaphore; obr VelSemaphoreRouter SemaphoreStruct;\
+	} \
+    }
+//Semaphore:OSA_MENU:"Semaphore Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Semaphore)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else {\
+//	    obr -delete Semaphore; obr -delete SemaphoreStruct; \
+//	    substitute view *((Semaphore)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelSemaphoreRouter Semaphore; obr VelSemaphoreRouter SemaphoreStruct;\
+//	} \
+//    } else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_MENU:"View Semaphore Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Semaphore; obr -delete SemaphoreStruct; \
+    substitute view *((Semaphore)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelSemaphoreRouter Semaphore; obr VelSemaphoreRouter SemaphoreStruct;\
+    } else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+Semaphore:OSA_MENU:"\x01":{}
+Semaphore:OSA_MENU:"Take Semaphore":if ($_OSA_OBJ_ID) \
+    {substitute dialogue TakeSemaphore %EVAL{print /x $_OSA_OBJ_ID}; \
+    } else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_MENU:"Release Semaphore":if ($_OSA_OBJ_ID) \
+    {substitute osainject -ObjType "Semaphore" -ObjId %EVAL{print /x $_OSA_OBJ_ID} -MsgType "Release"; \
+    } else {print "Semaphore ID is invalid.\n";}
+
+//Link list format section
+Link:OSA_ATTRIBUTE_COLUMN:OSA_ID="Link ID":0:OSA_SHOW:OSA_ADDRESS
+Link:OSA_ATTRIBUTE_COLUMN:"Address Space":1:OSA_SHOW:OSA_STRING
+Link:OSA_ATTRIBUTE_COLUMN:"Target Type":2:OSA_SHOW:OSA_STRING
+Link:OSA_ATTRIBUTE_COLUMN:"Target ID":3:OSA_SHOW:OSA_STRING
+Link:OSA_ATTRIBUTE_COLUMN:"Object Index":4:OSA_SHOW:OSA_STRING
+Link:OSA_ATTRIBUTE_COLUMN:"Target Index":5:OSA_SHOW:OSA_STRING
+Link:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Link)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else {\
+	    obr -delete Link; obr -delete LinkStruct; \
+	    substitute view *((Link)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelLinkRouter Link; obr VelLinkRouter LinkStruct;\
+	}\
+    }
+//Link:OSA_MENU:"Link Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Link)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else {\
+//	    obr -delete Link; obr -delete LinkStruct; \
+//	    substitute view *((Link)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelLinkRouter Link; obr VelLinkRouter LinkStruct;\
+//	}\
+//    } else {print "Link ID is invalid.\n";}
+Link:OSA_MENU:"View Link Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Link; obr -delete LinkStruct; \
+    substitute view *((Link)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelLinkRouter Link; obr VelLinkRouter LinkStruct;\
+    } else {print "Link ID is invalid.\n";}
+Link:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//
+// NOTE:
+// Object name "Memory Region" and its following field names are used in
+// MULTI code, please don't change them:
+//    Beginning
+//    End
+//    Physical Beginning
+//    Address Space
+//
+//MemoryRegion list format section
+"Memory Region":OSA_ATTRIBUTE_COLUMN:OSA_ID="Memory Region ID":0:OSA_SHOW:OSA_ADDRESS
+"Memory Region":OSA_ATTRIBUTE_COLUMN:"Address Space":1:OSA_SHOW:OSA_STRING
+"Memory Region":OSA_ATTRIBUTE_COLUMN:Beginning:2:OSA_SHOW:OSA_ADDRESS
+"Memory Region":OSA_ATTRIBUTE_COLUMN:End:3:OSA_SHOW:OSA_ADDRESS
+"Memory Region":OSA_ATTRIBUTE_COLUMN:"Physical Beginning":5:OSA_SHOW:OSA_ADDRESS
+"Memory Region":OSA_ATTRIBUTE_COLUMN:"Physical End":6:OSA_SHOW:OSA_ADDRESS
+"Memory Region":OSA_ATTRIBUTE_COLUMN:"Object Index":4:OSA_SHOW:OSA_STRING
+"Memory Region":OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((MemoryRegion)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else {\
+	    obr -delete MemoryRegion; obr -delete MemoryRegionStruct; \
+	    substitute view *((MemoryRegion)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelMemoryRegionRouter MemoryRegion; obr VelMemoryRegionRouter MemoryRegionStruct;\
+	} \
+    }
+//"Memory Region":OSA_MENU:"Memory Region Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((MemoryRegion)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else {\
+//	    obr -delete MemoryRegion; obr -delete MemoryRegionStruct; \
+//	    substitute view *((MemoryRegion)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelMemoryRegionRouter MemoryRegion; obr VelMemoryRegionRouter MemoryRegionStruct;\
+//	} \
+//    } else {print "Memory Region ID is invalid.\n";}
+"Memory Region":OSA_MENU:"View Memory Region Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete MemoryRegion; obr -delete MemoryRegionStruct; \
+    substitute view *((MemoryRegion)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelMemoryRegionRouter MemoryRegion; obr VelMemoryRegionRouter MemoryRegionStruct;\
+    } else {print "Memory Region ID is invalid.\n";}
+"Memory Region":OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+
+//Connection list format section
+Connection:OSA_ATTRIBUTE_COLUMN:OSA_ID="Connection ID":0:OSA_SHOW:OSA_ADDRESS
+Connection:OSA_ATTRIBUTE_COLUMN:"Address Space":1:OSA_SHOW:OSA_STRING
+Connection:OSA_ATTRIBUTE_COLUMN:"Other End":2:OSA_SHOW:OSA_STRING
+Connection:OSA_ATTRIBUTE_COLUMN:"AS of Other End":3:OSA_SHOW:OSA_STRING
+Connection:OSA_ATTRIBUTE_COLUMN:"Object Index":4:OSA_SHOW:OSA_STRING
+Connection:OSA_ATTRIBUTE_COLUMN:"ObjIndex of Other End":5:OSA_SHOW:OSA_STRING
+Connection:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	if (0 && $_OSA_TOP_OBJ_IS_KERNEL) { \
+	    substitute view *((Connection)%EVAL{print /x $_OSA_OBJ_ID}); \
+	} else {\
+	    obr -delete Connection; obr -delete ConnectionStruct; \
+	    substitute view *((Connection)%EVAL{print /x $_OSA_OBJ_ID}); \
+	    obr VelConnectionRouter Connection; obr VelConnectionRouter ConnectionStruct;\
+	}\
+    }
+//Connection:OSA_MENU:"Connection Information":\
+//    if ($_OSA_OBJ_ID) {\
+//	if ($_OSA_TOP_OBJ_IS_KERNEL) { \
+//	    substitute view *((Connection)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	} else {\
+//	    obr -delete Connection; obr -delete ConnectionStruct; \
+//	    substitute view *((Connection)%EVAL{print /x $_OSA_OBJ_ID}); \
+//	    obr VelConnectionRouter Connection; obr VelConnectionRouter ConnectionStruct;\
+//	}\
+//    } else {print "Connection ID is invalid.\n";}
+Connection:OSA_MENU:"View Connection Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Connection; obr -delete ConnectionStruct; \
+    substitute view *((Connection)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelConnectionRouter Connection; obr VelConnectionRouter ConnectionStruct;\
+    } else {print "Connection ID is invalid.\n";}
+Connection:OSA_MENU:"View AddressSpace Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_TOP_OBJ_ID) \
+    {substitute view *((Domain)%EVAL{print /x $_OSA_TOP_OBJ_ID}); \
+    }
+//    else {print "Domain ID is invalid.\n";}
+Connection:OSA_MENU:"\x01":{}
+Connection:OSA_MENU:"Inject Message":if ($_OSA_OBJ_ID) \
+    {substitute dialogue GetMessageToConnection %EVAL{print /x $_OSA_OBJ_ID}; \
+    } else {print "Connection ID is invalid.\n";}
+
+// Resource list
+Resource:OSA_ATTRIBUTE_COLUMN:OSA_ID="Resource ID":0:OSA_SHOW:OSA_ADDRESS
+Resource:OSA_ATTRIBUTE_COLUMN:"Name":1:OSA_SHOW:OSA_STRING
+Resource:OSA_ATTRIBUTE_COLUMN:"Password":2:OSA_SHOW:OSA_STRING
+Resource:OSA_ATTRIBUTE_COLUMN:"Linkable":3:OSA_SHOW:OSA_STRING
+Resource:OSA_ATTRIBUTE_COLUMN:"Data Buffer":4:OSA_SHOW:OSA_STRING
+Resource:OSA_ATTRIBUTE_COLUMN:"Index":5:OSA_SHOW:OSA_LONG
+Resource:OSA_DOUBLE_CLICK:\
+    if ($_OSA_OBJ_ID) {\
+	obr -delete Resource; obr -delete ResourceInfo; \
+	substitute view *((ResourceInfo *)%EVAL{print /x $_OSA_OBJ_ID}); \
+	obr VelResourceRouter Resource; obr VelResourceRouter ResourceInfo;\
+    }
+Resource:OSA_MENU:"View Resource Internals":__check_condition $exists(SwitchToTaskContext); \
+    if ($_OSA_OBJ_ID) \
+    {obr -delete Resource; obr -delete ResourceInfo; \
+    substitute view *((ResourceInfo *)%EVAL{print /x $_OSA_OBJ_ID}); \
+    obr VelResourceRouter Resource; obr VelResourceRouter ResourceInfo;\
+    } else {print "Resource ID is invalid.\n";}

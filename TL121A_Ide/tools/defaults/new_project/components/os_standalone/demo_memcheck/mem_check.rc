@@ -1,0 +1,42 @@
+configure cwindlines 14
+D;
+
+bA main {
+  clear; echo " ";
+  echo "  To find leaked memory in the program you are debugging, you must stop";
+  echo "the program just before it terminates and open the Heapview window.  ";
+  echo "Often, this is most easily done by setting a breakpoint on the last line"
+  echo "of the program and opening the Heapview window when the program hits that";
+  echo "breakpoint."
+  echo " ";
+  echo "  To Continue, Click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA main##CheckForLeaks {
+  clear; echo " ";
+  echo "  Now that we have run this example, we will see what memory leaks have";
+  echo "been detected. To do this, bring up the Heapview window.";
+  echo "('Memory Allocations' in the View menu or 'heapview' in the command pane)"
+  echo " ";
+  echo "  Select the Leaks tab and click the 'Refresh Leaks' button.  This window";
+  echo "shows the location and size of each leaked memory allocation as well as a";
+  echo "partial call stack of the function which allocated the memory."
+  echo " ";
+  echo "  To terminate the application, Click 'Go on Selected Items (F5)'.";
+  echo " ";
+  heapview;
+}
+
+
+clear;
+echo " ";
+echo "  This example program is full of memory leaks.  When the Memory Leak";
+echo "Detection error checking feature is turned on, the debugger can help you";
+echo "find them.  ";
+echo "  To turn on leak detection in the Project Manager, select 'Set Build Options'";
+echo "in the Edit menu.  Right click on 'Run-Time Memory Checks' on the Basic"
+echo "Options tab and select 'Intensive'.";
+echo " ";
+echo "  Click 'Go on Selected Items (F5)' to begin.";
+echo " ";

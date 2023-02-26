@@ -1,0 +1,84 @@
+<!-- Entities -->
+
+<!ENTITY ti.TransformSet       "TransformSet">
+<!ENTITY ti.XfData              "XfData">
+<!ENTITY ti.XfOrderedTechnology	"XfOrderedTechnology">
+<!ENTITY ti.XfTechnology    	"XfTechnology">
+<!ENTITY ti.XfDescription   	"XfDescription">
+<!ENTITY ti.XfBufferProperties  "XfBufferProperties">
+
+<!-- Elements -->
+
+<!ELEMENT TransformSet  (%C.DefAttr;, ATTRLink*, XfData*, XfTechnology*, GenAttrList?)>
+<!ELEMENT XfData (%C.DefAttr;, XfOrderedTechnology*, GenAttrList?)>
+<!ELEMENT XfOrderedTechnology (ATTRLink*)>
+<!ELEMENT XfTechnology (%C.DefAttr;, XfBufferProperties?, XfDescription?)>
+
+<!ELEMENT XfDescription EMPTY>
+<!ELEMENT XfBufferProperties EMPTY>
+
+<!-- Attributes -->
+<!ATTLIST TransformSet %A.ConfigItem;
+    PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST XfData %A.ChildItem;    
+	ExecuteDDU				CDATA '0'
+>
+
+<!ATTLIST XfOrderedTechnology 
+	Index					CDATA '0'
+	TechnologyLink 			NMTOKEN #FIXED "&ti.XfTechnology;"
+>
+
+<!ATTLIST XfTechnology %A.ChildItem;    
+	NeedsOriginalData		CDATA '0'
+	Protocol				CDATA ''
+	Class					(Serializer|Safety|Security|Custom) 'Serializer'
+	ProtocolVersion			CDATA ''
+>
+
+<!ATTLIST XfDescription
+	DescriptionType         (User|E2E|SomeIp) 'User'
+    
+    Alignment				CDATA '-1'
+	ByteOrder				(First|Last|Opaque) 'First'
+	IntefaceVersion			CDATA '-1'
+
+	CounterOffset			CDATA '-1'
+	CrcOffset				CDATA '-1'
+	DataIdMode				(16Bit|a8Bit|l8Bit|l12Bit|NotSpecified) 'NotSpecified'
+	DataIdNibbleOffset		CDATA '-1'
+	MaxDeltaCounter			CDATA '-1'
+	MaxErrorStateInit		CDATA '-1'
+	MaxErrorStateInvalid	CDATA '-1'
+	MaxErrorStateValid		CDATA '-1'
+	MaxNoNewOrRepeatedData	CDATA '-1'
+	MinOkStateInit			CDATA '-1'
+	MinOkStateInvalid		CDATA '-1'
+	MinOkStateValid			CDATA '-1'
+	Offset					CDATA '-1'
+	ProfileBehavior			(NotSpecified|PreR42|R42) 'NotSpecified'
+	ProfileName				CDATA ''
+	SyncCounterInit			CDATA '-1'
+	UpperHeaderBitsToShift	CDATA '-1'
+	WindowSize				CDATA '-1'
+>
+
+<!ATTLIST XfBufferProperties
+	HeaderLength			CDATA '-1'
+	InPlace					CDATA '0'
+	Desc					CDATA ''
+    HasScaling              CDATA '0'
+	InverseValue			CDATA ''
+	Mask					CDATA '-1'
+	Label					CDATA ''
+	Symbol					CDATA ''
+	LowerLimit				CDATA ''
+	LowerLimitType			(Infinite|Closed|Open) 'Closed'
+	UpperLimit				CDATA ''
+	UpperLimitType			(Infinite|Closed|Open) 'Closed'
+    Factor           		CDATA ''
+    Offset           		CDATA ''
+    ConstValue              CDATA ''
+>

@@ -1,0 +1,569 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/int_posix.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.integrity_os_modules_posix_system_server_virtual {
+    use_template = "integrity_os_module_mono_only"
+    display_object_name = "POSIX System Server (Virtual)"
+
+    display_type_name = "POSIX System Server (Virtual)"
+    default = false
+    isparent = true
+    sort_key = "eee_POSIX2"
+
+    requires = { "UserFileSystemServer", "POSIXFileSystemServer"}
+    provides = { "PosixSystemServer", "CantUseDistFilesystemWithPosix" }
+    mutually_exclusives = {"File System (From Distribution)"}
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_pss"}
+
+    dlg_info {
+	edit {
+	    menu_str = "&Edit POSIX System Server (Virtual)"
+	    cmd_str = "EditPSSVirt"
+	    dlg_filelist = "${__DIR__}/int_posix.plc"
+	    dlg_namelist = "edit_pss_virt"
+	    
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss"}
+	}
+    }
+	
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "my_posix_system_server_virtual"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	    actions {
+		add {
+		    standard {
+			5 += { "defineLocal PSS VIRTUAL" }		    
+			10 += { "python ${__DIR__}/int_posix.py os_pss_virt_tf_name_add_std" }
+			
+		    }
+		}
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/int_posix.py os_pss_virt_tf_name_edit_std" }
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_NAME $tf_name" }		    
+			10000000 += { "defineLocal PSS VIRTUAL" }		    
+		    }
+		}
+	    }
+	}
+	msl_opts {
+	    type = "childlist"
+	    tags = "VIRTUAL_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:virtual_library_"
+	}
+	tf_authtable {
+	    type = "childlist"
+	    tags = "PSS_Authtable"
+	    copy_define_to_instance = "tf_diskname"
+	    unique_names=true
+	    one_filename = true
+	    default = "$(PROJ_DIR)/posix_system_server.c"
+	    build_file_setting = "python ${__DIR__}/int_posix.py pss_find_authtable $all_c_files"
+	}
+    }
+    actions {
+    	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_virt_remove_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_virt_delete_std" }
+	    }
+	}
+    }
+}
+
+component.integrity_os_modules_kernel_posix_sys_server_kernel {
+
+    display_object_name = "POSIX System Server (Kernel)"
+    display_type_name = "Kernel OS Module"
+    default = false
+    isparent = true
+    sort_key = "eee_POSIX2"
+
+    tags = { "KERNEL_OS_MODULES" }
+    requires = { "UserFileSystemServer", "POSIXFileSystemServer"}
+    provides = { "PosixSystemServer", "CantUseDistFilesystemWithPosix" }
+    parent_context_types = { "integrity_kernel" }
+
+    mutually_exclusives = {"File System (From Distribution)"}
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_pss"}
+
+    attributes {
+	tf_authtable {
+	    type = "childlist"
+	    tags = "PSS_Authtable"
+	    copy_define_to_instance = "tf_diskname"
+	    unique_names=true
+	    one_filename = true
+	    default = "$(PROJ_DIR)/posix_system_server.c"
+	    build_file_setting = "python ${__DIR__}/int_posix.py pss_find_authtable $all_c_files"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		5 += { "defineLocal PSS KERNEL" }		    
+		10 += { "python ${__DIR__}/int_posix.py os_pss_kernel_add_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_kernel_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		10000000 += { "defineLocal PSS KERNEL" }		    
+	    }
+	}	
+    }
+}
+
+
+component.integrity_os_modules_posix_system_server_authtable {
+    tags = { "PSS_Authtable" }
+    
+    parent_context_types = { "integrity_os_modules_posix_system_server_virtual", "integrity_os_modules_kernel_posix_sys_server_kernel"}
+    display_type_name = "POSIX Authorization Table"
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_pss_auth"}
+    binary_component = true
+
+    dlg_info {
+    	add {
+	    menu_str = "Add INTEGRITY &POSIX System Authorization Table"
+	    cmd_str = "AddINTPSSAuthtable"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authtable"
+	    
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_auth"}
+	}
+	edit {
+	    menu_str = "Configure INTEGRITY &POSIX System Authorization Table"
+	    cmd_str = "EditINTPSSAuthtable"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authtable" 
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_auth"}
+	    right_click_list = { "AddINTPSSUser", "AddINTPSSGroup" }
+	}
+    }
+    attributes {
+	tf_mainfile {
+	    type = "string"
+	    default = "posix_system_server.c"
+	    refreshNode = true
+	    display_name = true
+	    build_file_setting = "basename tf_diskname"
+	    actions {
+		add {
+		    standard {
+			1 += { "addguinodes $tf_mainfile" }
+			10 += { "python ${__DIR__}/int_posix.py os_pss_tf_mainfile_add_std" }			
+			10000000 += { "defineLocal LAST_TF_MAINFILE $tf_mainfile"}
+		    }
+		}
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/int_posix.py os_pss_tf_mainfile_edit_std" }
+			10000000 += { "defineLocal LAST_TF_MAINFILE $tf_mainfile"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_MAINFILE $tf_mainfile"}
+		    }
+		}
+	    }
+	}
+	tf_users {
+	    type = "childlist"	    
+	    tags = "INTEGRITY_PSS_USER"
+	    
+	    build_file_setting = "python ${__DIR__}/int_posix.py os_pss_find_users tf_diskname"
+	    name="Number of Users"			
+	    default="0"		
+	    basename="root"			
+	    copy_define_to_instance = "tf_id"
+	}
+	tf_groups {
+	    type = "childlist"	    
+	    tags = "INTEGRITY_PSS_GROUP"
+	    
+	    build_file_setting = "python ${__DIR__}/int_posix.py os_pss_find_groups tf_diskname"
+	    name="Number of Groups"			
+	    default="0"		
+	    basename="everybody"			
+	    copy_define_to_instance = "tf_id"
+	}
+	tf_diskname {
+	    default = "$(PROJ_DIR)/posix_system_server.c"
+	    type = "string"
+	    host_filename = true
+	}
+    }
+    actions {
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_tf_mainfile_delete_std" }
+	    }
+	}
+    }   
+}
+
+component.integrity_os_modules_posix_system_server_user {
+    tags = {"INTEGRITY_PSS_USER"}
+    display_type_name = "POSIX Authorization User"
+
+    parent_context_types = { "integrity_os_modules_posix_system_server_authtable" }
+
+    #icon_name = "int_user1"
+    icon_name = "posix_user"
+    bg_color="#ffffcc"
+#    fg_color="#000000"
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_pss_authuser"}
+
+    dlg_info {
+    	add {
+	    menu_str = "Add INTEGRITY POSIX &User"
+	    cmd_str = "AddINTPSSUser"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authuser" 
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_authuser", "multi.mpm.int_pss_authuser_name","multi.mpm.int_pss_authuser_pwd","multi.mpm.int_pss_authuser_uid","multi.mpm.int_pss_authuser_group","multi.mpm.int_pss_authuser_supgroups","multi.mpm.int_pss_authuser_homedir"}
+
+	}
+	edit {
+	    menu_str = "Edit INTEGRITY POSIX &User"
+	    cmd_str = "EditINTPSSUser"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authuser"
+	    
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_authuser", "multi.mpm.int_pss_authuser_name","multi.mpm.int_pss_authuser_pwd","multi.mpm.int_pss_authuser_uid","multi.mpm.int_pss_authuser_group","multi.mpm.int_pss_authuser_supgroups","multi.mpm.int_pss_authuser_homedir"}
+	}
+    }
+
+    attributes {
+	tf_id {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+	    default = "foo"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+	    }
+	}
+	tf_pwd {
+	    type = "string"
+	    default = "insecure"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_PWD $tf_pwd"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_PWD $tf_pwd"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_PWD $tf_pwd"}
+		    }
+		}
+	    }
+	}
+	tf_uid {
+	    type = "string"
+	    default = "2"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_UID $tf_uid"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_UID $tf_uid"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_UID $tf_uid"}
+		    }
+		}
+	    }
+	}
+	tf_group {
+	    type = "string"
+	    default = "0"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GROUP $tf_group"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GROUP $tf_group"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GROUP $tf_group"}
+		    }
+		}
+	    }
+	}
+	tf_supgroups {
+	    type = "string"
+	    default = "0"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SUPGROUPS $tf_supgroups"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SUPGROUPS $tf_supgroups"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SUPGROUPS $tf_supgroups"}
+		    }
+		}
+	    }
+	}
+	tf_homedir {
+	    type = "string"
+	    default = "foo"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_HOMEDIR $tf_homedir"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_HOMEDIR $tf_homedir"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_HOMEDIR $tf_homedir"}
+		    }
+		}
+	    }
+	}		
+    }
+
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_add_std" }
+	    }
+	}
+	edit {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_edit_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_delete_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_delete_std" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_AUTHFILE $(tf_diskname)" }
+	    }
+	}	
+	paste_local {
+	     standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_paste_local_std" }
+	    }
+	}
+	comment {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_comment_std" }
+	    }
+	}
+	uncomment {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_user_uncomment_std" }
+	    }
+	}	
+    }
+}
+
+component.integrity_os_modules_posix_system_server_group {
+    tags = {"INTEGRITY_PSS_GROUP"}
+    display_type_name = "POSIX Authorization Group"
+    parent_context_types = { "integrity_os_modules_posix_system_server_authtable" }
+
+    #icon_name = "int_group1"
+    icon_name = "posix_group"
+    bg_color="#ffffcc"
+#    fg_color="#000000"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_pss_authgroup"}
+
+    dlg_info {
+    	add {
+	    menu_str = "Add INTEGRITY POSIX &Group"
+	    cmd_str = "AddINTPSSGroup"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authgroup" 
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_authgroup","multi.mpm.int_pss_authgroup_name","multi.mpm.int_pss_authgroup_gid" }
+
+	}
+	edit {
+	    menu_str = "Edit INTEGRITY POSIX &Group"
+	    cmd_str = "EditINTPSSGroup"
+	    dlg_filelist =  "${__DIR__}/int_posix.plc" 
+	    dlg_namelist =  "edit_pss_authgroup"
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_pss_authgroup","multi.mpm.int_pss_authgroup_name","multi.mpm.int_pss_authgroup_gid" }
+	    
+	}
+    }
+
+    attributes {
+	tf_id {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+	    default = "foo"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_ID $tf_id"}
+		    }
+		}
+	    }
+	}
+	tf_gid {
+	    type = "string"
+	    default = "2"
+            # formats 4280, 4280 (green), green, last on input only
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GID $tf_gid"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GID $tf_gid"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_GID $tf_gid"}
+		    }
+		}
+	    }
+	}
+    }
+
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_add_std" }
+	    }
+	}
+	edit {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_edit_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_delete_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_delete_std" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_AUTHFILE $(tf_diskname)" }
+	    }
+	}	
+	paste_local {
+	     standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_paste_local_std" }
+	    }
+	}
+	comment {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_comment_std" }
+	    }
+	}
+	uncomment {
+	    standard {
+		10 += { "python ${__DIR__}/int_posix.py os_pss_group_uncomment_std" }
+	    }
+	}	
+    }
+}
+
+
+%endif
+
+%endif

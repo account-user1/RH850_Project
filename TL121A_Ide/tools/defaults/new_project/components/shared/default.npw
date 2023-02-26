@@ -1,0 +1,156 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+default_filters {
+    hidden += { "Source Files", "Miscellaneous" }
+}
+
+component_template.generic_file {
+    use_template = "Commentable"
+
+    dlg_info {
+	edit {
+	    menu_str = "&Rename File"
+	    cmd_str = "EditFile"
+	    dlg_filelist =  "${__DIR__}/source.plc" 
+	    dlg_namelist =  "add_source"
+	    dlg_title = "Rename File"
+	}
+    }
+    attributes {
+	filename {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+	    build_file_setting = "item_filename $build_item_basename"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/source.py source_c_edit_std" }
+		    }
+		}
+	    }
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "item_filename $build_item_diskname"
+	}	
+    }
+    actions {
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_remove_std" }
+	    }
+	}    
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		1000000 += { "defineLocal LAST_FILENAME $filename" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}	
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $filename" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}
+	paste_link {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+	    }
+	}
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_local_std" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_parent_local_std" }
+	    }
+	}		
+    }
+}
+
+component.unknown {
+    use_template = "generic_file"
+    the_default_component_type = true
+    #icon_name = "question_sm"
+    dlg_info.edit.cmd_str = "EditUnknownFile"
+}
+
+component_template.docs {
+    use_template = "generic_file"
+    parent_context_filetypes = { "Subproject", "Program", "Library", "Project", "INTEGRITY Application" }
+    parent_context_types = { "AnyProject", "Container" }
+    display_type_name = "Documentation"
+    bg_color="#9ECEFF"
+#    fg_color="#000000"
+    
+    filters =  { "Documentation" }
+    icon_name = "documentation"
+    
+    dlg_info.edit.cmd_str = "EditDocumentationFile"
+ 
+}
+
+
+component_template.misc_file {
+    use_template = "other_file"
+    display_type_name = "Miscellaneous"
+    bg_color="#9ECEFF"
+#    fg_color="#000000"
+    
+    filters =  { "Miscellaneous" }
+    icon_name = "blank_document"
+    dlg_info.edit.cmd_str = "EditMiscFile"
+}
+
+
+component_template.other_file {
+    use_template = "generic_file"
+    icon_name = "generic_blue"
+    bg_color="#FFFFFF"
+    parent_context_types = { "AnyProject" }
+}
+
+
+component_template.generic_project {
+    use_template = "ChildProjectT"
+    icon_name = "generic_blue"
+    bg_color="#FFFFFF"
+    parent_context_types = { "AnyProject" }
+
+	actions {
+	    copy_link {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "undefineLocal MY_GPJ_COOKIE"}
+		    11 += { "undefineLocal MY_ITEM_COOKIE"}
+		}
+	    }
+
+	    paste_link {
+		standard {
+		    10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+		}
+	    }
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/projects.py proj_remove_std" }
+		}
+	    }  
+	}
+}
+
+%endif

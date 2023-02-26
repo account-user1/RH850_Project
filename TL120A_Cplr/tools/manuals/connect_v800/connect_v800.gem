@@ -1,0 +1,195 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <title>GHS Config Option Descriptions</title>
+   </head>
+   <body>
+      <h2>GHS Config Option Descriptions</h2>
+      <hr>Each option in the <strong>IECUBE Trace Options</strong> window is described in the following table.
+      
+      <div id="cfg.iecube.RealTimeTrace">
+         <p>Enables real-time trace mode. In this mode, some trace packets may be lost, but the core executes at the same speed as it
+            would if trace was disabled. When you disable this option, no trace packets are lost, but the core may stall occasionally.
+            
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.Timestamps">
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer. Timestamps are not synchronized across cores on multi-core targets. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.UseTriggerGUI">
+         <p>Enables the trigger GUI. For simple events, such as executing a function, the GUI is sufficient. However, the IECUBE also supports sophisticated event configuration that is not available via the trigger GUI. If you need access to more advanced
+            features, you can clear this box and control all events by using debug server commands such as <code>bra</code>, <code>brs</code>, and <code>trace</code>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.TraceBranchPC">
+         <p>Enables branch program counter (PC) trace packets. This option is sufficient for fully reconstructing the instruction sequence
+            the target executed. It is also sufficient for use with TimeMachine. For information, see the documentation about TimeMachine. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.TraceInstructionPC">
+         <p>Enables instruction program counter (PC) trace packets, which results in the target outputting a trace packet for each instruction.
+            This can yield more accurate timing information when timestamps are enabled. It also increases the probability that the trace
+            buffer overflows in real-time trace mode. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.TraceDataAccessPC">
+         <p>Causes the target to output a program counter (PC) trace packet for every instruction that performs a memory access. This
+            option is usually unnecessary. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube.TraceDataAddressAndData">
+         <p>Enables data/address trace packets for memory accesses. </p>
+      </div>
+      <hr>Each option in the <strong>IE Cube 2 Trace Options</strong> window is described in the following table.
+      
+      <div id="cfg.iecube2.RealTimeTrace">
+         <p>Enables real-time trace mode. In this mode, some trace packets may be lost, but the core executes at the same speed as it
+            would if trace was disabled. When you disable this option, no trace packets are lost, but the core may stall occasionally.
+            
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.Timestamps">
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer. Timestamps are not synchronized across cores on multi-core targets. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.UseTriggerGUI">
+         <p>Enables the trigger GUI. For simple events, such as executing a function, the GUI is sufficient. However, the IECUBE2 also supports sophisticated event configuration that is not available via the trigger GUI. If you need access to more advanced
+            features, you can clear this box and control all events by using debug server commands such as <code>bra</code>, <code>brs</code>, and <code>trace</code>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TraceReads">
+         <p>Enables data read trace packets for memory accesses. </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TraceWrites">
+         <p>Enables data write trace packets for memory accesses. </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TracePC">
+         <p>Enables branch program counter (PC) trace packets. This option is sufficient for fully reconstructing the instruction sequence
+            the target executed. It is also sufficient for use with TimeMachine. For information about TimeMachine, see the documentation about TimeMachine. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TraceDMAReads">
+         <p>DMA read trace packets. </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TraceDMAWrites">
+         <p>Enables DMA write trace packets. </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TimeResolution">
+         <p>Specifies the time resolution of trace packet timestamps. This field defaults to 5000 picoseconds when timestamps are enabled. </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.BufferFull">
+         <p>Specifies the behavior when the trace buffer fills. You can choose to overwrite old trace data with new data, stop trace collection,
+            or halt the process. If you stop trace collection or halt the process, note that this option can only preserve trace data
+            acquired since the last time the target was halted (including for breakpoints and system calls), rather than all of the data
+            acquired since the last time data was retrieved. When the Long Term Trace extension (QB-V850E2-SP trace memory extension) is used with IECUBE2, <strong>Stop Execution</strong> is not supported. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TriggerHit">
+         <p>Specifies the behavior when a Delay Trace trigger is hit. It can be configured to stop trace collection or stop execution.</p>
+         <p>This option is only available if a Delay Trace trigger has been set up.</p>
+      </div>
+      <hr>
+      <div id="cfg.iecube2.TriggerPosition">
+         <p>Specifies the desired position of the Delay Trace trigger in the trace buffer, after trace has stopped. <strong>Last</strong> means trace will stop very soon after hitting the trigger (so the trigger will end up being near to the last thing in the
+            trace buffer). <strong>First</strong> means trace will continue to be collected until the trigger is near the beginning of the buffer. <strong>Middle</strong> means trace continues to be collected until half of the buffer has been filled.
+         </p>
+         <p>This option is only available if a Delay Trace trigger has been set up.</p>
+      </div>
+      <hr>Each option in the <strong>RH850 Trace Options</strong> window is described in the following table.
+      
+      <div id="cfg.rh850.RealTimeTrace">
+         <p>Enables real-time trace mode. In this mode, some trace packets may be lost, but the core executes at the same speed as it
+            would if trace was disabled. When you disable this option, no trace packets are lost, but the core may stall occasionally.
+            
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.Timestamps">
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer. Timestamps are not synchronized across cores on multi-core targets.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.UseTriggerGUI">
+         <p>Enables the trigger GUI. For simple events, such as executing a function, the GUI is sufficient. However, the IECUBE2 also supports sophisticated event configuration that is not available via the trigger GUI. If you need access to more advanced
+            features, you can clear this box and control all events by using debug server commands such as <code>bra</code>, <code>brs</code>, and <code>trace</code>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceReads">
+         <p>Enables data read trace packets for memory accesses. </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceWrites">
+         <p>Enables data write trace packets for memory accesses. </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TracePC">
+         <p>Enables branch program counter (PC) trace packets. This option is sufficient for fully reconstructing the instruction sequence
+            the target executed. It is also sufficient for use with TimeMachine. For information about TimeMachine, see the documentation about TimeMachine. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceSoftware">
+         <p>Causes the target to output a trace packet for each software trace instruction (<code>DBCP</code>, <code>DBTAG</code>, <code>DBPUSH</code>). 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceDataAccessPC">
+         <p>Causes the target to output a program counter (PC) trace packet for every instruction that performs a memory access. This
+            option is usually unnecessary. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceDMAReads">
+         <p>Enables DMA read trace packets. </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TraceDMAWrites">
+         <p>Enables DMA write trace packets. </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TimeResolution">
+         <p>Specifies the time resolution of trace packet timestamps. This field defaults to 5000 picoseconds when timestamps are enabled. </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.BufferFull">
+         <p>Specifies the behavior when the trace buffer fills. You can choose to overwrite old trace data with new data, stop trace collection,
+            or halt the process. If you stop trace collection or halt the process, note that this option can only preserve trace data
+            acquired since the last time the target was halted, rather than all of the data acquired since the last time data was retrieved.
+            
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.rh850.TriggerPosition">
+         <p>Specifies the desired position of the Delay Trace trigger in the trace buffer, after trace has stopped. <strong>Last</strong> means trace will stop very soon after hitting the trigger (so the trigger will end up being near to the last thing in the
+            trace buffer). <strong>First</strong> means trace will continue to be collected until the trigger is near the beginning of the buffer. <strong>Middle</strong> means trace continues to be collected until half of the buffer has been filled.
+         </p>
+         <p>This option is only available if a Delay Trace trigger has been set up.</p>
+      </div>
+      <hr>
+   </body>
+</html>

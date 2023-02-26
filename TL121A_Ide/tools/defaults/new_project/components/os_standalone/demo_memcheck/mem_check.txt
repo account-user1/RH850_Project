@@ -1,0 +1,66 @@
+DESCRIPTION:
+
+    Applications which use dynamic memory management (malloc / free)
+    must ensure that all malloc'd memory blocks are freed after use.
+
+    If allocated memory is not freed, then that memory is no longer
+    available for re-allocation to the program, thus reducing the
+    total available memory.  This condition is known as a memory leak,
+    and can cause an application to fail because of a lack of
+    available memory.
+
+    Not only can memory leaks be fatal but also many are hard to
+    debug.  It is very hard to determine where the leaked memory
+    resides; let alone what area of your code is the culprit.
+
+    This example demonstrates the use of MULTI's findleaks utility.
+    Findleaks will detect and display all blocks of allocated memory
+    that haven't yet been freed and have no references to them.  Only
+    leaks that are guaranteed memory leaks will be displayed along
+    with five levels of call information and the line of source that
+    allocated the memory.
+     
+    In order for the ‘findleaks’ utility to work correctly you will
+    need to compile your code with memory checking enabled.  This will
+    link with a modified version of the malloc / free functions which
+    will allow the findleaks utility to detect leaks.  The findleaks
+    utility can be run at any time during program execution, but is
+    ideally run when all allocated memory should have been released,
+    such as at the end of a major function or at program termination.
+
+DEMO SCRIPT:
+
+1. Build Project, Connect to a Remote Target, and Open Debugger.
+
+    Build the project by selecting "Build->Rebuild All".
+
+    Connect to a remote target by clicking the Connect button in the
+    Builder.
+
+    Open the Debugger on the Current Project.  This can be done by
+    selecting the menu option "Debug->Debug Current Project..." or
+    Click on the "Debug" icon in the tool bar.
+
+2. Running the Application
+
+    The "mem_check.rc" script which was run when you opened the
+    debugger will guide you through the demo.  Alternatively follow
+    the instructions below.
+
+    Right Mouse click on the last line of main and select "Run To this
+    Line" from the pop-up menu.
+
+    Select the menu item "View->Find Memory Leaks...". For all memory
+    leaks a list of addresses of allocated memory, length of the
+    allocated memory, and five levels of call stack information will
+    appear in a separate window.
+    
+    Double-click on an address and a memory view window will open
+    allowing exploration of data in that area.
+
+    Single-clicking on a calling routine will take you to that line in
+    the debugger.  Double-clicking on a calling routine will open an
+    editor on that file.
+
+    See the MULTI documentation for more information concerning
+    finding memory leaks.

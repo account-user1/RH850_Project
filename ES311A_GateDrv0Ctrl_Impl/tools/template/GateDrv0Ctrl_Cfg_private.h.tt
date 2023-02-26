@@ -1,0 +1,31 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : GateDrv0Ctrl_Cfg_private.h
+* Module Description: GateDrv0Ctrl configuration parameters that are used only by this SWC.
+* Project           : CBD
+* Author            : Shruthi Raghavan
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:           1 %
+* %derived_by:        nz2554 %
+*----------------------------------------------------------------------------------------------------------------------
+*   Date      Rev      Author    Change Description                                                             SCR #
+* --------  -------  ----------  --------------------------------------------------------------------------  ----------
+* 09/12/17   1       Shruthi.R   Initial Version to implement generation of new config param in FDD          EA4#13148
+**********************************************************************************************************************/
+
+#ifndef GATEDRV0CTRL_CFG_PRIVATE_H
+#define GATEDRV0CTRL_CFG_PRIVATE_H
+
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "GateDrv0Ctrl" ) ); #>
+<# string Param_FetFltMtgnEna = ValueOf( Xp.ValueAtDefRefTo( "GateDrv0CtrlGenCfg/GateDrv0FetFltMtgtnEna" ) );#>
+#define GATEDRV0FETFLTMTGTNENA_ULS_LOGL    <#=Param_FetFltMtgnEna.ToUpper()#>
+
+#endif /* GATEDRV0CTRL_CFG_PRIVATE_H */

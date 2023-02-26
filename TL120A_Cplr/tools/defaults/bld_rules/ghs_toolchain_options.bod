@@ -1,0 +1,2173 @@
+###############################################################################
+# ghs_toolchain_options.bod
+# This file contains the options for the assemblers and linkers
+# default, and must be enabled in a target's top-level bod file
+# The other major target-specific options are in ghs_target_options.bod
+###############################################################################
+
+CommandOptions {
+    # Toolchain-specific Options for the Green Hills Tools
+    GhsCompilerOptions {
+    
+    ################  Assembler Options  #################################
+    
+	    SourceListing {
+	    #### all assemblers
+		    {
+			    name="-list"
+			    delimiter="NoArg"
+			    enumLabel="Generate Default Listing"
+			    value=0
+		    }
+		    {
+			    name="-list"
+			    delimiter="Equal"
+			    enumLabel="Generate User-Specified Listing"
+			    value=1
+		    }
+		    {
+			    name="-no_list"
+			    delimiter="NoArg"
+			    enumLabel="Suppress Listing"
+			    value=2
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Compile"}
+		    guiLabel="Source Listing Generation"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+%if (GHS_TOOLS_VERSION >= 43)
+	    SourceListingDir {
+	    #### all assemblers
+		    name="-list_dir"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Compile"}
+		    guiLabel="Source Listing Generation Output Directory"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+%endif
+	    PreProcessAssemblyFiles {
+	    #### all assemblers
+		    {
+			    name="-preprocess_assembly_files"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_preprocess_assembly_files"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Preprocess Assembly Files"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    PreProcessSpecialAssemblyFiles {
+	    #### all assemblers
+		    {
+			    name="-preprocess_special_assembly_files"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_preprocess_special_assembly_files"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Preprocess Special Assembly Files"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    InterleaveSourceAndAssembly {
+		    {
+			    name="-passsource"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nopasssource"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Interleaved Source and Assembly"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    Arm_ArmUkAsm {
+	    #### ARM
+		    {
+			    name="-arm_uk_asm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_arm_uk_asm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="ARM UK Assembler Compatibility"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    Arm_Apcs {
+	    #### ARM
+		    {
+			    name="-apcs"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    guiLabel="ARM UK Internal Variables"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    Arm_AsmPredefines {
+	    #### ARM
+		    {
+			    name="-pd"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    disabled=true
+		    guiLabel="ARM UK Assembler Predefines"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    i386_IntelAsm {
+	    #### x86
+		    {
+			    name="-intel_asm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_intel_asm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Intel Assembly Syntax Compatibility"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    MoreAsmOptions {
+	    #### all assemblers
+		    #Requires quotes around option string?
+		    {
+			    name="-asm"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-Wa,"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Additional Assembler Options"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    AsmCommandFile {
+	    #### all assemblers
+		    {
+			    name="-asmcmd"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Compile"}
+		    disabled=true
+		    guiLabel="Assembler Command File"
+		    guiCategory="Assembler"
+		    commonLevel=101
+	    }
+	    Asm3gSupport {
+	    #### Certain EASE/AS assemblers
+		    {
+			    name="-asm3g"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noasm3g"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Support for C Type Information in Assembly"
+		    guiCategory="Assembler"
+		    disabled=true
+		    commonLevel=101
+	    }
+
+    ################  Advanced  #################################
+    
+	    AssemblerWarnings {
+		    {
+			    name="--assembler_warnings"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="--no_assembler_warnings"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Assembler Warnings"
+		    guiCategory="Assembler"
+	    }
+    
+    ################  Linker Options  #################################
+    
+    
+	    LinkerOutput {
+	    #### elxr, lx
+		    {
+			    name="-locatedprogram"
+			    delimiter="NoArg"
+			    value=0
+			    enumLabel="Executable / Located Program"
+		    }
+		    {
+			    name="-relobj"
+			    delimiter="NoArg"
+			    value=1
+			    enumLabel="Relocatable Object File"
+		    }
+		    {
+			    name="-r"
+			    delimiter="NoArg"
+			    value=1
+			    enumLabel="Relocatable Object File"
+		    }
+		    {
+			    name="-relprog"
+			    delimiter="NoArg"
+			    value=2
+			    enumLabel="Relocatable Program"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Output File Type"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    AdditionalOutput {
+		    # ELF/COFF/BSD
+		    # -memory
+		    # -srec
+		    # -ieee695
+		    # -tekhex
+		    # -hex
+		    MEMORY {
+			    name="-memory"
+			    value=0
+			    enumLabel="Memory Image File"
+			    delimiter="NoArg"
+		    }
+		    {
+		    	    name="-memory"
+			    value=1
+			    enumLabel="User-Specified Memory Image File"
+			    delimiter="Equal"
+		    }
+		    SREC {
+			    name="-srec"
+			    value=2
+			    enumLabel="S-Record File"
+			    delimiter="NoArg"
+		    }
+		    {
+		    	    name="-srec"
+			    value=3
+			    enumLabel="User-Specified S-Record File"
+			    delimiter="Equal"
+		    }
+		    IEEE695 {
+			    # 68K COFF
+			    name="-ieee695"
+			    value=4
+			    enumLabel="IEEE-695 File"
+			    delimiter="NoArg"
+			    disabled=true
+		    }
+		    TEKHEX {
+			    # 68K COFF
+			    name="-tekhex"
+			    value=5
+			    enumLabel="TEKHEX File"
+			    delimiter="NoArg"
+			    disabled=true
+		    }
+		    HEX {
+			    name="-hex"
+			    value=6
+			    enumLabel="HEX386 File"
+			    delimiter="NoArg"
+		    }
+		    {
+		    	    name="-hex"
+			    value=7
+			    enumLabel="User-Specified HEX386 File"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--no_additional_output"
+			    value=8
+			    enumLabel="None"
+			    delimiter="NoArg"
+			    flags={"FAKEOPTION"}
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Generate Additional Output"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Strip {
+	    #### all linkers
+		    {
+			    name="-strip"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nostrip"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Executable Stripping"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    EntryPoint {
+	    #### all linkers
+		    {
+			    name="-e"
+			    delimiter="Space"
+			    enumLabel="Start Address"
+			    value=0
+		    }
+		    {
+			    name="-e"
+			    delimiter="Equal"
+			    enumLabel="Start Address"
+			    value=0
+		    }
+		    {
+			    name="-entry"
+			    delimiter="Equal"
+			    enumLabel="Start Address"
+			    value=0
+		    }
+		    {
+			    name="-noentry"
+			    delimiter="NoArg"
+			    enumLabel="No Entry Symbol"
+			    value=1
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Start Address Symbol"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Linker_Qyn {
+	    #### sparc native and elxr linkers
+		    {
+			    name="-Qy"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Qn"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Append Comment Section with Link-Time Information"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    RPath {
+	    #### sparc, x86-linux
+		    {
+		    	    name="-R"
+			    delimiter="Touching"
+	    	    }
+		    {
+			    name="-rpath"
+			    delimiter="Space"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=true
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Run-Time Linker Library Search Path"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Lx_Rescan {
+	    #### lx
+		    {
+			    name="-rescan"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rescan"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Rescan"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+    	    LinkerDirectiveDir {
+	    #### all linkers
+		    {
+			    name="-directive_dir"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Linker Directives Directory"
+		    guiCategory="Linker"
+		    valueIsDirname=true
+	    }
+	    SharedLibraries {
+	    #### INTEGRITY, Embedded Linux(?)
+		    non_shared {
+			    name="-non_shared"
+			    delimiter="NoArg"
+			    value=0
+			    enumLabel="Only Link With Static Libraries"
+		    }
+		    call_shared {
+			    name="-call_shared"
+			    delimiter="NoArg"
+			    value=1
+			    enumLabel="Allow Linking With Shared Libraries"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Shared Libraries"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    PreProcessLinkerDirective {
+	    #### all linkers
+		    {
+			    name="--preprocess_linker_directive_full"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="--preprocess_linker_directive"
+			    value=1
+			    enumLabel="Partial"
+		    }
+		    {
+			    name="--no_preprocess_linker_directive"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Preprocess Linker Directives Files"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+    	    LinkerWarnings {
+	    #### elxr, lx
+		    {
+			    name="-linker_warnings"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="-no_linker_warnings"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Linker Warnings"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    DiscardDashL {
+	    #### any Green Hills driver
+		    {
+			    name="-discard_dashl"
+			    value=1
+		    }
+		    merge="Replace"
+		    pass={"Link"}
+		    hidden=true
+		    guiCategory="Linker"
+	    }
+	    RawImport {
+	    #### elxr
+		    {
+		    #Requires quotes around option string?
+			    name="-rawimport"
+			    delimiter="Space"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Raw Import Files"
+		    guiCategory="Linker"
+		    commonLevel=101
+		    flags={"DEPENDENCY"}
+	    }
+	    LinkerDirectiveFiles {
+	    #### all linkers
+		    {
+			    name="-T"
+			    delimiter="Space"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Linker Directive Files with Non-standard Extensions"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    MoreLnkOptionsInitial {
+	    #### all linkers
+		    #Requires quotes around option string?
+		    {
+			    name="-lnk0"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Additional Linker Options (beginning of link line)"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    MoreLnkOptions {
+	    #### all linkers
+		    {
+		    #Requires quotes around option string?
+			    name="-lnk"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-WS,"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Additional Linker Options (before start file)"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    MoreLnkOptionsBeforeLd {
+	    #### all linkers
+		    #Requires quotes around option string?
+		    {
+			    name="-Wl,"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Additional Linker Options (among object files)"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    LnkCommandFile {
+	    #### elxr, lx, win32
+		    # -lnkcmd=<file>
+		    {
+			    name="-lnkcmd"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Linker Command File"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    LnkFuncPrefix {
+	    #### elxr
+		    {
+			    name="--func_prefix"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="List"
+		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+		    guiLabel="Linker Function Prefix"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    WholeArchive {
+	    #### gnu linker and elxr
+		    {
+			    name="-whole-archive"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no-whole-archive"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Concat"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Extract Whole Archive"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    LinkRejectDuplicateLibSyms {
+	    #### elxr only
+		    {
+			    name="-link_reject_duplicate_lib_syms"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_link_reject_duplicate_lib_syms"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=false;
+		    pass={"Link"}
+		    guiLabel="Report an Error When Multiple Libraries on a Link Line Contain a Definition of the Same Symbol"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    LinkAllowDuplicateGHSSyms {
+	    #### elxr only
+		    {
+			    name="-link_allow_duplicate_ghs_syms"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_link_allow_duplicate_ghs_syms"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=false;
+		    guiLabel="When Rejecting Duplicate Symbols, Allow Certain Symbols Added by the compiler"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    LinkAllowDuplicateLinkonceSyms {
+	    #### elxr only
+		    {
+			    name="-link_allow_duplicate_linkonce_syms"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_link_allow_duplicate_linkonce_syms"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=false;
+		    guiLabel="When Rejecting Duplicate Symbols, Allow Symbols in .ghs.linkonce sections"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+
+	    Elxr_DuplicateWhitelist {
+	    #### elxr
+	    	    {
+			   name="-duplicate_whitelist"
+			   delimiter="Equal"
+			   enumLabel="Use User-Specified Duplicate Whitelist"
+		    }
+		    optionType="String"
+		    merge="Replace"
+		    pass={"Link"}
+		    disabled=false;
+		    guiLabel="Duplicate Whitelist"
+		    guiCategory="Linker"
+		    flags={"RELATIVEPATH"}
+		    commonLevel=101
+	    }
+    ################ Linker Optimizations #######################
+
+	    Elxr_Delete {
+	    #### elxr
+		    {
+			    name="-delete"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_delete"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Deletion of Unused Functions"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+
+	    Elxr_VirtualDelete {
+	    ### elxr (ppc, 86, mips)
+	    	    {
+			    name="-uvfd"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_uvfd"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Deletion of Unused C++ Virtual Functions"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+
+	    CodeFactor {
+	    #### arm, ppc, mips, v850, sh
+		    {
+			    name="-codefactor"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_codefactor"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Code Factoring"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    LinkConstProp {
+	    #### arm, ppc
+		    {
+			    name="--link_constprop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_link_constprop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Link-Time Constant Propagation"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    InlineTrivial {
+	    #### elxr (arm, bf, ppc, mips, x86)
+		    {
+			    name="-inline_trivial"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_inline_trivial"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Link-Time Trivial Function Inlining"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    LinkIgnoreDebugReferences {
+	    #### elxr
+		    {
+			    name="-ignore_debug_references"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--ignore_debug_references"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ignore_debug_references"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--no_ignore_debug_references"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=false
+		    guiLabel="Link-Time Ignore Debug References"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    LinkAddrOpt {
+	    #### bf
+		    {
+			    name="--link_opt_address"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_link_opt_address"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Link-Time Address Optimizations"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    Icachizer {
+	    # Was mips and v800, now deprecated on all 
+		    {
+			    name="-icachizer"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_icachizer"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Icachizer"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    Arm_SimilarPools {
+	    #### arm
+		    {
+			    name="--link_similar_pools"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_link_similar_pools"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Similar Pool Merging"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    Arm_DeletePools {
+	    #### arm
+		    {
+			    name="-delete_pools"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_delete_pools"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Delete Pools"
+		    guiCategory="Linker;Linker Optimizations"
+		    commonLevel=101
+	    }
+	    
+    ################ Archiver/Librarian ########################
+	    LargeArchiveFormat {
+		    {
+			    name="-auto_large_archive"
+			    value=0
+			    enumLabel="When Needed (With Warnings)"
+		    }
+		    {
+			    name="-quiet_auto_large_archive"
+			    value=1
+			    enumLabel="When Needed (Suppress Warnings)"
+		    }
+		    {
+			    name="-large_archive"
+			    value=2
+			    enumLabel="Always"
+		    }
+		    {
+			    name="-no_large_archive"
+			    value=3
+			    enumLabel="Never"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Output Archives in 64-Bit Format"
+		    guiCategory="Advanced;Archiver Options"
+		    commonLevel=101
+	    }
+	    RejectDuplicates {
+		    {
+			    name="-reject_duplicates"
+			    value=0
+			    enumLabel="Generate Error"
+		    }
+		    {
+			    name="-no_reject_duplicates"
+			    value=1
+			    enumLabel="Ignore"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Error on Duplicate Symbols in an Archive"
+		    guiCategory="Advanced;Archiver Options"
+		    commonLevel=101
+	    }
+	    AllowCxxDuplicates {
+		    {
+			    name="-allow_cxx_duplicates"
+			    value=0
+			    enumLabel="Ignore Duplicates"
+		    }
+		    {
+			    name="-no_allow_cxx_duplicates"
+			    value=1
+			    enumLabel="Generate Error"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="When Rejecting Duplicate Symbols in An Archive, Certain Symbols Generated by the C++ Front End in COMMON Sections Are Ignored"
+		    guiCategory="Advanced;Archiver Options"
+		    commonLevel=101
+	    }
+	    AllowLinkOnceDuplicates {
+		    {
+			    name="-allow_linkonce_duplicates"
+			    value=0
+			    enumLabel="Ignore Duplicates"
+		    }
+		    {
+			    name="-no_allow_linkonce_duplicates"
+			    value=1
+			    enumLabel="Generate Error"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="When Rejecting Duplicate Symbols in An Archive, Symbols in .ghs.linkonce Sections Are Ignored"
+		    guiCategory="Advanced;Archiver Options"
+		    commonLevel=101
+	    }
+	
+    ################ Start and End Files #######################
+
+	    StartFiles {
+		    {
+			    name="-startfiles"
+			    value=0
+			    enumLabel="Use Specified Start Files"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-startfile"
+			    value=0
+			    enumLabel="Use Specified Start Files"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-nostartfiles"
+			    value=1
+			    enumLabel="Do Not Use Start Files"
+			    delimiter="NoArg"
+		    }
+		    {
+			    name="-nostartfile"
+			    value=1
+			    enumLabel="Do Not Use Start Files"
+			    delimiter="NoArg"
+		    }
+		    {
+			    name="-no-crt0"
+			    value=1
+			    enumLabel="Do Not Use Start Files"
+			    delimiter="NoArg"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Start Files"
+		    guiCategory="Linker;Start and End Files"
+		    commonLevel=101
+	    }
+	    EndFile {
+		    {
+			    name="-endfile"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="End Files"
+		    guiCategory="Linker;Start and End Files"
+		    valueIsFilename=true
+		    commonLevel=101
+	    }	
+	    StartFileDir {
+		    {
+			    name="-startfile_dir"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-start_file_dir"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-YS,"
+			    delimiter="Touching"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Start File Directory"
+		    guiCategory="Linker;Start and End Files"
+		    commonLevel=101
+		    flags={"RELATIVEPATH"}
+		    valueIsDirname=true
+	    }
+
+    ################  Symbols  #################################
+    
+	    Elxr_Multiple {
+	    #### elxr
+		    {
+			    name="-no_multiple"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-multiple"
+			    value=1
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Multiply-Defined Symbols"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    Undefined {
+	    #### elxr, lx
+		    {
+			    name="-no_undefined"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-undefined"
+			    value=1
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Undefined Symbols"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    LinkerConstants {
+	    #### elxr
+		    {
+			    name="-C"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Define Linker Constant"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    LinkerUndefineds {
+	    #### elxr, lx
+		    {
+			    name="-u"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-u"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Force Undefined Symbol"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    Elxr_ExtractAll {
+	    #### elxr
+		    {
+			    name="-extractall"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Force All Symbols From Library"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    Elxr_ExportAll {
+	    #### elxr
+		    {
+			    name="-exportall"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Export All Symbols From Library"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+ 	    }
+	    LinkerAbsAgainst {
+	    #### all linkers
+		    {
+			    name="-A"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-A"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Import Symbols"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+	    LinkerUAbsAgainst {
+	    #### all linkers
+		    {
+			    name="-UA"
+			    delimiter="Space"
+		    }
+		# #  Cannot work in driver because -UAfoo is already
+		# #  an option to the C preprocessor.  Space is required.
+		#   {
+		#	    name="-UA"
+		#	    delimiter="Touching"
+		#   }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Record Pathname (Not linked)"
+		    guiCategory="Linker;Symbols"
+		    commonLevel=101
+	    }
+    
+    ################  Map File  #################################
+    
+	    Map {
+	    #### all linkers
+		    {
+			    name="-map"
+			    delimiter="NoArg"
+			    enumLabel="Generate Default Map File"
+			    value=0
+		    }
+		    {
+			    name="-map"
+			    delimiter="Equal"
+			    enumLabel="Generate User-Specified Map File"
+			    value=1
+		    }
+		    {
+			    name="-nomap"
+			    delimiter="NoArg"
+			    enumLabel="Suppress Map"
+			    value=2
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Map File Generation"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    KeepMap {
+	    #### elxr, lx
+		    {
+			    name="-keepmap"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nokeepmap"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Map File Retention"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapLines {
+	    #### elxr, lx
+		    {
+			    name="-maplines"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Map File Page Length"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    Mw {
+	    #### lx
+		    {
+			    name="-Mw"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Map File Width"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapFileSorting {
+	    #### elxr, lx
+		    {
+			    name="-Ma"
+			    value=0
+			    enumLabel="Alphabetic"
+		    }
+		    {
+			    name="-Mn"
+			    value=1
+			    enumLabel="Numeric"
+		    }
+		    {
+			    name="-Man"
+			    value=2
+			    enumLabel="Alphabetic and Numeric"
+		    }
+		    {
+			    name="-Mna"
+			    value=2
+			    enumLabel="Alphabetic and Numeric"
+			    hidden=true
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Map File Sorting"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    Mx {
+	    #### elxr, lx
+		    {
+			    name="-Mx"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Map File Cross-Referencing"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapUndefined {
+	    #### elxr
+		    {
+			    name="-Mu"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Display Unused Functions in Map File"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapLocals {
+	    #### elxr
+		    {
+			    name="-Ml"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Display Local Symbols in Map File"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapEofnSymbols {
+	    #### elxr
+		    {
+			    name="-no_map_eofn_symbols"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-map_eofn_symbols"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Display End-of-Function Symbols in Map File"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    MapfileType {
+	    #### elxr
+		    {
+			    name="-mapfile_type"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    disabled=true
+		    guiLabel="Map File Format"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    GSize {
+	    #### all linkers
+		    {
+			    name="-gsize"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_gsize"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    guiLabel="Output File Size Analysis"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+	    Elxr_CallGraph {
+	    #### elxr.  now deprecated.	    
+		    {
+			    name="-callgraph"
+			    delimiter="NoArg"
+			    enumLabel="Generate Default Call Graph"
+			    value=1
+		    }
+		    {
+			    name="-callgraph"
+			    delimiter="Equal"
+			    enumLabel="Generate User-Specified Call Graph"
+			    value=2
+		    }
+		    {
+			    name="-no_callgraph"
+			    delimiter="NoArg"
+			    enumLabel="Suppress Call Graph"
+			    value=0
+			    flags={"FAKEOPTION"}
+		    }
+		    optionType="String"
+		    merge="Replace"
+		    # [jy] shouldn't this be pass={"Link"}
+		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+		    guiLabel="Call Graph Generation"
+		    guiCategory="Linker;Linker Output Analysis"
+		    commonLevel=101
+	    }
+
+    ################## Checking ###########################
+
+	    Overlap {
+	    #### elxr, lx
+		    {
+			    name="-strict_overlap_check"
+			    value=0
+			    enumLabel="Errors on Any Overlap"
+		    }
+		    {
+			    name="-nooverlap"
+			    value=1
+			    enumLabel="Errors on Non-Zero Overlap"
+		    }
+		    {
+			    name="-overlap_warn"
+			    value=2
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-overlap"
+			    value=3
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Section Overlap Checking"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+	    Checksum {
+	    #### elxr, lx
+		    {
+			    name="-checksum"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nochecksum"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Checksum"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+	    ParameterCheck {
+	    #### Firefly, Tricore, StarCore, Nano
+		    {
+			    name="-argcheck=full"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="-full_parameter_check"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="-argcheck=normal"
+			    value=1
+			    enumLabel="Normal"
+		    }
+		    {
+			    name="-parameter_check"
+			    value=1
+			    enumLabel="Normal"
+		    }
+		    {
+			    name="-argcheck=none"
+			    value=2
+			    enumLabel="None"
+		    }
+		    {
+			    name="-no_parameter_check"
+			    value=2
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Link-Time Parameter Checking"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+	    GlobalTypeCheck {
+		    {
+			    name="-globalcheck=full"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="-globalcheck=normal"
+			    value=1
+			    enumLabel="Normal"
+		    }
+		    {
+			    name="-globalcheck=none"
+			    value=2
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=false
+		    guiLabel="Link-Time Global Variable Type Checking"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+	    GlobalTypeCheckQualifiers {
+		    {
+			    name="-globalcheck_qualifiers"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_globalcheck_qualifiers"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=false
+		    guiLabel="Link-Time Global Variable Type Qualifiers"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+	    Arm_ForceIntercallErrors {
+	    #### arm
+		    {
+			    name="-force_intercall_errors"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_force_intercall_errors"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Force Intercall Errors"
+		    guiCategory="Linker;Link-Time Checking"
+		    commonLevel=101
+	    }
+
+
+    ################## Advanced ###########################
+    
+    	    StdLibraries {
+	    #### all linkers
+		    {
+			    name="-stdlib"
+			    value=0
+			    enumLabel="Link"
+		    }
+		    {
+			    name="-nostdlib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    {
+			    name="-nolibraries"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Link in Standard Libraries"
+		    guiCategory="Linker"
+	    }
+
+    	    OnlyStdCLibraries {
+	    #### all linkers
+		    {
+			    name="-only_stdclib"
+			    value=0
+			    enumLabel="Link"
+		    }
+		    {
+			    name="-no_only_stdclib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    {
+			    name="-noonly_stdclib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Link in Only the Standard C Libraries"
+		    guiCategory="Linker"
+		    hidden=true
+	    }
+
+    	    OnlyStdCxxLibraries {
+	    #### all linkers
+		    {
+			    name="-only_stdcxxlib"
+			    value=0
+			    enumLabel="Link"
+		    }
+		    {
+			    name="-no_only_stdcxxlib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    {
+			    name="-noonly_stdcxxlib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Link in Only the Standard C++ Libraries"
+		    guiCategory="Linker"
+		    hidden=true
+	    }
+
+    	    OnlySysLibraries {
+	    #### all linkers
+		    {
+			    name="-only_syslib"
+			    value=0
+			    enumLabel="Link"
+		    }
+		    {
+			    name="-no_only_syslib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    {
+			    name="-noonly_syslib"
+			    value=1
+			    enumLabel="Do Not Link"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Link in Only the System Libraries"
+		    guiCategory="Linker"
+		    hidden=true
+	    }
+
+	    MinLibraries {
+		    {
+			    name="-minlib"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nominlib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Link in Minimum Libraries"
+		    guiCategory="Linker"
+	    }
+   
+	    Elxr_ForceVirtualDelete {
+	    ### elxr (arm, ppc)
+		    {
+			    name="-force_uvfd"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Force Deletion of Unused C++ Virtual Function Symbol"
+		    guiCategory="Linker"
+	    }
+
+	    VersionScript {
+	    #### PowerPC Linux only linkers
+		    {
+			    name="--version-script"
+			    delimiter="Space"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Version Script"
+		    guiCategory="Linker"
+		    disabled=true
+	    }
+	    LinkOutputMode {
+	    #### This option is processed by the GHS driver, not the linker
+		    {
+			    name="--link_output_mode_reuse"
+			    value=0
+			    enumLabel="Overwrite the existing executable"
+		    }
+		    {
+			    name="--link_output_mode_safe"
+			    value=1
+			    enumLabel="Save a temporary copy unless the existing file is a symlink"
+		    }
+		    {
+			    name="--link_output_mode_linksafe"
+			    value=2
+			    enumLabel="Save a temporary copy, even if the existing file is a symlink"
+		    }
+		    {
+			    name="--link_output_mode_unlink"
+			    value=3
+			    enumLabel="Remove the existing executable before writing a new version"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Link Mode"
+		    guiCategory="Linker"
+	    }
+            DifferentSectionTypes{
+	    #### elxr
+                    {
+                            name="--allow_different_section_types"
+                            value=0
+                            enumLabel="Allow Linking Different Types"
+                    }
+                    {
+                            name="--no_allow_different_section_types"
+                            value=1
+                            enumLabel="Disallow Linking Different Types"
+                    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    guiLabel="Linking Sections with Different Types"
+		    guiCategory="Linker"
+            }
+	    PAddrOffset {
+	    #### elxr
+		    {
+			    name="-paddr_offset"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Physical Address Offset From Virtual Address"
+		    guiCategory="Linker"
+	    }
+	    FollowSection {
+	    #### elxr
+		    {
+			    name="-follow_section"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-follow_section"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Follow Section"
+		    guiCategory="Linker"
+	    }	
+
+    ################## Linking Without a .ld File ###########################
+
+	    DefaultLnk {
+	    #### This option is processed by the GHS driver, not the linker
+		    {
+			    name="-default_lnk"
+			    value=0
+			    enumLabel="Use Linker Directives File"
+		    }
+		    {
+			    name="-default_i"
+			    value=0
+			    enumLabel="Use Linker Directives File"
+		    }
+		    {
+			    name="-no_default_lnk"
+			    value=1
+			    enumLabel="Specify Sections Manually (with -Tsection)"
+		    }
+		    {
+			    name="-no_default_i"
+			    value=1
+			    enumLabel="Specify Sections Manually (with -Tsection)"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Link Map Method"
+		    guiCategory="Linker;Without Directives File"
+		    hidden=true
+	    }
+	    TBss {
+	    #### elxr, lx
+		    {
+			    name="-Tbss"
+		    }
+		    delimiter="Space"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Start of .bss Section"
+		    guiCategory="Linker;Without Directives File"
+		    hidden=true
+	    }	    
+	    TData {
+	    #### elxr, lx
+		    {
+			    name="-Tdata"
+		    }
+		    delimiter="Space"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Start of .data Section"
+		    guiCategory="Linker;Without Directives File"
+		    hidden=true
+	    }
+	    TText {
+	    #### elxr, lx
+		    {
+			    name="-Ttext"
+		    }
+		    delimiter="Space"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Start of .text Section"
+		    guiCategory="Linker;Without Directives File"
+		    hidden=true
+	    }
+
+    ################## Generic GHS Driver Options ###########################
+
+	    DriverOptions {
+		    {
+			    name="-W0,"
+			    delimiter="Touching"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Compile"}
+		    guiLabel="Compiler Options"
+		    hidden=true
+	    }
+
+    ################## Toolchain Options that vary by target ###########################
+    
+
+    
+    ################## Win32 Native #######################
+    
+	    Win32_Subsytem {
+		    {
+			    name="-subsystem=console"
+			    value=0
+			    enumLabel="Console Mode Application"
+		    }
+		    {
+			    name="-subsystem=windows"
+			    value=1
+			    enumLabel="Windowing Mode Application"
+		    }
+		    {
+			    name="-subsystem=dll"
+			    value=2
+			    enumLabel="Dynamic Link Library"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Subsystem Type"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Win32_Threading {
+		    {
+			    name="-threading=single"
+			    value=0
+			    enumLabel="Single"
+		    }
+		    {
+			    name="-threading=multiple"
+			    value=1
+			    enumLabel="Multiple"
+		    }
+		    {
+			    name="-threading=multiple_dll"
+			    value=2
+			    enumLabel="Multiple DLL"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Threading"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Win32_StackReserve {
+		    {
+			    name="-stack_reserve"
+			    delimiter="space"
+		    }
+		    {
+			    name="-stack_reserve"
+			    delimiter="equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    disabled=true
+		    guiLabel="Reserve Stack Space"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Win32_StackCommit {
+		    {
+			    name="-stack_commit"
+			    delimiter="space"
+		    }
+		    {
+			    name="-stack_commit"
+			    delimiter="equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    disabled=true
+		    guiLabel="Commit Stack Space"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Win32_StackLimit {
+		    {
+			    name="-stack_limit"
+			    delimiter="space"
+		    }
+		    {
+			    name="-stack_limit"
+			    delimiter="equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    disabled=true
+		    guiLabel="Limit Stack Space"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+	    Win32_MsvcVersion {
+		    {
+			    name="--msvc_version=6"
+			    value=0
+			    enumLabel="Use Microsoft VC 6.0 libraries"
+		    }
+		    {
+			    name="--msvc_version=9"
+			    value=1
+			    enumLabel="Use Microsoft VC 9.0 libraries"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MSVC Library Version"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Win32_MsvcLinkerVersion {
+		    {
+			    name="--msvc_linker_version=6"
+			    value=0
+			    enumLabel="Use Microsoft VC 6.0 linker"
+		    }
+		    {
+			    name="--msvc_linker_version=9"
+			    value=1
+			    enumLabel="Use Microsoft VC 9.0 linker"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MSVC Linker Version"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    }
+}

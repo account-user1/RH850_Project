@@ -1,0 +1,43 @@
+// cstddef standard header
+#ifndef _CSTDDEF_
+#define _CSTDDEF_
+
+#if defined(__ghs) || defined(__SC3__)
+
+#include <stddef.h>
+
+#if defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS)
+namespace std {
+    using ::ptrdiff_t;
+    using ::size_t;
+//  using ::wchar_t;		is a keyword in C++
+}
+#endif  // __NAMESPACES
+
+#else /* !__ghs */
+
+#include <yvals.h>
+
+#ifdef _STD_USING
+ #undef _STD_USING
+  #include <stddef.h>
+ #define _STD_USING
+
+#else /* _STD_USING */
+ #include <stddef.h>
+
+ #ifdef _GLOBAL_USING
+_STD_BEGIN
+using _CSTD ptrdiff_t; using _CSTD size_t;
+_STD_END
+ #endif /* _GLOBAL_USING */
+
+#endif /* _STD_USING */
+
+#endif /* !__ghs */
+#endif /* _CSTDDEF_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

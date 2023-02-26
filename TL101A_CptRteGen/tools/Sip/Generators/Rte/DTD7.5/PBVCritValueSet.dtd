@@ -1,0 +1,28 @@
+<!-- Entities -->
+
+<!ENTITY ti.PBVCritValueSet       "PBVCritValueSet">
+<!ENTITY ti.PBVCriterion          "PBVCriterion">
+<!ENTITY ti.Package               "Package">
+
+<!-- Elements -->
+
+<!ELEMENT PBVCritValueSet    (%C.DefAttr;, ATTRLink*, PBVCriterionValue*, GenAttrList?)>
+<!ELEMENT PBVCriterionValue  (ATTRLink*)>
+
+<!ATTLIST PBVCritValueSet %A.ConfigItem;
+    PackageLink        NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST PBVCriterionValue %A.ChildItem;
+    Value              CDATA ""
+    PBVCriterionLink   NMTOKEN #FIXED "&ti.PBVCriterion;"
+>
+
+<!-- Links -->
+
+<!ELEMENT PBVCritValueSetLink EMPTY>
+<!ATTLIST PBVCritValueSetLink 
+          %A.LinkGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PBVCritValueSet;"
+  >

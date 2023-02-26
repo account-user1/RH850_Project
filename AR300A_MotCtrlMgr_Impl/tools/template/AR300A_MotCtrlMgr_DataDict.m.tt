@@ -1,0 +1,691 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/schema/r4.0'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "MotCtrlMgr" ) ); #>
+<#	/********************************* Overall Processing *********************************/
+
+	List<string> TwoMilliSecOutputNameList_float32 = new List<string>();
+	List<string> TwoMilliSecInputNameList_float32 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_uint32 = new List<string>();
+	List<string> TwoMilliSecInputNameList_uint32 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_sint32 = new List<string>();
+	List<string> TwoMilliSecInputNameList_sint32 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_uint16 = new List<string>();
+	List<string> TwoMilliSecInputNameList_uint16 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_sint16 = new List<string>();
+	List<string> TwoMilliSecInputNameList_sint16 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_uint8 = new List<string>();
+	List<string> TwoMilliSecInputNameList_uint8 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_sint8 = new List<string>();
+	List<string> TwoMilliSecInputNameList_sint8 = new List<string>();
+	List<string> TwoMilliSecOutputNameList_boolean = new List<string>();
+	List<string> TwoMilliSecInputNameList_boolean = new List<string>();
+	List<string> TwoMilliSecOutputNameList_enum = new List<string>();
+	List<string> TwoMilliSecInputNameList_enum = new List<string>();
+	
+	List<string> TwoMilliSecOutputMinList_float32 = new List<string>();
+	List<string> TwoMilliSecInputMinList_float32 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_uint32 = new List<string>();
+	List<string> TwoMilliSecInputMinList_uint32 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_sint32 = new List<string>();
+	List<string> TwoMilliSecInputMinList_sint32 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_uint16 = new List<string>();
+	List<string> TwoMilliSecInputMinList_uint16 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_sint16 = new List<string>();
+	List<string> TwoMilliSecInputMinList_sint16 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_uint8 = new List<string>();
+	List<string> TwoMilliSecInputMinList_uint8 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_sint8 = new List<string>();
+	List<string> TwoMilliSecInputMinList_sint8 = new List<string>();
+	List<string> TwoMilliSecOutputMinList_boolean = new List<string>();
+	List<string> TwoMilliSecInputMinList_boolean = new List<string>();
+	List<string> TwoMilliSecOutputMinList_enum = new List<string>();
+	List<string> TwoMilliSecInputMinList_enum = new List<string>();
+	
+	List<string> TwoMilliSecOutputMaxList_float32 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_float32 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_uint32 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_uint32 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_sint32 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_sint32 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_uint16 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_uint16 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_sint16 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_sint16 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_uint8 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_uint8 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_sint8 = new List<string>();
+	List<string> TwoMilliSecInputMaxList_sint8 = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_boolean = new List<string>();
+	List<string> TwoMilliSecInputMaxList_boolean = new List<string>();
+	List<string> TwoMilliSecOutputMaxList_enum = new List<string>();
+	List<string> TwoMilliSecInputMaxList_enum = new List<string>();
+
+	
+	List<string> TwoMilliSecOutputUnitList_float32 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_float32 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_uint32 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_uint32 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_sint32 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_sint32 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_uint16 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_uint16 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_sint16 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_sint16 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_uint8 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_uint8 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_sint8 = new List<string>();
+	List<string> TwoMilliSecInputUnitList_sint8 = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_boolean = new List<string>();
+	List<string> TwoMilliSecInputUnitList_boolean = new List<string>();
+	List<string> TwoMilliSecOutputUnitList_enum = new List<string>();
+	List<string> TwoMilliSecInputUnitList_enum = new List<string>();
+	
+	List<string> TwoMilliSecOutputInitList_float32 = new List<string>();
+	List<string> TwoMilliSecInputInitList_float32 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_uint32 = new List<string>();
+	List<string> TwoMilliSecInputInitList_uint32 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_sint32 = new List<string>();
+	List<string> TwoMilliSecInputInitList_sint32 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_uint16 = new List<string>();
+	List<string> TwoMilliSecInputInitList_uint16 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_sint16 = new List<string>();
+	List<string> TwoMilliSecInputInitList_sint16 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_uint8 = new List<string>();
+	List<string> TwoMilliSecInputInitList_uint8 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_sint8 = new List<string>();
+	List<string> TwoMilliSecInputInitList_sint8 = new List<string>();
+	List<string> TwoMilliSecOutputInitList_boolean = new List<string>();
+	List<string> TwoMilliSecInputInitList_boolean = new List<string>();
+	List<string> TwoMilliSecOutputInitList_enum = new List<string>();
+	List<string> TwoMilliSecInputInitList_enum = new List<string>();
+	
+	List<string> TwoMilliSecOutputDatatypeList_enum = new List<string>();
+	List<string> TwoMilliSecInputDatatypeList_enum = new List<string>();
+	
+	Dictionary<string, string> SignalMappingDictionary = new Dictionary<string, string>();
+	
+	int i = 0;
+	string datatype = "";
+	string initvalue = "";
+#>
+<# /* Create a Dictionary that contains the signal mapping details for later use.  The input signal name is used for the dictionary "key" */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping" ) ) #><#
+	string OutputSignalName = ValueOf( Xp.ValueAtDefRefTo( "OutputSignalName" )); #>
+<# !LOOP( Xp.ValueAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping/InputSignalName" ) ) #><#
+	string InputSignalName = ValueOf( "." );
+	SignalMappingDictionary.Add( InputSignalName, OutputSignalName); #>
+<# !ENDLOOP #>
+<# !ENDLOOP #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><# 
+
+	string SigName = ValueOf( "ar:SHORT-NAME" );
+	/* Check if signals is an input signal in the signal mapping */
+	if (SignalMappingDictionary.ContainsKey(SigName) == true)
+	{
+		/* If the signal is part of the configured signal mapping as an input, this signal should be skipped because only the output signals are contained in the
+		   handled by this component.  It is up to the developer to manually account for signal mapping of RTE connections */
+	}
+	else
+	{
+		/* Get datatype of signal */
+		datatype = ValueOf( Xp.ValueAtDefRefTo( "ImplementationDataType" ));
+		
+		/* If value is enumeration, overwrite datatype to be enumeration type */
+		if( Exists( Xp.ValueRefAtDefRefTo( "EnumerationNameReference" ) ) ) 
+		{
+			datatype = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "EnumerationNameReference" ));
+		}
+		
+		/* Get initial value of signal */
+		initvalue = ValueOf( Xp.ValueAtDefRefTo( "InitialValue" ));
+		
+		/* Strip off suffix from initial value if it is present on any datatypes that require suffixes since .m file data dictionary doesn't comprehend suffixes */
+		if ((datatype == "float32" ) || (datatype == "uint32" ) || (datatype == "sint32" ) || (datatype == "uint16" ) || (datatype == "sint16" ) || (datatype == "uint8" ) || (datatype == "sint8" ))
+		{
+			initvalue = initvalue.Replace("U",string.Empty);
+			initvalue = initvalue.Replace("u",string.Empty);
+			initvalue = initvalue.Replace("F",string.Empty);
+			initvalue = initvalue.Replace("f",string.Empty);
+			initvalue = initvalue.Replace("L",string.Empty);
+			initvalue = initvalue.Replace("l",string.Empty);
+		}
+		else
+		{
+			/* If datatype is boolean, replace TRUE/FALSE with 1/0 since this is how booleans are managed in .m file data dictionaries */
+			if (datatype == "boolean" )
+			{
+				if (initvalue == "TRUE")
+				{
+					initvalue = "1";
+				}
+				else
+				{
+					initvalue = "0";
+				}
+			}
+			else /* enumeration */
+			{
+				/* If datatype is an enumeration, prepend enumeration name to init value (note this assumes initial value is an enumeration element name, not a hard-coded value) */
+				initvalue = datatype+"."+initvalue;
+			}
+		}
+		
+		/* See if signal is an array */
+		if (ValueOf( Xp.ValueAtDefRefTo( "Size" )) > 1)
+		{
+			if( Exists( Xp.ValueRefAtDefRefTo( "EnumerationNameReference" ) ) ) 
+			{
+				/* If signal is an array and an enumeration, strip off commas and replace with spaces, and also prepend all but the first array values with enumeration name.  
+				   The first array value already had this replaced in step above(note this assumes initial value array elements are enumeration element names, not a hard-coded values).
+				   Also, brackets are added to array initial value */
+				initvalue = initvalue.Replace(", ",",");
+				initvalue = initvalue.Replace(",",' '+datatype+".");
+				initvalue = "[" + initvalue + "]";
+
+			}
+			else
+			{
+				/* If the array is not an enumeration, just strip off commas and replace with spaces. Also, brackets are added to array initial value */
+				initvalue = initvalue.Replace(", ",",");
+				initvalue = initvalue.Replace(',',' ');
+				initvalue = "[" + initvalue + "]";
+			}
+		}
+		
+		/* If the signal is read by a 2ms runnable and written in MotCtrl loop, than the signal is an output of Per1 */
+		if ((ValueOf( Xp.ValueAtDefRefTo( "WrittenInMotCtrlRunnable" )) == "true") && (ValueOf( Xp.ValueAtDefRefTo( "ReadIn2msRunnable" )) == "true") )
+		{
+			/* Depending on the datatype, add signal name, min, max, units, and initial values to the appropriate list */
+			switch (datatype)
+			{
+				case "float32":
+					TwoMilliSecOutputNameList_float32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_float32.Add(initvalue);
+					break;
+				case "uint32":
+					TwoMilliSecOutputNameList_uint32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_uint32.Add(initvalue);
+					break;
+				case "sint32":
+					TwoMilliSecOutputNameList_sint32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_sint32.Add(initvalue);
+					break;
+				case "uint16":
+					TwoMilliSecOutputNameList_uint16.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_uint16.Add(initvalue);
+					break;
+				case "sint16":
+					TwoMilliSecOutputNameList_sint16.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_sint16.Add(initvalue);
+					break;
+				case "uint8":
+					TwoMilliSecOutputNameList_uint8.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_uint8.Add(initvalue);
+					break;
+				case "sint8":
+					TwoMilliSecOutputNameList_sint8.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_sint8.Add(initvalue);
+					break;
+				case "boolean":
+					TwoMilliSecOutputNameList_boolean.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_boolean.Add(initvalue);
+					break;
+				default:
+					TwoMilliSecOutputNameList_enum.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecOutputMaxList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecOutputMinList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecOutputUnitList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecOutputInitList_enum.Add(initvalue);
+					/* If the signal is an enumeration, add the enumeration datatype to the appropriate list */
+					TwoMilliSecOutputDatatypeList_enum.Add(datatype);
+					break;
+			}
+		}
+		/* If the signal is written by a 2ms runnable and read in MotCtrl loop, than the signal is an input to Per2 */
+		else if ((ValueOf( Xp.ValueAtDefRefTo( "WrittenIn2msRunnable" )) == "true") && (ValueOf( Xp.ValueAtDefRefTo( "ReadInMotCtrlRunnable" )) == "true") )
+		{
+			/* Depending on the datatype, add signal name, min, max, units, and initial values to the appropriate list */
+			switch (datatype)
+			{
+				case "float32":
+					TwoMilliSecInputNameList_float32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_float32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_float32.Add(initvalue);
+					break;
+				case "uint32":
+					TwoMilliSecInputNameList_uint32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_uint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_uint32.Add(initvalue);
+					break;
+				case "sint32":
+					TwoMilliSecInputNameList_sint32.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_sint32.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_sint32.Add(initvalue);
+					break;
+				case "uint16":
+					TwoMilliSecInputNameList_uint16.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_uint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_uint16.Add(initvalue);
+					break;
+				case "sint16":
+					TwoMilliSecInputNameList_sint16.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_sint16.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_sint16.Add(initvalue);
+					break;
+				case "uint8":
+					TwoMilliSecInputNameList_uint8.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_uint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_uint8.Add(initvalue);
+					break;
+				case "sint8":
+					TwoMilliSecInputNameList_sint8.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_sint8.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_sint8.Add(initvalue);
+					break;
+				case "boolean":
+					TwoMilliSecInputNameList_boolean.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_boolean.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_boolean.Add(initvalue);
+					break;
+				default:
+					TwoMilliSecInputNameList_enum.Add(ValueOf( "ar:SHORT-NAME" ));
+					TwoMilliSecInputMaxList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Max" )));
+					TwoMilliSecInputMinList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Min" )));
+					TwoMilliSecInputUnitList_enum.Add(ValueOf( Xp.ValueAtDefRefTo( "Units" )));
+					TwoMilliSecInputInitList_enum.Add(initvalue);
+					/* If the signal is an enumeration, add the enumeration datatype to the appropriate list */
+					TwoMilliSecInputDatatypeList_enum.Add(datatype);
+					break;
+			}
+		}
+	}
+#>
+<# !ENDLOOP #>
+AR300A = DataDict.FDD;
+AR300A.Version = '1.0.X';
+AR300A.LongName = 'Motor Control Manager';
+AR300A.ShoName  = 'MotCtrlMgr';
+AR300A.DesignASIL = 'D';
+AR300A.Description = [...
+  'This component handles runnable scheduling of MotorControl and MotorCo' ...
+  'ntrolx2 runnables.  This also defines all of the Motor Control related' ...
+  ' data and is resposible for the runnables providing the data interface' ...
+  ' to the RTE.'];
+AR300A.Dependencies = ...
+	{};
+	
+MotCtrlMgrPer1 = DataDict.Runnable;
+MotCtrlMgrPer1.Context = 'Rte';
+MotCtrlMgrPer1.TimeStep = 0.002;
+
+MotCtrlMgrPer2 = DataDict.Runnable;
+MotCtrlMgrPer2.Context = 'Rte';
+MotCtrlMgrPer2.TimeStep = 0.002;
+
+DmaEna2MilliSecToMotCtrlTrf = DataDict.Client;
+DmaEna2MilliSecToMotCtrlTrf.CallLocation = {'MotCtrlMgrPer2'};
+DmaEna2MilliSecToMotCtrlTrf.Return = DataDict.CSReturn;
+DmaEna2MilliSecToMotCtrlTrf.Return.Type = 'None';
+DmaEna2MilliSecToMotCtrlTrf.Return.Min = [];
+DmaEna2MilliSecToMotCtrlTrf.Return.Max = [];
+DmaEna2MilliSecToMotCtrlTrf.Return.TestTolerance = [];
+
+DmaWaitForMotCtrlTo2MilliSecTrf = DataDict.Client;
+DmaWaitForMotCtrlTo2MilliSecTrf.CallLocation = {'MotCtrlMgrPer1'};
+DmaWaitForMotCtrlTo2MilliSecTrf.Return = DataDict.CSReturn;
+DmaWaitForMotCtrlTo2MilliSecTrf.Return.Type = 'Standard';
+DmaWaitForMotCtrlTo2MilliSecTrf.Return.Min = 0;
+DmaWaitForMotCtrlTo2MilliSecTrf.Return.Max = 1;
+DmaWaitForMotCtrlTo2MilliSecTrf.Return.TestTolerance = [];
+
+%%%%% Uncomment after DataDictionary tools are updated to properly support the DMA Dynamically created structures... as of data dictionary tool release 2.46.0, these caused errors when running CreateDD utility %%%%%
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec = DataDict.IpSignal;
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.LongName = 'Two Millisecond from Motor Control Record';
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.DocUnits = 'Cnt';
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.EngDT = struct.TwoMilliSecFromMotCtrlRec1;
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.EngInit = [];
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.EngMin = [];
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.EngMax = [];
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.MinReqdASIL = 'D';
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.ReadIn = {'MotCtrlMgrPer1'};
+% MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.ReadType = 'NonRte';
+
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec = DataDict.OpSignal;
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.LongName = 'Two Millisecond to Motor Control Record';
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.Description = 'Two Millisecond to Motor Control Record';
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.DocUnits = 'Cnt';
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.SwcShoName = 'MotCtrlMgr';
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.EngDT = struct.TwoMilliSecToMotCtrlRec1;
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.EngInit = [];
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.EngMin = [];
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.EngMax = [];
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.TestTolerance = 0;
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.WrittenIn = {'MotCtrlMgrPer2'};
+% MotCtrlMgr_TwoMilliSecToMotCtrl_Rec.WriteType = 'NonRte';
+
+<#  /* Loop through all float32 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_float32.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_float32[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_float32[i]#>.LongName = '<#=TwoMilliSecOutputNameList_float32[i]#>';
+<#=TwoMilliSecOutputNameList_float32[i]#>.Description = '<#=TwoMilliSecOutputNameList_float32[i]#>';
+<#=TwoMilliSecOutputNameList_float32[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_float32[i]#>';
+<#=TwoMilliSecOutputNameList_float32[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_float32[i]#>.EngDT = dt.float32;
+<#=TwoMilliSecOutputNameList_float32[i]#>.EngInit = <#=TwoMilliSecOutputInitList_float32[i]#>;
+<#=TwoMilliSecOutputNameList_float32[i]#>.EngMin = <#=TwoMilliSecOutputMinList_float32[i]#>;
+<#=TwoMilliSecOutputNameList_float32[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_float32[i]#>;
+<#=TwoMilliSecOutputNameList_float32[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_float32[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_float32[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint32 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_uint32.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_uint32[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.LongName = '<#=TwoMilliSecOutputNameList_uint32[i]#>';
+<#=TwoMilliSecOutputNameList_uint32[i]#>.Description = '<#=TwoMilliSecOutputNameList_uint32[i]#>';
+<#=TwoMilliSecOutputNameList_uint32[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_uint32[i]#>';
+<#=TwoMilliSecOutputNameList_uint32[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_uint32[i]#>.EngDT = dt.u32;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.EngInit = <#=TwoMilliSecOutputInitList_uint32[i]#>;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.EngMin = <#=TwoMilliSecOutputMinList_uint32[i]#>;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_uint32[i]#>;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_uint32[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_uint32[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint32 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_sint32.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_sint32[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.LongName = '<#=TwoMilliSecOutputNameList_sint32[i]#>';
+<#=TwoMilliSecOutputNameList_sint32[i]#>.Description = '<#=TwoMilliSecOutputNameList_sint32[i]#>';
+<#=TwoMilliSecOutputNameList_sint32[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_sint32[i]#>';
+<#=TwoMilliSecOutputNameList_sint32[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_sint32[i]#>.EngDT = dt.s32;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.EngInit = <#=TwoMilliSecOutputInitList_sint32[i]#>;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.EngMin = <#=TwoMilliSecOutputMinList_sint32[i]#>;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_sint32[i]#>;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_sint32[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_sint32[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint16 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_uint16.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_uint16[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.LongName = '<#=TwoMilliSecOutputNameList_uint16[i]#>';
+<#=TwoMilliSecOutputNameList_uint16[i]#>.Description = '<#=TwoMilliSecOutputNameList_uint16[i]#>';
+<#=TwoMilliSecOutputNameList_uint16[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_uint16[i]#>';
+<#=TwoMilliSecOutputNameList_uint16[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_uint16[i]#>.EngDT = dt.u16;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.EngInit = <#=TwoMilliSecOutputInitList_uint16[i]#>;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.EngMin = <#=TwoMilliSecOutputMinList_uint16[i]#>;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_uint16[i]#>;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_uint16[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_uint16[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint16 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_sint16.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_sint16[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.LongName = '<#=TwoMilliSecOutputNameList_sint16[i]#>';
+<#=TwoMilliSecOutputNameList_sint16[i]#>.Description = '<#=TwoMilliSecOutputNameList_sint16[i]#>';
+<#=TwoMilliSecOutputNameList_sint16[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_sint16[i]#>';
+<#=TwoMilliSecOutputNameList_sint16[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_sint16[i]#>.EngDT = dt.s16;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.EngInit = <#=TwoMilliSecOutputInitList_sint16[i]#>;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.EngMin = <#=TwoMilliSecOutputMinList_sint16[i]#>;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_sint16[i]#>;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_sint16[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_sint16[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint8 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_uint8.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_uint8[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.LongName = '<#=TwoMilliSecOutputNameList_uint8[i]#>';
+<#=TwoMilliSecOutputNameList_uint8[i]#>.Description = '<#=TwoMilliSecOutputNameList_uint8[i]#>';
+<#=TwoMilliSecOutputNameList_uint8[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_uint8[i]#>';
+<#=TwoMilliSecOutputNameList_uint8[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_uint8[i]#>.EngDT = dt.u08;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.EngInit = <#=TwoMilliSecOutputInitList_uint8[i]#>;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.EngMin = <#=TwoMilliSecOutputMinList_uint8[i]#>;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_uint8[i]#>;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_uint8[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_uint8[i]#>.WriteType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint8 outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_sint8.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_sint8[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.LongName = '<#=TwoMilliSecOutputNameList_sint8[i]#>';
+<#=TwoMilliSecOutputNameList_sint8[i]#>.Description = '<#=TwoMilliSecOutputNameList_sint8[i]#>';
+<#=TwoMilliSecOutputNameList_sint8[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_sint8[i]#>';
+<#=TwoMilliSecOutputNameList_sint8[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_sint8[i]#>.EngDT = dt.s08;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.EngInit = <#=TwoMilliSecOutputInitList_sint8[i]#>;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.EngMin = <#=TwoMilliSecOutputMinList_sint8[i]#>;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_sint8[i]#>;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_sint8[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_sint8[i]#>.WriteType = 'Rte';
+
+<# 	}
+	/* Loop through all boolean outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_boolean.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_boolean[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.LongName = '<#=TwoMilliSecOutputNameList_boolean[i]#>';
+<#=TwoMilliSecOutputNameList_boolean[i]#>.Description = '<#=TwoMilliSecOutputNameList_boolean[i]#>';
+<#=TwoMilliSecOutputNameList_boolean[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_boolean[i]#>';
+<#=TwoMilliSecOutputNameList_boolean[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_boolean[i]#>.EngDT = dt.lgc;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.EngInit = <#=TwoMilliSecOutputInitList_boolean[i]#>;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.EngMin = <#=TwoMilliSecOutputMinList_boolean[i]#>;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_boolean[i]#>;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_boolean[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_boolean[i]#>.WriteType = 'Rte';
+
+<# 	}
+	/* Loop through all enumeration outputs and add appropriate output properties - note test tolerance is always forced to zero, which should actually be appropriate for this component since it is pass-through to RTE */
+	for (i = 0; i < TwoMilliSecOutputNameList_enum.Count; i++)
+	{#>
+<#=TwoMilliSecOutputNameList_enum[i]#> = DataDict.OpSignal;
+<#=TwoMilliSecOutputNameList_enum[i]#>.LongName = '<#=TwoMilliSecOutputNameList_enum[i]#>';
+<#=TwoMilliSecOutputNameList_enum[i]#>.Description = '<#=TwoMilliSecOutputNameList_enum[i]#>';
+<#=TwoMilliSecOutputNameList_enum[i]#>.DocUnits = '<#=TwoMilliSecOutputUnitList_enum[i]#>';
+<#=TwoMilliSecOutputNameList_enum[i]#>.SwcShoName = 'MotCtrlMgr';
+<#=TwoMilliSecOutputNameList_enum[i]#>.EngDT = enum.<#=TwoMilliSecOutputDatatypeList_enum[i]#>;
+<#=TwoMilliSecOutputNameList_enum[i]#>.EngInit = <#=TwoMilliSecOutputInitList_enum[i]#>;
+<#=TwoMilliSecOutputNameList_enum[i]#>.EngMin = <#=TwoMilliSecOutputMinList_enum[i]#>;
+<#=TwoMilliSecOutputNameList_enum[i]#>.EngMax = <#=TwoMilliSecOutputMaxList_enum[i]#>;
+<#=TwoMilliSecOutputNameList_enum[i]#>.TestTolerance = 0;
+<#=TwoMilliSecOutputNameList_enum[i]#>.WrittenIn = {'MotCtrlMgrPer1'};
+<#=TwoMilliSecOutputNameList_enum[i]#>.WriteType = 'Rte';
+
+<# 	}
+#>
+
+
+<# 
+	/* Loop through all float32 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_float32.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_float32[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_float32[i]#>.LongName = '<#=TwoMilliSecInputNameList_float32[i]#>';
+<#=TwoMilliSecInputNameList_float32[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_float32[i]#>';
+<#=TwoMilliSecInputNameList_float32[i]#>.EngDT = dt.float32;
+<#=TwoMilliSecInputNameList_float32[i]#>.EngInit = <#=TwoMilliSecInputInitList_float32[i]#>;
+<#=TwoMilliSecInputNameList_float32[i]#>.EngMin = <#=TwoMilliSecInputMinList_float32[i]#>;
+<#=TwoMilliSecInputNameList_float32[i]#>.EngMax = <#=TwoMilliSecInputMaxList_float32[i]#>;
+<#=TwoMilliSecInputNameList_float32[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_float32[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint32 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_uint32.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_uint32[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_uint32[i]#>.LongName = '<#=TwoMilliSecInputNameList_uint32[i]#>';
+<#=TwoMilliSecInputNameList_uint32[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_uint32[i]#>';
+<#=TwoMilliSecInputNameList_uint32[i]#>.EngDT = dt.u32;
+<#=TwoMilliSecInputNameList_uint32[i]#>.EngInit = <#=TwoMilliSecInputInitList_uint32[i]#>;
+<#=TwoMilliSecInputNameList_uint32[i]#>.EngMin = <#=TwoMilliSecInputMinList_uint32[i]#>;
+<#=TwoMilliSecInputNameList_uint32[i]#>.EngMax = <#=TwoMilliSecInputMaxList_uint32[i]#>;
+<#=TwoMilliSecInputNameList_uint32[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_uint32[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint32 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_sint32.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_sint32[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_sint32[i]#>.LongName = '<#=TwoMilliSecInputNameList_sint32[i]#>';
+<#=TwoMilliSecInputNameList_sint32[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_sint32[i]#>';
+<#=TwoMilliSecInputNameList_sint32[i]#>.EngDT = dt.s32;
+<#=TwoMilliSecInputNameList_sint32[i]#>.EngInit = <#=TwoMilliSecInputInitList_sint32[i]#>;
+<#=TwoMilliSecInputNameList_sint32[i]#>.EngMin = <#=TwoMilliSecInputMinList_sint32[i]#>;
+<#=TwoMilliSecInputNameList_sint32[i]#>.EngMax = <#=TwoMilliSecInputMaxList_sint32[i]#>;
+<#=TwoMilliSecInputNameList_sint32[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_sint32[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint16 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_uint16.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_uint16[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_uint16[i]#>.LongName = '<#=TwoMilliSecInputNameList_uint16[i]#>';
+<#=TwoMilliSecInputNameList_uint16[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_uint16[i]#>';
+<#=TwoMilliSecInputNameList_uint16[i]#>.EngDT = dt.u16;
+<#=TwoMilliSecInputNameList_uint16[i]#>.EngInit = <#=TwoMilliSecInputInitList_uint16[i]#>;
+<#=TwoMilliSecInputNameList_uint16[i]#>.EngMin = <#=TwoMilliSecInputMinList_uint16[i]#>;
+<#=TwoMilliSecInputNameList_uint16[i]#>.EngMax = <#=TwoMilliSecInputMaxList_uint16[i]#>;
+<#=TwoMilliSecInputNameList_uint16[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_uint16[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint16 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_sint16.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_sint16[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_sint16[i]#>.LongName = '<#=TwoMilliSecInputNameList_sint16[i]#>';
+<#=TwoMilliSecInputNameList_sint16[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_sint16[i]#>';
+<#=TwoMilliSecInputNameList_sint16[i]#>.EngDT = dt.s16;
+<#=TwoMilliSecInputNameList_sint16[i]#>.EngInit = <#=TwoMilliSecInputInitList_sint16[i]#>;
+<#=TwoMilliSecInputNameList_sint16[i]#>.EngMin = <#=TwoMilliSecInputMinList_sint16[i]#>;
+<#=TwoMilliSecInputNameList_sint16[i]#>.EngMax = <#=TwoMilliSecInputMaxList_sint16[i]#>;
+<#=TwoMilliSecInputNameList_sint16[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_sint16[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all uint8 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_uint8.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_uint8[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_uint8[i]#>.LongName = '<#=TwoMilliSecInputNameList_uint8[i]#>';
+<#=TwoMilliSecInputNameList_uint8[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_uint8[i]#>';
+<#=TwoMilliSecInputNameList_uint8[i]#>.EngDT = dt.u08;
+<#=TwoMilliSecInputNameList_uint8[i]#>.EngInit = <#=TwoMilliSecInputInitList_uint8[i]#>;
+<#=TwoMilliSecInputNameList_uint8[i]#>.EngMin = <#=TwoMilliSecInputMinList_uint8[i]#>;
+<#=TwoMilliSecInputNameList_uint8[i]#>.EngMax = <#=TwoMilliSecInputMaxList_uint8[i]#>;
+<#=TwoMilliSecInputNameList_uint8[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_uint8[i]#>.ReadType = 'Rte';
+	
+<# 	}
+	/* Loop through all sint8 inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_sint8.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_sint8[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_sint8[i]#>.LongName = '<#=TwoMilliSecInputNameList_sint8[i]#>';
+<#=TwoMilliSecInputNameList_sint8[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_sint8[i]#>';
+<#=TwoMilliSecInputNameList_sint8[i]#>.EngDT = dt.s08;
+<#=TwoMilliSecInputNameList_sint8[i]#>.EngInit = <#=TwoMilliSecInputInitList_sint8[i]#>;
+<#=TwoMilliSecInputNameList_sint8[i]#>.EngMin = <#=TwoMilliSecInputMinList_sint8[i]#>;
+<#=TwoMilliSecInputNameList_sint8[i]#>.EngMax = <#=TwoMilliSecInputMaxList_sint8[i]#>;
+<#=TwoMilliSecInputNameList_sint8[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_sint8[i]#>.ReadType = 'Rte';
+
+<# 	}
+	/* Loop through all boolean inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_boolean.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_boolean[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_boolean[i]#>.LongName = '<#=TwoMilliSecInputNameList_boolean[i]#>';
+<#=TwoMilliSecInputNameList_boolean[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_boolean[i]#>';
+<#=TwoMilliSecInputNameList_boolean[i]#>.EngDT = dt.lgc;
+<#=TwoMilliSecInputNameList_boolean[i]#>.EngInit = <#=TwoMilliSecInputInitList_boolean[i]#>;
+<#=TwoMilliSecInputNameList_boolean[i]#>.EngMin = <#=TwoMilliSecInputMinList_boolean[i]#>;
+<#=TwoMilliSecInputNameList_boolean[i]#>.EngMax = <#=TwoMilliSecInputMaxList_boolean[i]#>;
+<#=TwoMilliSecInputNameList_boolean[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_boolean[i]#>.ReadType = 'Rte';
+
+<# 	}
+	/* Loop through all enumeration inputs and add appropriate input properties */
+	for (i = 0; i < TwoMilliSecInputNameList_enum.Count; i++)
+	{#>
+<#=TwoMilliSecInputNameList_enum[i]#> = DataDict.IpSignal;
+<#=TwoMilliSecInputNameList_enum[i]#>.LongName = '<#=TwoMilliSecInputNameList_enum[i]#>';
+<#=TwoMilliSecInputNameList_enum[i]#>.DocUnits = '<#=TwoMilliSecInputUnitList_enum[i]#>';
+<#=TwoMilliSecInputNameList_enum[i]#>.EngDT = enum.<#=TwoMilliSecInputDatatypeList_enum[i]#>;
+<#=TwoMilliSecInputNameList_enum[i]#>.EngInit = <#=TwoMilliSecInputInitList_enum[i]#>;
+<#=TwoMilliSecInputNameList_enum[i]#>.EngMin = <#=TwoMilliSecInputMinList_enum[i]#>;
+<#=TwoMilliSecInputNameList_enum[i]#>.EngMax = <#=TwoMilliSecInputMaxList_enum[i]#>;
+<#=TwoMilliSecInputNameList_enum[i]#>.ReadIn = {'MotCtrlMgrPer2'};
+<#=TwoMilliSecInputNameList_enum[i]#>.ReadType = 'Rte';
+
+<# 	}
+#>

@@ -1,0 +1,759 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/schema/r4.0'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : CDD_MotCtrlMgr_Data.h
+* Module Description: Motor Control Manager Data
+* Project           : CBD
+* Author            : Lucas Wendling
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          4 %
+* %derived_by:       czgng4 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 06/05/15  1        LWW       Initial Version                                                                 EA4#511
+* 06/10/15  2        LWW       Template update for macro name fix                                              EA4#765
+* 10/29/15  3        LWW       Template update for signal mapping changes                                      EA4#3428
+* 08/08/16  4        LWW       Template update for compatibility with MotCtrlMgr Configuration Tool            EA4#6787
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef CDD_MOTCTRLMGR_DATA_H
+#define CDD_MOTCTRLMGR_DATA_H
+
+/************************************************ Include Statements *************************************************/
+#include "Std_Types.h"
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+/* MISRA-C:2004 Rule 5.3 [NXTRDEV 5.3.1]:  Typedef of enumerations the RTE may define may be duplicated in CDD_MotCtrlMgr_Data.h 
+                                           for use by non-RTE functions since the RTE definition cannot be guaranteed to be visible 
+										   to these non-RTE functions.  The typedef definitions, however, will be the same in 
+										   both definitions and therefore will not impact functionality */
+
+/***************************************** Non-Rte Enumeration Definitions *******************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "MotCtrlMgr" ) ); #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/NonRteEnum" ) ) #>
+<#  /* Define all enumeration typedefs required.  Note that conditional statements are put around the typedef in case the RTE already had defined
+       the typedef. */
+    string EnumName = ValueOf( "ar:SHORT-NAME" );#>
+#ifndef Rte_TypeDef_<#=EnumName#>
+	typedef <#=ValueOf( Xp.ValueAtDefRefTo( "EnumImplementationDataType" ))#> <#=EnumName#>;
+#endif
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "EnumElement" ) ) #>
+<#  /* Define all enumeration values required.  Note that conditional statements are put around the definition in case the RTE already had defined
+       the value. */
+	string EnumElement = ValueOf( "ar:SHORT-NAME" );#>
+#ifndef <#=EnumElement#>
+	#define <#=EnumElement#> (<#=ValueOf( Xp.ValueAtDefRefTo( "Value" ))#>U)
+#endif
+<# !ENDLOOP #>
+
+<# !ENDLOOP #>
+/*********************************************** Exported Declarations ***********************************************/
+<#	/********************************* Overall Processing *********************************/
+	List<string> MotCtrlToTwoMilliSecList_32bit = new List<string>();
+	List<string> MotCtrlToTwoMilliSecList_16bit = new List<string>();
+	List<string> MotCtrlToTwoMilliSecList_8bit = new List<string>();
+	List<string> TwoMilliSecFromMotCtrlList_32bit = new List<string>();
+	List<string> TwoMilliSecFromMotCtrlList_16bit = new List<string>();
+	List<string> TwoMilliSecFromMotCtrlList_8bit = new List<string>();
+	List<string> TwoMilliSecToMotCtrlList_32bit = new List<string>();
+	List<string> TwoMilliSecToMotCtrlList_16bit = new List<string>();
+	List<string> TwoMilliSecToMotCtrlList_8bit = new List<string>();
+	List<string> MotCtrlFromTwoMilliSecList_32bit = new List<string>();
+	List<string> MotCtrlFromTwoMilliSecList_16bit = new List<string>();
+	List<string> MotCtrlFromTwoMilliSecList_8bit = new List<string>();
+	List<string> MotCtrlIntList_32bit = new List<string>();
+	List<string> MotCtrlIntList_16bit = new List<string>();
+	List<string> MotCtrlIntList_8bit = new List<string>();
+	
+	List<string> MacroList_TwoMilliSec = new List<string>();
+	List<string> MacroList_MotCtrl = new List<string>();
+	
+	int MotCtrlToTwoMilliSec_TransferBits = 0;
+	int TwoMilliSecToMotCtrl_TransferBits = 0;
+	int MotCtrlInt_TransferBits = 0;
+	int MotCtrlToTwoMilliSec_AlignmentBytes = 0;
+	int TwoMilliSecToMotCtrl_AlignmentBytes = 0;
+	int MotCtrlInt_AlignmentBytes = 0;
+	
+	bool Found_MotCtrlTSG31DCMP0E = false;
+	bool Found_MotCtrlTSG31CMP0E = false;
+	bool Found_MotCtrlTSG31CMP12E = false;
+	bool Found_MotCtrlTSG31CMPWE = false;
+	bool Found_MotCtrlTSG31CMPVE = false;
+	bool Found_MotCtrlTSG31CMPUE = false;
+	bool Found_MotCtrlTSG30DCMP0E = false;
+	bool Found_MotCtrlTSG30CMP0E = false;
+	bool Found_MotCtrlTSG30CMP12E = false;
+	bool Found_MotCtrlTSG30CMPWE = false;
+	bool Found_MotCtrlTSG30CMPVE = false;
+	bool Found_MotCtrlTSG30CMPUE = false;
+	bool MappingWritenInMotCtrlRunnable = false;
+	bool MappingReadIn2msRunnable = false;
+	bool MappingWrittenIn2msRunnable = false;
+	bool MappingReadInMotCtrlRunnable = false;
+	bool DataTypeIsEnumeration = false;
+	string ImplementationDataType;
+	string EnumerationName;
+	int SignalSize;
+	
+	Dictionary<string, string> SignalMappingDictionary = new Dictionary<string, string>();
+	
+	/* ADC raw results are put as the first set of signals in the structure to ensure proper alignment in memory 
+	 (since structure start address will be aligned to 128bit, it will be guaranteed ADC results will be aligned to 128 bit) */
+	 
+	/* Add ADC0 results to structure definition - These are assumed to always be needed and not required to be present in the signal configuration list 
+	   ADC0 raw results are internal to the Motor Control runnables */
+	MotCtrlIntList_32bit.Add( "VAR(uint16, TYPEDEF)     MotCtrlAdc0RawRes[24];");
+	/* Add the number of bits in structure to running count */
+	MotCtrlInt_TransferBits+=16*24;
+	/* Add the access macro to the list */
+	MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlAdc0RawRes     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlAdc0RawRes)");
+	
+	/* Add ADC1 results to structure definitions - These are assumed to always be needed and not required to be present in the signal configuration list  
+	   ADC1 raw results are put in the structures that are transferred to the 2ms loop for processing. */
+	MotCtrlToTwoMilliSecList_32bit.Add( "VAR(uint16, TYPEDEF)     MotCtrlAdc1RawRes[24];");
+	TwoMilliSecFromMotCtrlList_32bit.Add( "VAR(uint16, TYPEDEF)     Adc1RawRes[24];");
+	/* Add the number of bits in structure to running count */
+	MotCtrlToTwoMilliSec_TransferBits+=16*24;
+	/* Add the access macros to the list */
+	MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlAdc1RawRes     (MotCtrlMgr_MotCtrlToTwoMilliSec_Rec.MotCtrlAdc1RawRes)");
+	MacroList_TwoMilliSec.Add( "#define MOTCTRLMGR_Adc1RawRes     (MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec.Adc1RawRes)");
+	
+#>
+<# /* Create a Dictionary that contains the signal mapping details for later use.  The input signal name is used for the dictionary "key" */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping" ) ) #><#
+	string OutputSignalName = ValueOf( Xp.ValueAtDefRefTo( "OutputSignalName" )); #>
+<# !LOOP( Xp.ValueAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping/InputSignalName" ) ) #><#
+	string InputSignalName = ValueOf( "." );
+	SignalMappingDictionary.Add( InputSignalName, OutputSignalName); #>
+<# !ENDLOOP #>
+<# !ENDLOOP #>
+<# /* Special Handling for TSG3n MotCtrl Register Outputs - Must group together in a specific order for DMA handling.  Purposely placed signal right after ADC raw results 
+      to ensure alignment in memory - 32 bit is required for TSG3 transfers but this will provide 128bit alignment */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><# 
+	string SigName = ValueOf( "ar:SHORT-NAME" );
+	
+	/* TSG30 Parsing - As we are looping through all signals, keep track of which TSG30 signals are found with some flags - 
+	   note that exact name matching is assumed, this logic will break if for some reason it is decided to change the names of the signals */
+	if (SigName.Contains("TSG30DCMP0E") == true)
+	{
+		Found_MotCtrlTSG30DCMP0E  = true;
+	}
+	if (SigName.Contains("TSG30CMP0E") == true)
+	{
+		Found_MotCtrlTSG30CMP0E  = true;
+	}
+	if (SigName.Contains("TSG30CMP12E") == true)
+	{
+		Found_MotCtrlTSG30CMP12E  = true;
+	}
+	
+	if (SigName.Contains("TSG30CMPWE") == true)
+	{
+		Found_MotCtrlTSG30CMPWE  = true;
+	}
+	if (SigName.Contains("TSG30CMPVE") == true)
+	{
+		Found_MotCtrlTSG30CMPVE  = true;
+	}
+	if (SigName.Contains("TSG30CMPUE") == true)
+	{
+		Found_MotCtrlTSG30CMPUE  = true;
+	}
+	
+	/* TSG31 Parsing - As we are looping through all signals, keep track of which TSG31 signals are found with some flags - 
+	   note that exact name matching is assumed, this logic will break if for some reason it is decided to change the names of the signals */
+	if (SigName.Contains("TSG31DCMP0E") == true)
+	{
+		Found_MotCtrlTSG31DCMP0E  = true;
+	}
+	if (SigName.Contains("TSG31CMP0E") == true)
+	{
+		Found_MotCtrlTSG31CMP0E  = true;
+	}
+	if (SigName.Contains("TSG31CMP12E") == true)
+	{
+		Found_MotCtrlTSG31CMP12E  = true;
+	}
+	
+	if (SigName.Contains("TSG31CMPWE") == true)
+	{
+		Found_MotCtrlTSG31CMPWE  = true;
+	}
+	if (SigName.Contains("TSG31CMPVE") == true)
+	{
+		Found_MotCtrlTSG31CMPVE  = true;
+	}
+	if (SigName.Contains("TSG31CMPUE") == true)
+	{
+		Found_MotCtrlTSG31CMPUE  = true;
+	}
+#>
+<# !ENDLOOP #>
+<#
+	/* After looping through all signals, see which groups were found.  Note that the design assumes three signals in each group is required before they processed */
+	if ((Found_MotCtrlTSG30DCMP0E==true) && 
+	    (Found_MotCtrlTSG30CMP0E==true) && 
+		(Found_MotCtrlTSG30CMP12E==true))
+	{
+		/* Add the signal definition to the structure element list */
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30DCMP0E;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30CMP0E;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30CMP12E;");
+		/* Add the access macros to the list */
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30DCMP0E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30DCMP0E)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30CMP0E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30CMP0E)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30CMP12E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30CMP12E)");
+		/* Add the number of bits in structure to running count */
+		MotCtrlInt_TransferBits+=(32*3);
+	}
+	else if ((Found_MotCtrlTSG30DCMP0E==false) && 
+	         (Found_MotCtrlTSG30CMP0E==false) && 
+		     (Found_MotCtrlTSG30CMP12E==false))
+	{
+	}
+	else
+	{ /* Induce a compiler error if a non-complete set of TSG3 signals in a group were found */ #>
+#error "TSG30 configuration not supported: Group1"
+<#	}
+	if ((Found_MotCtrlTSG30CMPWE==true) && 
+	    (Found_MotCtrlTSG30CMPVE==true) && 
+		(Found_MotCtrlTSG30CMPUE==true))
+	{
+		/* Add the signal definition to the structure element list */
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30CMPWE;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30CMPVE;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG30CMPUE;");
+		/* Add the access macros to the list */
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30CMPWE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30CMPWE)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30CMPVE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30CMPVE)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG30CMPUE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG30CMPUE)");
+		/* Add the number of bits in structure to running count */
+		MotCtrlInt_TransferBits+=(32*3);
+	}
+	else if ((Found_MotCtrlTSG30CMPWE==false) && 
+	         (Found_MotCtrlTSG30CMPVE==false) && 
+		     (Found_MotCtrlTSG30CMPUE==false))
+	{
+	}
+	else
+	{ /* Induce a compiler error if a non-complete set of TSG3 signals in a group were found */ #>
+#error "TSG30 configuration not supported: Group2"
+<#	}
+
+	if ((Found_MotCtrlTSG31DCMP0E==true) && 
+	    (Found_MotCtrlTSG31CMP0E==true) && 
+		(Found_MotCtrlTSG31CMP12E==true))
+	{
+		/* Add the signal definition to the structure element list */
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31DCMP0E;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31CMP0E;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31CMP12E;");
+		/* Add the access macros to the list */
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31DCMP0E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31DCMP0E)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31CMP0E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31CMP0E)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31CMP12E     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31CMP12E)");
+		/* Add the number of bits in structure to running count */
+		MotCtrlInt_TransferBits+=(32*3);
+	}
+	else if ((Found_MotCtrlTSG31DCMP0E==false) && 
+	         (Found_MotCtrlTSG31CMP0E==false) && 
+		     (Found_MotCtrlTSG31CMP12E==false))
+	{
+	}
+	else
+	{ /* Induce a compiler error if a non-complete set of TSG3 signals in a group were found */ #>
+#error "TSG31 configuration not supported: Group1"
+<#	}
+	if ((Found_MotCtrlTSG31CMPWE==true) && 
+	    (Found_MotCtrlTSG31CMPVE==true) && 
+		(Found_MotCtrlTSG31CMPUE==true))
+	{
+		/* Add the signal definition to the structure element list */
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31CMPWE;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31CMPVE;");
+		MotCtrlIntList_32bit.Add( "VAR(uint32, TYPEDEF)     MotCtrlTSG31CMPUE;");
+		
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31CMPWE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31CMPWE)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31CMPVE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31CMPVE)");
+		MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrlTSG31CMPUE     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrlTSG31CMPUE)");
+		/* Add the number of bits in structure to running count */
+		MotCtrlInt_TransferBits+=(32*3);
+	}
+	else if ((Found_MotCtrlTSG31CMPWE==false) && 
+	         (Found_MotCtrlTSG31CMPVE==false) && 
+		     (Found_MotCtrlTSG31CMPUE==false))
+	{
+	}
+	else
+	{ /* Induce a compiler error if a non-complete set of TSG3 signals in a group were found */ #>
+#error "TSG31 configuration not supported: Group2"
+<#	}
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><# 	
+
+	string SigName = ValueOf( "ar:SHORT-NAME" );
+
+	/* Check if signals are TSG3 register signals, adc raw results, or if the signal is an input signal in the signal mapping */
+	if ((SigName.Contains("TSG30DCMP0E") == true) ||
+		(SigName.Contains("TSG30CMP0E") == true) ||
+		(SigName.Contains("TSG30CMP12E") == true) ||
+		(SigName.Contains("TSG30CMPWE") == true) ||
+		(SigName.Contains("TSG30CMPVE") == true) ||
+		(SigName.Contains("TSG30CMPUE") == true) ||
+		(SigName.Contains("TSG31DCMP0E") == true) ||
+		(SigName.Contains("TSG31CMP0E") == true) ||
+		(SigName.Contains("TSG31CMP12E") == true) ||
+		(SigName.Contains("TSG31CMPWE") == true) ||
+		(SigName.Contains("TSG31CMPVE") == true) ||
+		(SigName.Contains("TSG31CMPUE") == true) ||
+		(SigName.Contains("Adc0RawRes") == true) ||
+		(SigName.Contains("Adc0RawRes") == true) ||
+		(SignalMappingDictionary.ContainsKey(SigName) == true))
+	{
+		/* TSG3 signals are handled as a special case above already, so no need to do any additional processing.  Additionally, if the signal
+		   is part of the configured signal mapping as an input, this signal should be skipped because only the output signals are contained in the
+		   data structures */
+	}
+	else
+	{
+	
+	/* Capture all properties in variables */
+	MappingWritenInMotCtrlRunnable = false;
+	MappingReadIn2msRunnable = false;
+	MappingWrittenIn2msRunnable = false;
+	MappingReadInMotCtrlRunnable = false;
+	ImplementationDataType = ValueOf( Xp.ValueAtDefRefTo( "ImplementationDataType" ));
+	SignalSize = ValueOf( Xp.ValueAtDefRefTo( "Size" ));
+	DataTypeIsEnumeration = Exists( Xp.ValueRefAtDefRefTo( "EnumerationNameReference" ) );
+	if (DataTypeIsEnumeration)
+	{
+		EnumerationName = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "EnumerationNameReference" ));
+	}
+	else
+	{
+		EnumerationName = "";
+	}
+	
+	if (ValueOf( Xp.ValueAtDefRefTo( "WrittenInMotCtrlRunnable" )) == "true")
+	{
+		MappingWritenInMotCtrlRunnable = true;
+	}
+	if (ValueOf( Xp.ValueAtDefRefTo( "ReadIn2msRunnable" )) == "true")
+	{
+		MappingReadIn2msRunnable = true;
+	}
+	if (ValueOf( Xp.ValueAtDefRefTo( "WrittenIn2msRunnable" )) == "true")
+	{
+		MappingWrittenIn2msRunnable = true;
+	}
+	if (ValueOf( Xp.ValueAtDefRefTo( "ReadInMotCtrlRunnable" )) == "true")
+	{
+		MappingReadInMotCtrlRunnable = true;
+	}
+	
+	/* For all outputs, search for inputs in signal mapping to gather any additional usage properties */
+	foreach( KeyValuePair<string, string> kvp in SignalMappingDictionary )
+	{
+		/* if output is in signal mapping dictionary, find the input properties */
+		if (kvp.Value == SigName)
+	    {
+#>
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "MotCtrlMgr" ) ); #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><#
+			string TempSigName = ValueOf( "ar:SHORT-NAME" );
+			if (TempSigName == kvp.Key)
+			{
+				if (ValueOf( Xp.ValueAtDefRefTo( "WrittenInMotCtrlRunnable" )) == "true")
+				{
+					MappingWritenInMotCtrlRunnable = true;
+				}
+				if (ValueOf( Xp.ValueAtDefRefTo( "ReadIn2msRunnable" )) == "true")
+				{
+					MappingReadIn2msRunnable = true;
+				}
+				if (ValueOf( Xp.ValueAtDefRefTo( "WrittenIn2msRunnable" )) == "true")
+				{
+					MappingWrittenIn2msRunnable = true;
+				}
+				if (ValueOf( Xp.ValueAtDefRefTo( "ReadInMotCtrlRunnable" )) == "true")
+				{
+					MappingReadInMotCtrlRunnable = true;
+				}
+			}
+#>
+<# !ENDLOOP #>
+<#
+		}
+	}
+		
+		/* Find out which list to add signal initial values to based on signal read/write properties */
+		if ((MappingWritenInMotCtrlRunnable == true) && (MappingReadIn2msRunnable == true))
+		{
+			/* Process 32bit signals */
+			if (	(ImplementationDataType == "float32") ||
+					(ImplementationDataType == "uint32") ||
+					(ImplementationDataType == "sint32"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_32bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_32bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_32bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_32bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlToTwoMilliSec_TransferBits+=32*SignalSize;
+			}
+			/* Process 16bit signals */
+			else if((ImplementationDataType == "uint16") ||
+					(ImplementationDataType == "sint16"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_16bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_16bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_16bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_16bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlToTwoMilliSec_TransferBits+=16*SignalSize;
+			}
+			/* Process 8bit signals */
+			else
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_8bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_8bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlToTwoMilliSecList_8bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					TwoMilliSecFromMotCtrlList_8bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlToTwoMilliSec_TransferBits+=8*SignalSize;
+			}
+			/* Define Access Macros */
+			MacroList_TwoMilliSec.Add( "#define MOTCTRLMGR_" + SigName + "     (MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec." + SigName + ")");
+			MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrl" + SigName + "     (MotCtrlMgr_MotCtrlToTwoMilliSec_Rec.MotCtrl" + SigName + ")");
+
+		}
+		else if ((MappingWrittenIn2msRunnable == true) && (MappingReadInMotCtrlRunnable == true))
+		{
+			/* Process 32bit signals */
+			if (	(ImplementationDataType == "float32") ||
+					(ImplementationDataType == "uint32") ||
+					(ImplementationDataType == "sint32"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_32bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_32bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_32bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_32bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				TwoMilliSecToMotCtrl_TransferBits+=32*SignalSize;
+			}
+			/* Process 16bit signals */
+			else if((ImplementationDataType == "uint16") ||
+					(ImplementationDataType == "sint16"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_16bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_16bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_16bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_16bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				TwoMilliSecToMotCtrl_TransferBits+=16*SignalSize;
+			}
+			/* Process 8bit signals */
+			else
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_8bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_8bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					TwoMilliSecToMotCtrlList_8bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+					MotCtrlFromTwoMilliSecList_8bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				TwoMilliSecToMotCtrl_TransferBits+=8*SignalSize;
+			}
+			/* Define Access Macros */
+			MacroList_TwoMilliSec.Add( "#define MOTCTRLMGR_" + SigName + "     (MotCtrlMgr_TwoMilliSecToMotCtrl_Rec." + SigName + ")");
+			MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrl" + SigName + "     (MotCtrlMgr_MotCtrlFromTwoMilliSec_Rec.MotCtrl" + SigName + ")");
+
+		}
+		else if ((MappingWritenInMotCtrlRunnable == true) || (MappingReadInMotCtrlRunnable == true))
+		{
+			/* Process 32bit signals */
+			if (	(ImplementationDataType == "float32") ||
+					(ImplementationDataType == "uint32") ||
+					(ImplementationDataType == "sint32"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_32bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_32bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlInt_TransferBits+=32*SignalSize;
+			}
+			/* Process 16bit signals */
+			else if((ImplementationDataType == "uint16") ||
+					(ImplementationDataType == "sint16"))
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_16bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_16bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlInt_TransferBits+=16*SignalSize;
+			}
+			/* Process 8bit signals */
+			else
+			{
+				if( DataTypeIsEnumeration ) 
+				{
+					/* If signal is enumeration, use enumeration name in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_8bit.Add( "VAR(" + EnumerationName +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				else
+				{
+					/* If signal is not an enumeration, use implementation datatype in structure element definition - Also, add array braces and size if size indicates signal is an array */
+					MotCtrlIntList_8bit.Add( "VAR(" + ImplementationDataType +", TYPEDEF)     " + "MotCtrl" + SigName + ((SignalSize.ToString() != "1") ? "["+SignalSize+"];" : ";"));
+				}
+				/* Add the number of bits in structure to running count */
+				MotCtrlInt_TransferBits+=8*SignalSize;
+			}
+			/* Define Access Macros */
+			MacroList_MotCtrl.Add( "#define MOTCTRLMGR_MotCtrl" + SigName + "     (MotCtrlMgr_MotCtrlInt_Rec.MotCtrl" + SigName + ")");
+		}
+		else
+		{#>
+#error "Incorrect Motor Control Manager Signal Configuration for signal: <#=SigName#>"
+<#		}
+	}
+#>
+<# !ENDLOOP #>
+<# 	
+	/* Figure out how many bytes of alignment are needed to ensure each structure size is 128 bit divisible, also keep track of total bit size of structure as # of alignment bytes are determined*/
+	while (TwoMilliSecToMotCtrl_TransferBits%128!=0) 
+	{
+		TwoMilliSecToMotCtrl_TransferBits+=8;
+		TwoMilliSecToMotCtrl_AlignmentBytes++;
+	}
+	while (MotCtrlToTwoMilliSec_TransferBits%128!=0) 
+	{
+		MotCtrlToTwoMilliSec_TransferBits+=8;
+		MotCtrlToTwoMilliSec_AlignmentBytes++;
+	}
+	while (MotCtrlInt_TransferBits%128!=0) 
+	{
+		MotCtrlInt_TransferBits+=8;
+		MotCtrlInt_AlignmentBytes++;
+	}
+#>
+/* Type Declarations */
+typedef struct
+{ 
+<# foreach (string signal in MotCtrlToTwoMilliSecList_32bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlToTwoMilliSecList_16bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlToTwoMilliSecList_8bit){ #>
+	<#=signal#>
+<#}
+if (MotCtrlToTwoMilliSec_AlignmentBytes>0) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd1[<#=MotCtrlToTwoMilliSec_AlignmentBytes#>]; 
+<#}
+/* If this structure has no elements, hardcode reserved bytes to the 128bit alignment */
+else if ((MotCtrlToTwoMilliSecList_8bit.Count == 0) && (MotCtrlToTwoMilliSecList_16bit.Count == 0) && (MotCtrlToTwoMilliSecList_32bit.Count == 0)) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd1[16]; 
+<#}#>
+}MotCtrlToTwoMilliSecRec1;
+
+typedef struct
+{ 
+<# foreach (string signal in TwoMilliSecFromMotCtrlList_32bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in TwoMilliSecFromMotCtrlList_16bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in TwoMilliSecFromMotCtrlList_8bit){ #>
+	<#=signal#>
+<#}
+if (MotCtrlToTwoMilliSec_AlignmentBytes>0) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd2[<#=MotCtrlToTwoMilliSec_AlignmentBytes#>]; 
+<#}
+/* If this structure has no elements, hardcode reserved bytes to the 128bit alignment */
+else if ((TwoMilliSecFromMotCtrlList_8bit.Count == 0) && (TwoMilliSecFromMotCtrlList_16bit.Count == 0) && (TwoMilliSecFromMotCtrlList_32bit.Count == 0)) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd2[16]; 
+<#}#>
+}TwoMilliSecFromMotCtrlRec1;
+
+typedef struct
+{ 
+<# foreach (string signal in TwoMilliSecToMotCtrlList_32bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in TwoMilliSecToMotCtrlList_16bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in TwoMilliSecToMotCtrlList_8bit){ #>
+	<#=signal#>
+<#}
+if (TwoMilliSecToMotCtrl_AlignmentBytes>0) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd3[<#=TwoMilliSecToMotCtrl_AlignmentBytes#>]; 
+<#}
+/* If this structure has no elements, hardcode reserved bytes to the 128bit alignment */
+else if ((TwoMilliSecToMotCtrlList_8bit.Count == 0) && (TwoMilliSecToMotCtrlList_16bit.Count == 0) && (TwoMilliSecToMotCtrlList_32bit.Count == 0)) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd3[16]; 
+<#}#>
+}TwoMilliSecToMotCtrlRec1;
+
+typedef struct
+{ 
+<# foreach (string signal in MotCtrlFromTwoMilliSecList_32bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlFromTwoMilliSecList_16bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlFromTwoMilliSecList_8bit){ #>
+	<#=signal#>
+<#}
+if (TwoMilliSecToMotCtrl_AlignmentBytes>0) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd4[<#=TwoMilliSecToMotCtrl_AlignmentBytes#>]; 
+<#}
+/* If this structure has no elements, hardcode reserved bytes to the 128bit alignment */
+else if ((MotCtrlFromTwoMilliSecList_8bit.Count == 0) && (MotCtrlFromTwoMilliSecList_16bit.Count == 0) && (MotCtrlFromTwoMilliSecList_32bit.Count == 0)) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd4[16]; 
+<#}#>
+}MotCtrlFromTwoMilliSecRec1;
+
+typedef struct
+{ 
+<# foreach (string signal in MotCtrlIntList_32bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlIntList_16bit){ #>
+	<#=signal#>
+<#}#>
+<# foreach (string signal in MotCtrlIntList_8bit){ #>
+	<#=signal#>
+<#}
+if (MotCtrlInt_AlignmentBytes>0) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd5[<#=MotCtrlInt_AlignmentBytes#>]; 
+<#}
+/* If this structure has no elements, hardcode reserved bytes to the 128bit alignment */
+else if ((MotCtrlIntList_8bit.Count == 0) && (MotCtrlIntList_16bit.Count == 0) && (MotCtrlIntList_32bit.Count == 0)) {#>
+	VAR(uint8, TYPEDEF)     AlgnResd5[16]; 
+<#}#>
+}MotCtrlIntRec1;
+
+/* Global Variable Declarations */
+#define CDD_MotCtrlMgr_START_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+extern VAR(MotCtrlToTwoMilliSecRec1, CDD_MotCtrlMgr_VAR_INIT) MotCtrlMgr_MotCtrlToTwoMilliSec_Rec;
+#define CDD_MotCtrlMgr_STOP_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+
+#define CDD_MotCtrlMgr_DmaWrite_START_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+extern VAR(TwoMilliSecFromMotCtrlRec1, CDD_MotCtrlMgr_VAR_INIT) MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec;
+#define CDD_MotCtrlMgr_DmaWrite_STOP_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+
+#define CDD_MotCtrlMgr_START_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+extern VAR(TwoMilliSecToMotCtrlRec1, CDD_MotCtrlMgr_VAR_INIT) MotCtrlMgr_TwoMilliSecToMotCtrl_Rec;
+#define CDD_MotCtrlMgr_STOP_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+
+#define CDD_MotCtrlMgr_DmaWrite_START_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+extern VAR(MotCtrlFromTwoMilliSecRec1, CDD_MotCtrlMgr_VAR_INIT) MotCtrlMgr_MotCtrlFromTwoMilliSec_Rec;
+#define CDD_MotCtrlMgr_DmaWrite_STOP_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+
+#define CDD_MotCtrlMgr_START_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+extern VAR(MotCtrlIntRec1, CDD_MotCtrlMgr_VAR_INIT) MotCtrlMgr_MotCtrlInt_Rec;
+#define CDD_MotCtrlMgr_STOP_SEC_VAR_INIT_128
+#include "MotCtrlMgr_MemMap.h"
+
+/* Macro Definitions */
+<# foreach (string macro in MacroList_MotCtrl){ #>
+<#=macro#>
+<#}#>
+<# /* For all Signal mapping, add access macros for mapped "Inputs" (the dictionary key)... 
+      these will be directly defined to be the access macro for the mapped "Output" (the dictionary value) */
+foreach( KeyValuePair<string, string> kvp in SignalMappingDictionary )
+{
+    string macro;
+	macro = "#define MOTCTRLMGR_MotCtrl" + kvp.Key + "     (MOTCTRLMGR_MotCtrl" + kvp.Value + ")";#>
+<#=macro#>
+<#}#>
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif

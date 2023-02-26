@@ -1,0 +1,52 @@
+import ide;
+import ghs_ideobject;
+import ghs_constants;
+import ghs_winreg;
+from ghs_util import *;
+
+class GHS_Terminal(ghs_ideobject.GHS_IdeObject):
+    """ Describe information for MULTI Terminal. """
+    #
+    # Initialize object.
+    #
+    # GHS: Validated
+    #
+    def __init__(self, workingDir=""):
+	ghs_ideobject.GHS_IdeObject.__init__(self, "Mterminal.Connect",
+					     workingDir);
+	self.service = GHS_GetGeneralService(self.serviceName,
+					    "MULTI Terminal",
+					    workingDir);
+    #
+    # Make connection.
+    #
+    # Return an object of GHS_TerminalWindow.
+    #
+    # GHS: Validated (manually)
+    #
+    def MakeConnection(self, connectCommand=""):
+	if not self.service:
+	    print("MULTI Terminal service is not started up.");
+	    return None;
+
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	self.cmdExecOutput = self.service.MakeConnection(connectCommand);
+	obj = winreg.WaitForWindowFromClass(oldWinList,
+		      self.maxSecToWaitForNewWindow,
+		      getattr(ghs_constants.winClassNames, "terminal", ""),
+		      "");
+	if not obj:
+	    print("Did not see MULTI Terminal window.");
+	return obj;
+    # Define some aliases for the function
+    makeconnection = MakeConnection;
+    Connect = MakeConnection;
+    connect = MakeConnection;
+
+# Define an object for the class.
+ghs_terminal = GHS_Terminal;

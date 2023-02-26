@@ -1,0 +1,75 @@
+demo_profile {
+    profile_name = "Device_Bus_Profile"
+    
+    data_descriptions {
+	device {
+	    signature = {"Device"}
+	    type = "graph"
+    
+	    node_text = "mprintf(\"%s\nDevice ID: %d\", self.deviceName.toString(), self.deviceID)"
+	    children {
+		outputs {
+		    value = "return self._outputs"
+		    is_container = true;
+		}
+	    }
+	    
+	    parents {
+		inputs {
+		    value = "return self._inputs"
+		    is_container = true;
+		}
+	    }
+	}
+	
+	bus {
+	    signature = {"Bus"}
+	    type = "graph"
+    
+	    node_text = "mprintf(\"%s\nBus ID: %d\nInputs: %d\nOutputs: %d\","
+	    node_text+=         "self.busName.toString(), self.busID, self._inputs.size(), self._outputs.size())"
+    
+	    children {
+		outputs {
+		    value = "return self._outputs"
+		    is_container = true;
+		}
+	    }
+    
+	    parents {
+		inputs {
+		    value = "return self._inputs"
+		    is_container = true;
+		}
+	    }
+	}
+	
+	string_func {
+	    signature = {"std::basic_string<*>", "std::string"}
+	    type = "function_definer"
+    
+	    functions {
+		tostring {
+		    name = "toString"
+		    body  = "if (_BUF_SIZE <= self._Myres) {"
+		    body += "	return  self._Bx._Ptr;"
+		    body += "} else {"
+		    body += "	return  self._Bx._Buf;"
+		    body += "}"
+		}
+	    }
+	}
+    }
+}
+
+demo_view {
+    initial_pane = "only_pane"
+    default_root = "main#deviceA"
+    tab_name = "Device Graph"
+    
+    panes {
+	only_pane {
+	    profile_name = "Device_Bus_Profile"
+	}
+    }
+}

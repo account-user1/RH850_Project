@@ -1,0 +1,38 @@
+// xdebug internal header
+#ifndef _XDEBUG_
+#define _XDEBUG_
+
+#define _NEW_CRT				new
+#define _DELETE_CRT(ptr)		delete (ptr)
+#define _DELETE_CRT_VEC(ptr)	delete[] (ptr)
+#define _STRING_CRT				string
+
+#if defined(__ghs)
+# include <yvals.h>
+
+# if !_HAS_EXCEPTIONS
+#   define _CHECK_LIB_ALLOC __ghs_check_library_allocation
+
+extern void __library_allocation_failed_cannot_throw(void);
+
+#   if defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS)
+namespace std {
+  using ::__library_allocation_failed_cannot_throw;
+}
+#   endif /* defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS) */
+
+inline void * __ghs_check_library_allocation(void *alloc_result)
+{
+  if (alloc_result == 0)
+    __library_allocation_failed_cannot_throw();
+  return alloc_result;
+}
+
+# endif /* !_HAS_EXCEPTIONS */
+#endif /* defined(__ghs) */
+#endif /* _XDEBUG_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

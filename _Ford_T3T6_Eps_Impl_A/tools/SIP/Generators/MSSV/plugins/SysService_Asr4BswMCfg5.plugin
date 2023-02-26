@@ -1,0 +1,141 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  SysService_Asr4BswMCfg5.plugin
+*  Module     :  BswM
+*  Description:  Entry point of Elisa Core.
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Philipp Ritter                visrpp        Vector Informatik GmbH
+*  Jochen Vorreiter              visvjn        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2015-08-10    visrpp                    First version
+*  02.00.00   2016-03-11    visvjn   ESCAN00087790    Added Development error check
+*  03.00.00   2016-11-04    visvjn   ESCAN00087552    Added check CheckPowerSourceDefine
+              2016-11-04    visvjn   FEATC-310        Added check CheckBswMEnableEthIf 
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x030000)
+  reg.SetPackageName("SysService_Asr4BswMCfg5")
+  reg.SetInputFiles(["BswM_Lcfg.c", "BswM.c"])
+  return reg 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : Elisa_core calls this function to allow the plugin a version check against the BSW sources.
+**********************************************************************************************************************/
+def CheckVersions()
+{
+  AssertDefineEquals("SYSSERVICE_ASR4BSWMCFG5_VERSION", "(0x0900u)")
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+* Requirements : ADAPT: Enter here the references to the corresponding requirements
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Checks that the BSWM_IPDUGROUPVECTORSIZE is less or equal to the size of the Com_IPduGroupVectors", BswMCheckIPduGroupVectorSize)
+  InvokeRule("Check QM inactive", CheckQMDefines)
+  InvokeRule("Check that CC Power Source is not enabled by license", CheckPowerSourceDefine)
+  InvokeRule("Check that BswMEnableEthIf is not set", CheckBswMEnableEthIf)
+}
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+/**********************************************************************************************************************
+* Name         : BswMCheckIPduGroupVectorSize
+* Parameter    : None
+* Return value : None
+* Description  : Checks that the BSWM_IPDUGROUPVECTORSIZE is less or equal to the size of the Com_IPduGroupVectors.
+* Requirements : 
+**********************************************************************************************************************/
+def BswMCheckIPduGroupVectorSize()
+{
+  if (IsDefined("BSWM_IPDUGROUPVECTORSIZE"))
+  {
+    var iPduVectorSize=Define("BSWM_IPDUGROUPVECTORSIZE").GetValueAsNumber();
+    BswMCheckArraySize("BswM_ComIPduGroupState", iPduVectorSize)
+    BswMCheckArraySize("BswM_ComIPduGroupReinitState", iPduVectorSize)
+    BswMCheckArraySize("BswM_ComRxIPduGroupDMState", iPduVectorSize)
+  }
+}
+
+def BswMCheckArraySize(arrayName, sizeToCheck)
+{
+  if(SymbolExists(arrayName))
+  {
+    Assert(sizeToCheck, LessEqual, Array(arrayName).GetSize())
+  }
+}
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks the setting of QM-related preprocessor defines.
+*                Typically it checks that QM features are inactive in safety context.
+* Requirements : N/A
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  AssertDefineIsStdOn("BSWM_DEV_ERROR_DETECT")
+}
+
+/**********************************************************************************************************************
+* Name         : CheckPowerSourceDefine
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks that the CC PowerSource features is not enabled by license
+* Requirements : SMI-3529
+**********************************************************************************************************************/
+def CheckPowerSourceDefine()
+{
+  AssertDefineIsNotSet("BSWM_CC_POWER_SOURCES")
+}
+
+/**********************************************************************************************************************
+* Name         : CheckBswMEnableEthIf
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks that BswMEnableEthIf is not configured
+* Requirements : SMI-3528
+**********************************************************************************************************************/
+def CheckBswMEnableEthIf()
+{
+  AssertDefineIsStdOff("BSWM_ENABLE_ETHIF")
+}

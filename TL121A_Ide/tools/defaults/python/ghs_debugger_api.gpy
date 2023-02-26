@@ -1,0 +1,1713 @@
+import time;
+import ghs_ideobject;
+import ghs_constants;
+import ghs_window;
+import ghs_target_constants;
+from ghs_util import *;
+import re;
+
+class GHS_DebuggerApi(ghs_ideobject.GHS_IdeObject):
+    status_nil = 0;
+    status_no_process = 1;
+    status_stopped = 2;
+    status_running = 3;
+    status_dying = 4;
+    status_forking = 5;
+    status_executing = 6;
+    status_continuing = 7;
+    status_zombie = 8;
+
+    #
+    # Run commands.
+    #
+    # Arguments:
+    #	 cmds		commands to be executed.
+    #    block		indicates if to execute the command in block mode and
+    #			grabs the outputs back.
+    #    printOutput	indicates whether or not to print the outputs (if any)
+    #			from the MULTI debugger.
+    #    keepRawOutput  indicates if to keep the raw output, which is used by
+    #			MULTI Python Integration to transfer some special
+    #			information.
+    #			The flag is majorly for testing purpose. Usually, it 
+    #			should not be turned on.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # This function should be implemented by its derived classes.
+    #
+    # GHS: Validated
+    #
+    def RunCommands(self, cmds, block=True, printOutput=True,
+		    keepRawOutput=False):
+	print("GHS_Debugger_Api::RunCommands() should not be called.");
+	self.CleanCmdExecVariables();
+	self.cmdExecStatus = 0;
+	return False;
+
+    #
+    # Get the target ID.
+    #
+    # Return an integer for the target ID or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetTargetId(self):
+	if self.RunCommands('mprintf("0x%x\n", $_TARGET)', True, False) and \
+	   self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetid = GetTargetId;
+    #
+    # Get CPU family ID from target ID.
+    #
+    # GHS: Validated
+    #
+    def GetCpuFamily(self, targetId=0):
+	if targetId == 0:
+	    targetId = self.GetTargetId();
+	return targetId & 0xffff;
+    # Define some aliases for the function
+    getcpufamily = GetCpuFamily;
+    CpuFamily = GetCpuFamily;
+    cpufamily = GetCpuFamily;
+    #
+    # Get CPU minor ID from target ID.
+    #
+    # GHS: Validated
+    #
+    def GetCpuMinor(self, targetId=0):
+	if targetId == 0:
+	    targetId = self.GetTargetId();
+	return (targetId)>>16;
+    # Define some aliases for the function
+    getcpuminor = GetCpuMinor;
+    CpuMinor = GetCpuMinor;
+    cpuminor = GetCpuMinor;
+    #
+    # Get target CPU family name.
+    #
+    # These names should be the same used in project file.
+    #
+    # GHS: Validated
+    #
+    def GetTargetCpuFamilyName(self):
+	cpuFamily = self.GetCpuFamily(self.GetTargetId());
+	if cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.PPC_POWER):
+	    return "ppc";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.PPC970_64):
+	    return "ppc";	# Or a new name?
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.ARM_7):
+	    return "arm";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.V850):
+	    return "v800";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.V810):
+	    return "v800";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.R3000):
+	    return "mips";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.X86_386):
+	    return "86";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.TRI_TC10GP):
+	    # Not supported in NPW.
+	    return "tricore";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.M68_68000):
+	    return "coldfire";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.MSC_8101):
+	    return "starcore";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.BF_ADI_532):
+	    # "bf" or "bfadi"
+	    return "bf";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.SH_1):
+	    return "sh";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.ARC_A4):
+	    return "arc";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.C6200):
+	    return "c6000";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.Sparc):
+	    return "sparc";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.PIC24):
+	    return "pic30";			    
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.FR20):
+	    return "fr";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.FireFly32):
+	    return "firefly";
+	elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.NANO32):
+	    return "nano";
+	elif hasattr(ghs_target_constants.targetIds, "ARM64_V8") and cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.ARM64_V8):
+	    return "arm64";
+	else:
+	    return "";
+    # Define some aliases for the function
+    gettargetcpufamilyname = GetTargetCpuFamilyName;
+    GetCpuFamilyName = GetTargetCpuFamilyName;
+    getcpufamilyname = GetTargetCpuFamilyName;
+    GetCpuName = GetTargetCpuFamilyName;
+    getcpuname = GetTargetCpuFamilyName;
+    CpuName = GetTargetCpuFamilyName;
+    cpuname = GetTargetCpuFamilyName;
+    #
+    # Get target OS name from the debugged program itself.
+    #
+    # If the program is for native debugging, the corresponding native OS
+    # name will be returned, otherwise, "standalone" will be returned.
+    #
+    # These names should be the same as those used in project file.
+    #
+    # GHS: Validated (internal use only)
+    #
+    def GetProgramOsName(self):
+	return self.GetTargetOsName(True);
+    # Define some aliases for the function
+    getprogramosname = GetProgramOsName;
+    GetProgOsName = GetProgramOsName;
+    getprogosname = GetProgramOsName;
+    ProgOsName = GetProgramOsName;
+    progosname = GetProgramOsName;
+    #
+    # Get target OS name.
+    #
+    # These names should be the same as those used in project file.
+    #
+    # GHS: Validated
+    #
+    def GetTargetOsName(self, detail=True):
+	if self.IsConnected():
+	    osCode = self.GetTargetOsType();
+	    if osCode == ghs_target_constants.osTypes.OS_VXWORKS:
+		# vxsim?
+		return "vxworks";
+	    elif osCode == ghs_target_constants.osTypes.OS_CHORUS:
+		return "chrous";
+	    elif osCode == ghs_target_constants.osTypes.OS_NUCLEUS:
+		return "nucleus";
+	    elif osCode == ghs_target_constants.osTypes.OS_OSE:
+		return "ose";
+	    elif osCode == ghs_target_constants.osTypes.OS_INTEGRITY:
+		# velosity?
+		return "integrity";
+	    elif osCode == ghs_target_constants.osTypes.OS_THREADX:
+		# txsim?
+		return "threadx";
+	    elif osCode == ghs_target_constants.osTypes.OS_WINDOWS:
+		return "win32";
+	    elif osCode == ghs_target_constants.osTypes.OS_UNIX:
+		if detail:
+		    osMinorCode = self.GetTargetOsMinorType();
+		    if osMinorCode == ghs_target_constants.osTypes.OS_MINOR_UNIX_LINUX:
+			return "linux";
+		    elif osMinorCode == ghs_target_constants.osTypes.OS_MINOR_UNIX_LYNXOS:
+			return "lynx";
+		    else:
+			# Unfortunately, MULTI does not distinguish other
+			# different UNIX vendors. We have to assume that it is
+			# native debugging and use the host OS information
+			# to find out the target OS.
+			if re.match("sunos", sys.platform):
+			    return "solaris";
+			return "unix";
+		else:
+		    return "unix";
+	    elif osCode == ghs_target_constants.osTypes.OS_MERCURY:
+		return "mercury";
+	    elif osCode == ghs_target_constants.osTypes.OS_DICOS:
+		return "dicos";
+	    else:
+		return "standalone";
+	else:
+	    # Guess target OS by checking native platform.
+	    cpuFamily = self.GetCpuFamily(self.GetTargetId());
+	    if (cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.Sparc)) and \
+	       re.match("sunos", sys.platform):
+		   return "solaris";
+	    elif cpuFamily == self.GetCpuFamily(
+			    ghs_target_constants.targetIds.X86_386):
+		if sys.platform == "win32":
+		    # Check the debugged program's type
+		    pname = self.GetProgram();
+		    if pname:
+			fileInfo = ghs_system(ghs_misc.ghs_globals["__ghs_multi_dir"]+os.sep+"gfile "+pname);
+			if fileInfo and re.search("PE/COFF", fileInfo):
+			    return "win32";
+		elif re.match("linux", sys.platform):
+		    # Check the debugged program's type
+		    pname = self.GetProgram();
+		    if pname:
+			fileInfo = ghs_system(ghs_misc.ghs_globals["__ghs_multi_dir"]+os.sep+"gfile "+pname);
+			if fileInfo and re.search("ELF", fileInfo):
+			    return "linux";
+		# Check ALPH and other platforms for native debugging.
+		
+	    return "standalone";
+    # Define some aliases for the function
+    gettargetosname = GetTargetOsName;
+    GetOsName = GetTargetOsName;
+    getosname = GetTargetOsName;
+    OsName = GetTargetOsName;
+    osname = GetTargetOsName;
+    #
+    # Get the target series.
+    #
+    # Return an integer for the target series or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetTargetSeries(self):
+	if self.RunCommands('mprintf("0x%x\n", $_TARGET_SERIES)', True, False) and \
+	   self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetseries = GetTargetSeries;
+    GetSeries = GetTargetSeries;
+    getseries = GetTargetSeries;
+    Series = GetTargetSeries;
+    series = GetTargetSeries;
+    #
+    # Get the target co-processor.
+    #
+    # Return an integer for the target co-procesor or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetTargetCoProcessor(self):
+	if self.RunCommands('mprintf("0x%x\n", $_TARGET_COPROCESSOR)',
+			    True, False) and self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetcoprocessor = GetTargetCoProcessor;
+    GetTargetCoprocessor = GetTargetCoProcessor;
+    CoProcessor = GetTargetCoProcessor;
+    coprocessor = GetTargetCoProcessor;
+    #
+    # Get the target OS type.
+    #
+    # Return an integer for the target OS type or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetTargetOsType(self):
+	if self.RunCommands('mprintf("0x%x\n", $_TARGET_OS)',
+			    True, False) and self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetostype = GetTargetOsType;
+    GetTargetOs = GetTargetOsType;
+    gettargetos = GetTargetOsType;
+    OsType = GetTargetOsType;
+    ostype = GetTargetOsType;
+    #
+    # Get the target OS minor type.
+    #
+    # Return an integer for the target OS minor type or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetTargetOsMinorType(self):
+	if self.RunCommands('mprintf("0x%x\n", $_TARGET_MINOR_OS)',
+			    True, False) and self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetosminortype = GetTargetOsMinorType;
+    GetTargetOsMinor = GetTargetOsMinorType;
+    gettargetosminor = GetTargetOsMinorType;
+    OsMinor = GetTargetOsMinorType;
+    osminor = GetTargetOsMinorType;
+
+
+    #
+    # Check if we are in run-mode debugging.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def IsRunMode(self):
+	ot = self.GetTargetOsType();
+	return ot != 0 and ot != ghs_target_constants.osTypes.OS_MULTICORE ;
+    # Define some aliases for the function
+    isrunmode = IsRunMode;
+    InRunMode = IsRunMode;
+    inrunmode = IsRunMode;
+    RunMode = IsRunMode;
+    runmode = IsRunMode;
+    #
+    # Check if we are in freeze-mode debugging.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def IsFreezeMode(self):
+	return self.GetTargetOsType() == 0;
+    # Define some aliases for the function
+    isfreezemode = IsFreezeMode;
+    IsStopMode = IsFreezeMode;
+    isstopmode = IsFreezeMode;
+    StopMode = IsFreezeMode;
+    stopmode = IsFreezeMode;
+
+
+    #
+    # Check if the program is for native-debugging.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def IsNativeDebugging(self):
+	return self.GetProgramOsName() != "standalone";
+    # Define some aliases for the function
+    isnativedebugging = IsNativeDebugging;
+    NativeDebugging = IsNativeDebugging;
+    nativedebugging = IsNativeDebugging;
+    NativeProg = IsNativeDebugging
+    nativeprog = IsNativeDebugging;
+
+
+    #
+    # Get host OS name.
+    #
+    # Return a string.
+    #
+    # GHS: Validated
+    #
+    def GetHostOsName(self):
+	if self.RunCommands('mprintf("%s\n", $_HOST_OPERATING_SYSTEM)',
+			    True, False):
+	    return self.cmdExecOutput;
+	else:
+	    return "";
+    # Define some aliases for the function
+    gethostosname = GetHostOsName;
+    HostOsName = GetHostOsName;
+    hostosname = GetHostOsName;
+
+
+    #
+    # Get MULTI major, minor or micro version based on "which" argument:
+    #	0: major version number
+    #	1: minor version number
+    #	2: micro version number
+    #
+    # Return a number or 0 on error.
+    #
+    # GHS: Validated
+    #
+    def GetMultiVersion(self, which=0):
+	if which == 0:
+	    cmd = 'mprintf("%d\n", $_MULTI_MAJOR_VERSION)';
+	elif which == 1:
+	    cmd = 'mprintf("%d\n", $_MULTI_MINOR_VERSION)';
+	elif which == 2:
+	    cmd = 'mprintf("%d\n", $_MULTI_MICRO_VERSION)';
+	else:
+	    return 0;
+	if self.RunCommands(cmd, True, False) and self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    getmultiversion = GetMultiVersion;
+    MultiVersion = GetMultiVersion;
+    multiversion = GetMultiVersion;
+
+
+    #
+    # Check if the target is big endian.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def BigEndianTarget(self):
+	if self.RunCommands('mprintf("%d\n", $_TARGET_IS_BIGENDIAN)',
+			    True, False) and self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0) != 0;
+	else:
+	    return False;
+    # Define some aliases for the function
+    bigendiantarget = BigEndianTarget;
+
+
+    #
+    # Check if the option with the specified index in the attribute list
+    # is on from the given attribute string or the previous command execution
+    # output.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def GetProcessAttribute(self, attributeIdx, attributeString=""):
+	if not attributeString:
+	    attributeString = self.cmdExecOutput;
+	if not attributeString:
+	    # Error
+	    return False;
+	lineList = attributeString.split("\n");
+	# Get the line for the current MULTI process.
+	# Here are the groups for the matched line:
+	# 	group(1) - # (slot index)
+	#	group(2) - PID
+	#	group(3) - PPID
+	#	group(4) - Status
+	#	group(5) - Attributes (CBEFITDHR)
+	#	group(6) - Name and Arguments
+	wantedLine = re.compile("^>>\s*(\d+)\s+(0[xX][0-9a-fA-F]+|\d+)\s+(0[xX][0-9a-fA-F]+|\d+)\s+(\w.*\w)\s+(\d+)\s+([\\\/\w].*)$");
+	wantedLineX = re.compile("^>>\s*(\d+)\s+(0[xX][0-9a-fA-F]+|\d+)\s+(N/A)\s+(\w.*\w)\s+(\d+)\s+([\\\/\w].*)$");
+	# The next regular expression is for MULTI's validation.
+	wlForVal = re.compile("^>>\s*(\d+)\s+(PID)\s+(PID)\s+(\w.*\w)\s+(\d+)\s+([\\\/\w].*)$");
+	for idx in range(0, len(lineList)):
+	    res = wantedLine.match(lineList[idx]);
+	    if not res:
+		res = wantedLineX.match(lineList[idx]);
+	    if not res:
+		res = wlForVal.match(lineList[idx]);
+	    if res:
+		if attributeIdx >= len(res.group(5)):
+		    # Error
+		    return False;
+		else:
+		    return int(res.group(5)[attributeIdx]) != 0;
+	# Should not happen if the attribute string is from MULTI.
+	return False;
+    #
+    # Check if option "Debug Child" task/process is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckDebugChildren(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(0, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkdebugchildren = CheckDebugChildren;
+    CheckC = CheckDebugChildren;
+    checkc = CheckDebugChildren;
+    #
+    # Check if option "inherit Software breakpoint after forking" is on for
+    # the current MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckBreakpointInheritance(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(1, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkbreakpointinheritance = CheckBreakpointInheritance;
+    CheckBpInheritance = CheckBreakpointInheritance;
+    checkbpinheritance = CheckBreakpointInheritance;
+    CheckB = CheckBreakpointInheritance;
+    checkb = CheckBreakpointInheritance;
+    #
+    # Check if option "stop after exec" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckStopAfterExec(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(2, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkstopafterexec = CheckStopAfterExec;
+    CheckE = CheckStopAfterExec;
+    checke = CheckStopAfterExec;
+    #
+    # Check if option "stop after fork" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckStopAfterFork(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(3, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkstopafterfork = CheckStopAfterFork;
+    CheckF = CheckStopAfterFork;
+    checkf = CheckStopAfterFork;
+    #
+    # Check if option "inherit process bits in child" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckInheritProcessBits(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(4, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkinheritprocessbits = CheckInheritProcessBits;
+    CheckI = CheckInheritProcessBits;
+    checki = CheckInheritProcessBits;
+    #
+    # Check if option "stop on task creation" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckStopOnTaskCreation(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(5, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkstopontaskcreation = CheckStopOnTaskCreation;
+    CheckT = CheckStopOnTaskCreation;
+    checkt = CheckStopOnTaskCreation;
+    #
+    # Check if option "debug on task creation" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckDebugOnTaskCreation(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(6, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkdebugontaskcreation = CheckDebugOnTaskCreation;
+    CheckD = CheckDebugOnTaskCreation;
+    checkd = CheckDebugOnTaskCreation;
+    #
+    # Check if option "halt on attach" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckHaltOnAttach(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(7, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkhaltonattach = CheckHaltOnAttach;
+    CheckH = CheckHaltOnAttach;
+    checkh = CheckHaltOnAttach;
+    #
+    # Check if option "run on detach" is on for the current
+    # MULTI process.
+    #
+    # Return True or False
+    #
+    # GHS: Validated
+    #
+    def CheckRunOnDetach(self):
+	if self.RunCommands('P', True, False):
+	    return self.GetProcessAttribute(8, self.cmdExecOutput);
+	else:
+	    # Error
+	    return False;
+    # Define some aliases for the function
+    checkrunondetach = CheckRunOnDetach;
+    CheckR = CheckRunOnDetach;
+    checkr = CheckRunOnDetach;
+
+    #
+    # Change option "Debug Children" task/process for the current MULTI
+    # process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeDebugChildren(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P c', True, False);
+	oldStatus = self.CheckDebugChildren();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P c', True, False);
+    # Define some aliases for the function
+    changedebugchildren = ChangeDebugChildren;
+    ChangeC = ChangeDebugChildren;
+    changec = ChangeDebugChildren;
+    #
+    # Change option "inherit breakpoint after forking" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeBreakpointInheritance(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P b', True, False);
+	oldStatus = self.CheckBreakpointInheritance();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P b', True, False);
+    # Define some aliases for the function
+    changebreakpointinheritance = ChangeBreakpointInheritance;
+    ChangeBpInheritance = ChangeBreakpointInheritance;
+    changebpinheritance = ChangeBreakpointInheritance;
+    ChangeB = ChangeBreakpointInheritance;
+    changeb = ChangeBreakpointInheritance;
+    #
+    # Change option "stop after exec" for the current MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeStopAfterExec(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P e', True, False);
+	oldStatus = self.CheckStopAfterExec();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P e', True, False);
+    # Define some aliases for the function
+    changestopafterexec = ChangeStopAfterExec;
+    ChangeE = ChangeStopAfterExec;
+    changee = ChangeStopAfterExec;
+    #
+    # Change option "stop after fork" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeStopAfterFork(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P f', True, False);
+	oldStatus = self.CheckStopAfterFork();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P f', True, False);
+    # Define some aliases for the function
+    changestopafterfork = ChangeStopAfterFork;
+    ChangeF = ChangeStopAfterFork;
+    changef = ChangeStopAfterFork;
+    #
+    # Change option "inherit process bits in child" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeInheritProcessBits(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P i', True, False);
+	oldStatus = self.CheckInheritProcessBits();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P i', True, False);
+    # Define some aliases for the function
+    changeinheritprocessbits = ChangeInheritProcessBits;
+    ChangeI = ChangeInheritProcessBits;
+    changei = ChangeInheritProcessBits;
+    #
+    # Change option "stop on task creation" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeStopOnTaskCreation(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P t', True, False);
+	oldStatus = self.CheckStopOnTaskCreation();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P t', True, False);
+    # Define some aliases for the function
+    changestopontaskcreation = ChangeStopOnTaskCreation;
+    ChangeT = ChangeStopOnTaskCreation;
+    changet = ChangeStopOnTaskCreation;
+    #
+    # Change option "debug on task creation" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeDebugOnTaskCreation(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P d', True, False);
+	oldStatus = self.CheckDebugOnTaskCreation();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P d', True, False);
+    # Define some aliases for the function
+    changedebugontaskcreation = ChangeDebugOnTaskCreation;
+    ChangeD = ChangeDebugOnTaskCreation;
+    changed = ChangeDebugOnTaskCreation;
+    #
+    # Change option "halt on attach" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeHaltOnAttach(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P h', True, False);
+	oldStatus = self.CheckHaltOnAttach();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P h', True, False);
+    # Define some aliases for the function
+    changehaltonattach = ChangeHaltOnAttach;
+    ChangeH = ChangeHaltOnAttach;
+    changeh = ChangeHaltOnAttach;
+    #
+    # Change option "run on detach" for the current
+    # MULTI process.
+    #
+    # Return True (on success) or False (on failure)
+    #
+    # GHS: Validated
+    #
+    def ChangeRunOnDetach(self, toggle=True, newStatus=False):
+	if toggle:
+	    return self.RunCommands('P r', True, False);
+	oldStatus = self.CheckRunOnDetach();
+	if not self.cmdExecStatus:
+	    return False;
+	elif oldStatus == newStatus:
+	    return True;
+	else:
+	    return self.RunCommands('P r', True, False);
+    # Define some aliases for the function
+    changerunondetach = ChangeRunOnDetach;
+    ChangeR = ChangeRunOnDetach;
+    changer = ChangeRunOnDetach;
+
+
+    #
+    # Debug program.
+    #
+    # Return a GHS_DebuggerWindow object.
+    #
+    # GHS: Validated
+    #
+    def DebugProgram(self, fileName, newWin=True, block=True, printOutput=True, expandFileName=True):
+	if not fileName:
+	    print("No program name is given.");
+	if expandFileName:
+	    fileName = GHS_ExpandFileName(fileName);
+	if not fileName:
+	    print("Cannot find the program.");
+	if newWin:
+	    cmd = "new " + GHS_QuotifyString(fileName);
+	else:
+	    cmd = "debug " + GHS_QuotifyString(fileName);
+	self.RunCommands(cmd, block, printOutput);
+	if not self.cmdExecObj:
+	    print("Did not see debugger window.");
+	return self.cmdExecObj;
+    # Define some aliases for DebugProgram function
+    debugprogram = DebugProgram;
+    DebugProg = DebugProgram;
+    debugprog = DebugProgram;
+    Debug = DebugProgram;
+    debug = DebugProgram;
+    DebugFile = DebugProgram;
+    debugfile = DebugProgram;
+
+
+    #
+    # Get debugged program.
+    #
+    # Return the debugged program name or "" on failure.
+    #
+    # GHS: Validated
+    #
+    def GetProgram(self):
+	if self.RunCommands('mprintf("%s\n", $_Exec_Name);', True, False) and \
+	    self.cmdExecOutput:
+	    return self.cmdExecOutput;
+	else:
+	    return "";
+    # Define some aliases for the function
+    getprogram = GetProgram;
+    DebuggedProgram = GetProgram;
+    debuggedprogram = GetProgram;
+    ProgName = GetProgram;
+    progname = GetProgram;
+    
+
+    #
+    # Halt task.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Halt(self, block=True, printOutput=True):
+	return self.RunCommands("halt", block, printOutput);
+    # Define some aliases for the function
+    halt = Halt;
+    Stop = Halt;
+    stop = Halt;
+    #
+    # Resume task.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Resume(self, block=True, printOutput=True):
+	return self.RunCommands("c", block, printOutput);
+    # Define some aliases for Resume function
+    resume = Resume;
+    Run = Resume;
+    run = Resume;
+    #
+    # Single step into/over function.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Step(self, block=True, printOutput=True, stepIntoFunc=True):
+	if stepIntoFunc:
+	    cmd = "s";
+	else:
+	    cmd = "n";
+	return self.RunCommands(cmd, block, printOutput);
+    # Define some aliases for Step function
+    step = Step;
+    #
+    # Single step over/into function.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Next(self, block=True, printOutput=True, stepIntoFunc=False):
+	if stepIntoFunc:
+	    cmd = "s";
+	else:
+	    cmd = "n";
+	return self.RunCommands(cmd, block, printOutput);
+    # Define some aliases for the function
+    next = Next;
+    #
+    # Kill the process for the debugged program.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Kill(self, force=True, block=True, printOutput=True):
+	if force:
+	    cmd = "k force";
+	else:
+	    cmd = "k";
+	return self.RunCommands(cmd, block, printOutput);
+    # Define some aliases for the function
+    kill = Kill;
+
+
+    #
+    # Get current MULTI debugger process's information
+    #
+    # A discionary object is returned with the MULTI process attribute names
+    # as the key and their values (in string) as the values.
+    #
+    # GHS: Validated (internal use only)
+    #
+    def GetCurPrInfo(self, options="-all"):
+	if self.RunCommands("__dumpprinfo "+options, True, False) and \
+	    self.cmdExecOutput:
+	    lines = self.cmdExecOutput.split("\n");
+	    prInfo = {};
+	    for ln in lines:
+		res = re.match("^\s*(.*)\s+=\s+(.*)$", ln);
+		if res:
+		    keyStr = res.group(1);
+		    valStr = res.group(2);
+		    res = re.match('^"(.*)"$', valStr);
+		    if res:
+			valStr = res.group(1);
+		    prInfo[keyStr] = valStr;
+#		else:
+#		    print("Unknown line: %s" % (ln));
+	    return prInfo;
+	else:
+	    return {};
+    # Define some aliases for the function
+    getcurprinfo = GetCurPrInfo;
+
+    #
+    # Get MULTI debugger process's attribute value: integer or string based
+    # on the "attrIsInt" argument.
+    #
+    # GHS: Validated (internal use only)
+    #
+    def GetCurPrAttr(self, attrName, attrIsInt=True, prInfo=[]):
+	if not prInfo:
+	    prInfo = self.GetCurPrInfo();
+
+	if not attrName in prInfo:
+	    print('Unknown attribute "%s".' % (attrName));
+	    return None;
+	if attrIsInt:
+	    return int(prInfo[attrName], 0);
+	else:
+	    return prInfo[attrName];
+    # Define some aliases for the function
+    getcurprattr = GetCurPrAttr;
+
+    #
+    # Get the MULTI process's status in number.
+    #
+    # GHS: Validated
+    #
+    def GetStatus(self):
+	if self.RunCommands("mprintf(\"%d\n\", $_STATE);", True, False) and \
+	   self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return -1;
+    # Define some aliases for the function
+    getstatus = GetStatus;
+    #
+    # Check if the MULTI process is running.
+    #
+    # GHS: Validated
+    #
+    def IsRunning(self):
+	return self.GetStatus() == self.status_running;
+    # Define some aliases for the function
+    isrunning = IsRunning;
+    #
+    # Check if the MULTI process is running.
+    #
+    # GHS: Validated
+    #
+    def IsHalted(self):
+	s = self.GetStatus();
+	if s == self.status_stopped:
+	    prInfo = self.GetCurPrInfo("-run_control -view -status");
+	    if not prInfo:
+		return False;
+	    ps = self.GetCurPrAttr("ps", True, prInfo);
+	    analyzingStop = self.GetCurPrAttr("fAnalyzingStop", True, prInfo);
+	    if analyzingStop:
+		return False;
+	    elif ps != self.status_stopped:
+		return False;
+	return s == self.status_no_process or s == self.status_stopped;
+    # Define some aliases for the function
+    ishalted = IsHalted;
+    IsStopped = IsHalted;
+    isstopped = IsHalted;
+    #
+    # Check if the MULTI process is not started yet (no child on target).
+    #
+    # GHS: Validated
+    #
+    def IsStarted(self):
+	return self.GetStatus() > self.status_no_process
+    # Define some aliases for the function
+    isstarted = IsStarted;
+    HasChild = IsStarted;
+    haschild = IsStarted;
+
+
+    #
+    # Get the debugged program's PC value.
+    #
+    # GHS: Validated
+    #
+    def GetPc(self):
+	if self.RunCommands('mprintf("0x%llx\n", $pc);', True, False) and \
+	   self.cmdExecOutput:
+	    return long(self.cmdExecOutput, 0);
+	else:
+	    return -1;
+    # Define some aliases for the function
+    getpc = GetPc;
+    Pc = GetPc;
+    pc = GetPc;
+
+
+
+    #
+    # Wait MULTI process to halt.
+    #
+    # If duration is a negavive number, we will wait forever until the process
+    # is halted.
+    # If duration is 0.0, we don't wait.
+    # If duration is a positive number, we wait for that number of seconds
+    # at most.
+    #
+    # Return True if the process is halted and False if it is not on timeout.
+    #
+    # GHS: Validated
+    #
+    def WaitToStop(self, duration=-1.0, checkInterval=0.5):
+	goon = True;
+	if checkInterval <= 0.0:
+	    checkInterval = 0.5;
+        if duration > 0.0:
+	    endTime = time.time()+duration;
+	while goon:
+	    if self.IsHalted():
+		return True;
+	    if duration == 0.0:
+		# Only check once
+		goon = False;
+	    elif duration > 0.0:
+		goon = (time.time() < endTime);
+	    if goon:
+		# We sleep after checking so that we don't miss one checking.
+		time.sleep(checkInterval);
+	# If the process is still running, return False.
+	return False;
+    # Define some aliases for the function
+    waittostop = WaitToStop;
+
+
+
+    #
+    # Get the MULTI process's ID on target.
+    #
+    # GHS: Validated
+    #
+    def GetTargetPid(self):
+	if self.RunCommands("mprintf(\"%lld\n\", $_PID);", True, False) and \
+	   self.cmdExecOutput:
+	    return int(self.cmdExecOutput, 0);
+	else:
+	    return 0;
+    # Define some aliases for the function
+    gettargetpid = GetTargetPid;
+    TargetPid = GetTargetPid;
+    targetpid = GetTargetPid;
+
+
+
+    #
+    # Connect to rtserv.
+    #
+    # Return an object for GHS_DebugServer or None on failure.
+    #
+    # GHS: Validated (manually)
+    #
+    def ConnectToRtserv(self, target="",
+			setupScript="", setupScriptArgs="",
+			multiLog="", rtservLog="", moreOpts="", printOutput=True):
+	cmd = "connect -noprocess -check";
+
+	if setupScript:
+	    cmd = cmd + " setup=" + GHS_QuotifyString(setupScript);
+	if setupScriptArgs:
+	    cmd = cmd + " setupargs=" + GHS_QuotifyString(setupScriptArgs);
+	if multiLog:
+	    cmd = cmd + " log=" + GHS_QuotifyString(multiLog) + " ";
+
+	if target:
+	    cmd = cmd + " rtserv -port udp@"+target;
+	else:
+	    cmd = cmd + " rtserv";
+	if rtservLog:
+	    cmd = cmd + " -d7 -log=" + GHS_QuotifyString(rtservLog);
+	if moreOpts:
+	    cmd = cmd + " " + moreOpts;
+	
+	if (not self.RunCommands(cmd, True, False)) or \
+	    (self.cmdExecStatus != 1) or (not self.cmdExecObj):
+	    if target:
+		print("Failed to connect to target \"%s\"." % target);
+	    else:
+		print("Failed to connect to local host.");
+	if printOutput and self.cmdExecOutput:
+	    print(self.cmdExecOutput);
+	return self.cmdExecObj;
+    # Define some aliases for ConnectRtserv function
+    connecttortserv = ConnectToRtserv;
+    ConnectRtserv = ConnectToRtserv;
+    connectrtserv = ConnectToRtserv;
+    Rtserv = ConnectToRtserv;
+    rtserv = ConnectToRtserv;
+    #
+    # Connect to rtserv2
+    #
+    # Return an object for GHS_DebugServer or None on failure.
+    #
+    # GHS: Validated (manually)
+    #
+    def ConnectToRtserv2(self, target="",
+ 			 setupScript="", setupScriptArgs="",
+			 multiLog="", rtservLog="",
+			 moreOpts="",
+			 printOutput=True):
+	cmd = "connect -noprocess -check"; 
+
+	if setupScript:
+	    cmd = cmd + " setup=" + GHS_QuotifyString(setupScript);
+	if setupScriptArgs:
+	    cmd = cmd + " setupargs=" + GHS_QuotifyString(setupScriptArgs);
+	if multiLog:
+	    cmd = cmd + " log=" + GHS_QuotifyString(multiLog) + " ";
+
+	if target:
+	    cmd = cmd + " rtserv2 "+target;
+	else:
+	    # Should we use localhost here?
+	    cmd = cmd + " rtserv2";
+	if rtservLog:
+	    cmd = cmd + " -log=" + GHS_QuotifyString(rtservLog);
+	if moreOpts:
+	    cmd = cmd + " " + moreOpts;
+	
+	if (not self.RunCommands(cmd, True, False)) or \
+	    (self.cmdExecStatus != 1) or (not self.cmdExecObj):
+	    if target:
+		print("Failed to connect to target \"%s\"." % target);
+	    else:
+		print("Failed to connect to local host.");
+	if printOutput and self.cmdExecOutput:
+	    print(self.cmdExecOutput);
+	return self.cmdExecObj;
+    # Define some aliases for the function
+    connecttortserv2 = ConnectToRtserv2;
+    ConnectRtserv2 = ConnectToRtserv2;
+    connectrtserv2 = ConnectToRtserv2;
+    Rtserv2 = ConnectToRtserv2;
+    rtserv2 = ConnectToRtserv2;
+    #
+    # Connect to a general target
+    #
+    # Return an object for GHS_DebugServer or None on failure.
+    #
+    # GHS: Validated
+    #
+    def ConnectToTarget(self, dbserver,
+			setupScript="", setupScriptArgs="",
+			multiLog="",
+			stickToTheDebugger=True,
+			moreOpts="",
+			printOutput=True):
+	if not dbserver:
+	    print("No debug server is given.");
+	    return None;
+	remoteCmd = re.compile("^[\s]*(remote|connect)[\s]+", re.IGNORECASE);
+	res = re.match("^[\s]*(remote|connect)[\s]+([\S]*)$", dbserver);
+	if res:
+	    cmd = res.group(1);
+	    dbserver = res.group(2);
+	elif stickToTheDebugger:
+	    # So that the connection is associated with the current MULTI
+	    # debugger window.
+	    cmd = "connect ";
+	else:
+	    cmd = "connect -noprocess -check ";
+	if setupScript:
+	    cmd = cmd + " setup=" + GHS_QuotifyString(setupScript);
+	if setupScriptArgs:
+	    cmd = cmd + " setupargs=" + GHS_QuotifyString(setupScriptArgs);
+	if multiLog:
+	    cmd = cmd + " log=" + GHS_QuotifyString(multiLog);
+#	cmd = cmd + " "+GHS_QuotifyString(dbserver);
+	cmd = cmd + " "+dbserver;
+	if moreOpts:
+	    cmd = cmd + " " + moreOpts;
+	
+	if (not self.RunCommands(cmd, True, False)) or \
+	    (self.cmdExecStatus != 1) or (not self.cmdExecObj):
+	    print("Failed to connect to debug server \"%s\"." % dbserver);
+	if printOutput and self.cmdExecOutput:
+	    print(self.cmdExecOutput);
+	return self.cmdExecObj;
+    # Define some aliases for the function
+    connecttotarget = ConnectToTarget;
+    ConnectTarget = ConnectToTarget;
+    connecttarget = ConnectToTarget;
+    Target = ConnectToTarget;
+    target = ConnectToTarget;
+    Connect = ConnectToTarget;
+    connect = ConnectToTarget;
+    #
+    # Disconnect the current debug server.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def Disconnect(self, printOutput=True):
+	return self.RunCommands("disconnect", True, printOutput);
+    # Define some aliases for Disconnect function
+    disconnect = Disconnect;
+    #
+    # Check if the corresponding Debugger object is connected to a debugger
+    # server.
+    #
+    # Return True (on yes) or False (otherwise).
+    #
+    # GHS: Validated
+    #
+    def IsConnected(self):
+	if not self.RunCommands("__remotename", True, False):
+	    return False;
+	elif self.cmdExecOutput == None:
+	    return False;
+	elif self.cmdExecOutput == "":
+	    return False;
+	else:
+	    return True;
+    # Define some aliases for Disconnect function
+    isconnected = IsConnected;
+    Connected = IsConnected;
+    connected = IsConnected;
+
+
+    #
+    # Write a string to memory.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def WriteStringToMemory(self, address, stringValue, printError=True):
+	cmd = 'memwrite -str ' + hex(address) + ' ' + GHS_QuotifyString(stringValue);
+	if self.RunCommands(cmd, True, False):
+	    return True;
+	else:
+	    if printError and self.cmdExecOutput:
+		print("Error message:\n%s" % self.cmdExecOutput);
+	    return False;
+    # Define some aliases for the function
+    writestringtomemory = WriteStringToMemory;
+    WriteString = WriteStringToMemory;
+    writestring = WriteStringToMemory;
+    WriteStr = WriteStringToMemory;
+    writestr = WriteStringToMemory;
+    #
+    # Write an integer value to memory.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated
+    #
+    def WriteIntegerToMemory(self, address, value,
+			     sizeInBytes=4,
+			     printError=True):
+	self.CleanCmdExecVariables(0);
+	if sizeInBytes <= 0:
+	    print("Invalid memory size(in bytes): %d" % sizeInBytes);
+	    return False;
+	if sizeInBytes > 4:
+	    print("Unsupported memory size(in bytes): %d" % sizeInBytes);
+	    return False;
+	cmd = "memwrite " + str(sizeInBytes) + " " + hex(address) + \
+		" " + hex(value);
+	if self.RunCommands(cmd, True, False):
+	    return True;
+	else:
+	    if printError and self.cmdExecOutput:
+		print("Error message:\n%s" % self.cmdExecOutput);
+	    return False;
+    # Define some aliases for the function
+    writeintegertomemory = WriteIntegerToMemory;
+    WriteInt = WriteIntegerToMemory;
+    writeint = WriteIntegerToMemory;
+    #
+    # Read a string from memory.
+    #
+    # Return the string (terminated with 0) from memory or empty string if
+    # error happened, in which case the value of "self.cmdExecStatus" will be
+    # 0.
+    #
+    # GHS: Validated
+    #
+    def ReadStringFromMemory(self, address, printError=True):
+	ret = "";
+	while True:
+	    c = self.ReadIntegerFromMemory(address, 1, printError);
+	    if not self.cmdExecStatus or c == 0:
+		break;
+	    ret = ret + chr(c);
+	    address = address+1;
+	return ret;
+    # Define some aliases for the function
+    readstringfrommemory = ReadStringFromMemory;
+    ReadStr = ReadStringFromMemory;
+    readstr = ReadStringFromMemory;
+    #
+    # Read an integer value from memory.
+    #
+    # Return the value from memory or 0 if error happened, in which case the
+    # value of "self.cmdExecStatus" will be 0.
+    #
+    # GHS: Validated
+    #
+    def ReadIntegerFromMemory(self, address, sizeInBytes=4, printError=True):
+	self.CleanCmdExecVariables(0);
+	if sizeInBytes <= 0:
+	    print("Invalid memory size(in bytes): %d" % sizeInBytes);
+	    return 0;
+	if sizeInBytes > 4:
+	    print("Unsupported memory size (in bytes): %d" % sizeInBytes);
+	    return 0;
+	cmd = "memread " + str(sizeInBytes) + " " + hex(address);
+	if self.RunCommands(cmd, True, False):
+	    res = re.match("^[\s]*(0[xX][0-9a-fA-F]+)[\s]*:[\s]*(0[xX][0-9a-fA-F]+)[\s]*$",
+			    self.cmdExecOutput);
+	    if not res:
+		# MULTI output in validation mode.
+		res = re.match("^[\s]*(0[xX]location)[\s]*:[\s]*(0[xX][0-9a-fA-F]+)[\s]*$",
+				self.cmdExecOutput);
+	    if res:
+		return long(res.group(2), 0);
+	    else:
+		self.cmdExecStatus = 0;
+		if printError and self.cmdExecOutput:
+		    print("Error message:\n%s" % self.cmdExecOutput);
+		return 0;
+	else:
+	    return 0;
+    # Define some aliases for the function
+    readintegerfrommemory = ReadIntegerFromMemory;
+    ReadInt = ReadIntegerFromMemory;
+    readint = ReadIntegerFromMemory;
+    #
+    # Indirectly read an integer value from memory: write a value to the
+    # address port, and read the result from the value port.
+    #
+    # Both address port and value port are memory addresses.
+    #
+    # Return the value from memory or 0 if error happened, in which case the
+    # value of "self.cmdExecStatus" will be 0.
+    #
+    # GHS: Validated 
+    #
+    def ReadIndirectValue(self, addressPort, addressValue, valuePort,
+			    addressSizeInBytes=4,
+			    valueSizeInBytes=4,
+			    printError=True):
+	if not self.WriteIntegerToMemory(addressPort, addressValue,
+					 addressSizeInBytes, printError):
+	    return 0;
+	return self.ReadIntegerFromMemory(valuePort,
+					 valueSizeInBytes,
+					 printError);
+    # Define some aliases for the function
+    readindirectvalue = ReadIndirectValue;
+    ReadIndirectInteger = ReadIndirectValue;
+    readindirectinteger = ReadIndirectValue;
+    ReadIndirectInt = ReadIndirectValue;
+    readindirectint = ReadIndirectValue;
+    ReadIndInt = ReadIndirectValue;
+    readindint = ReadIndirectValue;
+
+
+    #
+    # Check if a symbol exists.
+    #
+    # The check is based on the corresponding debugger window's current
+    # context. So it should be accurate for globals, but the result for
+    # local varibales depends on the context.
+    #
+    # Return True if the symbol exists, or False otherwise.
+    #
+    # GHS: Validated
+    #
+    def CheckSymbol(self, symbolName=""):
+	if not symbolName:
+	    print("No symbol name is given.");
+	    return False;
+	if not self.RunCommands('mprintf("0x%llx\n", &'+symbolName+');', True, False):
+	    # Failed
+	    return False;
+	else:
+	    pattern = "^\s*0[xX][0-9a-fA-F]+\s*$";
+	    if re.match(pattern, self.cmdExecOutput):
+		return True;
+	    else:
+		return False;
+    # Define some aliases for the function
+    checksymbol = CheckSymbol;
+    CheckSym = CheckSymbol;
+    checksym = CheckSymbol;
+    #
+    # Get a symbol's address.
+    #
+    # The check is based on the corresponding debugger window's current
+    # context. So it should be accurate for globals, but the result for
+    # local varibales depends on the context.
+    #
+    # On error, the returned address could be 0 or 0xffffffffffffffff.
+    #
+    # Return the symbol's address if it exists, or 0 otherwise.
+    #
+    # GHS: Validated
+    #
+    def GetSymbolAddress(self, symbolName=""):
+	if not symbolName:
+	    print("No symbol name is given.");
+	    return 0;
+	if not self.RunCommands('mprintf("0x%llx\n", &'+symbolName+');', True, False):
+	    # Failed
+	    return 0;
+	else:
+	    pattern = "^\s*(0[xX][0-9a-fA-F]+)\s*$";
+	    res = re.match(pattern, self.cmdExecOutput);
+	    if res:
+		return long(res.group(1), 0)
+	    else:
+		return 0;
+    # Define some aliases for the function
+    getsymboladdress = GetSymbolAddress;
+    GetSymAdr = GetSymbolAddress;
+    getsymadr = GetSymbolAddress;
+    #
+    # Get a symbol's size.
+    #
+    # The check is based on the corresponding debugger window's current
+    # context. So it should be accurate for globals, but the result for
+    # local varibales depends on the context.
+    #
+    # Return the symbol's size if it exists, or 0 otherwise.
+    #
+    # GHS: Validated
+    #
+    def GetSymbolSize(self, symbolName=""):
+	if not symbolName:
+	    print("No symbol name is given.");
+	    return 0;
+	if not self.RunCommands('mprintf("0x%x\n", sizeof('+symbolName+');', True, False):
+	    # Failed
+	    return 0;
+	else:
+	    pattern = "^\s*(0[xX][0-9a-fA-F]+)\s*$";
+	    res = re.match(pattern, self.cmdExecOutput);
+	    if res:
+		return int(res.group(1), 0)
+	    else:
+		return 0;
+    # Define some aliases for the function
+    getsymbolsize = GetSymbolSize;
+    GetSymSize = GetSymbolSize;
+    getsymsize = GetSymbolSize;
+
+
+    #
+    # Show connection organizer.
+    #
+    # Return an object for GHS_ConnectionOrganizerWindow on success or None on
+    # failure.
+    #
+    # Argument "hardwareRegistryServer" is not used any more, it is here just
+    # to keep the API backward compatibile with MULTI 5.0.5.
+    #
+    # GHS: Validated
+    #
+    def ShowConnectionOrganizerWindow(self, hardwareRegistryServer="", printOutput=True):
+	if not self.RunCmd("connectionview", True, printOutput):
+	    ret = None;
+	else:
+	    ret = self.cmdExecObj;
+	return ret;
+    # Define some aliases for the function
+    showconnectionorganizerwindow = ShowConnectionOrganizerWindow;
+    ShowConnectionOrganizer = ShowConnectionOrganizerWindow;
+    showconnectionorganizer = ShowConnectionOrganizerWindow;
+    ShowCo = ShowConnectionOrganizerWindow;
+    showco = ShowConnectionOrganizerWindow;
+
+
+    #
+    # Show task manager window (if any) for the corresponding debug server.
+    #
+    # Return the object for the Task Window (success on run-mode environment)
+    # or OSA Explorer (success on some freeze-mode environment) or
+    # None (failure).
+    #
+    # GHS: Validated (manually)
+    #
+    def ShowTaskManagerWindow(self):
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	ret = self.RunCommands("TaskWindow", True, True);
+	return self.cmdExecObj;
+    # Define some aliases for the function
+    showtaskmanagerwindow = ShowTaskManagerWindow;
+    ShowTaskWindow = ShowTaskManagerWindow;
+    showtaskwindow = ShowTaskManagerWindow;
+    ShowTaskWin = ShowTaskManagerWindow;
+    showtaskwin = ShowTaskManagerWindow;
+    TaskWindow = ShowTaskManagerWindow;
+    taskwindow = ShowTaskManagerWindow;
+    TaskWin = ShowTaskManagerWindow;
+    taskwin = ShowTaskManagerWindow;
+
+    #
+    # Show OSA Explorer.
+    #
+    # In freeze-mode, it requires the target to be halted in order launcher
+    # OSA Explorer. If "haltTargetIfNecessary" and the target is in freeze-mode
+    # and not halted, the method will fail.
+    #
+    # Return an object for GHS_OsaWindow on success or None on failure.
+    #
+    # GHS: Validated
+    #
+    def ShowOsaExplorerWindow(self, haltTargetIfNecessary=True, printOutput=True):
+	needToHalt = False;
+	osType = self.GetTargetOsType();
+	if osType == ghs_target_constants.osTypes.OS_INTEGRITY:
+	    needToHalt = False;
+	elif osType == ghs_target_constants.osTypes.OS_NULL or osType == ghs_target_constants.osTypes.OS_MULTICORE:
+	    needToHalt = True;
+	else:
+	    # Not supported, just a try.
+	    needToHalt = False;
+
+	if needToHalt:
+	    needToHalt = False;
+	    if not self.IsHalted():
+		if not haltTargetIfNecessary:
+		    if printOutput:
+			print("Target is not halted.");
+		    return None;
+		if not self.Halt():
+		    if printOutput:
+			print("Failed to halt the target.");
+		    return None;
+		needToHalt = True;
+
+	ret = None;
+	if self.RunCmd("osaexplorer", True, printOutput):
+	    ret = self.cmdExecObj;
+	if needToHalt:
+	    self.Resume(True, False);
+	return ret;
+    # Define some aliases for the function
+    showosaexplorerwindow = ShowOsaExplorerWindow;
+    ShowOsaExplorer = ShowOsaExplorerWindow;
+    showosaexplorer = ShowOsaExplorerWindow;
+    ShowOsa = ShowOsaExplorerWindow;
+    showosa = ShowOsaExplorerWindow;
+
+
+    #
+    # Show Trace window.
+    #
+    # Return an object for GHS_TraceWindow on success or None on failure.
+    #
+    # GHS: Validated
+    #
+    def ShowTraceWindow(self, printOutput=True):
+	if not self.RunCmd("trace list", True, printOutput):
+	    return None;
+	
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+	return winreg.WaitForWindowFromClass(None,
+					     self.maxSecToWaitForNewWindow,
+					     getattr(ghs_constants.winClassNames, "trace", ""),
+					     "",
+					     printOutput);
+    # Define some aliases for the function
+    showtracewindow = ShowTraceWindow;
+    ShowTraceWin = ShowTraceWindow;
+    showtracewin = ShowTraceWindow;
+
+
+    ##########################################################################
+    #
+    # More APIs......
+    #
+    ##########################################################################

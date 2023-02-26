@@ -1,0 +1,107 @@
+------------------------------------------------------------------------------------------------------------------------
+-- Copyright 2015 Nexteer
+-- Nexteer Confidential
+--
+-- Module File Name: NxtrStrtUpLo.850
+-- Module Description: Low level microcontroller startup (register initialization, peripheral initialization)
+-- Project           : CBD
+-- Author            : Jared Julien
+------------------------------------------------------------------------------------------------------------------------
+-- Version Control:
+-- %version:          2 %
+-- %derived_by:       kzdyfh %
+------------------------------------------------------------------------------------------------------------------------
+-- Date      Rev      Author    Change Description                                                              SCR #
+-- --------  -------  --------  ------------------------------------------------------------------------------  --------
+-- 12/15/15  1        JWJ       Initial Version                                                                 EA4#9023
+-- 05/31/17  2        JWJ       Trimmed down to removed duplicate logic (from bootloader) and unused functions  EA4#12342
+------------------------------------------------------------------------------------------------------------------------
+
+.section".appstrtvect",.text
+.global _RESET
+_RESET:
+
+-- Register Initialization
+    -- General Purpose Registers
+    mov   r0, r1
+    mov   r0, r2
+    mov   r0, r3
+    mov   r0, r4
+    mov   r0, r5
+    mov   r0, r6
+    mov   r0, r7
+    mov   r0, r8
+    mov   r0, r9
+    mov   r0, r10
+    mov   r0, r11
+    mov   r0, r12
+    mov   r0, r13
+    mov   r0, r14
+    mov   r0, r15
+    mov   r0, r16
+    mov   r0, r1
+    mov   r0, r18
+    mov   r0, r19
+    mov   r0, r20
+    mov   r0, r21
+    mov   r0, r22
+    mov   r0, r23
+    mov   r0, r24
+    mov   r0, r25
+    mov   r0, r26
+    mov   r0, r27
+    mov   r0, r28
+    mov   r0, r29
+    mov   r0, r30
+    mov   r0, r31
+
+    -- Initialization of the global pointer
+    movhi hi(___ghsbegin_sdabase),zero,gp
+    movea lo(___ghsbegin_sdabase),gp,gp
+
+    -- Initialization of the text pointer
+    movhi hi(___ghsbegin_robase),zero,tp
+    movea lo(___ghsbegin_robase),tp,tp
+
+    -- Initialization of the stack pointer
+    movhi hi(_osSystemStack_c0_EndAddr),zero,sp
+    movea lo(_osSystemStack_c0_EndAddr),sp,sp
+
+    .weak   ___ghsbegin_sdabase
+    .weak   ___ghsbegin_sda_start
+
+    -- Use .sdabase by default
+    mov ___ghsbegin_sdabase, gp
+    cmp zero,r5
+    be  got_sdabase
+    -- Use .sda_start/.sda_end
+    mov ___ghsbegin_sda_start, gp
+    cmp zero,r5
+    be  got_sdabase
+    -- Use .sda_start/.sda_end. Add the linker-time offset of __gp from
+    -- .sda_start to gp
+    mov __gp, r10
+    mov ___ghsbegin_sda_start, r5
+    sub r5,r10
+    add r10,gp
+    jr  gp_done
+got_sdabase:
+    addi    0x4000,gp,gp -- Point gp 32K past SDA start
+    addi    0x4000,gp,gp
+gp_done:
+    -- even under a debug server, we initialize r5
+    mov __tp, r5
+
+#ifdef __V850
+    movhi   HI(__ep),zero,r1
+    addi    lo(__ep),r1,r1 -- Use addi to set zero flag.
+    je  no_ep   -- If (__ep == 0), don't touch ep
+    mov r1, ep  -- Else set ep to __ep.
+no_ep:
+#endif
+
+
+    jarl    _nxtr_strt_up, lp
+hang:
+    jbr hang
+

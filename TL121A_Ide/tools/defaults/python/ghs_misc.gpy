@@ -1,0 +1,53 @@
+# Keep misc stuff
+
+# Keep the dictionary for globals in GHS Python environment.
+#
+# Owing to the semantics that "globals()" returns a dictionary representing
+# the current global symbol table of "the module where it is defined, not the
+# module from which it is called.", the following variable is introduced.
+ghs_globals = globals();
+
+#
+# Check if a global object exists.
+#
+# GHS: Validated (indirectly)
+#
+def CheckGlobal(globalName):
+    global ghs_globals;
+
+    return ghs_globals.has_key(globalName);
+# Define some aliases for the function
+checkglobal = CheckGlobal;
+
+#
+# Get a global object from its name.
+#
+# GHS: Validated (indirectly)
+#
+def GetGlobal(globalName):
+    global ghs_globals;
+
+    if ghs_globals.has_key(globalName):
+	return ghs_globals[globalName];
+    else:
+	return None;
+# Define some aliases for the function
+getglobal = GetGlobal;
+
+#
+# Set a global object.
+#
+# GHS: Validated (indirectly)
+#
+def SetGlobal(globalName, globalObj):
+    global ghs_globals;
+
+    if globalName:
+	ghs_globals[globalName] = globalObj;
+	return True;
+    else:
+	return False;
+# Define some aliases for the function
+setglobal = SetGlobal;
+    
+	

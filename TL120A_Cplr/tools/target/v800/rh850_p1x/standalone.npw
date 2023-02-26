@@ -1,0 +1,35 @@
+%include "../standalone.npw"
+
+target_connection {
+    850eserv.enabled=true
+    850eserv.setup_script="${__DIR__}/850eserv.mbs"
+    850eserv.replaceable_args+="-rh850 -e1lpd4=11000"
+    850eserv.replaceable_args+=" -df=${__TOOLS_DIR__}/rh850/dr7f701312.dvf"
+    850eserv.replaceable_args+=" -dclock=16000,0,swoff"
+    850eserv.replaceable_args+=" -id ffffffffffffffffffffffffffffffff"
+    850eserv.replaceable_args+=" -fastflashload"
+}
+
+# due to memory limitations, we should default to eec++ instead of stdc++
+exports.TOO_SMALL_FOR_STD_CXX="1"
+exports.TOO_SMALL_FOR_CXX_PROFILE="1"
+exports.TOO_SMALL_TO_HOLD_CATALOG_DEMO="1"
+
+# enable the software trace NPW demo
+exports.SUPPORTS_SWTRACE_DEMO="1"
+
+# Support for the board-specific initilization library.
+board_libraries {
+    libboardinit {
+        library_name="libboardinit"
+
+        files={"libboardinit.gpj"}
+
+        # Code that must remain uncompressed and is called very shortly
+        # after startup, primarily to initialize RAM.
+        files+={"boardinit.800"}
+    }
+}
+
+component.libboardinit.disabled = false;
+component.stdlib_boardinit.disabled = false;

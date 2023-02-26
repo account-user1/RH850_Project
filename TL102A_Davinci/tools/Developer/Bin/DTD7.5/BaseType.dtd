@@ -1,0 +1,32 @@
+<!-- Entities -->
+
+<!ENTITY ti.BaseType       "BaseType">
+<!ENTITY ti.Package        "Package">
+
+<!-- Elements -->
+
+<!ELEMENT BaseType  (%C.DefAttr;, ATTRLink*, GenAttrList?)>
+
+<!ATTLIST BaseType %A.ConfigItem; 
+          Category                 (Fix|Var) "Fix"
+          SizeDef                  CDATA "1"
+          Encoding                 (1C|2C|BCDP|BCDUP|DSPFRACT|SM|IEE754|ISO88591|ISO88592|WIN1252|UTF8|UCS2|NONE|VOID|BOOL|UTF16) "NONE" 
+          ByteOrder                (Motorola|Intel|Opaque) "Motorola"
+          Alignment                CDATA "1"
+          UseAlignment             CDATA "0"
+          NativeDecl               CDATA ""
+          PlatformSpec             CDATA "0"
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+          ByteOrder                (MostSignificantByteFirst|MostSignificantByteLast) "MostSignificantByteFirst"
+>
+
+<!-- Links -->
+
+<!ELEMENT BaseTypeLink EMPTY>
+
+<!ATTLIST BaseTypeLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.BaseType;"
+>

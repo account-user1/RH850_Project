@@ -1,0 +1,227 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.hello_world_ada {
+#	display_type_name = "Hello World Example (Ada)"
+#        display_type_name = "Example"
+	display_object_name = "Hello World (Ada)"
+#	display_group = "Basic Examples"
+	display_group = "Create New ..."
+	display_group_sort_key = "AAA-1"
+	sort_key="AAA-Ada"
+	description = "A simple example program written in Ada."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+        disabled = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Example (Ada)"
+		cmd_str = "AddHelloWorldAda"
+	    }
+	    edit {
+	        menu_str = "Configure Hello World Example (Ada)"
+		cmd_str = "EditHelloWorldAda"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_hello_ada"
+	    }
+  	    tf_ProjectName {
+		default="hello_ada"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE hello_world_ada" }
+  	            }
+	            standard {
+	                15 += { "defineLocal ABS_SRC_NAME ${__DIR__}/hello_world/hello.ada" }
+	                20 += { "python ${__SHARED_PY_DIR__}/projects.py copy_file_into_project" }
+			
+			200 += { "defineLocal OPTION_STRING --ada_preprocess" }
+	    	        201 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+			202 += { "defineLocal OPTION_STRING :ada_main_program=hello" }
+	    	        203 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+		    }
+		}
+	    }
+	}
+}
+
+
+component.hello_world_c {
+#	display_type_name = "Hello World Example (C)"
+#        display_type_name = "Example"
+	display_object_name = "Hello World (C)"
+#	display_group = "Basic Examples"
+	display_group = "Create New ..."
+	display_group_sort_key = "AAA-1"
+	sort_key="AAA-C"
+	description = "A simple example program written in C."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+        disabled = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Example (C)"
+		cmd_str = "AddHelloWorldC"
+	    }
+	    edit {
+	        menu_str = "Configure Hello World Example (C)"
+		cmd_str = "EditHelloWorldC"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_hello"
+	    }
+  	    tf_ProjectName {
+		default="hello"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE hello_world_c" }
+  	            }
+	            standard {
+	                15 += { "defineLocal ABS_SRC_NAME ${__DIR__}/hello_world/hello.c" }
+	                20 += { "python ${__SHARED_PY_DIR__}/projects.py copy_file_into_project" }
+		    }
+		}
+	    }
+	}
+}
+
+
+component.hello_world_cxx {
+#	display_type_name = "Hello World Example (C++)"
+#        display_type_name = "Example"
+	display_object_name = "Hello World (C++)"
+	sort_key="AAA-Cxx"
+#	display_group = "Basic Examples"
+	display_group = "Create New ..."
+	display_group_sort_key = "AAA-1"
+	description = "A simple example program written in C++."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+        disabled = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Example (C++)"
+		cmd_str = "AddHelloWorldCxx"
+	    }
+	    edit {
+	        menu_str = "Configure Hello World Example (C++)"
+		cmd_str = "EditHelloWorldCxx"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_hello_cc"
+	    }
+  	    tf_ProjectName {
+	        default="hello_cc"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE hello_world_cxx" }
+  	            }
+	            standard {
+	                15 += { "defineLocal ABS_SRC_NAME ${__DIR__}/hello_world/hello.cc" }
+	                20 += { "python ${__SHARED_PY_DIR__}/projects.py copy_file_into_project" }
+		    }
+		}
+	    }
+	}
+}
+
+
+
+component.hello_world_lib_c {
+#        display_type_name = "Example"
+	display_object_name = "Hello World Library (C)"
+	sort_key="AAA-Lib-C"
+	display_group = "Create New ..."
+	display_group_sort_key = "AAA-1"
+	description = "A simple example library written in C."
+
+	use_template = "ExampleLibraryT"
+
+	disabled = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Library Example (C)"
+		cmd_str = "AddHelloWorldLibC"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_libhello"
+	    }
+  	    tf_ProjectName {
+		default="libhello"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE hello_world_lib_c" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/hello_world" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_hello_lib_c" }
+		    }
+		}
+	    }
+	}
+}
+
+
+component.hello_world_lib_cxx {
+#        display_type_name = "Example"
+	display_object_name = "Hello World Library (C++)"
+	sort_key="AAA-Lib-Cxx"
+	display_group = "Create New ..."
+	display_group_sort_key = "AAA-1"
+	description = "A simple example library written in C++."
+
+	use_template = "ExampleLibraryT"
+
+	disabled = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Library Example (C++)"
+		cmd_str = "AddHelloWorldLibCxx"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_libhello_cc"
+	    }
+  	    tf_ProjectName {
+		default="libhello_cc"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE hello_world_lib_cxx" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/hello_world" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_hello_lib_cxx" }
+		    }
+		}
+	    }
+	}
+}
+
+%endif   # __DISTRIBUTION_TYPE__

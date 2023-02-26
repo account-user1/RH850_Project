@@ -1,0 +1,236 @@
+// OSA Template Configuration File 
+// Copyright (C) 2000-2005 Green Hills Software, Inc.
+
+// Configuration Settings Section
+// ==============================
+
+// OSA_CONFIG:OSA_VERSION:
+// Specify OSA File version number of 1.
+// Format:  OSA_CONFIG:OSA_VERSION:task_type_name
+OSA_CONFIG:OSA_VERSION:1
+
+// OSA_CONFIG:OSA_MODULE_NAME:
+// Specifies the name of the OS Integration Module.
+// If no file extension is provided, MULTI will use
+// ".dll" on Windows and ".so" on Solaris.
+// Format:  OSA_CONFIG:OSA_MODULE_NAME:SHARED_LIBRARY_FILE_NAME
+OSA_CONFIG:OSA_MODULE_NAME:osa_uvelosity
+
+// OSA_CONFIG:OSA_TASK_ALIAS:
+// Use alternate terminology for OS "tasks"
+// Format:  OSA_CONFIG:OSA_TASK_ALIAS:task_type_name
+OSA_CONFIG:OSA_TASK_ALIAS:Task
+
+// OSA_CONFIG:OSA_EXPLORER_TITLE:
+// Specify customized title for the OSA Explorer window.
+// Use %d or %x to obtain the target ID MULTI uses.
+// Format:  OSA_CONFIG:OSA_EXPLORER_TITLE:Title string
+OSA_CONFIG:OSA_EXPLORER_TITLE:u-velOSity OSA Explorer (MULTI target ID 0x%x)
+
+// OSA_CONFIG:OSA_INIT_COMMAND:
+// Cause a command to be sent using OSA_Client_OsaCmdExecute()
+// Immediately after the OS Integration Module is loaded.
+// Format:  OSA_CONFIG:OSA_INIT_COMMAND:command
+
+// OSA_CONFIG:OSA_POLL_INTERVAL:
+// Interval (in milliseconds) between calls to the OSA_Client_OsaPoll().
+// Format:  OSA_CONFIG:OSA_POLL_INTERVAL:number
+// OSA_CONFIG:OSA_POLL_INTERVAL:100
+
+// OSA_CONFIG:OSA_DEBUGGING_LOGFILE:
+// Direct a debugging log of the OS Integration calls and return
+// values to the filename given.
+// Format:  OSA_CONFIG:OSA_DEBUGGING_LOGFILE:filename
+// TEMP:
+//OSA_CONFIG:OSA_DEBUGGING_LOGFILE:"uv_osa_log.txt"
+
+
+// Object Type List Section
+// ========================
+
+// Define Object Type IDs and configure them for global display
+// Format:   OSA_OBJECT_TYPE:object name:object type id:global_display
+OSA_OBJECT_TYPE:OSA_TASK:1:OSA_GLOBAL
+OSA_OBJECT_TYPE:Task (FIFO):9:OSA_GLOBAL
+OSA_OBJECT_TYPE:Timer:2:OSA_GLOBAL
+OSA_OBJECT_TYPE:Timer (FIFO):10:OSA_GLOBAL
+OSA_OBJECT_TYPE:Mutex:3:OSA_GLOBAL
+OSA_OBJECT_TYPE:Mutex (FIFO):11:OSA_GLOBAL
+OSA_OBJECT_TYPE:Semaphore:4:OSA_GLOBAL
+OSA_OBJECT_TYPE:Message Queue:5:OSA_GLOBAL
+OSA_OBJECT_TYPE:Event Flags:6:OSA_GLOBAL
+OSA_OBJECT_TYPE:Block Pool:7:OSA_GLOBAL
+OSA_OBJECT_TYPE:Malloc Pool:8:OSA_GLOBAL
+
+// Object Window Format Section
+// ==========================
+
+// Column Line Format:  OSA_TASK:OSA_ATTRIBUTE_COLUMN:attribute name:attribute id:display:type
+//   Menu Line Format:  OSA_TASK:OSA_MENU:menu entry:menu command
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_NAME=Name:1:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_STATUS=Status:2:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Priority:3:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Active Priority:4:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Pended Object:5:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Remaining Ticks:21:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Mutexes Owned:6:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Mutex Waiters:7:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack Size:8:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack Start:10:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Timeslice:18:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Remaining Timeslice:19:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Exit Code:20:OSA_SHOW:string
+OSA_TASK:OSA_MENU:"Task Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TASK *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Task ID is invalid.\n";}
+OSA_TASK:OSA_MENU:"Debug Task":if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID} \
+    else {print "Task ID is invalid.\n";}
+OSA_TASK:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID}
+
+// Alternate (FIFO) Task attributes:
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:OSA_NAME=Name:1:OSA_SHOW:string
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:OSA_STATUS=Status:2:OSA_SHOW:string
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Priority:3:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Inherited Priority:4:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Preempt Threshold:11:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Pended Object:5:OSA_SHOW:string
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Remaining Ticks:21:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Stack Size:8:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Stack Start:10:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Timeslice:18:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Timeslice Remaining:19:OSA_SHOW:long
+Task (FIFO):OSA_ATTRIBUTE_COLUMN:Exit Code:20:OSA_SHOW:long
+Task (FIFO):OSA_MENU:"Task Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TASK *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Task ID is invalid.\n";}
+Task (FIFO):OSA_MENU:"Debug Task":if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID} \
+    else {print "Task ID is invalid.\n";}
+Task (FIFO):OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID}
+
+Timer:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Timer:OSA_ATTRIBUTE_COLUMN:Remaining Ticks:12:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Active:13:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Alarm Ticks:14:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Alarm Repeat:15:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Callback:16:OSA_SHOW:string
+Timer:OSA_ATTRIBUTE_COLUMN:Callback Input:17:OSA_SHOW:long
+Timer:OSA_MENU:"Timer Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TIMER *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Timer ID is invalid.\n";}
+Timer:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TIMER *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Timer ID is invalid.\n";}
+
+// Alternate (FIFO) Timer attributes:
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Remaining Ticks:12:OSA_SHOW:long
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Active:13:OSA_SHOW:long
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Alarm Ticks:14:OSA_SHOW:long
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Repeat Ticks:26:OSA_SHOW:long
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Callback:16:OSA_SHOW:string
+Timer (FIFO):OSA_ATTRIBUTE_COLUMN:Callback Input:17:OSA_SHOW:long
+Timer (FIFO):OSA_MENU:"Timer Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TIMER *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Timer ID is invalid.\n";}
+Timer (FIFO):OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_TIMER *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Timer ID is invalid.\n";}
+
+Mutex:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Mutex:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Mutex:OSA_ATTRIBUTE_COLUMN:Owner:22:OSA_SHOW:long
+Mutex:OSA_ATTRIBUTE_COLUMN:Nesting:23:OSA_SHOW:long
+Mutex:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Mutex:OSA_ATTRIBUTE_COLUMN:Inherited Priority:25:OSA_SHOW:string
+Mutex:OSA_MENU:"Mutex Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MUTEX *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Mutex ID is invalid.\n";}
+Mutex:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MUTEX *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Mutex ID is invalid.\n";}
+
+// Alternate (FIFO) Mutex attributes:
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Owner:22:OSA_SHOW:long
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Nesting:23:OSA_SHOW:long
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Priority Inherit:24:OSA_SHOW:long
+Mutex (FIFO):OSA_ATTRIBUTE_COLUMN:Inherited Priority:25:OSA_SHOW:string
+Mutex (FIFO):OSA_MENU:"Mutex Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MUTEX *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Mutex ID is invalid.\n";}
+Mutex (FIFO):OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MUTEX *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Mutex ID is invalid.\n";}
+
+Semaphore:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Semaphore:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Semaphore:OSA_ATTRIBUTE_COLUMN:Count:32:OSA_SHOW:long
+Semaphore:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Semaphore:OSA_MENU:"Semaphore Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_SEM *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_SEM *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Semaphore ID is invalid.\n";}
+
+Message Queue:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Message Queue:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Message Queue:OSA_ATTRIBUTE_COLUMN:Messages:42:OSA_SHOW:long
+Message Queue:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Message Queue:OSA_ATTRIBUTE_COLUMN:Total Slots:43:OSA_SHOW:long
+Message Queue:OSA_ATTRIBUTE_COLUMN:Message Size (Words):44:OSA_SHOW:long
+Message Queue:OSA_MENU:"Message Queue Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_QUEUE *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Message Queue ID is invalid.\n";}
+Message Queue:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_QUEUE *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Message Queue ID is invalid.\n";}
+
+Event Flags:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Event Flags:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Event Flags:OSA_ATTRIBUTE_COLUMN:Ready:52:OSA_SHOW:long
+Event Flags:OSA_ATTRIBUTE_COLUMN:Requested:53:OSA_SHOW:long
+Event Flags:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Event Flags:OSA_MENU:"Event Flags Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_EFLAGS *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Event Flags ID is invalid.\n";}
+Event Flags:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_EFLAGS *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Event Flags ID is invalid.\n";}
+
+Block Pool:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Block Pool:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Block Pool:OSA_ATTRIBUTE_COLUMN:Block Size:62:OSA_SHOW:long
+Block Pool:OSA_ATTRIBUTE_COLUMN:Available:63:OSA_SHOW:long
+Block Pool:OSA_ATTRIBUTE_COLUMN:Total:64:OSA_SHOW:long
+Block Pool:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Block Pool:OSA_MENU:"Block Pool Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_BPOOL *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Block Pool ID is invalid.\n";}
+Block Pool:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_BPOOL *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Block Pool ID is invalid.\n";}
+
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:OSA_ID=ID:0:OSA_SHOW:long
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Name:1:OSA_SHOW:string
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Available:72:OSA_SHOW:long
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Total:73:OSA_SHOW:long
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Fragments:74:OSA_SHOW:long
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Waiters:9:OSA_SHOW:long
+Malloc Pool:OSA_ATTRIBUTE_COLUMN:Min Pending Size:75:OSA_SHOW:long
+Malloc Pool:OSA_MENU:"Malloc Pool Control Block":if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MPOOL *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Malloc Pool ID is invalid.\n";}
+Malloc Pool:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {substitute view (UV_MPOOL *)%EVAL{print /x $_OSA_OBJ_ID}; } \
+    else {print "Malloc Pool ID is invalid.\n";}

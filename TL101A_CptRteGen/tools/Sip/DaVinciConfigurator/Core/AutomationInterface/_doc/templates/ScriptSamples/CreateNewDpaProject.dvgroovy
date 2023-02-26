@@ -1,0 +1,57 @@
+import static com.vector.cfg.automation.api.ScriptApi.*
+
+//daVinci enables the IDE code completion support
+daVinci {
+    scriptDescription "Creates a new Dpa Project and activates Det, Dio and EcuC modules"
+
+    /* 
+     * Task: CreateNewProject
+     * Type: DV_APPLICATION
+     * -------------------------------------------------------------------------------------------------------
+     * Creates a new project and activates Det, Dio and EcuC modules
+     * -------------------------------------------------------------------------------------------------------
+     */
+    scriptTask("CreateNewProject", DV_APPLICATION) {
+        taskDescription 'Creates a new Dpa Project and activates Det, Dio and EcuC modules'
+
+        taskHelp '''CreateNewProject script task
+    The task creates a project in the Script temp folder with the name "projectFolder".
+    Activates the modules /MICROSAR/Det, /MICROSAR/Dio and /MICROSAR/EcuC
+    And saves the project to disk
+    '''
+
+        code {
+            // Create a new Project
+            def theProject = projects.createProject {
+                projectName 'TheProject'
+                projectFolder paths.resolveTempPath("projectFolder")
+                
+                general {
+                    description 'The Project Description'
+                    createStartMenuEntries false
+                }
+                
+                daVinciDeveloper{
+                    createDaVinciDeveloperWorkspace false
+                }
+            }
+
+            //Now load the new project
+            theProject.openProject {
+                //Do something the opened project
+
+                transaction {
+                    operations.activateModuleConfiguration(sipDefRef.Det)
+                    operations.activateModuleConfiguration(sipDefRef.Dio)
+                    operations.activateModuleConfiguration(sipDefRef.EcuC)
+                }
+
+                saveProject()
+            }
+            
+            scriptLogger.info("Project created and modules added and saved to: $theProject")
+            theProject
+        }
+    }
+
+}

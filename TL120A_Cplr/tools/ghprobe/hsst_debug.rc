@@ -1,0 +1,362 @@
+/*
+
+  hsst_debug.rc revision 2
+
+  This file documents some of the features of the Green Hills high-speed serial
+  SuperTrace probe pertaining to bringing up an Aurora link.
+
+  Contents:
+  1. Example generic mbs script for Aurora trace
+  2. Basic 'tracereg' reference
+  3. Advanced 'tracereg' reference
+  4. Utility functions for mbs/rc scripts
+
+
+
+
+  ================================================
+   1. Example generic mbs script for Aurora trace
+  ================================================
+
+  The following is an example script that outlines the basics of Aurora link
+  bringup.
+
+  -----------
+
+  // Include utility functions from hsst_debug.rc.
+  // Alternatively, copy needed functions here.
+  < C:\full\path\to\hsst_debug.rc
+  
+
+  // Reset the target if needed.
+  // Note that you may need additional configuration pre- or post-reset so that
+  // the appropriate SerDes lanes are enabled when the reset completes. 
+  reset
+
+
+  // Configure target memory and other peripherals, etc.
+  ...
+
+
+  // Configure the probe's Aurora line rate and number of lanes prior to
+  // enabling trace.
+  // 
+  // Here we use two lanes at 6.000 Gbps per lane.
+  target set hsst_rx_lanes 2             // this is a non-volatile probe option
+  target tracereg aurora_linerate=6000   // this is volatile; it must be set every time
+
+
+  // Note that on some PowerPC targets, this section of the Aurora bringup is
+  // not needed since it is encapsulated into the 'trace on' command that
+  // follows.
+  {
+    // Reset the probe-side of the link
+    target tracereg aurora_rx_reset=1
+    
+    
+    // Reset and bring up the target side of the link. For ARM Coresight, this
+    // may involve enabling any Aurora clock sources, configuring trace
+    // funnels, and writing to the HSSTP STP configuration and control
+    // registers. 
+    ...
+    
+    
+    // Ensure the link is up
+    ensure_channel_up() // see definition in hsst_debug.rc
+
+
+    // Enable data transmission from the STP block
+    ...
+  }
+
+  // Enable TimeMachine trace. Some architectures will report an error here
+  // if the Aurora link bringup was unsuccessful.
+  trace on
+
+
+  
+  ===============================
+   2. Basic 'tracereg' reference
+  ===============================
+
+  The 'target tracereg' command allows access to named registers that control
+  or provide status of various aspects of the SuperTrace Probe's trace
+  subsystem. 
+  
+  Use the following syntax to access trace registers from the MULTI cmd pane:
+
+    target tracereg (register)[=(value)]
+
+  For example:
+
+    target tracereg aurora_linerate=6000
+
+  Registers related to Aurora serial trace are listed below. Values written to
+  these registers are *not stored in the SuperTrace probe's non-volatile
+  memory, and therefore should be set each time the trace link is brought up
+  (e.g., as part of the .mbs setup script).
+
+
+  == aurora_rx_up ==
+  A bit indicating that all lanes in the Aurora channel are up, and the link
+  is aligned, bonded, and verified.
+
+  == aurora_rx_reset ==
+  A write-only register that resets the RX interface in the SuperTrace probe,
+  preparing it to receive training sequences from the target. The only valid
+  write value is 1. 
+
+  == aurora_linerate ==
+  Sets the line rate for the Aurora link. Specified in Mbps. Supported values
+  include (but are not necessarily limited to) 2500, 3000, 3125, 5000, 6000,
+  and 6250.
+
+  == aurora_rxpackets ==
+  A 16-bit count of the raw packets received by the probe over the Aurora link.
+
+  == aurora_lanes_up ==
+  A bitfield with a bit for each Aurora lane. The least-significant bit
+  corresponds to lane 0 being up, and so on. 
+
+  == aurora_(soft|hard|frame)_error_count ==
+  A 8-bit count of the number of errors that have been detected since the link
+  was last reset (via aurora_rx_reset). If more than 255 errors occur, this
+  register reads as 255. UG198 p64. The types of errors are as follows:
+    soft - invalid code, or disparity error.
+    hard - rx overflow/underflow, bad control character, or soft error limit.
+    frame - truncated frame, invalid control character, or no data in frame.
+
+  == aurora_hard_error ==
+  Single bit that indicates an active hard error condition in the Aurora block.
+  Automatically cleared when the error is resolved, or with aurora_rx_reset.
+
+  == ufc_overflow ==
+  Single bit indicating that one or more fifo overflow UFC messages (ARM HSSTP)
+  have been received by the SuperTrace probe. 
+
+  == ufc_overflow_count ==
+  8-bit read-only count of the number of fifo overflow UFC messages received.
+  Wraps back to 0 at 255+1.
+
+
+
+  ==================================
+   3. Advanced 'tracereg' reference
+  ==================================
+
+  The following registers provide adjustment of low-level receive termination
+  and transmit drive characteristics of the Aurora serial interface. 
+
+  Further technical detail is available in the Xilinx Virtex-5 FPGA RocketIO
+  GTX Transceiver User Guide, also known as UG198. 
+
+
+  RX termination adjustment
+  -------------------------
+
+  == aurora_rxeqmix ==
+  This parameter controls the mode of the rx linear equalization circuit. High
+  frequency gain may need to be increased when using high bitrates (5+Gbps)
+  and/or when running over traces with significant high-frequency loss.
+  UG198 p166. The values for this 2-bit register are as follows:
+    0 - Large high-frequency boost
+    1 - Small high-frequency boost
+    2 - Moderate high-frequency boost
+    3 - Bypass with gain
+
+  == aurora_dfe ==
+  This parameter controls TAP1 weight value for the Decision Feedback Equalizer
+  in the Virtex5 FPGA. This is a 5-bit field. The default value of 0 is
+  appropriate for most circumstances, but may need to be increased for long
+  traces. UG198 p171.
+
+
+
+  TX drive adjustment
+  -------------------
+
+  For serial trace interfaces that require the probe to provide a reference
+  clock (such as Freescale MPC57xx), the following registers are available to
+  control the drive characteristics of the reference clock. In most cases these
+  should be left at their default values. 
+
+  == aurora_drive ==
+  This controls the amplitude of the driver's differential swing. Values for
+  this three-bit register are as follows:
+    0 -  500mV (default)
+    1 -  700mV
+    2 -  800mV
+    3 -  900mV
+    4 - 1000mV
+    5 - 1100mV
+    6 - 1200mV
+    7 - 1300mV
+  
+  == aurora_preemphasis ==
+  This controls the relative amount of pre-emphasis of the driver. See UG198
+  p152 for more details. Values for this three-bit register are as follows:
+    0 -  0% (default)
+    1 -  8%
+    2 - 17%
+    3 - 25%
+    4 - 33%
+    5 - 42%
+    6 - 50%
+    7 - 58%
+  
+
+
+  =========================================
+   4. Utility functions for mbs/rc scripts
+  =========================================
+  
+  The following are utility functions for use in MBS or RC scripts:
+
+*/
+
+/* Returns the configured linerate in Gbps. */
+define get_probe_linerate_gbps() {
+    substitute eval $p_%EVAL{target tracereg aurora_linerate}
+    return $p_aurora_linerate/1000.0
+}
+
+/* Prints debugging information about the HSST link. */
+define print_hsst_debug() {
+    substitute eval $p_%EVAL{target set hsst_rx_lanes}
+    mprintf("- SuperTrace Probe is configured for %d lane(s)\n", $p_hsst_rx_lanes);
+
+    eval $p_linerate_gbps = get_probe_linerate_gbps()
+    mprintf("- Aurora line rate set to %0.3f Gbps\n", $p_linerate_gbps);
+
+    substitute eval $p_%EVAL{target tracereg aurora_lanes_up}
+    mprintf("- Aurora lanes up (bitfield): 0x%x\n", $p_aurora_lanes_up)
+
+    substitute eval $p_%EVAL{target tracereg aurora_rx_up}
+    mprintf("- Aurora channel up: 0x%x\n", $p_aurora_rx_up)
+
+    target tracereg aurora_soft_error_count
+    target tracereg aurora_frame_error_count
+    target tracereg aurora_hard_error_count
+    target tracereg aurora_hard_error
+
+    target tracereg ufc_overflow
+    target tracereg ufc_overflow_count
+
+    target tracereg aurora_rxeqmix
+    target tracereg aurora_dfe
+}
+
+
+/* Tests for channel up. Returns 0 or 1. */
+define get_probe_rx_up() {
+    substitute eval $probe_%EVAL{target tracereg aurora_rx_up}
+    return $probe_aurora_rx_up
+}
+
+/* Ensures the channel is up.
+   If the channel is up, print a message and return.
+   If the channel is not up, print some debugging information and break out
+     of script execution. 
+   */
+define ensure_channel_up() {
+    if (get_probe_rx_up()) {
+	mprintf("---\n")
+	mprintf("Aurora channel is up at %0.3f Gbps.\n", get_probe_linerate_gbps())
+	mprintf("---\n")
+    } else {
+	mprintf("---\n")
+	mprintf("ERROR: Aurora channel is NOT up. Debug info:\n")
+	mprintf("---\n")
+	print_hsst_debug();
+	break -fail;
+    }
+}
+
+
+/*
+  tpiu_test_pattern()
+
+  Coresight-only
+
+  Set up your target and bring up the trace link before running this test. It
+  will enable a certain type of TPIU pattern generation and verify the values
+  real-time on the SuperTrace probe. Results including the number of errors
+  will be printed at the end of the test.
+
+  Note that a full TPIU is required for this test to function.
+
+  == pattern ==
+  This specifies the type of test pattern to run. There are currently two
+  supported values:
+    4 - Enables the 55555555/aaaaaaaa pattern
+    8 - Enables the 00000000/ffffffff pattern
+
+  == num_seconds ==
+  This specifies how long to run. 
+*/
+
+define tpiu_test_pattern(pattern, num_seconds) {
+
+    trace on
+    trace clear
+
+    eval $sanity_check = 1;
+
+    if ($sanity_check) {
+	target tracereg aurora_tp_enable=0
+	target tracereg aurora_tp_reset=1
+	substitute target tracereg aurora_tp_pattern=2
+	substitute target rw tpiu_curr_test_pat 8
+	target tracereg aurora_tp_enable=1
+	substitute eval $probe_%EVAL{target tracereg aurora_tp_enable}
+	if ($probe_aurora_tp_enable == 0) {
+	    print "Test patterns not supported with this target/firmware."
+	    break -fail
+	}
+	substitute eval $probe_%EVAL{target tracereg aurora_tp_errors}
+
+	if ($probe_aurora_tp_errors != 255) {
+	    mprintf("ERROR: Not catching tpiu errors (%d). Is the target set up?\n", $probe_aurora_tp_errors)
+	    break -fail
+	} else {
+	    mprintf("(smoketest - %d - SUCCESS)\n", $probe_aurora_tp_errors)
+	}
+	
+    }
+    
+    if ($pattern == 4) {
+	mprintf("Running TPIU test pattern 5/A...\n");
+	eval $probe_pattern = 2;
+    } else if ($pattern == 8) {
+	mprintf("Running TPIU test pattern 0/F...\n");
+	eval $probe_pattern = 3;
+    } else {
+	mprintf("ERROR: Unsupported pattern: %d\n", $pattern)
+	break -fail
+    }
+
+    target tracereg aurora_tp_enable=0
+    target tracereg aurora_tp_reset=1
+    substitute target tracereg aurora_tp_pattern=%EVAL{p/x $probe_pattern}
+    substitute target rw tpiu_curr_test_pat %EVAL{p/x 0x00020000 | $pattern}
+    
+    target tracereg aurora_tp_enable=1
+    
+    eval $delay_ms = $num_seconds / 0.010;
+    eval $pct = 0
+    while ($pct < 100) {
+	substitute wait -time %EVAL{p/d $delay_ms}
+	eval $pct += 10
+	mprintf("%d%%  ", $pct)
+    }
+    mprintf("Done!\n")
+    target tracereg aurora_tp_enable=0
+    target rw tpiu_curr_test_pat 0
+    trace off -no_retrieve
+    trace clear
+
+    substitute eval $p_%EVAL{target tracereg aurora_tp_errors}
+    mprintf("Test results: %d errors in %d second(s)\n", $p_aurora_tp_errors, $num_seconds)
+   
+}
+

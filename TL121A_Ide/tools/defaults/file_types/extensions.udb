@@ -1,0 +1,443 @@
+# extensions.odb
+
+#
+#      Copyright 2000-2001
+#                  Green Hills Software, Inc.
+#
+#    This program is the property of Green Hills Software, Inc,
+#    its contents are proprietary information and no part of it
+#    is to be disclosed to anyone except employees of Green Hills
+#    Software, Inc., or as agreed in writing signed by the President
+#    of Green Hills Software, Inc.
+#
+
+# This file contains the extensions and preset mappings for MULTI and other
+# graphical Green Hills products.  It is expressed in the utility options
+# database format.
+
+# Last modification: 7/26/06
+
+xdf {
+    xdfheader {
+        version = "1"
+    }
+    "All Files" {
+%if streq(__MULTI_HOST__, "win32")
+	extension = { "*.*" }
+%else
+	extension = { "*" }
+%endif
+    }
+    "Text Files" {
+	extension = { ".txt" }
+    }
+    "Integrate File" {
+	extension = { ".int" }
+    }
+    "BSP Description" {
+	extension = { ".bsp" }
+    }
+    "Green Hills Script" {
+	extension = { ".rc" }
+    }    
+    "Java Source" {
+	extension = { ".java" }
+    }
+    "Pascal Source" {
+    	extension = { ".p", ".pas" }
+    }
+    "Fortran Source" {
+	extension = { ".f", ".f77", ".for", ".f90" }
+    }
+    "Assembly Source" {
+	extension = { ".s", ".asm", ".si", ".86", ".arm", ".thm", ".68", ".cf" }
+	extension += { ".mip", ".ppc", ".sh", ".800", ".850", ".830", ".810", ".bf" }
+    }
+    "Ada Source Body" {
+	extension =  { ".ada", ".ad", ".adb", ".bdy", ".sub" }
+	extension += { ".ADA", ".AD", ".ADB", ".BDY", ".SUB" }
+	extension += { ".Ada", ".Ad", ".Adb", ".Bdy", ".Sub" }
+    }
+    "Ada Source Spec" {
+	extension =  { ".ads", ".adt", ".spc", ".dat" }
+	extension += { ".ADS", ".ADT", ".SPC", ".DAT" }
+	extension += { ".Ads", ".Adt", ".Spc", ".Dat" }
+    }
+    "Jovial Source" {
+	extension = { ".cpl", ".jov" }
+    }
+    "SL1 Source" {
+	extension = { ".sl1", ".g" }
+    }
+    "Link Map" {
+	extension = { ".inf", ".ld", ".lnk", ".lx", ".elx", ".elxr", ".l68" }
+    }
+    "C++ Source" {
+	extension =  { ".cc", ".cxx", ".cpp", ".cp", ".c++", ".C", ".h", ".hh" }
+	extension += { ".H", ".h++", ".hxx", ".hpp" }
+    }
+    "C Source" {
+	extension = { ".c", ".h" }
+    }
+    "Object Files" {
+	extension = { ".o", ".obj" }
+    }
+    "Shared Libraries" {
+	extension = { ".dll", ".so", ".sl" }
+    }
+    "Libraries" {
+	extension = { ".a", ".lib", ".olb", ".a88" }
+    }
+    "Debug Info" {
+	extension = { ".dbo", ".dba", ".dla", ".dnm" }
+    }
+    "Executable" {
+	extension = { ".exe", ".cfe", ".run", ".r", ".out" }
+    }
+    "Legacy Project" {
+    	extension = { ".bld" }
+    }
+    "Targets" {
+    	extension = { ".bld" }
+    }
+    "Project" {
+    	extension = { ".gpj" }
+    }
+    "All Projects" {
+	extension = { ".gpj", ".bld" }
+    }
+    "Event Analyzer" {
+	extension = { ".mev" }
+    }
+    "Placer File" {
+	extension = { ".plc" }
+    }
+    "Configuration File" {
+	extension = { ".cfg" }
+    }
+    "PostScript" {
+	extension = { ".ps" }
+    }
+    "Memory Leak Info" {
+	extension = { ".lks" }
+    }
+    "Saved Breakpoints" {
+	extension = { ".bps" }
+    }
+    "Target Connections" {
+	extension = { ".con" }
+    }
+    "Memory Filter" {
+	extension = { ".gmd", ".mdf" }
+    }
+    "Event Stream File" {
+	extension = { ".mer", ".mes" }
+    }
+    "Raw Event Stream File" {
+	extension = { ".mer" }
+    }
+    "Register Value File" {
+	extension = { ".grv"}
+    }
+    "Register Definition File" {
+	extension = { ".grd"}
+    }
+    "Profile Data" {
+	extension = { ".pro" }
+    }
+    "Debugger Note List" {
+	extension = { ".dnl" }
+    }
+    "Build Target" {
+	extension = { ".bod" }
+    }
+    "License File" {
+    	extension = { ".ghslic", ".glk" }
+    }
+    "Raw Trace Data" {
+        extension = { ".raw" }
+    }    
+    "Trace Data" {
+        extension = { ".tra" }
+    }
+    "Trace Session" {
+        extension = { ".trs" }
+    }
+    "Trace Listing" {
+	extension = { ".trt" }
+    }
+    "Trace Trigger" {
+        extension = { ".tgr" }
+    }
+    "MULTI Setup Script" {
+        extension = { ".mbs" }
+    }
+    "Target Setup Script" {
+        extension = { ".mbs", ".dbs" }
+    }
+    "Probe Firmware" {
+	extension = { ".frm" }
+    }
+    "ARC FPGA Blast" {
+	extension = { ".xbf" }
+    }
+    "MeP Architecture Database" {
+	extension = { ".acd" }
+    }
+    "XML" {
+	extension = { ".xml" }
+    }
+    "MULTI Launcher Configuration" {
+	extension = { ".gmb" }
+    }
+    "Manual" {
+        extension = { ".chm" }
+    }
+    "CSV Files" {
+	extension = { ".csv" }
+    }
+    "Auto Include Files" {
+    	extension = { ".auto" }
+    }
+    "Device Definition File" {
+    	extension = { ".gdv" }
+    }
+    "Board Definition File" {
+    	extension = { ".gbd" }
+    }
+
+    "INTEGRITY Applications" {
+	extension = { ".ael" }
+    }
+    
+
+########### Presets ###########
+
+    presets {
+
+# The Any preset is here as a convienence for file dialogs to include the
+# All Files type
+	Any {
+	    filetype = { "All Files" }
+	}
+
+# The Printing preset is used in Unix print dialogs
+	Printing {
+	    filetype = { "PostScript", "All Files" }
+	}
+
+# Register definition file
+	RegisterDefinition {
+	    filetype = { "Register Definition File" }
+	}
+
+# Register value file
+	RegisterValue {
+	    filetype = { "Register Value File" }
+	}
+
+# The Debugger preset is intended to contain the set of files which are
+# debuggable.  Because executables frequently do not have extensions on
+# them, the first type listed is our catch all.
+	Debugger {
+	    filetype = { "All Files", "Executable", "Shared Libraries" }
+	}
+
+# The Editor preset is intended to hold the set of files which are commonly
+# opened up in an editor.  The default list will contain mostly source code
+# extensions, as that is probably the most common use for our editor.  I
+# put the C/C++ closer to the top, but persistence will migrate to the top the
+# most frequently used one for each user.
+	Editable {
+	    filetype =  { "C Source", "C++ Source", "Assembly Source" }
+	    filetype += { "Link Map", "Fortran Source" }
+	    filetype += { "Ada Source Body", "Ada Source Spec" }
+	    filetype += { "Green Hills Script", "Configuration File" }
+	    filetype += { "Java Source", "Pascal Source", "Jovial Source" }
+	    filetype += { "SL1 Source", "Text Files" }
+	}
+	
+	Editor {
+	    include = { "Any", "Editable" }
+	}
+
+# The Builder presets holds all of the files which are of an openable type to
+# the MULTI builder.
+	LegacyProject {
+	    filetype = { "Legacy Project" }
+	}
+
+	Project {
+	    filetype = { "Project" }
+	}
+
+	Builder {
+	    filetype =  { "Project" }
+	    filetype += { "Legacy Project" }
+	    filetype += { "All Projects" }
+	    filetype += { "All Files" }
+#	    include = { "Project", "LegacyProject" }
+	}
+
+	Connections {
+	    filetype = { "Target Connections" }
+	}
+
+	BuilderAddSource {
+	    filetype =  { "C Source", "C++ Source", "Assembly Source" }
+	    filetype += { "Ada Source Body", "Ada Source Spec" }
+	    filetype += { "Fortran Source" }
+	    filetype += { "Java Source", "Pascal Source", "Jovial Source" }
+	    filetype += { "SL1 Source" }
+	}
+	
+	BuilderAddFile {
+	    include = { "Any", "Builder", "Editable", "Connections" }
+	}
+
+# The Target preset holds all of the extensions which are used for setting
+# target build files
+	Target {
+	    filetype = { "Targets" }
+	}
+
+# Saving and loading a configuration file from disk can take either the
+# suggested .cfg extension or can be any known file.
+	Configuration {
+	    filetype = { "Configuration File", "All Files" }
+	}
+
+# Findleaks has a suggested extension of .lks
+	FindLeaks {
+	    filetype = { "Memory Leak Info", "All Files" }
+	}
+
+# Breakpoints dialogs can save and restore breakpoints in files of a specific
+# format, stored in .bps files.
+	BreakpointIO {
+	    filetype = { "Saved Breakpoints", "All Files" }
+	}
+
+# Object is used in dialogs which load dynamic modules onto the target
+	Object {
+	    filetype = { "All Files", "Object Files", "Shared Libraries", "Libraries" }
+	}
+
+# TargetConnection is used by the target connection configuration razmatazz
+# to save and store information about how to connect to a particular
+# target.
+	TargetConnection {
+	    filetype = { "Target Connections", "All Files" }
+	}
+
+# MemoryFilter is used by the memory filter editor window to keep track of what
+# is and isn't allowed for different sections of memory
+	MemoryFilter {
+	    filetype = { "Memory Filter", "All Files" }
+	}
+
+# Mevgui is used by mevgui to open up event stream record files
+	Mevgui {
+	    filetype = { "Event Stream File" }
+	}
+
+# RawEventFile is used by mevgui to open up raw event stream record files
+	RawEventFile {
+	    filetype = { "Raw Event Stream File" }
+	}
+
+# IntegrateInt is used by integrate to open integrate files.
+	IntegrateInt {
+	    filetype = { "Integrate File" }
+	}
+
+# IntegrateBsp is used by integrate to open board support files.
+	IntegrateBsp {
+	    filetype = { "BSP Description" }
+	}
+# Used for profiling.
+	Profiling {
+	    filetype = { "Profile Data", "All Files" }
+	}
+# Used for debugger notes.
+	DebuggerNotes {
+	    filetype = { "Debugger Note List" }
+	}
+# Used for the build targets in wbuild.
+	BuildTarget {
+	    filetype = { "Build Target" }
+	}
+# Used for binary trace data.
+        TraceData {
+            filetype = { "Trace Data", "All Files" }
+        }
+# Used for loading session trace data
+# trace session loader will also load plain trace data (.tra)
+        TraceSession {
+            filetype =  { "Trace Session", "Trace Data", "Raw Trace Data"}
+            filetype += { "All Files" }
+        }
+# Used for saving a trace session
+       TraceSessionSave {
+            filetype = { "Trace Session", "All Files" }
+       }
+# Used for ASCII trace listing.
+        TraceListing {
+            filetype = { "Trace Listing", "All Files" }
+        }
+# Used for saved trigger settings.
+        TraceTrigger {
+            filetype = { "Trace Trigger", "All Files" }
+        }
+
+# Used for MScriptDbg
+        ScriptFiles {
+	    filetype =  { "Target Setup Script", "Green Hills Script" }
+	    filetype += { "All Files" }
+	}
+
+# The Text preset is here as a convienence for file dialogs to include the
+# Text Files type
+	Text {
+	    filetype = {"Text Files", "All Files" }
+	}
+
+	ProbeFirmware {
+	    filetype = { "Probe Firmware", "All Files" }
+	}
+
+        LauncherCfgFile {
+            filetype = { "MULTI Launcher Configuration" }
+        }
+	
+# Used by the Help Viewer
+        HelpManual {
+	    filetype = { "Manual" }
+	}
+
+# Used to export trace data in comma-separated values format.
+	CSV {
+	    filetype = {"CSV Files", "Text Files", "All Files" }
+	}
+
+# Used in the Auto Include Adder gui
+	AutoInclude {
+	    filetype = { "Auto Include Files" }
+	}
+
+	BoardDef {
+	    filetype = { "Board Definition File" }
+	}
+
+	LinkerDirectives {
+	    filetype = { "Link Map" }
+	}
+
+	# Used to select integrity applications
+	INTEGRITYApps {
+	    filetype = { "INTEGRITY Applications", "All Files" }
+	}
+    }
+    
+}
+

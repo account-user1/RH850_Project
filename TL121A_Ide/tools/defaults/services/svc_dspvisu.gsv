@@ -1,0 +1,62 @@
+%if defined(__MULTI_WIN32_DEV_HOST__)
+%  if defined(__TOOLS_DIR__)
+%    define LIB_BASE_DIR "${__TOOLS_DIR__}/../third_party/matlab/win32"
+%  else
+%    define LIB_BASE_DIR "${__MULTI_DIR__}/../third_party/matlab/win32"
+%  endif
+%else
+%  if defined(__TOOLS_DIR__)
+%    define LIB_BASE_DIR "${__TOOLS_DIR__}/matlablibs"
+%  else
+%    define LIB_BASE_DIR "${__MULTI_DIR__}/matlablibs"
+%  endif
+%endif
+
+Services.vserv_standalone {
+    ExecName="vserv_standalone"
+    PluginName="Standalone Service"
+    Persistent=0
+    Environment {
+        LIBPATH="${LIB_BASE_DIR}/r12"
+    }
+    PluginData {
+	Description="A standalone matlab engine."
+    }
+    ServicesProvided {
+	{
+	    ServiceName="Vserv_Standalone"
+	}
+    }
+}
+Services.vserv_r11 {
+    ExecName="vserv_r11"
+    PluginName="Vserv Service"
+    Persistent=0
+    Environment {
+        LIBPATH="${LIB_BASE_DIR}/r11"
+    }
+    PluginData {
+	Description="A matlab r11 engine."
+    }
+    ServicesProvided {
+	{
+	    ServiceName="Vserv_R11"
+	}
+    }
+}
+Services.vserv_r12 {
+    ExecName="vserv_r12"
+    PluginName="Vserv Service"
+    Persistent=0
+    Environment {
+        LIBPATH="${LIB_BASE_DIR}/r12"
+    }
+    PluginData {
+	Description="A matlab r12 engine."
+    }
+    ServicesProvided {
+	{
+	    ServiceName="Vserv_R12"
+	}
+    }
+}

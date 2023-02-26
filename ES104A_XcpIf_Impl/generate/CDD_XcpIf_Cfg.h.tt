@@ -1,0 +1,119 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   CDD_XcpIf_Cfg.h
+* Module Description: Configuration header file for ES104A Xcp Interface component.
+* Project           : CBD
+* Author            : Kevin Smith
+***********************************************************************************************************************
+* Version Control:
+* %version:          2 %
+* %derived_by:       cz7lt6 %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 06/14/17  1       KJS     Initial version of the private header template                                  EA4#11830
+* 02/12/18  2       KJS     Updates from anomaly EA4#20564                                                  EA4#20574
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef CDD_XCPIF_CFG_H
+#define CDD_XCPIF_CFG_H
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "XcpIf" ) );
+
+    /* Variables used in this template */
+    string XcpDriverSeln = ValueOf( Xp.ValueAtDefRefTo( "XcpDriverSelection" ) );
+    string TunSelnMngtOsRef = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "TunSelnMngtOsApplicationRef" ));
+    string XcpHeaderFile = "";
+    string XcpArDrvr = "";
+    bool TestValue = false;
+    
+    switch(XcpDriverSeln)
+    {
+        case "CANbedded":
+            XcpHeaderFile = "XcpProf.h";
+            XcpArDrvr = "STD_OFF";
+        break;
+        case "AUTOSAR":
+            XcpHeaderFile = "Xcp.h";
+            XcpArDrvr = "STD_ON";
+        break;
+        case "Auto Select":
+        default:
+            try
+            {
+                /* If the try is successful, it is the AUTOSAR Xcp driver */
+                ChangeContext( Xp.ModuleConfAtDefRefTo( "Xcp" ) );
+                TestValue = ValueOf( Xp.ValueAtDefRefTo( "XcpGeneral/XcpControl" ));
+                XcpHeaderFile = "Xcp.h";
+                XcpArDrvr = "STD_ON";
+            }
+            catch
+            {
+                /* If the catch occurs, it is the CANbedded Xcp driver since that is configured via GENy */
+                XcpHeaderFile = "XcpProf.h";
+                XcpArDrvr = "STD_OFF";
+            }
+        break;
+    }
+#>
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+
+/************************************************ Include Statements *************************************************/
+#include "Std_Types.h"
+#include "<#= XcpHeaderFile #>"
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/**************************************************** Type defs ******************************************************/
+
+/************************************************ Embedded Constants *************************************************/
+#define XCPIF_XCPARDRVR_CNT_U08    (<#= XcpArDrvr #>)
+<#
+    if (XcpArDrvr == "STD_ON")
+    {
+        ChangeContext( Xp.ModuleConfAtDefRefTo( "Xcp" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "XcpConfig/XcpEventChannel" ) ) #>
+<#
+        string shortName = ValueOf( "ar:SHORT-NAME" );
+#>
+#define XCPIF_<#= shortName.ToUpper() #>    XcpConf_XcpEventChannel_<#= shortName #>
+<# !ENDLOOP #>
+<#
+    }
+#>
+
+/****************************************************** Macros *******************************************************/
+#define XCPIF_TUNSELNMNGTOSAPPL_CNT_U08     <#= TunSelnMngtOsRef #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Os" ) );
+    try
+    {
+        /* Try to read the OsKernelVersion which is defined in the latest OS and not in older versions.  If the read
+         * is successful the the program is using the newest OS and nothing needs to be done. */
+        ValueOf( Xp.ValueAtDefRefTo( "OsPublishedInformation/OsKernelVersion" ));
+    }
+    catch
+    {
+        /* If the read fails, the program is using the older OS and a patch needs to be made to adapt the non-trusted
+         * function name and types to those used by the older operating system. */
+#>
+/* Provide patch for use with older version of the Vector OS without prefixed names on functions and types. */
+#define Os_NonTrustedFunctionIndexType         NonTrustedFunctionIndexType
+#define Os_NonTrustedFunctionParameterRefType  NonTrustedFunctionParameterRefType
+#define Os_CallNonTrustedFunction              CallNonTrustedFunction
+<#
+    }
+#>
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif /* CDD_XCPIF_CFG_H */

@@ -1,0 +1,94 @@
+# Green Hills Window Manager configuration (MULTI)
+
+# This describes the docking behavior for windows in the application. You can
+# use this file to specify what types of windows can dock together.  Each
+# window type will have a Dock list which specifies what other windows types
+# it will dock to when near that type of window.  For more information on
+# docking, see the MULTI Users Guide.
+
+# Notes:
+# - Currently, you cannot break arrays of strings across lines without using +=.
+# - You cannot use a group name in the Types list.
+# - Docking should be specified in a reflective manner (if a docks to b,
+#   then b should dock to a).  If not, then docking will only occur if you are
+#   dragging one of the window types.
+# - A window type may have no docking behavior defined, which causes it
+#   not to dock to any windows.
+
+# You can override the site defaults by copying this file to your .GHS
+# user directory in a subdirectory called windowmanager.
+Version = 1
+
+# Available windows (order should not be modified)
+"Available Windows"  = { "Default" }
+"Available Windows" += { "Debugger" }
+"Available Windows" += { "ViewWindow" }
+"Available Windows" += { "CallStackView" }
+"Available Windows" += { "BuildStatus" }
+"Available Windows" += { "Builder" }
+"Available Windows" += { "ConnectionOrganizer" }
+"Available Windows" += { "DataDescriptions" }
+"Available Windows" += { "Notepad" }
+"Available Windows" += { "Editor" }
+"Available Windows" += { "Profiler" }
+"Available Windows" += { "FunctionProfiler" }
+"Available Windows" += { "FunctionProfilerSearch" }
+"Available Windows" += { "RegisterView" }
+"Available Windows" += { "RegisterInfo" }
+"Available Windows" += { "MemoryView" }
+"Available Windows" += { "NoteBrowser" }
+"Available Windows" += { "NoteEditor" }
+"Available Windows" += { "OSAObjectView" }
+"Available Windows" += { "TaskManager" }
+"Available Windows" += { "TreeBrowser" }
+"Available Windows" += { "HistoryBrowser" }
+"Available Windows" += { "INTEGRITY Object View" }
+"Available Windows" += { "PythonWindow" }
+"Available Windows" += { "BrowseWindow" }
+
+
+# Groups are just lists of window types.  Each type listed acquires the same
+# docking behavior.  Behavior for each window type should only be defined once
+# either in the Groups section or the Windows section.  A group name may be
+# used as a Dock target the same way a window name can.  For this reason, it
+# is suggested that group names be prefixed with _ to avoid name conflicts.
+#
+# Format:
+# Groups {
+#   _GroupName {
+#       Types = { "WindowType1" [, "WindowType2"...] }
+#       Dock = { "WindowTypeToDockTo1", [, "WindowTypeToDockTo2...] }
+#    }
+#    ...
+# }
+
+Groups {
+    _FunctionProfiling {
+	Types = { "FunctionProfiler", "FunctionProfilerSearch" }
+	Dock = { "_FunctionProfiling" }
+    }
+    _ViewWindows {
+	Types = { "ViewWindow", "CallStackView", "MemoryView", "RegisterView" }
+	Dock =  { "_ViewWindows" }
+    }
+}
+
+# This section can be used to specify behavior for individual windows.
+#
+# Format:
+# Windows {
+#     WindowType {
+#         Dock = { "WindowTypeToDockTo1", [, "WindowTypeToDockTo2...] }
+#     }
+#     ...
+# }
+
+Windows {
+    # Any window type which is not in the Available Window list will use
+    # the Default settings.
+    Default {
+    }
+    TreeBrowser {
+	Dock = { "TreeBrowser" }
+    }
+}

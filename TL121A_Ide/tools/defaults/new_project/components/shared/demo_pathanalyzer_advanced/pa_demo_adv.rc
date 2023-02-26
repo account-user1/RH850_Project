@@ -1,0 +1,207 @@
+configure cwindlines 16;
+
+clear;
+
+trace off;
+// The following command enables both the "Automatically enable trace collection"
+// option and the "Retrieve trace when target halts" option.  This is needed
+// because the rest of this demo script assumes those options are enabled.
+trace set automatic_trace;
+trace on;
+
+scrollcommand +MAX wid=-2;
+echo "===============================================================================";
+echo "This example program will analyze several different sorting algorithms using";
+echo "TimeMachine.  With this demo, you can see the O(N^2) behavior of bubble sort,";
+echo "insertion sort and selection sort.  We also show the recursive nature of";
+echo "quicksort and how quicksort degenerates into insertion sort when given";
+echo "presorted data.";
+echo " ";
+echo "Click 'Go on Selected Items (F5)' to begin.";
+echo " ";
+
+Q 1;
+D;
+
+bA main##END {
+    scrollcommand +MAX wid=-2;
+    echo "===============================================================================";
+    echo "We have now collected trace data for this program and have opened the";
+    echo "PathAnalyzer, a tool that is very useful for visualizing the behavior of your";
+    echo "program and where it spends its time.  Since the sort algorithms are all ";
+    echo "recursive, you can see the linear call stack depth of the N^2 algorithms and";
+    echo "the O(log N) behavior of quicksort on random data.  Also, you can see the N^2";
+    echo "behavior of quicksort on pre-sorted data.";
+    echo " ";
+    echo "Take a look at the PathAnalyzer and zoom in and out to analyze the different";
+    echo "sorting algorithms.";
+    echo " ";
+    echo "To Continue click 'Go Back (Alt+F5)'.";
+    echo " ";
+
+    trace path;
+
+    b main {
+	bA bubblesort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "We will now execute bubblesort.  The array is unsorted, and";
+	    echo "you can see that the data is entirely random.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    viewdel;
+	    view *((int((*)[50]))array);
+	    __modgui menu.selectitem "Data Explorer" "Ev&aluate" "By Add&ress";
+	    b bubblesort_r {
+		update;
+		resume;
+	    }
+	    bX bubblesort {
+		scrollcommand +MAX wid=-2;
+		echo "==============================================================================";
+		echo "The data is now sorted.";
+		echo " ";
+		echo "We will now \"unsort\" the data by running backward.  As this happens, you";
+		echo "will see the data revert to its random state before.  This would be very";
+		echo "useful if there was an error in the sorting algorithm because you could track";
+		echo "down exactly the iteration of the loop where the problem occurs.";
+		echo " ";
+		echo "To continue click 'Go Back (Alt+F5)'.";
+		echo " ";
+		bA bubblesort {
+		    scrollcommand +MAX wid=-2;
+		    echo "==============================================================================";
+		    echo "Now you've seen bubblesort.  Let's move on to the next sorting algorithm.";
+		    echo " ";
+		    echo "To continue click 'Go on Selected Items (F5)'.";
+		    echo " ";
+		    d bubblesort_r;
+		}
+	    }
+	}
+
+	bA insertionsort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "We will now execute insertion sort.  You can see that the data is again";
+	    echo "random.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    viewdel;
+	    view *((int((*)[50]))array);
+	    __modgui menu.selectitem "Data Explorer" "Ev&aluate" "By Add&ress";
+	    b insertionsort_r {
+		update;
+		resume;
+	    }
+	    bX insertionsort {
+		scrollcommand +MAX wid=-2;
+		echo "==============================================================================";
+		echo "The data is now sorted.";
+		echo " ";
+		echo "You can see the difference in the sort implementation by watching as the sort"
+		echo "progresses.";
+		echo " ";
+		echo "We will now \"unsort\" the data by running backward.  As this happens, you";
+		echo "will see the data revert to its random state before.";
+		echo " ";
+		echo "To continue click 'Go Back (Alt+F5)'.";
+		echo " ";
+		bA insertionsort {
+		    scrollcommand +MAX wid=-2;
+		    echo "==============================================================================";
+		    echo "Now you've seen insertion sort.  Let's move on to the next sorting algorithm.";
+		    echo " ";
+		    echo "To continue click 'Go on Selected Items (F5)'.";
+		    echo " ";
+		    d insertionsort_r;
+		}
+	    }
+	}
+
+	bA selectionsort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "We will now execute selection sort.  You can see that the data is again";
+	    echo "random.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    viewdel;
+	    view *((int((*)[50]))array);
+	    __modgui menu.selectitem "Data Explorer" "Ev&aluate" "By Add&ress";
+	    b selectionsort_r {
+		update;
+		resume;
+	    }
+	    bX selectionsort {
+		scrollcommand +MAX wid=-2;
+		echo "==============================================================================";
+		echo "The data is now sorted.";
+		echo " ";
+		echo "You can see the difference in the sort implementation by watching as the sort";
+		echo "progresses.  Notice how the data grows from the bottom up with insertion sort"
+		echo "whereas it was top down with bubble sort.";
+		echo " ";
+		echo "We will now \"unsort\" the data by running backward.  As this happens, you";
+		echo "will see the data revert to its random state before.";
+		echo " ";
+		echo "To continue click 'Go Back (Alt+F5)'.";
+		echo " ";
+		bA selectionsort {
+		    scrollcommand +MAX wid=-2;
+		    echo "==============================================================================";
+		    echo "Now you've seen selection sort.  Let's move on to the next sorting algorithm.";
+		    echo " ";
+		    echo "To continue click 'Go on Selected Items (F5)'.";
+		    echo " ";
+		    d selectionsort_r;
+		}
+	    }
+	}
+
+	bA quicksort {
+	    scrollcommand +MAX wid=-2;
+	    echo "==============================================================================";
+	    echo "We will now execute quicksort.  You can see that the data is again";
+	    echo "random.";
+	    echo " ";
+	    echo "To continue, simply click 'Go on Selected Items (F5)'.";
+	    echo " ";
+	    viewdel;
+	    view *((int((*)[50]))array);
+	    __modgui menu.selectitem "Data Explorer" "Ev&aluate" "By Add&ress";
+	    b quicksort_r {
+		update;
+		resume;
+	    }
+	    bX quicksort {
+		scrollcommand +MAX wid=-2;
+		echo "==============================================================================";
+		echo "The data is now sorted.";
+		echo " ";
+		echo "You can see the difference in the sort implementation by watching as the"
+		echo "sort progresses.  Notice how the data is sorted in chunks since quicksort";
+		echo "is a divide and conquer algorithm.";
+		echo " ";
+		echo "We will now \"unsort\" the data by running backward.  As this happens, you";
+		echo "will see the data revert to its random state before.";
+		echo " ";
+		echo "To continue click 'Go Back (Alt+F5)'.";
+		echo " ";
+		bA quicksort {
+		    scrollcommand +MAX wid=-2;
+		    echo "==============================================================================";
+		    echo "Now you've seen quicksort.  This concludes our demo of various sorting";
+		    echo "algorithms using TimeMachine.";
+		    echo " ";
+		    d quicksort_r;
+		}
+	    }
+	}
+	d main;
+	cb;
+    }
+}

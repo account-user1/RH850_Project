@@ -1,0 +1,115 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/schema/r4.0'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : CDD_MotCtrlMgr_Irq.c
+* Module Description: Motor Control Manager Interrupt Definition
+* Project           : CBD
+* Author            : Lucas Wendling
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          2 %
+* %derived_by:       czgng4 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 06/05/15  1        LWW       Initial Version                                                                 EA4#511
+* 01/21/16  2        LWW       Updated to remove interrupt keyword for change to pragma                        EA4#3428                                                 
+**********************************************************************************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "MotCtrlMgr" ) ); #>
+<#	/********************************* Overall Processing *********************************/
+
+	Dictionary<int, string> RunnableNameDictionary = new Dictionary<int, string>();
+	Dictionary<int, string> RunnableRateDictionary = new Dictionary<int, string>();
+	List<string> HeaderList = new List<string>();
+
+	/********************************* Runnable Processing *********************************/ #>
+<# !LOOP( Xp.ValueAtDefRefTo( "MotCtrlMgrConfigSet/RunnableManagement/IncludeHeaders" ) ) #>
+<#	HeaderList.Add("#include \""+ValueOf( "." )+"\"");#>
+<# !ENDLOOP #>
+/************************************************ Include Statements *************************************************/
+#include "CDD_MotCtrlMgr_Irq.h"
+<# foreach (string var in HeaderList){ #>
+<#=var#>
+<#}#>
+/******************************************** File Level Rule Deviations *********************************************/
+
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+
+/********************************************* Embedded Local Constants **********************************************/
+
+/******************************************** Module Specific Variables **********************************************/
+
+/******************************************** Local Function Prototypes **********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+
+#define CDD_MotCtrlMgr_Irq_START_SEC_CODE
+#include "MotCtrlMgr_MemMap.h"
+
+/* Use GreenHills pragma for creating an interrupt service routine.  
+   The default is for RH850 EI level exceptions */
+#pragma ghs interrupt
+FUNC(void, CDD_MotCtrlMgr_CODE) MotCtrlMgrIrq(void)
+{
+	static VAR(uint8, CDD_MotCtrlMgr_VAR_NOINIT) MotCtrlLoopCntr_Cnt_F_u8 = 1U;
+	
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/RunnableManagement/Runnable" ) ) #>
+<# 
+	int SequenceOrder = ValueOf( Xp.ValueAtDefRefTo( "SequenceOrder" ));
+	
+	/* Sequence order is used as the "Key" of the dictionaries */
+	RunnableNameDictionary.Add( SequenceOrder, ValueOf( "ar:SHORT-NAME" )); 
+	RunnableRateDictionary.Add( SequenceOrder, ValueOf( Xp.ValueAtDefRefTo( "RunnableRate" ))); 
+#><# !ENDLOOP #>
+<#  int RunnableIterator; 
+	bool MtrCtrlx2Active = false;
+
+	/* Only 255 runnable entries are supported in the configuration of runnables.  The following logic iterates through all 255 
+	   possible key values.  If a key is found in the dictionary, that runnable is processed.  This will allow all "lower" numbers 
+	   of sequence orders to be processed first, ensuring the proper runnable calling order strategy  (lower number called before higher number). 
+	   Most of the logic found in the following code is used to properly handle adding "if" statements and braces where required on the 
+	   "MotorControlx2" runnables.  */
+	for (RunnableIterator=0; RunnableIterator < 255; RunnableIterator++) {
+	if(RunnableNameDictionary.ContainsKey(RunnableIterator)) 
+	{ 
+		if ((RunnableRateDictionary[RunnableIterator] == "MotorControlx2") && (MtrCtrlx2Active == false))
+		{
+			MtrCtrlx2Active = true;
+#>
+	if( MotCtrlLoopCntr_Cnt_F_u8 == 1U )
+	{
+		<#=	RunnableNameDictionary[RunnableIterator]+"();"#>
+<#  	}  else if ((RunnableRateDictionary[RunnableIterator] == "MotorControl")&& (MtrCtrlx2Active == true))
+        { 
+			MtrCtrlx2Active = false;#>
+	}
+	<#=RunnableNameDictionary[RunnableIterator]+"();"#>
+<#  	}  else
+		{
+			if (MtrCtrlx2Active == true)
+			{#>
+		<#=	RunnableNameDictionary[RunnableIterator]+"();"#>
+<#			}else
+            {#>
+	<#=RunnableNameDictionary[RunnableIterator]+"();"#>
+<#			}#>
+<#		}#>
+<#	}#>
+<#	} #>
+<#	if (MtrCtrlx2Active == true) { #>
+	}
+<#	} #>
+	MotCtrlLoopCntr_Cnt_F_u8 ^= 1U;
+}
+
+#define CDD_MotCtrlMgr_Irq_STOP_SEC_CODE
+#include "MotCtrlMgr_MemMap.h"
+
+

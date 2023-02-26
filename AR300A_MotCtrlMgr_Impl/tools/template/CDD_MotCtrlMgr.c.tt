@@ -1,0 +1,204 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/schema/r4.0'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : CDD_MotCtrlMgr.c
+* Module Description: Motor Control Manager
+* Project           : CBD
+* Author            : Lucas Wendling
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          3 %
+* %derived_by:       czgng4 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 06/05/15  1        LWW       Initial Template Version                                                        EA4#511
+* 10/29/15  2        LWW       Template update for signal mapping changes                                      EA4#3428
+* 08/08/16  3        LWW       Template update for compatibility with MotCtrlMgr Configuration Tool            EA4#6787
+**********************************************************************************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "MotCtrlMgr" ) ); #>
+<#	/********************************* Overall Processing *********************************/
+	List<string> MotCtrlToTwoMilliSecList = new List<string>();
+	List<string> TwoMilliSecToMotCtrlList = new List<string>();
+	Dictionary<string, string> SignalMappingDictionary = new Dictionary<string, string>();
+	List<string> OutputMappingReadMotCtrlList = new List<string>();
+	List<string> OutputMappingReadTaskList = new List<string>();
+#>
+<# /* Create a Dictionary that contains the signal mapping details for later use.  The input signal name is used for the dictionary "key" */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping" ) ) #><#
+	string OutputSignalName = ValueOf( Xp.ValueAtDefRefTo( "OutputSignalName" )); #>
+<# !LOOP( Xp.ValueAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/SignalMapping/InputSignalName" ) ) #><#
+	string InputSignalName = ValueOf( "." );
+	SignalMappingDictionary.Add( InputSignalName, OutputSignalName); #>
+<# !ENDLOOP #>
+<# !ENDLOOP #>
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><# 	
+	string SigName = ValueOf( "ar:SHORT-NAME" );
+	string ReadInTaskVal = ValueOf( Xp.ValueAtDefRefTo( "ReadIn2msRunnable" ));
+	string ReadInMotCtrlVal = ValueOf( Xp.ValueAtDefRefTo( "ReadInMotCtrlRunnable" ));
+	foreach( KeyValuePair<string, string> kvp in SignalMappingDictionary )
+	{
+		/* if signal is an input in the mapping set */
+		if (kvp.Key == SigName)
+	    {
+			if ((OutputMappingReadMotCtrlList.Contains(kvp.Value) == false) && (ReadInMotCtrlVal == "true"))
+			{
+				OutputMappingReadMotCtrlList.Add( kvp.Value );
+			}
+			
+			if ((OutputMappingReadTaskList.Contains(kvp.Value) == false) && (ReadInTaskVal == "true"))
+			{
+				OutputMappingReadTaskList.Add( kvp.Value );
+			}
+		}
+	}
+#>
+<# !ENDLOOP #>
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "MotCtrlMgrConfigSet/SignalManagement/Signal" ) ) #><# 	
+	string SigName = ValueOf( "ar:SHORT-NAME" );
+	/* Check if signals is an input signal in the signal mapping */
+	if ((SignalMappingDictionary.ContainsKey(SigName) == true) ||
+	    (SigName.Contains("TSG30DCMP0E") == true) ||
+		(SigName.Contains("TSG30CMP0E") == true) ||
+		(SigName.Contains("TSG30CMP12E") == true) ||
+		(SigName.Contains("TSG30CMPWE") == true) ||
+		(SigName.Contains("TSG30CMPVE") == true) ||
+		(SigName.Contains("TSG30CMPUE") == true) ||
+		(SigName.Contains("TSG31DCMP0E") == true) ||
+		(SigName.Contains("TSG31CMP0E") == true) ||
+		(SigName.Contains("TSG31CMP12E") == true) ||
+		(SigName.Contains("TSG31CMPWE") == true) ||
+		(SigName.Contains("TSG31CMPVE") == true) ||
+		(SigName.Contains("TSG31CMPUE") == true) ||
+		(SigName.Contains("Adc0RawRes") == true) ||
+		(SigName.Contains("Adc0RawRes") == true))
+	{
+		/* If the signal is part of the configured signal mapping as an input, this signal should be skipped because only the output signals are contained in the
+		   handled by this component.  It is up to the developer to manually account for signal mapping of RTE connections */
+	}
+	else
+	{
+		/* Find out which lists signal applies to - These signals would map to Per1 */
+		if ((ValueOf( Xp.ValueAtDefRefTo( "WrittenInMotCtrlRunnable" )) == "true") && ((ValueOf( Xp.ValueAtDefRefTo( "ReadIn2msRunnable" )) == "true") || (OutputMappingReadTaskList.Contains(SigName)== true )))
+		{
+			/* Check if signal is an array */
+			if (ValueOf( Xp.ValueAtDefRefTo( "Size" )) > 1)
+			{
+				/* Create string for Write API for array signal (note 1 dimensional arrays are all that can be currently handled) */
+				MotCtrlToTwoMilliSecList.Add("(void)Rte_Write_" + SigName + "_Ary1D(MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec." + ValueOf( "ar:SHORT-NAME" ) + ");");
+			}
+			else
+			{
+				/* Check if signal is boolean */
+				if(ValueOf( Xp.ValueAtDefRefTo( "ImplementationDataType" )) == "boolean")
+				{
+					/* Create string for Write API for boolean signal */
+					MotCtrlToTwoMilliSecList.Add("(void)Rte_Write_" + SigName + "_Logl(MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec." + SigName + ");");
+				}
+				else
+				{
+					/* Create string for Write API for normal signal */
+					MotCtrlToTwoMilliSecList.Add("(void)Rte_Write_" + SigName + "_Val(MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec." + SigName + ");");
+				}
+			}
+		}
+		/* Find out which lists signal applies to - These signals would map to Per2  */
+		else if ((ValueOf( Xp.ValueAtDefRefTo( "WrittenIn2msRunnable" )) == "true") && ((ValueOf( Xp.ValueAtDefRefTo( "ReadInMotCtrlRunnable" )) == "true") || (OutputMappingReadMotCtrlList.Contains(SigName)== true )))
+		{
+			/* Check if signal is an array */
+			if (ValueOf( Xp.ValueAtDefRefTo( "Size" )) > 1)
+			{
+				/* Create string for Read API for array signal (note 1 dimensional arrays are all that can be currently handled) */
+				TwoMilliSecToMotCtrlList.Add("(void)Rte_Read_" + SigName + "_Ary1D(MotCtrlMgr_TwoMilliSecToMotCtrl_Rec." + SigName + ");");
+			}
+			else
+			{
+				/* Check if signal is boolean */
+				if(ValueOf( Xp.ValueAtDefRefTo( "ImplementationDataType" )) == "boolean")
+				{
+					/* Create string for Read API for boolean signal */
+					TwoMilliSecToMotCtrlList.Add("(void)Rte_Read_" + SigName + "_Logl(&MotCtrlMgr_TwoMilliSecToMotCtrl_Rec." + SigName + ");");
+				}
+				else
+				{
+					/* Create string for Read API for normal signal */
+					TwoMilliSecToMotCtrlList.Add("(void)Rte_Read_" + SigName + "_Val(&MotCtrlMgr_TwoMilliSecToMotCtrl_Rec." + SigName + ");");
+				}
+			}
+		}
+	}
+#>
+<# !ENDLOOP #>
+
+/************************************************ Include Statements *************************************************/
+#include "Rte_CDD_MotCtrlMgr.h"
+#include "CDD_MotCtrlMgr_Data.h"
+/******************************************** File Level Rule Deviations *********************************************/
+
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+/* MISRA-C:2004 Rule 16.10 [NXTRDEV 16.10.1]: There is no appropriate action to take on the return value.  Applicable to all casts to void for all Rte_Read and Rte_Write and for client calls that don't have return errors. */ 
+
+/********************************************* Embedded Local Constants **********************************************/
+
+/******************************************** Module Specific Variables **********************************************/
+
+/******************************************** Local Function Prototypes **********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+
+#define CDD_MotCtrlMgr_START_SEC_CODE
+#include "CDD_MotCtrlMgr_MemMap.h"
+
+/**********************************************************************************************************************
+  * Name:        MotCtrlMgrPer1
+  * Description: This function copies all non-RTE data transferred by the DMA from the Motor Control loop to the 2ms loop
+  *              and provides them as standard sender outputs for use by the RTE.  A DMA function is called to ensure
+  *              completion of the transfer and in case of a timeout error, the RTE outputs are not updated from values
+  *              last loop.
+  * Inputs:      MotCtrlMgr_TwoMilliSecFromMotCtrl_Rec structure
+  * Outputs:     Individual RTE outputs for all signals
+  * Usage Notes: To be scheduled by the RTE near the start of the 2ms loop.  Note that other runnables not requiring 
+  *              Motor control data can be scheduled in-between the runnable triggering the DMA transfer and this function
+  *              to try to prevent or minimize stalled execution while waiting for the DMA transfer.
+  ********************************************************************************************************************/
+FUNC(void, CDD_MotCtrlMgr_CODE) MotCtrlMgrPer1(void)
+{
+	if (Rte_Call_DmaWaitForMotCtrlTo2MilliSecTrf_Oper() == E_OK)
+	{
+<# foreach (string statement in MotCtrlToTwoMilliSecList){ #>
+		<#=statement#>
+<#}#>
+	}
+}
+
+
+/**********************************************************************************************************************
+  * Name:        MotCtrlMgrPer2
+  * Description: This function copies all RTE data transferred by the DMA from the 2ms loop to the Motor Control loop 
+  *              to the non-RTE structure the DMA references.  A DMA function is called at the end of processing to
+  *              trigger the DMA transfer of the data.
+  * Inputs:      Individual RTE inputs for all signals
+  * Outputs:     MotCtrlMgr_TwoMilliSecToMotCtrl_Rec structure
+  * Usage Notes: To be scheduled by the RTE at the end of the 2ms forward path after all critical forward path motor control
+  *              signals have been calculated.
+  ********************************************************************************************************************/
+FUNC(void, CDD_MotCtrlMgr_CODE) MotCtrlMgrPer2(void)
+{
+<# foreach (string statement in TwoMilliSecToMotCtrlList){ #>
+	<#=statement#>
+<#}#>
+
+	(void)Rte_Call_DmaEna2MilliSecToMotCtrlTrf_Oper();
+}
+
+#define CDD_MotCtrlMgr_STOP_SEC_CODE
+#include "CDD_MotCtrlMgr_MemMap.h"

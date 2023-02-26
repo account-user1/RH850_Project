@@ -1,0 +1,19 @@
+// MULTI Server Script
+// Make sure IEPATH and DEVICE_FILE are set correctly before running this
+
+// MULTI setup script for 850eserv with the RTE-V850E-MA1-CB
+// to run from the MULTI command prompt, type "< src/850eserv.dbs"
+
+target reset
+target sfr PMCAL=0xffff
+target sfr PMCAH=0x03ff
+target sfr PMCDL=0xffff
+target sfr PMCCS=0xff
+target sfr PMCCT=0xf3
+target sfr PMCCM=0x3f
+target sfr PMCCD=0x0f
+target sfr BSC=0x5555
+
+target cpu r=512 a=12
+target map w=0x00400000, l 0x100000
+target map w=0x00800000, l 0x100000

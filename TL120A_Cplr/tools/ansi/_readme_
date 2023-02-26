@@ -1,0 +1,64 @@
+
+		Green Hills Software C Library Include Files
+
+These include files should be placed in a directory such that in C the
+statement "#include <file.h>" will include "file.h" from this directory.
+
+------------------------------------------------------------------------------
+
+The location and number of include files and directories differs slightly
+between systems.  Below, the four large categories of systems have been
+summarized.
+
+1.  With native C and C++ compilers on Unix System V.4, header files are 
+    provided in /usr/include which are compatible with Ansi C and C++.
+    On such a system, this directory is not used.
+
+    In K+R and Ansi C modes, only the native headers in /usr/include are used.
+    In C++ mode, the directory containing GHS C++ header files is searched,
+    followed by /usr/include.
+
+2.  With native C and C++ compilers on certain Unix systems, header files are
+    provided in /usr/include which are compatible with Ansi C, but not with C++.
+
+    This situation requires special handling beyond the scope of this file.
+
+3.  With native C and C++ compilers on a typical Unix system, header files are 
+    provided in /usr/include.  In all modes of C and C++, the /usr/include 
+    directory will be searched after all other directories mentioned below have 
+    been searched.  In addition to /usr/include, there are 3 other directories
+    containing include files.  This directory contains Ansi C include files,
+    another directory contains C++ include files, and a third directory contains
+    include files which are specific to the target system.  Typically the third
+    directory will be found in a subdirectory of the directory which contains 
+    GHS libraries, such as libansi.a.  For example, libansi.a may have the path
+    /usr/green/libansi.a and the include files specific to this system will have
+    the path /usr/green/include/*.h.
+
+    The directories to be searched depend on the mode of compilation:
+
+    Mode	Directories to be searched
+    ----	--------------------------
+    K+R C	only /usr/include
+
+    Ansi C	First, the target specific directory	(/usr/green/include)
+		Second, this Ansi C directory		(/usr/green/ansi)
+		Third, /usr/include
+
+    C++		First, the C++ directory		(/usr/green/cxx)
+		Second, the target specific directory	(/usr/green/include)
+		Third, this Ansi C directory		(/usr/green/ansi)
+		Fourth, /usr/include
+
+4.  With cross C and C++ compilers, as well as native compilers on a non-Unix 
+    hosts, the following directories are searched depending on the mode of 
+    compilation:
+
+    Mode	    Directories to be searched
+    ----	    --------------------------
+    K+R or Ansi C   First, the target specific directory    (/usr/green/include)
+		    Second, this Ansi C directory	    (/usr/green/ansi)
+
+    C++		    First, the C++ directory		    (/usr/green/cxx)
+		    Second, the target specific directory   (/usr/green/include)
+		    Third, this Ansi C directory	    (/usr/green/ansi)

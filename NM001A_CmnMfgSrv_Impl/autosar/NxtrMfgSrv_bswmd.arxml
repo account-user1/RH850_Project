@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+	<AR-PACKAGES>
+		<AR-PACKAGE UUID="1a558d5f-22b4-4518-b46b-79a97233bf1f">
+			<SHORT-NAME>Nexteer</SHORT-NAME>
+			<ELEMENTS>
+				<ECUC-MODULE-DEF UUID="e394ce6b-b9e6-407b-925f-8ffdc04bd789">
+					<SHORT-NAME>NxtrMfgSrv</SHORT-NAME>
+					<DESC>
+						<L-2 L="EN">Configuration of Nexteer Common Manufacturing Services.</L-2>
+					</DESC>
+					<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+					<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+					<SUPPORTED-CONFIG-VARIANTS>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+					</SUPPORTED-CONFIG-VARIANTS>
+					<CONTAINERS>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-40c3-a0b7-9b75dd2bc950">
+							<SHORT-NAME>CommonService</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This contains all of the available common services</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<ECUC-ENUMERATION-PARAM-DEF UUID="ef584bd7-f1f7-4e5d-b469-60934f67353c">
+									<SHORT-NAME>ServiceType</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ISO 14229 standard type for this diagnostic service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<LITERALS>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="db37c151-e3ec-41f5-abbd-b7e457164fda">
+											<SHORT-NAME>Reset - 0x11</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03261e386">
+											<SHORT-NAME>Session - 0x10</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03261e386">
+											<SHORT-NAME>Periodic - 0x2A</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03261e386">
+											<SHORT-NAME>Security - 0x27</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03261e386">
+											<SHORT-NAME>TesterPresent - 0x3E</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03262e386">
+											<SHORT-NAME>Routine - 0x31</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03262e386">
+											<SHORT-NAME>Read - 0x22</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03262e386">
+											<SHORT-NAME>Write - 0x2E</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03262e386">
+											<SHORT-NAME>Control - 0x2F</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+									</LITERALS>
+								</ECUC-ENUMERATION-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>ServiceId</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ID value for this service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65231</MAX>
+									<MIN>61440</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>SubFunction</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Sub-function for this service.  Sub-function is dependent upon the type of service and not all services support a sub-function.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>255</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>RequestLength</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of bytes of data input to the service when it is invoked.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>ResponseLength</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of bytes of data output from the service when it is finished.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+									<SHORT-NAME>Enabled</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Set to true if support for this service shall be included in the project</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+								</ECUC-BOOLEAN-PARAM-DEF>
+							</PARAMETERS>
+							<REFERENCES>
+								<ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+									<SHORT-NAME>Application</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Map to OS application using non-trusted function call before service invocation.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+								</ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+							</REFERENCES>
+							<SUB-CONTAINERS>
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-40c3-a0b7-9b75dd2bc950">
+									<SHORT-NAME>AccessControls</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Configure access restrictions for this service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+									<PARAMETERS>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+											<SHORT-NAME>NexteerSession</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Require the user be in Nexteer session to execute this service.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES />
+											<ORIGIN>NEXTEER</ORIGIN>
+											<DEFAULT-VALUE>true</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+											<SHORT-NAME>SecurityAccess</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Require the user complete the Nexteer Seed/Key routine before executing this service.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES />
+											<ORIGIN>NEXTEER</ORIGIN>
+											<DEFAULT-VALUE>true</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-40c3-a0b7-9b75dd2bc950">
+							<SHORT-NAME>ProgramSpecificService</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This contains all of the program specific services</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<ECUC-ENUMERATION-PARAM-DEF UUID="ef584bd7-f1f7-4e5d-b469-60934f67353c">
+									<SHORT-NAME>ServiceType</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ISO 14229 standard type for this diagnostic service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<LITERALS>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-e1b03262e386">
+											<SHORT-NAME>Routine - 0x31</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-ef103262e386">
+											<SHORT-NAME>Read - 0x22</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb13262e386">
+											<SHORT-NAME>Write - 0x2E</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb01262e386">
+											<SHORT-NAME>Control - 0x2F</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03162e386">
+											<SHORT-NAME>Session - 0x10</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03212e386">
+											<SHORT-NAME>Reset - 0x11</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb03261e386">
+											<SHORT-NAME>Tester Present - 0x3E</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+										<ECUC-ENUMERATION-LITERAL-DEF UUID="e100be42-261e-4483-b573-efb032621386">
+											<SHORT-NAME>Security - 0x27</SHORT-NAME>
+										</ECUC-ENUMERATION-LITERAL-DEF>
+									</LITERALS>
+								</ECUC-ENUMERATION-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>ServiceId</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">ID value for this service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65279</MAX>
+									<MIN>65232</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>SubFunction</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Sub-function for this service.  Sub-function is dependent upon the type of service and not all services support a sub-function.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>255</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>RequestLength</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of bytes of data input to the service when it is invoked.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-INTEGER-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e44">
+									<SHORT-NAME>ResponseLength</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of bytes of data output from the service when it is finished.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<MAX>65535</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+									<SHORT-NAME>Enabled</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Set to true if support for this service shall be included in the project</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+								</ECUC-BOOLEAN-PARAM-DEF>
+							</PARAMETERS>
+							<REFERENCES>
+								<ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+									<SHORT-NAME>Application</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Map to OS application using non-trusted function call before service invocation.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+								</ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+							</REFERENCES>
+							<SUB-CONTAINERS>
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-40c3-a0b7-9b75dd2bc950">
+									<SHORT-NAME>AccessControls</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Configure access restrictions for this service.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+									<PARAMETERS>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+											<SHORT-NAME>NexteerSession</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Require the user be in Nexteer session to execute this service.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES />
+											<ORIGIN>NEXTEER</ORIGIN>
+											<DEFAULT-VALUE>true</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:04a0b0ee-322c-48dc-a12d-2287e87e2e42">
+											<SHORT-NAME>SecurityAccess</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Require the user complete the Nexteer Seed/Key routine before executing this service.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES />
+											<ORIGIN>NEXTEER</ORIGIN>
+											<DEFAULT-VALUE>true</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524624-b6ce-40c3-a0b7-9b75dd24c950">
+							<SHORT-NAME>NxtrMfgSrvGeneral</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">General configuration options for all Nexteer Manufacturing Services</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<REFERENCES>
+								<ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+									<SHORT-NAME>MfgSrvApplRef</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">OS application in which Common Manufacturing Services component is mapped.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+								</ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+							</REFERENCES>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+					</CONTAINERS>
+				</ECUC-MODULE-DEF>
+			</ELEMENTS>
+		</AR-PACKAGE>
+	</AR-PACKAGES>
+</AUTOSAR>

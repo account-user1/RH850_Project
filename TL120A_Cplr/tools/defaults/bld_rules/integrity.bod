@@ -1,0 +1,730 @@
+%define EXTRA_OUTPUT_EXTENSION lcp
+%define __GHS_OS_INTEGRITY
+%define HTML_COMPILER_OPTIONS -I
+
+Description {
+	os_dir_option_prefix = "-os_dir "
+	os_sort_key = "AAA-integrity"
+}
+
+# ghs_g653xint_options.bod adds ARINC653 xml file support to the builder
+%if file_exists("${__DIR__}/ghs_g653xint_options.bod")
+%include "ghs_g653xint_options.bod"
+%endif
+
+# This file defines GhsCommonOptions, which is a small set of options
+# that are shared by the compiler and intex.
+%include "ghs_common_options.bod"
+
+CommandOptions {
+    GhsCompilerOptions {
+	OsDir.disabled=false;
+	IntegrityOption.disabled=false
+	Integrity_Kernel.disabled=false
+	Integrity_Libbsp.disabled=false
+	Integrity_POSIX.disabled=false
+        IntegrityPosixMode.disabled=false
+	Integrity_dyload.disabled=false
+	Integrity_irel.disabled=false
+        Integrity_irelprog.disabled=false
+	Integrity_posix_dll.disabled=false
+	Integrity_UtilLib.disabled=false
+	Integrity_InitLibs.disabled=false
+	Integrate.disabled=false
+	RtosIncludeDirs.disabled=false
+	RtosLibraryDirs.disabled=false
+	SharedLibraries.disabled=false
+	SharedLibraries.commonLevel=101
+	SharedLibraries.call_shared.enumLabel="Link With Shared Libraries"
+	SharedLibraries.non_shared.enumLabel="No Shared Libraries"
+	SharedLibraries.guiLabel="Shared Libraries"
+	SharedLibraries.guiCategory="Target;Operating System"
+	CxxVersion.arm.hidden=true
+	CxxVersion.gnu.hidden=true
+	TemplateInstantiation.disabled=false
+        GNU99Inlining.disabled=false
+        # Supporting INTEGRITY distributions will enable the following:
+        #     EntryExitLogging 
+        #     EntryExitLinking
+	#     EagleLinking
+        #     DTrace
+        #     RecordEagleTag
+        #     MuteEagleTag
+        #     StripEagleTag
+        EntryExitLinking.disabled=true
+        EntryExitLogging.disabled=true
+	EagleLinking.disabled=true
+        RecordEagleTag.disabled=true;
+        MuteEagleTag.disabled=true;
+        StripEagleTag.disabled=true;
+	LinkerUAbsAgainst.disabled=false
+    }
+    IntexHeaderOptions {
+	Integrity_HeaderFileDir {
+	    {
+		name="-headerfiledir"
+		delimiter="Space"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="Generated Header File Directory"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	    flags={"OUTPUTDIR"}
+	}
+    }
+    IntexOptions {
+	Integrity_Dynamic {
+	    {
+		name="-dynamic"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-no_dynamic"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    guiLabel="Dynamic Download Project"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_DisplayBoot {
+	    {
+		name="-display_boot"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-b"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-no_display_boot"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    guiLabel="Display BootTable"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_Monolith_Deletions {
+	    name="-generatemonolithdeletions"
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    value=1
+            enumLabel="On"
+	    guiLabel="Delete Unused Kernel Calls"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	    parallelChokePoint=true
+	}
+	Integrity_Binary_Image {
+	    {
+		name="-memory"
+		delimiter="NoArg"
+		enumLabel="Generate Default Binary Image"
+		value=0
+	    }
+	    {
+		name="-memory"
+		delimiter="Equal"
+		enumLabel="Generate User-Specified Binary Image"
+		value=1
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Create Raw Binary Image"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_Srecord_Image {
+	    {
+		name="-srec"
+		delimiter="NoArg"
+		enumLabel="Generate Default S-Record File"
+		value=0
+	    }
+	    {
+		name="-srec"
+		delimiter="Equal"
+		enumLabel="Generate User-Specified S-Record File"
+		value=1
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Create S-Record File Image"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}	
+	CrcInitVal {
+	# this should be hidden since it's specified in the driver options
+	    name="-crc_initval"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="CRC Initial Value"
+	    guiCategory="Linker Options;Advanced Linker Options"
+	    hidden=true
+	}
+	CrcPolynomial {
+	# this should be hidden since it's specified in the driver options
+	    name="-crc_polynomial"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="CRC Polynomial"
+	    guiCategory="Linker Options;Advanced Linker Options"
+	    hidden=true
+	}
+	Integrity_Bsp {
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="BSP"
+	    {
+		name="-bsp"
+		delimiter="Space"
+	    }
+	    {
+		name="-bsp"
+		delimiter="Equal"
+	    }
+	    hidden=true
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	OsDir {
+	# this should be hidden since it's specified in the driver options
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="OS Directory"
+	    {
+		name="-os_dir"
+		delimiter="Equal"
+	    }
+	    {
+		name="-os_dir"
+		delimiter="Space"
+	    }
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	Integrity_Generic_Option {
+	    name="-intexoption"
+	    delimiter="Space"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"All"}
+	    guiLabel="Additional Intex Options"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_BspFile {
+	#this option is used internally and should not be set
+	    {
+		name="-bspfile"
+		value=0
+		enumLabel="On"
+	    }
+	    delimiter="Space"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="BSP Description"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	
+	Integrity_IntFile {
+	#this option is used internally and should not be set
+	    {
+		name="-intfile"
+		value=0
+		enumLabel="On"
+	    }
+	    delimiter="Space"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="Integrate File"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	Integrity_HeaderFileName {
+	    {
+		name="-headerfilename"
+		delimiter="Space"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="Generated Header File Name"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_IncludeFileDir {
+	    {
+		name="-includefiledir"
+		delimiter="Space"
+	    }
+	    merge="Concat"
+	    optionType="List"
+	    pass={"All"}
+	    guiLabel="Include File Search Directory"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101	    
+	}
+	Integrity_Strip {
+	    {
+		name="-strip_application"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-no_strip_application"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    guiLabel="INTEGRITY Application Stripping"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	IntexVariableOverrides {
+	    name="-intex_var"
+	    delimiter="Space"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"All"}
+	    guiLabel="Intex Variable Definition"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101	    
+	}
+	Integrity_Version {
+	    {
+		name="-integrity_version"
+		delimiter="Space"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="Integrity Version"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101	    
+	    hidden=true
+	}
+	QuitAfterIntexWarnings {
+	    {
+		    name="--quit_after_intex_warnings"
+		    value=0
+		    enumLabel="On"
+	    }
+	    {
+		    name="--no_quit_after_intex_warnings"
+		    value=1
+		    enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    guiLabel="Quit Building if Intex Warnings are Generated"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_SHA1 {
+	    name="-sha1"
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    value=1
+	    enumLabel="On"
+	    guiLabel="SHA-1"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_Gstack_Options {
+	    {
+		name="-gstack_options"
+		delimiter="Space"
+	    }
+	    merge="Concat"
+	    optionType="List"
+	    pass={"All"}
+	    guiLabel="gstack Options"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101	    
+	    hidden=true
+	}
+	Integrity_Alternate_Keyword_File {
+	    {
+		name="-altkeywordfile"
+		delimiter="Space"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    guiLabel="Alternate Keyword File"
+	    # should really be integrate only
+	    guiCategory="Target;Operating System"
+	    commonLevel=101	    
+	    hidden=true
+	}
+#Obsolete options:
+	Target {
+	#no longer needed, left in for backwards compatibility
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    {
+		name="-target"
+		delimiter="Equal"
+	    }
+	    {
+		name="-t"
+		delimiter="Space"
+	    }
+	    guiLabel="Intex Target"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	BspDir {
+	#no longer needed, left in for backwards compatibility
+	    name="-bspdir"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Intex BSP Directory"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	LanguageMask {
+	#no longer needed, left in for backwards compatibility
+	    name="-lang"
+	    delimiter="Touching"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"Link"}
+	    guiLabel="Intex Language Mask"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	SysLib {
+	#no longer needed, left in for backwards compatibility
+	    name="-syslib"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Intex System Library"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	CLib {
+	#no longer needed, left in for backwards compatibility
+	    name="-clib"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Intex C Library"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	CxxLib {
+	#no longer needed, left in for backwards compatibility
+	    name="-c++lib"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Intex C++ Library"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	AdaLib {
+	#no longer needed, left in for backwards compatibility
+	    name="-adalib"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    guiLabel="Intex Ada Library"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	DebugMsgs {
+	# intended for internal use
+	    name="-d"
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    value=1
+            enumLabel="On"
+	    guiLabel="Intex Debug Messages"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	Test {
+	# intended for internal use
+	    name="-test"
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    value=1
+            enumLabel="On"
+	    guiLabel="Intex Internal Test"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	Translation {
+	# this option is now the default and is no longer needed
+	# left in for backwards compatibility
+	    merge="Replace"
+	    optionType="Enum"
+	    name="-dbo"
+	    delimiter="NoArg"
+	    enumLabel="Dbo
+	    pass={"Link"}
+	    guiLabel="Intex Debug Translation (default)"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	Integrity_CheckStack {
+	#this option is no longer needed as there's a better method
+	#which doesn't require recompilation
+	# left in for backwards compatibility
+	    {
+		name="-check=stack"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-check=nostack"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=false
+	    guiLabel="Stack Checking"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	SetInitialPriority {
+	    name="-allowsetinitialtaskpriority"
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Bool"
+	    pass={"All"}
+	    guiLabel="Setting Initial Task Priority"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	
+    }
+#    IntegrateOptions {
+#	OsDir {
+#	# this should be hidden since it's specified in the driver options
+#	    merge="Replace"
+#	    optionType="String"
+#	    pass={"All"}
+#	    guiLabel="OS Directory"
+#	    {
+#		name="-os_dir"
+#		delimiter="Equal"
+#	    }
+#	    {
+#		name="-os_dir"
+#		delimiter="Space"
+#	    }
+#	    guiCategory="Operating System;Configuration"
+#	    hidden=true
+#	}
+#	Bsp {
+#	    merge="Replace"
+#	    optionType="String"
+#	    pass={"All"}
+#	    guiLabel="BSP"
+#	    {
+#		name="-bsp"
+#		delimiter="Equal"
+#	    }
+#	    {
+#		name="-bsp"
+#		delimiter="Space"
+#	    }
+#	    guiCategory="Operating System;INTEGRITY"
+#	}
+#    }
+}
+
+Commands {
+    Intex_Headers {
+	name="intex_headers"
+	exec="${GHS_TOOLS_DIR}/intex"
+	options={"SpecialOptions", "IntexOptions","IntexHeaderOptions","GhsCommonOptions"}
+	makeDepends {
+	    twoPass=false
+	    args="-MD --ghs_md=$(OUTPUTDIR)/$(OUTPUTNAMEBASE).idep"
+	    extension="idep"
+	    moveFile=false
+	    multipleOutputs=true;
+	}
+%if (GHS_TOOLS_VERSION >= 41) 
+	specialOptions {
+	    showCommands="-v -nested_diagnostics"
+	}
+%endif
+    }
+    Intex {
+	name="intex"
+	exec="${GHS_TOOLS_DIR}/intex"
+	options={"SpecialOptions", "IntexOptions","GhsCommonOptions"}
+%if (GHS_TOOLS_VERSION >= 50) 
+	makeDepends {
+	    twoPass=false
+	    args="-MD --ghs_md=$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dep"
+	    extension="dep"
+	    moveFile=false
+	}
+%endif
+	specialOptions {
+%if (GHS_TOOLS_VERSION >= 41) 
+	    showCommands="-v -nested_diagnostics"
+%endif
+%if (GHS_TOOLS_VERSION >= 50)
+            analyzeLibs="-list_dependencies"
+%endif
+	}
+    }
+    Integrate {
+	name="Integrate"
+%if defined(__MULTI_IDE_DIR__)
+	# Use the integrate that's from the same directory as the project
+	# manager.  The __MULTI_IDE_DIR__ define is only available when
+	# this file is read in from the project manager (not via gbuild).
+	exec="${__MULTI_IDE_DIR__}/integrate"
+%else
+	# Fall back to searching the path.  This is also needed when reading
+	# this file from a command-line tool since the 'exec' field must
+	# still be defined.
+	exec="integrate"
+%endif
+	options={"IntexOptions","IntexHeaderOptions","GhsCommonOptions"}
+#	options={"IntegrateOptions"}
+    }
+    {
+	name="idlc"
+%if defined(IDLC_DIR)
+	exec="${IDLC_DIR}/idlc"
+%else
+	exec="idlc"
+%endif
+	options={"SpecialOptions"}
+	specialOptions {
+	    showCommands="-v"
+	    runInDirectory="$(INPUTDIR)";
+	}
+    }
+}
+
+FileTypes {
+    Program.allowEmptyLink=true
+    BspDescription {
+	name="BSP Description"
+	extensions={"bsp"}
+	outputType="PassToLinker"
+	neverPassToArchiver=true
+	color="#500050"
+    }
+    IntegrateFile {
+	name="Integrate File"
+	extensions={"int"}
+	outputType="ObjectFile"
+	command="intex_headers"
+	commandLine="$COMMAND -header $MAKE_DEPEND_OPTIONS $OPTIONS $INPUTFILE $(SIBLINGS)"
+	progress="Generating headers from"
+	action="Generate &headers for"
+	siblingType="BSP Description"
+	graphicalEditor="Integrate"
+	
+	# this might get overridden in the $OS_DIR/target/integrity.bod file
+
+	#editorIsService=true
+	#graphicalEditorCommand="OpenIntegrate intFile: $(DISKFILE) cmdline:-sane $OPTIONS $(DISKFILE) $(SIBLINGS) -top_project $(TOPPROJECT)"
+#	graphicalEditorCommand="Open integrateFile: $(DISKFILE) parentID: $(PARENTID)"
+#	graphicalEditorCommand="$EDITOR -sane $(DISKFILE) $(SIBLINGS[BSP Description])"
+	graphicalEditorCommand="$EDITOR -sane $OPTIONS $(DISKFILE) $(SIBLINGS) -top_project $(TOPPROJECT)"
+#	useDefaultEditor=true
+	color="#800060"
+	promoteToFirstPass=true
+	pseudoChokepoint=true;
+    }
+    ObjectInterface {
+	name="Object Interface"
+	extensions={"idl"}
+	outputType="SourceFile"
+	command="idlc"
+	commandLine="$COMMAND -i $FILENAME $OPTIONS"
+	extraFiles={"$(INPUTDIR)/$(FILENAMEBASE)_s.cpp","$(INPUTDIR)/$(FILENAMEBASE).cpp"}
+	progress="Compiling"
+	action="&Compile"
+	color="#800060"
+	findLinkLine=true
+	promoteToFirstPass=true
+    }
+    Program.linkSpecifiers += {"Object Interface;-extra_file=$(INPUTFILE)"}
+    Program.linkableTypes += {"Object Interface"}
+    IntegrityApp {
+	name="INTEGRITY Application"
+	aliases={"integrity_app"}
+	outputExtension=""
+	command="intex"
+	outputType="Program"
+	# this might get overridden in the $OS_DIR/target/integrity.bod file
+	# it is important that $OPTIONS precede $OBJECTS so that if you have both -bspfile set
+	# and a .bsp file in the INTAPP directly, the INTAPP one wins
+	commandLine="$COMMAND $MAKE_DEPEND_OPTIONS $OPTIONS $OBJECTS -o $OUTPUTFILE"
+%if file_exists("${GHS_TOOLS_DIR}/filechanged")
+	postExecSafe={"${GHS_TOOLS_DIR}/filechanged $(OUTPUTFILE)"}
+%endif
+	extraFiles={"$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dla","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).dnm","$(OUTPUTDIR)/$(OUTPUTNAMEBASE)_integrate.h","$(OUTPUTDIR)/$(OUTPUTNAMEBASE).ael"}
+	progress="Integrating"
+	action="&Build"
+	linkableTypes={"Program"}
+	nondebugable=true
+	linkSpecifiers={"BSP Description;-bspfile $(INPUTFILE)","Integrate File;-intfile $(INPUTFILE)"}
+	processFirstTypes={"Integrate File"}
+	defaultContainer="Program"
+	color="#c00000"
+	parallelOK=true
+    }
+}
+

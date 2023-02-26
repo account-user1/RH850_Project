@@ -1,0 +1,20 @@
+%if !defined(__TOOLS_DIR__)
+% define __TOOLS_DIR__ __MULTI_DIR__
+%endif
+
+Services.trace_v800 {
+    ExecName="${__TOOLS_DIR__}/trace_v800"
+    PluginName="V800 Trace Plugin"
+    Persistent=0
+    PluginData {
+        Description="Provides V800 trace support"
+    }
+    ServicesProvided {
+        {
+            ServiceName="TraceArchPlugin.V800"
+            ServiceData {
+                Description="Interface to traceserv"
+            }
+	}
+    }
+}

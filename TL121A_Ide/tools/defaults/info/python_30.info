@@ -1,0 +1,64 @@
+Where to Run MULTI Python Statements
+====================================
+
+1. The MULTI Debugger's "Py" pane.
+
+2. The MULTI Debugger's "Cmd" pane, after entering the MULTI Debugger's
+   "python" command.
+
+3. The Task Manager's "Py" pane.
+
+4. A separate Python pane, which can be launched by selecting "Show Separate
+   Python Window" from the context menu in any of the MULTI Debugger's panes.
+
+5. A stand-alone MULTI Python window, which can be started from the MULTI
+   Launcher's "Components -> Open Python Window" menu entry, or from the OS
+   command line command "mpythongui".
+
+6. From the MULTI Launcher's "Python Statement" and "Python Script" actions.
+
+7. From any third-party tool, such as Telnet, that can send Python statements
+   via socket. "mpythonrun" can start up such socket servers.
+
+
+You can save a script of the statements executed in the MULTI Python pane.
+Issue the "save" command mentioned in the "Python Pane Commands" section
+(Ctrl-s or Ctrl-Shift-s are the shortcut keystrokes). The ".gpy" file extension
+is dedicated for these scripts.
+
+You can use the "execfile" Python function to run a MULTI Python script file
+from the MULTI Python pane. Or, if you don't want to start up the MULTI GUI,
+you can run it from the OS command line with the utility program "mpythonrun".
+
+"mpythonrun" also accepts Python statements from sockets and executes them when
+it is started up with the "-socket" argument (for normal clients) or "-telnet"
+argument (for Telnet clients). An example follows:
+    mpythonrun -telnet 2005
+
+Any third-party program, such as Telnet, can send MULTI Python statements
+to a socket and get results back. An example follows:
+    telnet localhost 2005
+    Trying 127.0.0.1...
+    Connected to localhost.
+    Escape character is '^]'.
+    GHS-Py> x = 1
+    GHS-Py> if x:
+    .....2    print "x is true";
+    .....3  else:
+    .....4    print "x is false";
+    .....5  
+    x is true
+    GHS-Py> winreg.showwins()
+    Index   Service Name       Class Name   Window ID   Window Name
+    =====   ============       ==========   =========   ===========
+    0       __ghsWinReg0x18    Launchers    0x1a002b5   MULTI Launcher for
+    							PowerPC v5.0
+    ......
+    12      __ghsWinReg0x4d0   Debuggers    0x40002bb   multi
+    
+    Total number of windows: 13
+    GHS-Py> m1 = winreg.createwindow(12)
+    GHS-Py> m1.step()
+    Target cpu: Pentium Pro
+    running '/home/whiptail/terry/devl/linux86/multi me'
+    GHS-Py> 

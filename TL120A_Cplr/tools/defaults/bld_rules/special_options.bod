@@ -1,0 +1,352 @@
+CommandOptions {
+    SpecialOptions {
+        SpecialSourceDir {
+	    name=":sourceDir"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="PreConcat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"SOURCEDIR","RELATIVEPATH"}
+	    guiLabel="Source Directories Relative to This File"
+ 	    guiCategory="Project"
+	    commonLevel=1
+	    valueIsDirname=true
+	}
+        SpecialSourceDirNonRelative {
+	    name=":sourceDirNonRelative"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="PreConcat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"SOURCEDIR"}
+	    guiLabel="Source Directories Relative to Top-Level Project"
+ 	    guiCategory="Project"
+	    valueIsDirname=true
+	}
+	SpecialOutputDir {
+	    name=":outputDir"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Replace"
+	    pass={"None"}
+	    optionType="String"
+	    flags={"OUTPUTDIR","OBJECTDIR"}
+   	    guiLabel="Intermediate Output Directory Relative to Top-Level Project"
+ 	    guiCategory="Project"
+	    commonLevel=101
+	    valueIsDirname=true
+	    }
+	SpecialOutputDirRelative {
+	    name=":outputDirRelative"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Replace"
+	    pass={"None"}
+	    optionType="String"
+	    flags={"OUTPUTDIR","RELATIVEPATH","OBJECTDIR"}
+	    guiLabel="Intermediate Output Directory Relative to This File"
+ 	    guiCategory="Project"
+	    valueIsDirname=true
+	    }
+	SpecialBinDir {
+	    name=":binDir"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Replace"
+	    pass={"None"}
+	    optionType="String"
+	    flags={"BINDIR"}
+	    guiLabel="Binary Output Directory Relative to Top-Level Project"
+ 	    guiCategory="Project"
+	    valueIsDirname=true
+	    }
+	SpecialBinDirRelative {
+	    name=":binDirRelative"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Replace"
+	    pass={"None"}
+	    optionType="String"
+	    flags={"BINDIR","RELATIVEPATH"}
+	    guiLabel="Binary Output Directory Relative to This File"
+ 	    guiCategory="Project"
+	    valueIsDirname=true
+	    }
+	SpecialDepends {
+	    name=":depends"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+            flags={"DEPENDENCY","SOURCEDIRPATH"}
+ 	    guiLabel="Dependencies Relative to Source Directory"
+ 	    guiCategory="Project"
+	}
+	SpecialDependsRelative {
+	    name=":dependsRelative"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+            flags={"DEPENDENCY","RELATIVEPATH"}
+ 	    guiLabel="Dependencies Relative to This File"
+ 	    guiCategory="Project"
+	}
+	SpecialDependsNonRelative {
+	    name=":dependsNonRelative"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"DEPENDENCY"}
+ 	    guiLabel="Dependencies Relative to Top-Level Project"
+ 	    guiCategory="Project"
+	}
+	SpecialNoSelfDepend {
+	    name=":noSelfDepend"
+	    caseInsensitive=true
+	    delimiter="NoArg"
+	    merge="None"
+	    optionType="Enum"
+	    enumLabel="Disabled"
+	    pass={"None"}
+	    flags={"NOSELFDEPEND"}
+ 	    guiLabel="Self-Dependency"
+ 	    guiCategory="Project"
+	}
+	SpecialNoDepends {
+	    name=":nodepends"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"NODEPENDS","SOURCEDIRPATH"}
+ 	    guiLabel="Suppress Dependencies"
+ 	    guiCategory="Project"
+	}
+	SpecialOutputName {
+	    name=":outputName"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="None"
+	    optionType="String"
+	    pass={"None"}
+	    flags={"OUTPUTNAME"}
+	    valueIsFilename=true
+ 	    guiLabel="Output Filename for Generic Types"
+ 	    guiCategory="Project"
+	    }
+	SpecialAppendExtension {
+	    name=":appendExtension"
+	    caseInsensitive=true
+	    delimiter="NoArg"
+	    merge="None"
+	    optionType="Enum"
+	    pass={"None"}
+	    flags={"APPENDEXTENSION"}
+ 	    guiLabel="Append Default Extension to Output Filename"
+ 	    guiCategory="Project"
+	    }
+
+
+	SpecialPreExec {
+	    name=":preexec"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"PREEXEC"}
+ 	    guiLabel="Commands to Execute Before Associated Command"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPreExecSafe {
+	    name=":preexecSafe"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"PREEXEC","SAFE"}
+ 	    guiLabel="Safe Commands to Execute Before Associated Command"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPreExecShell {
+	    name=":preexecShell"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"PREEXEC","SHELL"}
+ 	    guiLabel="Commands to Execute Before Associated Command (via Shell)"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPreExecShellSafe {
+	    name=":preexecShellSafe"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"PREEXEC","SHELL","SAFE"}
+ 	    guiLabel="Safe Commands to Execute Before Associated Command (via Shell)"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPostExec {
+	    name=":postexec"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"POSTEXEC"}
+ 	    guiLabel="Commands to Execute After Associated Command"
+ 	    guiCategory="Project"
+	}
+	
+	SpecialPostExecSafe {
+	    name=":postexecSafe"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"POSTEXEC","SAFE"}
+ 	    guiLabel="Safe Commands to Execute After Associated Command"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPostExecShell {
+	    name=":postexecShell"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"POSTEXEC","SHELL"}
+ 	    guiLabel="Commands to Execute After Associated Command (via Shell)"
+ 	    guiCategory="Project"
+	}
+
+	SpecialPostExecShellSafe {
+	    name=":postexecShellSafe"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"POSTEXEC","SHELL","SAFE"}
+ 	    guiLabel="Safe Commands to Execute After Associated Command (via Shell)"
+ 	    guiCategory="Project"
+	}
+
+	SpecialExtraOutputFile {
+	    name=":extraOutputFile"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"EXTRAOUTPUTFILE"}
+	    valueIsFilename=true
+ 	    guiLabel="Additional Output Files"
+ 	    guiCategory="Project"
+	    }
+
+# This functionality is not yet implemented
+#	SpecialLinkName {
+#	    name=":linkName"
+#	    caseInsensitive=true
+#	    delimiter="Equal"
+#	    merge="None"
+#	    optionType="String"
+#	    pass={"None"}
+#	    flags={"LINKNAME"}
+#	    valueIsFilename=true
+# 	    guiLabel="Output Specificier"
+# 	    guiCategory="Project"
+#	    }
+
+	SpecialSelect {
+	    name=":select"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"SELECT"}
+ 	    guiLabel="'Select One' Project Extension List"
+ 	    guiCategory="Project"
+	}
+        SpecialPassThrough {
+	    name=":passThrough"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="List"
+	    pass={"All"}
+	    flags={"PASSTHROUGH"}
+	    guiLabel="Pass Through Arguments"
+ 	    guiCategory="Project"
+	}
+	SpecialReference {
+	    name=":reference"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"None"}
+	    flags={"REFERENCE"}
+	    valueIsFilename=false
+	    guiLabel="Reference"
+	    guiCategory="Project"
+	}
+	SpecialAutoInclude {
+	    name=":autoInclude"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Concat"
+	    optionType="String"
+	    pass={"None"}
+	    flags={"AUTOINCLUDE"}
+	    valueIsFilename=false
+	    guiLabel="Pattern of Files to Pull Into Project"
+	    guiCategory="Project"
+	}
+	SpecialOptionsFile {
+	    name=":optionsFile"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="None"
+	    optionType="List"
+	    pass={"None"}
+	    flags={"OPTIONSFILE"}
+	    valueIsFilename=true
+	    guiLabel="Options to Apply to Project"
+	    guiCategory="Project"
+	}
+	SpecialOptionsBaseDir {
+	    name=":baseDir"
+	    caseInsensitive=true
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"None"}
+	    valueIsDirname=true
+	    auxFlags={"BASEDIR"}
+	    hidden=true
+	    guiLabel="Override Base Directory"
+	    guiCategory="Project"
+	}
+    }
+}

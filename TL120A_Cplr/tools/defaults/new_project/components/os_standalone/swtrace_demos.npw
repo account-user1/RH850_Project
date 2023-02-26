@@ -1,0 +1,62 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+%if defined (__SUPPORTS_C__)
+%if file_exists("${__DIR__}/demo_swtrace")
+component.swtrace_demo {
+	display_object_name = "Software Trace"
+	description  = "This example demonstrates EAGLE logging via software trace."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if !defined(SUPPORTS_SWTRACE_DEMO) || (SUPPORTS_SWTRACE_DEMO == 0)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddSWTraceDemo"
+		dlg_cmdlist = {"SetProgramProperties_SWTraceDemo", "AddLinkMap_SWTraceDemo"}
+	    }
+	    edit {
+		cmd_str = "EditSWTraceDemo"
+		dlg_cmdlist = {"ChangeLinkMap_SWTraceDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_swtrace"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_SWTraceDemo"
+		    	same_object_dialogs =  { "AddLinkMap_SWTraceDemo" }
+		    }
+		}
+
+		default="swtrace"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE swtrace_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_swtrace" }
+			20 += { "python ${__DIR__}/swtrace_demos.py copy_swtrace_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_SWTraceDemo"
+		    edit.cmd_str = "ChangeLinkMap_SWTraceDemo"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+%endif

@@ -1,0 +1,255 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/int_vas.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+%if !defined(NO_INTEGRITY_MMU)
+
+component.integrity_virtual_address_space {
+	use_template = "Commentable"
+	description = "INTEGRITY Virtual AddressSpace"
+	display_type_name = "Virtual AddressSpace"
+
+	description_html ="${__DIR__}/docs/desc_int_vas.html"
+	documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	doc_anchor_ids = { "multi.mpm.virtual_address_space" }
+	  
+	tags = { "INTEGRITY_VirtualAddressSpace" }
+
+	parent_context_filetypes = { "INTEGRITY Application" }
+	parent_context_types = { "integrity_monolith", "integrity_dynamic_download" }
+	context_types += { "IntegrityDebuggable" }
+	top_file_type = "Program"
+#	top_file_type = "INTEGRITY VirtualAddressSpace"	
+	
+	bg_color="#ffcefd"
+#	fg_color="#000000"
+	isparent = true
+	icon_name = "virtual_address_space"
+
+   	 filters =  { "INTEGRITY Virtual Address Spaces" }
+
+	dlg_info {
+	    add {
+		menu_str = "Add INTEGRITY &Virtual AddressSpace"
+		cmd_str = "AddVAS"
+		dlg_filelist = "${__DIR__}/int_vas.plc"
+		dlg_namelist = "int_vas"
+		dlg_title = "Add Virtual AddressSpace"
+		dlg_doc_included_childlists = true
+		documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		doc_anchor_ids = { "multi.mpm.virtual_address_space","multi.mpm.virtual_libraries" }
+	    }
+	    edit {
+		menu_str = "Edit INTEGRITY &Virtual AddressSpace"
+		cmd_str = "EditVAS"
+		dlg_filelist = "${__DIR__}/int_vas.plc"
+		dlg_namelist = "int_vas"
+		dlg_doc_included_childlists = true
+		documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		doc_anchor_ids = { "multi.mpm.virtual_address_space","multi.mpm.virtual_libraries" }
+	    }
+	}
+	attributes {
+	    tf_name {
+		type = "string"
+		refreshNode = true
+		display_name = true
+		sanity_check_action = "python ${__DIR__}/int_vas.py vas_tf_name_sanity_check" 
+		build_file_setting = "filename $build_file_basename"
+		actions {
+		    add {
+			standard {
+			    10 += { "python ${__DIR__}/int_vas.py vas_tf_name_add_std" }
+			} 
+		    }
+		    edit {
+			standard {
+			    10 += { "python ${__DIR__}/int_vas.py vas_tf_name_edit_std" }
+			}
+		    }
+		    readin {
+			standard {
+			    1 += { "defineLocal LAST_AS_NAME $tf_name" }		    
+			    #10 += { "python ${__DIR__}/int_vas.py vas_tf_name_readin_std" }
+			}
+		    }
+		}
+		
+	    }
+	    tf_diskname {
+		type = "string"
+		host_filename = true
+		build_file_setting = "filename $build_file_diskname"
+	    }
+	    filename {
+		type = "string"
+		
+		refreshNode = true
+		build_file_setting = "filename $build_file_basename"
+	    }
+	    
+	    msl_opts {
+		type = "childlist"
+		tags = "VIRTUAL_LIBRARY"
+		build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:virtual_library_"
+	    }
+	    parent_tf_name {
+		type = "string"
+		actions {
+		    edit {
+			standard {
+			    10 += { "python ${__DIR__}/int_vas.py vas_parent_tf_name_edit_std" }
+			}
+		    }
+		}
+	    }
+	}
+	actions {
+	    readin {
+		standard {
+		    # need for the prepopulate action
+		    1 += { "defineLocal IS_VAS TRUE" }
+		}
+	    }
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/int_vas.py vas_remove_std" }
+		}
+	    }	
+	    delete {
+		standard {
+		    10 += { "python ${__DIR__}/int_vas.py vas_delete_std" }
+		}
+	    }
+	    copy_local {
+		standard {
+		    10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		    11 += { "defineLocal COPY_FILENAME $tf_name" }
+		    12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "defineLocal COPY_KIDS_LAST_BASE_PROJ_NAME $KIDS_LAST_BASE_PROJ_NAME" }
+		    12 += { "defineLocal COPY_LAST_V_LINKFILE $(BASE_PROJ_NAME)_INTEGRITY.ld" }
+		}
+	    }
+	    paste_local {
+		standard {
+			10 += { "python ${__DIR__}/int_vas.py vas_paste_local_std" }
+		}
+	    }
+	    paste_parent_local {
+		standard {
+			10 += { "python ${__DIR__}/int_vas.py vas_paste_parent_local_std" }
+		}
+	    }
+	    reload {
+		intermediate {
+		    10 += { "python ${__DIR__}/int_vas.py vas_reload_int" }     
+		}	    
+		standard {
+		    10 += { "python ${__DIR__}/int_vas.py vas_reload_std" } 
+		}
+	    }
+	    comment.standard {
+		100 += { "python ${__DIR__}/int_vas.py comment_vas" }
+	    }
+	    uncomment.standard {
+		100 += { "python ${__DIR__}/int_vas.py uncomment_vas" }
+	    }
+	}
+}
+
+
+
+component_template.virtual_library {
+    use_template = "IntLibraryT"
+    parent_context_types = { "integrity_virtual_address_space" }
+    display_type_name = "Virtual Library"
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    #doc_anchor_ids = { "multi.mpm.virtual_libraries" }
+	  
+}
+
+component_template.virtual_library_defined {
+    use_template = "virtual_library"
+    tags = { "VIRTUAL_LIBRARY" }
+}
+
+component.virtual_library_socket {
+    use_template = "virtual_library_defined"
+    display_object_name = "Socket"
+    value = "libsocket.a"
+    default_select = false
+    doc_anchor_ids = { "multi.mpm.virtual_library_socket" }
+    requires = { "TCPIPStack" }
+    variable_defs {
+	    LIBNAME = "socket"
+    }
+}
+
+component.virtual_library_ivfs {
+    use_template = "virtual_library_defined"
+    display_object_name = "File System Client"
+    value = "libivfs.a"
+    default_select = false
+    doc_anchor_ids = { "multi.mpm.virtual_library_ivfs" }
+    pre_populate_action = "python ${__DIR__}/int_vas.py virlib_ivfs_default_select" 
+    
+    requires = { "FileSystemServer" }
+    variable_defs {
+	    LIBNAME = "ivfs"
+    }
+}
+component.virtual_library_net {
+    use_template = "virtual_library_defined"
+    display_object_name = "Net"
+    value = "libnet.a"
+    default_select = false
+    doc_anchor_ids = { "multi.mpm.virtual_library_net" }
+    requires = {"TCPIPStack"}
+    variable_defs {
+            LIBNAME = "net"
+    }
+}
+
+component.virtual_library_generic {
+    use_template = "virtual_library"
+    display_object_name = "Other..."
+    default_select = false
+    default_for_filetypes = { "virtual_library_" }
+    # use different icon to indicate that it isn't same as other vlibs
+    icon_name = "system_library"
+    bg_color="#ecffce"
+    
+    variable_defs {
+            LIBNAME = "other"
+    }
+
+    filters =  { "INTEGRITY Generic Libraries" }
+
+    attributes {
+	tf_name {
+	    type = "string"
+	    display_name = true
+	    actions {
+		add {
+		    standard {
+			10 += { "defineLocal LIBNAME $tf_name" }
+		    } 
+		}
+	    }
+	}
+    }
+    actions {
+	readin {
+	    standard {
+		10 += { "defineLocal LIBNAME $tf_name" }
+	    } 
+	}
+    }
+}
+%endif #NO_INTEGRITY_MMU
+
+
+%endif
+
+%endif

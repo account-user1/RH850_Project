@@ -1,0 +1,1307 @@
+// fstream standard header
+#ifndef _FSTREAM_
+#define _FSTREAM_
+
+#if defined(__OSE) && defined(__ghs)
+#include "efs.h"
+#endif
+
+#include <istream>
+_STD_BEGIN
+#if defined(__GHS_PRAGMAS)
+#pragma ghs startdata
+#endif
+#if defined(__ghs) && defined(__ghs_max_pack_value)
+#pragma pack (push, __ghs_max_pack_value)
+#endif
+
+extern _Filet *_Fiopen(const char *,
+	ios_base::openmode, int);
+extern _Filet *_Fiopen(const wchar_t *,
+	ios_base::openmode, int);
+
+		// TEMPLATE FUNCTION _Fgetc
+template<class _Elem> inline
+	bool _Fgetc(_Elem& _Ch, _Filet *_File)
+	{	// get an element from a C stream
+	return (fread(&_Ch, sizeof (_Elem), 1, _File) == 1);
+	}
+
+template<> inline bool _Fgetc(char& _Byte, _Filet *_File)
+	{	// get a char element from a C stream
+	int _Meta;
+	if ((_Meta = fgetc(_File)) == EOF)
+		return (false);
+	else
+		{	// got one, convert to char
+		_Byte = (char)_Meta;
+		return (true);
+		}
+	}
+
+template<> inline bool _Fgetc(wchar_t& _Wchar, _Filet *_File)
+	{	// get a wchar_t element from a C stream
+	wint_t _Meta;
+	if ((_Meta = _CSTD fgetwc(_File)) == WEOF)
+		return (false);
+	else
+		{	// got one, convert to wchar_t
+		_Wchar = (wchar_t)_Meta;
+		return (true);
+		}
+	}
+
+ #ifdef _CRTBLD_NATIVE_WCHAR_T
+template<> inline bool _Fgetc(unsigned short& _Wchar, _Filet *_File)
+	{	// get an unsigned short element from a C stream
+	wint_t _Meta;
+	if ((_Meta = _CSTD fgetwc(_File)) == WEOF)
+		return (false);
+	else
+		{	// got one, convert to unsigned short
+		_Wchar = (unsigned short)_Meta;
+		return (true);
+		}
+	}
+ #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+		// TEMPLATE FUNCTION _Fputc
+template<class _Elem> inline
+	bool _Fputc(_Elem _Ch, _Filet *_File)
+	{	// put an element to a C stream
+	return (fwrite(&_Ch, 1, sizeof (_Elem), _File) == sizeof (_Elem));
+	}
+
+template<> inline bool _Fputc(char _Byte, _Filet *_File)
+	{	// put a char element to a C stream
+	return (fputc(_Byte, _File) != EOF);
+	}
+
+template<> inline bool _Fputc(wchar_t _Wchar, _Filet *_File)
+	{	// put a wchar_t element to a C stream
+	return (_CSTD fputwc(_Wchar, _File) != WEOF);
+	}
+
+ #ifdef _CRTBLD_NATIVE_WCHAR_T
+template<> inline bool _Fputc(unsigned short _Wchar, _Filet *_File)
+	{	// put an unsigned short element to a C stream
+	return (_CSTD fputwc(_Wchar, _File) != WEOF);
+	}
+ #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+		// TEMPLATE FUNCTION _Ungetc
+template<class _Elem> inline
+	bool _Ungetc(const _Elem& _Ch, _Filet *_File)
+	{	// put back an arbitrary element to a C stream (always fail)
+	return (false);
+	}
+
+template<> inline bool _Ungetc(const char& _Byte, _Filet *_File)
+	{	// put back a char element to a C stream
+	return (ungetc((unsigned char)_Byte, _File) != EOF);
+	}
+
+template<> inline bool _Ungetc(const signed char& _Byte, _Filet *_File)
+	{	// put back a signed char element to a C stream
+	return (ungetc((unsigned char)_Byte, _File) != EOF);
+	}
+
+template<> inline bool _Ungetc(const unsigned char& _Byte, _Filet *_File)
+	{	// put back an unsigned char element to a C stream
+	return (ungetc(_Byte, _File) != EOF);
+	}
+
+template<> inline bool _Ungetc(const wchar_t& _Wchar, _Filet *_File)
+	{	// put back a wchar_t element to a C stream
+	return (_CSTD ungetwc(_Wchar, _File) != WEOF);
+	}
+
+ #ifdef _CRTBLD_NATIVE_WCHAR_T
+template<> inline bool _Ungetc(const unsigned short& _Wchar, _Filet *_File)
+	{	// put back an unsigned short element to a C stream
+	return (_CSTD ungetwc(_Wchar, _File) != WEOF);
+	}
+ #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+		// TEMPLATE CLASS basic_filebuf
+template<class _Elem,
+	class _Traits>
+	class basic_filebuf
+		: public basic_streambuf<_Elem, _Traits>
+	{	// stream buffer associated with a C stream
+public:
+	typedef basic_filebuf<_Elem, _Traits> _Myt;
+	typedef basic_streambuf<_Elem, _Traits> _Mysb;
+	typedef typename _Traits::state_type _Myst;
+	typedef codecvt<_Elem, char, typename _Traits::state_type> _Cvt;
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual ~basic_filebuf()
+		{	// destroy the object
+		if (_Closef)
+			close();
+		}
+
+	basic_filebuf(_Filet *_File = 0)
+#if defined(__ghs) && _MULTI_THREAD && _FILE_OP_LOCKS
+                // filebuf overrides streambuf's lock mechanism, so streambuf
+                // should not allocate a lock of its own.
+                : _Mysb(_InitWithoutLock)
+#else
+		: _Mysb()
+#endif /* defined(__ghs) */
+		{	// construct from pointer to C stream
+		_Init(_File, _Newfl);
+		}
+
+	typedef typename _Traits::int_type int_type;
+	typedef typename _Traits::pos_type pos_type;
+	typedef typename _Traits::off_type off_type;
+
+	basic_filebuf(_Uninitialized)
+		: _Mysb(_Noinit)
+		{	// construct uninitialized
+		}
+
+	enum _Initfl
+		{	// reasons for a call to _Init
+		_Newfl, _Openfl, _Closefl
+#if defined(__ghs) || defined(__SC3__)
+                , _Initfl_dummy = _DUMMY_ENUM_MAX
+#endif /* __ghs */
+		};
+
+	bool is_open() const
+		{	// test if C stream has been opened
+		return (_Myfile != 0);
+		}
+
+#if defined(__ghs) || defined(__SC3__)
+	_Myt *open(const char *_Filename,
+		ios_base::openmode _Mode)
+		{
+		return (open(_Filename, _Mode, (int)ios_base::_Openprot));
+		}
+#endif /* __ghs */
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	_Myt *open(const char *_Filename,
+		ios_base::openmode _Mode,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+			 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+					)
+		{	// open a C stream with specified mode
+		_Filet *_File;
+		if (_Myfile != 0 || (_File = _Fiopen(_Filename, _Mode, _Prot)) == 0)
+			return (0);	// open failed
+
+		_Init(_File, _Openfl);
+		_Initcvt((_Cvt *)&_USE(_Mysb::getloc(), _Cvt));
+		return (this);	// open succeeded
+		}
+
+	_Myt *open(const char *_Filename, ios_base::open_mode _Mode)
+		{	// open a C stream with specified mode (old style)
+		return (open(_Filename, (ios_base::openmode)_Mode));
+		}
+
+#if defined(__ghs) || defined(__SC3__)
+	_Myt *open(const wchar_t *_Filename,
+		ios_base::openmode _Mode)
+		{
+		return (open(_Filename, _Mode, (int)ios_base::_Openprot));
+		}
+#endif /* __ghs */
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	_Myt *open(const wchar_t *_Filename,
+		ios_base::openmode _Mode,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+			 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+					)
+		{	// open a wide-named C stream -- EXTENSION
+		_Filet *_File;
+		if (_Myfile != 0 || (_File = _Fiopen(_Filename, _Mode, _Prot)) == 0)
+			return (0);	// open failed
+
+		_Init(_File, _Openfl);
+		_Initcvt((_Cvt *)&_USE(_Mysb::getloc(), _Cvt));
+		return (this);	// open succeeded
+		}
+
+	_Myt *open(const wchar_t *_Filename, ios_base::open_mode _Mode)
+		{	// open a wide-named C stream (old style) -- EXTENSION
+		return (open(_Filename, (ios_base::openmode)_Mode));
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	_Myt *close()
+		{	// close the C stream
+		_Myt *_Ans = this;
+		if (_Myfile == 0)
+			_Ans = 0;
+		else
+			{	// put any homing sequence and close file
+			if (!_Endwrite())
+				_Ans = 0;
+			if (fclose(_Myfile) != 0)
+				_Ans = 0;
+			}
+		_Init(0, _Closefl);
+		return (_Ans);
+		}
+
+ #if _HAS_DINKUM_CLIB
+
+ #else /* _HAS_DINKUM_CLIB */
+ #if _MULTI_THREAD && _FILE_OP_LOCKS
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual void _Lock()
+		{	// lock file instead of stream buffer
+#if defined(__ghs) || defined(__SC3__)
+	        /* flockfile(NULL) is invalid */
+		if (_Myfile != 0)
+#endif /* __ghs */
+		    _CSTD _Lockfile(_Myfile);
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual void _Unlock()
+		{	// unlock file instead of stream buffer
+#if defined(__ghs) || defined(__SC3__)
+	        /* funlockfile(NULL) is invalid */
+		if (_Myfile != 0)
+#endif /* __ghs */
+		    _CSTD _Unlockfile(_Myfile);
+		}
+ #endif /* _MULTI_THREAD && _FILE_OP_LOCKS */
+
+ #endif /* _HAS_DINKUM_CLIB */
+
+ #if _HAS_TRADITIONAL_IOSTREAMS
+	enum
+		{	// constant for default file opening protection
+		_Openprot = 0666};
+
+	_Myt *attach(_FD_TYPE _Fd, const char *_Mode = "r+")
+		{	// open a C stream with C file descriptor and specified mode
+		_Filet *_File;
+		if (_Myfile != 0 || (_File = _CSTD fdopen(_Fd, (char *)_Mode)) == 0)
+			return (0);	// open failed
+
+		_Init(_File, _Openfl);
+		_Initcvt((_Cvt *)&_USE(_Mysb::getloc(), _Cvt));
+		return (this);	// open succeeded
+		}
+
+	_Filet *stdiofile() const
+		{	// get pointer to C stream
+		return (_Myfile);
+		}
+
+	int fd() const
+		{	// get file descriptor for C stream
+		return (_CSTD fileno(_Myfile));
+		}
+ #endif /* _HAS_TRADITIONAL_IOSTREAMS */
+
+protected:
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual int_type overflow(int_type _Meta = _Traits::eof())
+		{	// put an element to stream
+		if (_Traits::eq_int_type(_Traits::eof(), _Meta))
+			return (_Traits::not_eof(_Meta));	// EOF, return success code
+		else if (_Mysb::pptr() != 0
+			&& _Mysb::pptr() < _Mysb::epptr())
+			{	// room in buffer, store it
+			*_Mysb::_Pninc() = _Traits::to_char_type(_Meta);
+			return (_Meta);
+			}
+		else if (_Myfile == 0)
+			return (_Traits::eof());	// no open C stream, fail
+		else if (_Pcvt == 0)
+			return (_Fputc(_Traits::to_char_type(_Meta), _Myfile)
+				? _Meta : _Traits::eof());	// no codecvt facet, put as is
+		else
+			{	// put using codecvt facet
+			const int _STRING_INC = 8;
+			const _Elem _Ch = _Traits::to_char_type(_Meta);
+			const _Elem *_Src;
+			char *_Dest;
+
+			string _Str(_STRING_INC, '\0');
+			for (; ; )
+				switch (_Pcvt->out(_State,
+					&_Ch, &_Ch + 1, _Src,
+					&*_Str.begin(), &*_Str.begin() + _Str.size(), _Dest))
+				{	// test result of converting one element
+				case codecvt_base::partial:
+				case codecvt_base::ok:
+					{	// converted something, try to put it out
+					size_t _Count = _Dest - &*_Str.begin();
+					if (0 < _Count && _Count !=
+						fwrite(&*_Str.begin(), 1, _Count, _Myfile))
+						return (_Traits::eof());	// write failed
+
+					_Wrotesome = true;	// write succeeded
+					if (_Src != &_Ch)
+						return (_Meta);	// converted whole element
+
+					if (0 < _Count)
+						;
+					else if (_Str.size() < 4 * _STRING_INC)
+						_Str.append(_STRING_INC, '\0');	// try with more space
+					else
+						return (_Traits::eof());	// conversion failed
+					break;
+					}
+
+				case codecvt_base::noconv:
+					return (_Fputc(_Ch, _Myfile) ? _Meta
+						: _Traits::eof());	// no conversion, put as is
+
+				default:
+					return (_Traits::eof());	// conversion failed
+				}
+			}
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual int_type pbackfail(int_type _Meta = _Traits::eof())
+		{	// put an element back to stream
+		if (_Mysb::gptr() != 0
+			&& _Mysb::eback() < _Mysb::gptr()
+			&& (_Traits::eq_int_type(_Traits::eof(), _Meta)
+			|| _Traits::eq_int_type(_Traits::to_int_type(_Mysb::gptr()[-1]),
+				_Meta)))
+			{	// just back up position
+			_Mysb::_Gndec();
+			return (_Traits::not_eof(_Meta));
+			}
+		else if (_Myfile == 0 || _Traits::eq_int_type(_Traits::eof(), _Meta))
+			return (_Traits::eof());	// no open C stream or EOF, fail
+		else if (_Pcvt == 0 && _Ungetc(_Traits::to_char_type(_Meta), _Myfile))
+			return (_Meta);	// no facet and unget succeeded, return
+		else if (_Mysb::gptr() != &_Mychar)
+			{	// putback to _Mychar
+			_Mychar = _Traits::to_char_type(_Meta);
+			_Mysb::setg(&_Mychar, &_Mychar, &_Mychar + 1);
+			return (_Meta);
+			}
+		else
+			return (_Traits::eof());	// nowhere to put back
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual int_type underflow()
+		{	// get an element from stream, but don't point past it
+		int_type _Meta;
+		if (_Mysb::gptr() != 0
+			&& _Mysb::gptr() < _Mysb::egptr())
+			return (_Traits::to_int_type(*_Mysb::gptr()));	// return buffered
+		else if (_Traits::eq_int_type(_Traits::eof(), _Meta = uflow()))
+			return (_Meta);	// uflow failed, return EOF
+		else
+			{	// get a char, don't point past it
+			pbackfail(_Meta);
+			return (_Meta);
+			}
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual int_type uflow()
+		{	// get an element from stream, point past it
+		if (_Mysb::gptr() != 0
+			&& _Mysb::gptr() < _Mysb::egptr())
+			return (_Traits::to_int_type(
+				*_Mysb::_Gninc()));	// return buffered
+		else if (_Myfile == 0)
+			return (_Traits::eof());	// no open C stream, fail
+		else if (_Pcvt == 0)
+			{	// no codecvt facet, just get it
+			_Elem _Ch = 0;
+			return (_Fgetc(_Ch, _Myfile) ? _Traits::to_int_type(_Ch)
+				: _Traits::eof());
+			}
+		else
+			{	// build string until codecvt succeeds
+			string _Str;
+
+			for (; ; )
+				{	// get using codecvt facet
+				_Elem _Ch, *_Dest;
+				const char *_Src;
+				int _Nleft;
+				int _Meta = fgetc(_Myfile);
+
+				if (_Meta == EOF)
+					return (_Traits::eof());	// partial char?
+
+				_Str.append(1, (char)_Meta);	// append byte and convert
+				switch (_Pcvt->in(_State,
+					&*_Str.begin(), &*_Str.begin() + _Str.size(), _Src,
+					&_Ch, &_Ch + 1, _Dest))
+					{	// test result of converting one element
+				case codecvt_base::partial:
+				case codecvt_base::ok:
+					if (_Dest != &_Ch)
+						{	// got an element, put back excess and deliver it
+						for (_Nleft = &*_Str.begin() + _Str.size() - _Src;
+							0 < _Nleft; )
+							ungetc(_Src[--_Nleft], _Myfile);
+						return (_Traits::to_int_type(_Ch));
+						}
+					else
+						_Str.erase((size_t)0,	// partial, discard used input
+							(size_t)(_Src - &*_Str.begin()));
+					break;
+
+				case codecvt_base::noconv:
+					if (_Str.size() < sizeof (_Elem))
+						break;	// no conversion, but need more chars
+					memcpy(&_Ch, &*_Str.begin(),
+						sizeof (_Elem));	// copy raw bytes to element
+					return (_Traits::to_int_type(_Ch));	// return result
+
+				default:
+					return (_Traits::eof());	// conversion failed
+					}
+				}
+			}
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual pos_type seekoff(off_type _Off,
+		ios_base::seekdir _Way,
+		ios_base::openmode =
+			(ios_base::openmode)(ios_base::in | ios_base::out))
+		{	// change position by _Off
+		fpos_t _Fileposition;
+
+		if (_Mysb::egptr() <= _Mysb::gptr()	// nothing buffered
+			|| _Mysb::gptr() != &_Mychar	// nothing putback
+			|| _Way != ios_base::cur)		// not a relative seek
+			;	// don't have to worry about putback character
+		else if (_Pcvt == 0)
+			_Off -= (off_type)sizeof (_Elem);	// back up over _Elem bytes
+
+		if (_Myfile == 0 || !_Endwrite()
+			|| (_Off != 0 || _Way != ios_base::cur)
+				&& fseek(_Myfile, (long)_Off, _Way) != 0
+			|| fgetpos(_Myfile, &_Fileposition) != 0)
+			return (pos_type(_BADOFF));	// report failure
+		if (_Mysb::gptr() == &_Mychar)
+			_Mysb::setg(&_Mychar, &_Mychar + 1,
+				&_Mychar + 1);	// discard any putback
+		return (_POS_TYPE_FROM_STATE(pos_type, _State,
+			_Fileposition));	// return new position
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual pos_type seekpos(pos_type _Pos,
+		ios_base::openmode =
+			(ios_base::openmode)(ios_base::in | ios_base::out))
+		{	// change position to _Pos
+		fpos_t _Fileposition = _POS_TYPE_TO_FPOS_T(_Pos);
+		off_type _Off = (off_type)_Pos - _FPOSOFF(_Fileposition);
+
+		if (_Myfile == 0 || !_Endwrite()
+			|| fsetpos(_Myfile, &_Fileposition) != 0
+			|| _Off != 0 && fseek(_Myfile, (long)_Off, SEEK_CUR) != 0
+			|| fgetpos(_Myfile, &_Fileposition) != 0)
+			return (pos_type(_BADOFF));	// report failure
+
+		_State = _POS_TYPE_TO_STATE(_Pos);
+		if (_Mysb::gptr() == &_Mychar)
+			_Mysb::setg(&_Mychar, &_Mychar + 1,
+				&_Mychar + 1);	// discard any putback
+		return (_POS_TYPE_FROM_STATE(pos_type, _State,
+			_Fileposition));	// return new position
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual _Mysb *setbuf(_Elem *_Buffer, streamsize _Count)
+		{	// offer _Buffer to C stream
+		if (_Myfile == 0 || setvbuf(_Myfile, (char *)_Buffer,
+			_Buffer == 0 && _Count == 0 ? _IONBF : _IOFBF,
+			_Count * sizeof (_Elem)) != 0)
+			return (0);	// failed
+		else
+			{	// new buffer, reinitialize pointers
+			_Init(_Myfile, _Openfl);
+			return (this);
+			}
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual int sync()
+		{	// synchronize C stream with external file
+		return (_Myfile == 0
+			|| _Traits::eq_int_type(_Traits::eof(), overflow())
+			|| 0 <= fflush(_Myfile) ? 0 : -1);
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual void imbue(const locale& _Loc)
+		{	// set locale to argument (capture nontrivial codecvt facet)
+		_Initcvt((_Cvt *)&_USE(_Loc, _Cvt));
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	void _Init(_Filet *_File, _Initfl _Which)
+		{	// initialize to C stream _File after {new, open, close}
+		static _Myst _Stinit;	// initial state
+		_Closef = _Which == _Openfl;
+		_Wrotesome = false;
+
+		_Mysb::_Init();	// initialize stream buffer base object
+
+ #if _HAS_DINKUM_CLIB
+		if (_File != 0 && sizeof (_Elem) == 1)
+			_Mysb::_Init((_Elem **)&_File->_Buf,
+				(_Elem **)&_File->_Next,
+				(_Elem **)&_File->_Rend,
+				(_Elem **)&_File->_Buf,
+				(_Elem **)&_File->_Next,
+				(_Elem **)&_File->_Wend);
+ #endif /* _HAS_DINKUM_CLIB */
+
+ #if _HAS_POINTER_CLIB
+		if (_File != 0 && sizeof (_Elem) == 1)
+			_Mysb::_Init((_Elem **)&_File->_RBEGIN,
+				(_Elem **)&_File->_RNEXT,
+				(_Elem **)&_File->_REND,
+				(_Elem **)&_File->_WBEGIN,
+				(_Elem **)&_File->_WNEXT,
+				(_Elem **)&_File->_WEND);
+ #endif /* _HAS_POINTER_CLIB */
+
+ #if _HAS_CONVENTIONAL_CLIB
+ #ifndef _IORCNT
+  #define _IORCNT	_IOCNT	/* read and write counts are the same */
+  #define _IOWCNT _IOCNT
+ #endif /* _IORCNT */
+ #if defined(__ghs) || defined(__SC3__)
+  #ifndef _IORBASE
+   #define _IORBASE	_IOBASE
+   #define _IOWBASE	_IOBASE
+  #endif /* !_IORBASE */
+  #ifndef _IORPTR
+   #define _IORPTR	_IOPTR
+   #define _IOWPTR	_IOPTR
+  #endif /* !_IORPTR */
+ #endif /* __ghs */
+
+		if (_File != 0 && sizeof (_Elem) == 1)
+			{	// point inside C stream with [first, first + count) buffer
+ #if defined(__ghs) || defined(__SC3__)
+  #if defined(__LINUX) || defined(_MC_EXEC)
+			_Elem **_Pbr = (_Elem **)&_File->_IORBASE;
+			_Elem **_Pnr = (_Elem **)&_File->_IORPTR;
+			_Elem **_Per = (_Elem **)&_File->_IOREND;
+			_Elem **_Pbw = (_Elem **)&_File->_IOWBASE;
+			_Elem **_Pnw = (_Elem **)&_File->_IOWPTR;
+			_Elem **_Pew = (_Elem **)&_File->_IOWEND;
+			_Mysb::_Init(_Pbr, _Pnr, _Per, _Pbw, _Pnw, _Pew);
+  #elif defined(__OSE)
+			_Elem **_Pb, **_Pn;
+			int *_Pc;
+			efs_examine_file(_File, FLIB_FILE_BUFFER, &_Pb,
+					 FLIB_FILE_CURRENT_REF, &_Pn,
+					 FLIB_FILE_AVAIL_REF, &_Pc, 0);
+	/* now, a temporary hack until we're able to get *address* of
+	 * BUFFER, i.e. until FLIB_BUFFER_REF becomes available.
+	 * Now we assume BUFFER ptr is one word before "next" ptr
+	 * (as it is) */
+			_Pb = (_Elem **)((unsigned int)_Pn - 0x4);
+			_Mysb::_Init(_Pb, _Pn, _Pc, _Pb, _Pn, _Pc, 1);
+  #else /* !__LINUX, !__OSE */
+			_Elem **_Pbr = (_Elem **)&_File->_IORBASE;
+			_Elem **_Pnr = (_Elem **)&_File->_IORPTR;
+			int *_Nr = (int *)&_File->_IORCNT;
+			_Elem **_Pbw = (_Elem **)&_File->_IOWBASE;
+			_Elem **_Pnw = (_Elem **)&_File->_IOWPTR;
+			int *_Nw = (int *)&_File->_IOWCNT;
+			_Mysb::_Init(_Pbr, _Pnr, _Nr, _Pbw, _Pnw, _Nw);
+  #endif /* __LINUX */
+ #else /* !__ghs */
+			_Elem **_Pb = (_Elem **)&_File->_IOBASE;
+			_Elem **_Pn = (_Elem **)&_File->_IOPTR;
+			int *_Nr = (int *)&_File->_IORCNT;
+			int *_Nw = (int *)&_File->_IOWCNT;
+			_Mysb::_Init(_Pb, _Pn, _Nr, _Pb, _Pn, _Nw);
+ #endif /* !__ghs */
+			}
+ #endif /* _HAS_CONVENTIONAL_CLIB */
+
+		_Myfile = _File;
+		_State = _Stinit;
+		_Pcvt = 0;	// pointer to codecvt facet
+#if (defined(__ghs) || defined(__SC3__)) && \
+    !defined(__VXWORKS) && !defined(__unix__) && \
+    (defined(_IOPBF) || (defined(_WIN32) && defined(_MT)))
+    // [jy] 9/13/06 If the underlying C library does not automatically
+    // provide buffering, we must enable buffering here.  GHS libansi
+    // for standalone embedded requires a buffer to be passed in order
+    // to enable buffering.  Other implementations allocate a buffer
+    // automatically, which is preferred since the buffer allocated
+    // here will not be used if the user calls ::setbuf() explicitly.
+    // The buffer here will be only freed when the file is closed.
+    // Another caveat about GHS libansi is that _IOLBF is not supported.
+    // Instead, _IOLBF will be changed to _IOPBF by setvbuf.  This flushes
+    // after any fputs or printf, but otherwise it is the same as _IOFBF.
+    // (These idiosyncracies of libansi improve library speed and size.)
+/* [nikola] Mon Apr  7 12:44:28 PDT 2003 - do the 'setbuf' only when creating
+   a new filestream, or when opening it and it hasn't already been initialized.
+   (because 'setbuf' calls _Init back which could cause infinite recursion) */
+		if (_Which == _Newfl || 
+		    (_Which == _Openfl && _GhsIobaseBuffer == 0))
+			{int bfkind = _IOFBF;
+			if (_Myfile == stdout || _Myfile == stderr)
+			    {bfkind = _IOLBF; }
+			if (_Myfile != 0)
+		        	{_Elem *_Bf;
+				if ((_Bf = (_Elem*)malloc(
+						BUFSIZ*sizeof(_Elem)))==0)
+			        	return;
+				_GhsIobaseBuffer = _Bf;
+				if (setvbuf(_Myfile, (char *)_Bf, bfkind,
+					    BUFSIZ * sizeof (_Elem)) != 0)
+					return; }
+			else
+				_GhsIobaseBuffer = 0; }
+		else if (_Which == _Closefl)
+			{if (_GhsIobaseBuffer != 0)
+			        {
+				free((void*)_GhsIobaseBuffer);
+				_GhsIobaseBuffer = 0; 
+				} }
+		else 
+			{ /* do nothing */ }
+#endif /* __ghs */
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	bool _Endwrite()
+		{	// put shift to initial conversion state, as needed
+		if (_Pcvt == 0 || !_Wrotesome)
+			return (true);
+		else
+			{	// may have to put
+			const int _STRING_INC = 8;
+			char *_Dest;
+			if (_Traits::eq_int_type(_Traits::eof(), overflow()))
+				return (false);
+
+			string _Str(_STRING_INC, '\0');
+			for (; ; )
+				switch (_Pcvt->unshift(_State,
+					&*_Str.begin(), &*_Str.begin() + _Str.size(), _Dest))
+				{	// test result of homing conversion
+				case codecvt_base::ok:
+					_Wrotesome = false;	// homed successfully
+					/* FALLTHROUGH */
+				case codecvt_base::partial:	// fall through
+					{	// put any generated bytes
+					size_t _Count = _Dest - &*_Str.begin();
+					if (0 < _Count && _Count !=
+						fwrite(&*_Str.begin(), 1, _Count, _Myfile))
+						return (false);	// write failed
+					if (!_Wrotesome)
+						return (true);
+					if (_Count == 0)
+						_Str.append(_STRING_INC, '\0');	// try with more space
+					break;
+					}
+
+				case codecvt_base::noconv:
+					return (true);	// nothing to do
+
+				default:
+					return (false);	// conversion failed
+				}
+			}
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	void _Initcvt(_Cvt *_Newpcvt)
+		{	// initialize codecvt pointer
+		if (_Newpcvt->always_noconv())
+			_Pcvt = 0;	// nothing to do
+		else
+			{	// set up for nontrivial codecvt facet
+			_Pcvt = _Newpcvt;
+			_Mysb::_Init();	// reset any buffering
+			}
+		}
+
+private:
+	_Cvt *_Pcvt;	// pointer to codecvt facet (may be null)
+	_Elem _Mychar;	// putback character, when _Ungetc fails
+	bool _Wrotesome;	// true if homing sequence may be needed
+	typename _Traits::state_type _State;	// current conversion state
+	bool _Closef;	// true if C stream must be closed
+	_Filet *_Myfile;	// pointer to C stream
+#if (defined(__ghs) || defined(__SC3__)) && !defined(__VXWORKS)
+/* [nikola] Mon Oct 19 11:54:11 PDT 1998 */
+	_Elem *_GhsIobaseBuffer;
+#endif /* __ghs, !__VXWORKS */
+	};
+
+
+ #ifdef _DLL
+
+  #ifdef __FORCE_INSTANCE
+template class basic_filebuf<char,
+	char_traits<char> >;
+template class basic_filebuf<wchar_t,
+	char_traits<wchar_t> >;
+
+   #ifdef _CRTBLD_NATIVE_WCHAR_T
+template class basic_filebuf<unsigned short,
+	char_traits<unsigned short> >;
+   #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+  #else /* __FORCE_INSTANCE */
+extern template class basic_filebuf<char,
+	char_traits<char> >;
+extern template class basic_filebuf<wchar_t,
+	char_traits<wchar_t> >;
+  #endif /* __FORCE_INSTANCE */
+
+ #endif /* _DLL */
+
+		// TEMPLATE CLASS basic_ifstream
+template<class _Elem,
+	class _Traits>
+	class basic_ifstream
+		: public basic_istream<_Elem, _Traits>
+	{	// input stream associated with a C stream
+public:
+	typedef basic_ifstream<_Elem, _Traits> _Myt;
+	typedef basic_filebuf<_Elem, _Traits> _Myfb;
+	typedef basic_ios<_Elem, _Traits> _Myios;
+
+	basic_ifstream()
+		: basic_istream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct unopened
+		}
+
+#if defined(__ghs) || defined(__SC3__)
+	explicit basic_ifstream(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::in)
+		: basic_istream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+
+	explicit basic_ifstream(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+					 = ios_base::in
+#endif /* !__ghs */
+							,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+			 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+				)
+		: basic_istream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_ifstream(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::in,
+		int _Prot = (int)ios_base::_Openprot)
+		: basic_istream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with wide-named file -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_ifstream(_Filet *_File)
+		: basic_istream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_File)
+		{	// construct with specified C stream
+		}
+
+ #if _HAS_TRADITIONAL_IOSTREAMS
+	explicit basic_ifstream(_FD_TYPE _Fd)
+		: basic_istream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_CSTD fdopen(_Fd, "r"))
+		{	// construct with C file descriptor
+		}
+
+	_Myt *attach(_FD_TYPE _Fd, const char *_Mode = "r")
+		{	// open a C stream with C file descriptor and specified mode
+		return (_Filebuffer.attach(_Fd, _Mode) != 0 ? this : 0);
+		}
+ #endif /* _HAS_TRADITIONAL_IOSTREAMS */
+
+	void open(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::in,
+		int _Prot = (int)ios_base::_Openprot)
+		{	// open a wide-named C stream -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const wchar_t *_Filename, ios_base::open_mode _Mode)
+		{	// open wide-named file (old style) -- EXTENSION
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+
+#if defined(__ghs)
+	__noinline
+#endif /* __ghs */
+	virtual ~basic_ifstream()
+		{	// destroy the object
+		}
+
+	_Myfb *rdbuf() const
+		{	// return pointer to file buffer
+		return ((_Myfb *)&_Filebuffer);
+		}
+
+	bool is_open() const
+		{	// test if C stream has been opened
+		return (_Filebuffer.is_open());
+		}
+#if defined(__ghs) || defined(__SC3__)
+	void open(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::in)
+		{
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+
+	void open(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+				 = ios_base::in
+#endif /* !__ghs */
+						,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+				 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+						)
+		{	// open a C stream with specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::in, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const char *_Filename, ios_base::open_mode _Mode)
+		{	// open named file with specified mode (old style)
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+
+	void close()
+		{	// close the C stream
+		if (_Filebuffer.close() == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+private:
+	_Myfb _Filebuffer;	// the file buffer
+	};
+
+ #ifdef _DLL
+
+  #ifdef __FORCE_INSTANCE
+template class basic_ifstream<char,
+	char_traits<char> >;
+template class basic_ifstream<wchar_t,
+	char_traits<wchar_t> >;
+
+   #ifdef _CRTBLD_NATIVE_WCHAR_T
+template class basic_ifstream<unsigned short,
+	char_traits<unsigned short> >;
+   #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+  #else /* __FORCE_INSTANCE */
+extern template class basic_ifstream<char,
+	char_traits<char> >;
+extern template class basic_ifstream<wchar_t,
+	char_traits<wchar_t> >;
+  #endif /* __FORCE_INSTANCE */
+
+ #endif /* _DLL */
+
+		// TEMPLATE CLASS basic_ofstream
+template<class _Elem,
+	class _Traits>
+	class basic_ofstream
+		: public basic_ostream<_Elem, _Traits>
+	{	// output stream associated with a C stream
+public:
+	typedef basic_ofstream<_Elem, _Traits> _Myt;
+	typedef basic_filebuf<_Elem, _Traits> _Myfb;
+	typedef basic_ios<_Elem, _Traits> _Myios;
+
+	basic_ofstream()
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct unopened
+		}
+#if defined(__ghs) || defined(__SC3__)
+	explicit basic_ofstream(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::out)
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+	explicit basic_ofstream(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+					 = ios_base::out
+#endif /* !__ghs */
+						,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+					 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+						)
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_ofstream(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::out,
+		int _Prot = (int)ios_base::_Openprot)
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with wide-named file -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_ofstream(_Filet *_File)
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_File)
+		{	// construct with specified C stream
+		}
+
+ #if _HAS_TRADITIONAL_IOSTREAMS
+	explicit basic_ofstream(_FD_TYPE _Fd)
+		: basic_ostream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_CSTD fdopen(_Fd, "w"))
+		{	// construct with C file descriptor
+		}
+
+	_Myt *attach(_FD_TYPE _Fd, const char *_Mode = "w")
+		{	// open a C stream with C file descriptor and specified mode
+		return (_Filebuffer.attach(_Fd, _Mode) != 0 ? this : 0);
+		}
+
+	void open(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::out,
+		int _Prot = (int)ios_base::_Openprot)
+		{	// open a wide-named C stream -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const wchar_t *_Filename, ios_base::open_mode _Mode)
+		{	// open a wide-named C stream (old style) -- EXTENSION
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+ #endif /* _HAS_TRADITIONAL_IOSTREAMS */
+
+	virtual ~basic_ofstream()
+		{	// destroy the object
+		}
+
+	_Myfb *rdbuf() const
+		{	// return pointer to file buffer
+		return ((_Myfb *)&_Filebuffer);
+		}
+
+	bool is_open() const
+		{	// test if C stream has been opened
+		return (_Filebuffer.is_open());
+		}
+#if defined(__ghs) || defined(__SC3__)
+	void open(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::out)
+		{
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+	void open(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+				 = ios_base::out
+#endif /* !__ghs */
+						,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+				 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+						)
+		{	// open a C stream with specified mode
+		if (_Filebuffer.open(_Filename, _Mode | ios_base::out, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const char *_Filename, ios_base::open_mode _Mode)
+		{	// open a C stream with specified mode (old style)
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+
+	void close()
+		{	// close the C stream
+		if (_Filebuffer.close() == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+private:
+	_Myfb _Filebuffer;	// the file buffer
+	};
+
+ #ifdef _DLL
+
+  #ifdef __FORCE_INSTANCE
+template class basic_ofstream<char,
+	char_traits<char> >;
+template class basic_ofstream<wchar_t,
+	char_traits<wchar_t> >;
+
+   #ifdef _CRTBLD_NATIVE_WCHAR_T
+template class basic_ofstream<unsigned short,
+	char_traits<unsigned short> >;
+   #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+  #else /*__FORCE_INSTANCE */
+extern template class basic_ofstream<char,
+	char_traits<char> >;
+extern template class basic_ofstream<wchar_t,
+	char_traits<wchar_t> >;
+  #endif /* __FORCE_INSTANCE */
+
+ #endif /* _DLL */
+
+		// TEMPLATE CLASS basic_fstream
+template<class _Elem,
+	class _Traits>
+	class basic_fstream
+		: public basic_iostream<_Elem, _Traits>
+	{	// input/output stream associated with a C stream
+public:
+	typedef basic_fstream<_Elem, _Traits> _Myt;
+	typedef basic_ios<_Elem, _Traits> _Myios;
+	typedef _Elem char_type;
+	typedef _Traits traits_type;
+	typedef typename _Traits::int_type int_type;
+	typedef typename _Traits::pos_type pos_type;
+	typedef typename _Traits::off_type off_type;
+
+	basic_fstream()
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct unopened
+		}
+#if defined(__ghs) || defined(__SC3__)
+	// Must have this prototype since the standard requires it
+	// Don't do it for wchar_t since it's an extension anyway
+	explicit basic_fstream(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::in | ios_base::out)
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+	explicit basic_fstream(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+			 = ios_base::in | ios_base::out
+#endif /* !__ghs */
+					,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+			 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+					)
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with named file and specified mode
+		if (_Filebuffer.open(_Filename, _Mode, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_fstream(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::in | ios_base::out,
+		int _Prot = (int)ios_base::_Openprot)
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer)
+		{	// construct with wide-named file -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	explicit basic_fstream(_Filet *_File)
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_File)
+		{	// construct with specified C stream
+		}
+
+ #if _HAS_TRADITIONAL_IOSTREAMS
+	explicit basic_fstream(_FD_TYPE _Fd)
+		: basic_iostream<_Elem, _Traits>(&_Filebuffer),
+			_Filebuffer(_CSTD fdopen(_Fd, "r+"))
+		{	// construct with C file descriptor
+		}
+
+	_Myt *attach(_FD_TYPE _Fd, const char *_Mode = "r+")
+		{	// open a C stream with C file descriptor and specified mode
+		return (_Filebuffer.attach(_Fd, _Mode) != 0 ? this : 0);
+		}
+ #endif /* _HAS_TRADITIONAL_IOSTREAMS */
+
+	void open(const wchar_t *_Filename,
+		ios_base::openmode _Mode = ios_base::in | ios_base::out,
+		int _Prot = (int)ios_base::_Openprot)
+		{	// open a wide-named C stream -- EXTENSION
+		if (_Filebuffer.open(_Filename, _Mode, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const wchar_t *_Filename, ios_base::open_mode _Mode)
+		{	// open a wide-named C stream (old style) -- EXTENSION
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+
+	virtual ~basic_fstream()
+		{	// destroy the object
+		}
+
+	basic_filebuf<_Elem, _Traits> *rdbuf() const
+		{	// return pointer to file buffer
+		return ((basic_filebuf<_Elem, _Traits> *)&_Filebuffer);
+		}
+
+	bool is_open() const
+		{	// test if C stream has been opened
+		return (_Filebuffer.is_open());
+		}
+
+#if defined(__ghs) || defined(__SC3__)
+	void open(const char *_Filename,
+		ios_base::openmode _Mode = ios_base::in | ios_base::out)
+		{
+		if (_Filebuffer.open(_Filename, _Mode) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+#endif /* __ghs */
+
+	void open(const char *_Filename,
+		ios_base::openmode _Mode
+#if !(defined(__ghs) || defined(__SC3__))
+			 = ios_base::in | ios_base::out
+#endif /* !__ghs */
+					,
+		int _Prot
+#if !(defined(__ghs) || defined(__SC3__))
+			 = (int)ios_base::_Openprot
+#endif /* !__ghs */
+					)
+		{	// open a C stream with specified mode
+		if (_Filebuffer.open(_Filename, _Mode, _Prot) == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+	void open(const char *_Filename, ios_base::open_mode _Mode)
+		{	// open a C stream with specified mode (old style)
+		open(_Filename, (ios_base::openmode)_Mode);
+		}
+
+	void close()
+		{	// close the C stream
+		if (_Filebuffer.close() == 0)
+			_Myios::setstate(ios_base::failbit);
+		}
+
+private:
+	basic_filebuf<_Elem, _Traits> _Filebuffer;	// the file buffer
+	};
+
+ #ifdef _DLL
+
+  #ifdef __FORCE_INSTANCE
+template class basic_fstream<char,
+	char_traits<char> >;
+template class basic_fstream<wchar_t,
+	char_traits<wchar_t> >;
+
+   #ifdef _CRTBLD_NATIVE_WCHAR_T
+template class basic_fstream<unsigned short,
+	char_traits<unsigned short> >;
+   #endif /* _CRTBLD_NATIVE_WCHAR_T */
+
+  #else /* __FORCE_INSTANCE */
+extern template class basic_fstream<char,
+	char_traits<char> >;
+extern template class basic_fstream<wchar_t,
+	char_traits<wchar_t> >;
+  #endif /* __FORCE_INSTANCE */
+
+ #endif /* _DLL */
+#if defined(__ghs) && defined(__ghs_max_pack_value)
+#pragma pack(pop)
+#endif
+#if defined(__GHS_PRAGMAS)
+#pragma ghs enddata
+#endif
+_STD_END
+#endif /* _FSTREAM_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

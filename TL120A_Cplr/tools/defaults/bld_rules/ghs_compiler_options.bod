@@ -1,0 +1,493 @@
+%if defined(VERBOSE)
+%define VERBOSEOPTION -v
+%define ARCHIVEVERBOSEOPTION v
+%else
+%define VERBOSEOPTION
+%define ARCHIVEVERBOSEOPTION
+%endif
+
+%if !defined(GHS_TOOLS_VERSION)
+# Don't make a release version larger than this!
+%  define GHS_TOOLS_VERSION 201517
+%endif
+
+exports.GHS_TOOLS_VERSION = "${GHS_TOOLS_VERSION}"
+macros.GHS_TOOLS_VERSION = "${GHS_TOOLS_VERSION}"
+
+%if !file_exists("${__DIR__}/ghs_ada_options.bod")
+%  undef ADA_DRIVER
+%endif
+%if !file_exists("${__DIR__}/ghs_fortran_options.bod")
+%  undef FORTRAN_DRIVER
+%endif
+
+%if defined (C_DRIVER)
+   macros.GHS_C_SUPPORT = "1"
+%endif
+%if defined (CXX_DRIVER)
+   macros.GHS_CXX_SUPPORT = "1"
+%endif
+%if defined (ADA_DRIVER)
+   macros.GHS_ADA_SUPPORT = "1"
+%endif
+%if defined (FORTRAN_DRIVER)
+   macros.GHS_FORTRAN_SUPPORT = "1"
+%endif
+
+Description {
+	bsp_option_prefix = "-bsp "
+	cpu_option_prefix = "-cpu="
+%if !defined(__GHS_GPJ_SUPPORTS_CONFIGURATIONS) || !defined(__GHS_CREATE_PROJECTS_WITH_CONFIGURATIONS) || !defined(__GHS_USE_CONFIGURATIONS)
+	top_level_options = { "-G", "-object_dir=objs" }
+%endif
+	toolchain_name = "GREEN_HILLS"
+%if defined (C_DRIVER)
+	driver = "${C_DRIVER}"
+%elsif defined (ADA_DRIVER)	
+	driver = "${ADA_DRIVER}"
+%endif
+}
+
+Categories {
+    {all="Target"; advanced=true}
+    {all="Project"; advanced=true}
+    {all="Optimization"; advanced=true}
+    {all="Debugging"; advanced=true}
+    {all="Preprocessor"; advanced=true}
+    {all="C/C++ Compiler"; advanced=true}
+%if defined (ADA_DRIVER)
+    {all="Ada Compiler"; advanced=true}
+%endif
+%if defined (FORTRAN_DRIVER)
+    {all="FORTRAN Compiler"; advanced=true}
+%endif
+    {all="Assembler"; advanced=true}
+    {all="Linker"; advanced=true}
+    {all="Compiler Diagnostics"; advanced=false}
+    {all="DoubleCheck (C/C++)"; advanced=false}
+}
+
+%include "ghs_common_options.bod"
+%include "ghs_target_options.bod"
+%include "ghs_project_options.bod"
+%include "ghs_optimization_options.bod"
+%include "ghs_debugging_options.bod"
+%include "ghs_c_options.bod"
+%if defined (ADA_DRIVER)
+%  include "ghs_ada_options.bod"
+%endif
+%if defined (FORTRAN_DRIVER)
+%  include "ghs_fortran_options.bod"
+%endif
+%include "ghs_toolchain_options.bod"
+%include "ghs_message_options.bod"
+%include "ghs_os_options.bod"
+%include "ghs_legacy_options.bod"
+%include "ghs_contract_options.bod"
+%include "ghs_internal_options.bod"
+
+CommandOptions {
+	
+    GhsCompilerOptions {
+
+    ##################### Advanced;Support Diagnostics ################
+    
+	    XSwitches {
+		    {
+			    name="-X"
+			    delimiter="Touching"
+		    }
+		    {
+			    name="-Z"
+			    delimiter="Touching"
+		    }
+		    optionType="List"
+		    merge="Concat"
+		    pass={"All"}
+		    guiLabel="X-Switches"
+		    guiCategory="Support Diagnostics"
+	    }
+	    Option {
+		    {
+			    name="--option"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="EDG Front End Options"
+		    guiCategory="Support Diagnostics"
+	    }
+	    ChangeAssembler {
+	    #### tricore,v800
+		    {
+			    name="-old_assembler"
+			    value=0
+			    enumLabel="Use Old Assembler"
+		    }
+		    {
+			    name="-new_assembler"
+			    value=1
+			    enumLabel="Use New Assembler"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Change Assembler"
+		    guiCategory="Support Diagnostics"
+	    }
+	    ChangeAssemblerWithC {
+	    #### v800
+		    {
+			    name="-no_use_ease_with_c"
+			    value=0
+			    enumLabel="Use Old Assembler with C files"
+		    }
+		    {
+			    name="-use_ease_with_c"
+			    value=1
+			    enumLabel="Use New Assembler with C files"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Change Assembler For C Files"
+		    guiCategory="Support Diagnostics"
+	    }
+	    DboTrace {
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    name="-dbo_trace"
+		    guiLabel="Debug Information (.dbo) Tracing Diagnostics"
+		    enumLabel="On"
+		    guiCategory="Support Diagnostics"
+	    }
+	    DboVersion {
+		    {
+		    	name="--dbo_version"
+		    	delimiter="Equal"
+		    }
+		    {
+		    	name="--dbo_version"
+		    	delimiter="Space"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    guiLabel="Dbo File Version"
+		    guiCategory="Support Diagnostics"
+	    }
+
+    ################ Driver-Only Options #######################
+
+	#### These options are hidden as they are either irrelevant
+	#### to the Builder or are superceded by specific other GUIs
+
+	    ProgramLayout {
+	    #### For embedded targets only, not x86-linux, win32, or sparc ##
+		    {
+			    name="-layout=ram"
+			    value=0
+			    enumLabel="Load Into and Execute Out of RAM"
+		    }
+		    {
+			    name="-layout=romrun"
+			    value=1
+			    enumLabel="Load Into and Execute Out of ROM"
+		    }
+		    {
+			    name="-layout=romcopy"
+			    value=2
+			    enumLabel="Load Into ROM, Execute Out of RAM"
+		    }
+		    {
+			    name="-flash"
+			    value=2
+			    enumLabel="Load Into ROM, Execute Out of RAM"
+		    }
+		    {
+			    name="-layout=romdebug"
+			    value=3
+			    enumLabel="Execute From ROM, With Enhanced Debugging"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    guiLabel="Locations for Program Loading and Execution"
+		    guiCategory="Driver-Only"
+	    }
+
+	    OutputStage {
+		    # -archive
+		    # -c/--compile
+		    # -E/--preprocess
+		    # -Make/--dependencies
+		    # -nonosym/-nosym
+		    # -P/--no_line_commands
+		    # -Q
+		    # -S
+		    # -syntax/--no_code_gen
+		    {
+			    name="-program"
+			    value=0
+			    enumLabel="Program"
+		    }
+		    {
+			    name="-archive"
+			    value=1
+			    enumLabel="Library"
+		    }
+		    {
+			    name="-c"
+			    value=2
+			    enumLabel="Object File"
+		    }
+		    {
+			    name="--compile"
+			    value=2
+			    enumLabel="Object File"
+		    }
+		    {
+			    name="-S"
+			    value=3
+			    enumLabel="Assembly File"
+		    }
+		    {
+			    name="-E"
+			    value=4
+			    enumLabel="Preprocessed File to stdout"
+		    }
+		    {
+			    name="--preprocess"
+			    value=4
+			    enumLabel="Preprocessed File to stdout"
+		    }
+		    {
+			    name="-b"
+			    value=5
+			    enumLabel="C File"
+		    }
+		    {
+			    name="-P"
+			    value=6
+			    enumLabel="Preprocessed File to .i file"
+		    }
+		    {
+			    name="--no_line_commands"
+			    value=6
+			    enumLabel="Preprocessed File to .i file"
+		    }
+		    {
+			    name="-Make"
+			    value=7
+			    enumLabel="Dependencies"
+		    }
+		    {
+			    name="--dependencies"
+			    value=7
+			    enumLabel="Dependencies"
+		    }
+		    {
+			    name="-MM"
+			    value=7
+			    enumLabel="Dependencies"
+		    }
+		    {
+			    name="-Q"
+			    value=8
+			    enumLabel="Information File"
+		    }
+		    {
+			    name="-nonosym"
+			    value=9
+			    enumLabel="Symbol File"
+		    }
+		    {
+			    name="-syntax"
+			    value=10
+			    enumLabel="Syntax Check Only"
+		    }
+		    {
+			    name="--no_code_gen"
+			    value=11
+			    enumLabel="Syntax Check Only"
+		    }
+		    {
+			    name="-fsyntax-only"
+			    value=11
+			    enumLabel="Syntax Check Only"
+		    }
+		    {
+			    name="-update_archive"
+			    value=15
+			    enumLabel="Update Archive"
+		    }
+		    {
+			    name="-link_ada"
+			    value=16
+			    enumLabel="Ada Link File"
+		    }
+		    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Output File Type"
+		    guiCategory="Driver-Only"
+	    }
+
+	    CollectDebugInfo {
+		    {
+			    name="-sym"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nosym"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    hidden=true
+		    optionType="Enum"
+		    guiLabel="Collect Debugging Info from Existing Executable"
+		    guiCategory="Driver-Only"
+	    }
+	    DryRun {
+		    {
+			    name="-#"
+			    value=0
+			    enumLabel="Display Commands Only"
+		    }
+		    {
+			    name="-dryrun"
+			    value=0
+			    enumLabel="Display Commands Only"
+		    }
+		    {
+			    name="--driver_debug"
+			    value=0
+			    enumLabel="Display Commands Only"
+		    }
+		    {
+			    name="-v"
+			    value=1
+			    enumLabel="Display Commands and Execute Them"
+		    }
+		    {
+			    name="--execution"
+			    value=2
+			    enumLabel="Execute Commands"
+		    }
+		    {
+			    name="--Silent"
+			    value=2
+			    enumLabel="Execute Commands"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    hidden=true
+		    optionType="Enum"
+		    guiLabel="Build Verbosity"
+		    guiCategory="Driver-Only"
+	    }
+	    DisplayHelp {
+		    {
+			    name="-Help"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-help"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--help"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    hidden=true
+		    optionType="Enum"
+		    guiLabel="Display Command Line Help"
+		    guiCategory="Driver-Only"
+	    }
+	    MakefileDependencies {
+		    {
+			    name="-MD"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="--make_depends"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-MMD"
+			    value=1
+			    enumLabel="User Dependencies Only"
+		    }
+		    {
+			    name="--user_make_depends"
+			    value=1
+			    enumLabel="User Dependencies Only"
+		    }		    
+		    {
+			    name="--no_make_depends"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    hidden=true
+		    optionType="Enum"
+		    guiLabel="Generate Makefile Dependencies"
+		    guiCategory="Driver-Only"
+	    }
+	    # -MF FILE
+	    MakefileDepOutput {
+		    {
+			    name="-MF"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-MF"
+			    delimiter="Space"
+		    }
+		    merge="None"
+		    hidden=true
+		    optionType="String"
+		    pass={"Compile"}
+		    auxFlags={"DEPENDENCYFILE"}
+		    valueIsFilename=true
+		    guiLabel="Dependency Filename"
+		    guiCategory="Driver-Only;Makefile Dependencies"
+	    }
+	    ArgumentFile {
+		    {
+			    name="@"
+		    }
+		    delimiter="Touching"
+		    merge="Concat"
+		    optionType="List"
+		    hidden=true
+		    guiLabel="Command File"
+		    guiCategory="Driver-Only"
+		    valueIsFilename=true
+	    }
+    }
+
+}

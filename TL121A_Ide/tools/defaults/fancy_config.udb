@@ -1,0 +1,2073 @@
+# Specify the filename where the code should look for the documenation to be
+# displayed in the options window
+docfile {
+    filename = "manuals/edit/edit.gem"
+}
+
+
+# Individual options should be set in the following format
+# <option_name> {
+#     type = <bool|choice|string|int|func|color|window|font|size>
+#     value = <true|false> (if type = bool)
+#             <default string> (if type = choice/string)
+#             <default int> (if type = int)
+#             <default string> (if type = color, must be hex value of desired
+#                                                          color, eg "#ffffff")
+#     choices = <string list of available choices> (if type = choice)
+#     choices_short = <string list of choice names for "configure" command>
+#                       (if type = choice, should not contain spaces)
+#     is_basic = <true|false> (optional, assumed false if not specified)
+#     is_hidden = <true|false> (optional, assumed false if unspecified)
+#     no_display = <true|false> (optional, assumed false if not specified)
+#     broadcast = <true|false> (optional, assumed false if not specified)
+#     refresh_gui = <true|false> (optional, assumed false if not specified)
+#     min_width = <minimum width or initial X position> (if type = size, optional)
+#     min_height = <minimum height or initial Y position> (if type = size, optional)
+#     min_value = <minimum int value> (if type = int)
+#     max_value = <maximum int value> (if type = int)
+#     display_name = <string that should be displayed in the options dialog>
+#     depends = {"option", "is"|"is not", "optionval"[, "otheroptionval",...]} (optional)
+#     exclude_on = <string list of hosts this option should not be
+#                                                      displayed on> (optional)
+#     font_window = <string> (this string should be the name associated in the
+#                             function map with the function to open the
+#                             appropriate font chooser for this font)
+#     file_button = <true|false> (if type = string, optional, assumed false if
+#                                  not specified)
+# }
+#
+# LIMITATION: As options can have different capitalization, option_name must
+# differ from all other option_names in more than just capitalization.
+#
+# If 'is_basic' is true, then this option will be displayed in the
+# 'Basic Options' tab in the config dialog.
+#
+# If 'is_hidden' is true, the option will not be displayed in the options
+# window, but will be added to the list of all options.  It will not be written
+# out to the configuration file, but will still be configurable from the
+# the command line
+#
+# If 'no_display' is true, the option will not be displayed in the options
+# window, but it will be written out to the configuration file and configurable
+# from the command line.
+#
+# If 'broadcast' is true, the option will be broadcast to other products when
+# changed.
+#
+# If 'refresh_gui' is true, the gui will be redrawn after a change to the
+# option.
+#
+# If 'file_button' is true, a button to open a file chooser window will be
+# made available in the string option editor window
+#
+# If type = "func", the function to call must be manually added to the map
+# from option name to function pointer.  This map and the corresponding
+# insertion function can be found in fancy_config.cc
+#
+# If type = "window", the function to call to open the window must be added to
+# the map from option name to function pointer.
+#
+# If type = "font", the function to open a font chooser should be added to the
+# man from option name to function pointer, but with a unique name.  This name
+# should be associated with the font in font_window.
+#
+# If type = "size", and min_width or min_width is not specified, the option will
+# default to 'unspecified' (in the case of 'firstposition', this means MULTI
+# will place the data explorers according to internal logic).  Additionally, if
+# either of these are negative, the option will default to unspecified, as
+# negative values don't make sense for sizes.
+#
+# If there is a depends line, then the option specifying the dependency will
+# only be displayed if the conditions are met.  If 'is' is specified, then
+# this option will be displayed only when the option it depends on has a listed
+# value.  If 'is not' is specified, this option will be displayed whenever the
+# option it depends on does not have a listed value.  It is optional when using
+# this field to specify multiple values, but at least one must be specified.
+#
+# Each option must have a unique name.  option_name is the name that will be
+# used by the code to refer to the option.
+#
+# For choice options, choices should specify a list of settings to be
+# displayed in the gui, and choices_short should specify a list of settings
+# to be used for the "configure" command. Entries in choices_short should
+# not contain spaces. If the values in choices_short would all be identical
+# to the values in choices, choices_short may be omitted.
+# LIMITATION: choice options cannot contain '&' in any of the choice names, as
+# these will not be displayed properly in the right click context menu
+
+options {
+    display_name = "Options"
+    #general {
+    #    display_name = "General"
+        general_options {
+            display_name = "General Options"
+            editor {
+                type = "choice"
+                value = "MULTI Editor"
+                choices = {"MULTI Editor", "Emacs", "Vi", "Other"}
+                is_basic = true
+                is_hidden = false
+                display_name = "Editor"
+            }
+        
+            warppointer {
+                type = "choice"
+            %if !streq(__MULTI_HOST__, "win32")
+                value = "Into Dialog Box"
+            %else
+                value = "Never"
+            %endif
+                choices = {"Never", "Into Dialog Box", "In and Out of Dialog Box"}
+                choices_short = {"Never", "IntoDialogue", "In&OutDialogue"}
+                is_basic = true
+                is_hidden = false
+                display_name = "Warp pointer"
+            }
+
+            rememberwindowpositions {
+                type = "bool"
+                value = true
+                is_basic = true
+                is_hidden = false
+                display_name = "Save window positions and sizes"
+            }
+
+            closebuttonontitlebar {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Display close (x) buttons"
+            }
+
+        %if !streq(__MULTI_HOST__, "win32")
+            clipmanlaunch {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Launch clipboard manager"
+            }
+        %endif
+
+            exactcase {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Match exact case in search"
+            }
+
+            isearchreturn {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Escape restores view after iSearch"
+            }
+
+            beep {
+                type = "bool"
+                value = true
+                is_basic = true
+                is_hidden = false
+                display_name = "Allow beeping"
+            }
+
+            tooltips {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Show tooltips"
+            }
+
+            moon {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Phase of moon in scroll bar box"
+            }
+            
+        %if !streq(__MULTI_HOST__, "win32")
+            printcommand {
+                type = "string"
+                value = "lpr"
+                is_basic = false
+                is_hidden = false
+                display_name = "Print command"
+            }
+            
+	    FocusOnRaise {
+		type = "bool"
+		value = true
+		is_basic = false
+		is_hidden = false
+		no_display = true
+                broadcast = true
+		display_name = "Give window focus when raised"
+	    }
+        %endif
+
+       # }
+        scroll_bar_options {
+            display_name = "Scroll Bar Options"
+            
+            scrolllocation {
+                type = "choice"
+                value = "Right"
+                choices = {"Left", "Right"}
+                is_basic = false
+                is_hidden = false
+                no_display = true
+                refresh_gui = true
+                display_name = "Vertical scroll bar"
+            }
+
+            scrollhlocation {
+                type = "choice"
+                value = "Bottom"
+                choices = {"Top", "Bottom"}
+                is_basic = false
+                is_hidden = false
+                no_display = true
+                refresh_gui = true
+                display_name = "Horizontal scroll bar"
+            }
+
+            scrollbarwidth {
+                type = "int"
+                value = 19
+                is_basic = false
+            %if streq(__MULTI_HOST__, "win32")
+                is_hidden = true
+            %else
+                is_hidden = false
+            %endif
+                refresh_gui = true
+                no_display = true
+                display_name = "Scroll bar width in pixels"
+                min_value = 5
+                max_value = 100
+            }
+        }
+        font_options {
+            display_name = "Font Options"
+            font {
+                type = "font"
+            %if !streq(__MULTI_HOST__, "win32")
+                value = "-misc-fixed-medium-r-semicondensed-*-*-120-*-*-*-*-*-*"
+            %else
+                value = "courier new:13"
+            %endif
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Source Code Font"
+                font_window = "fontwindow"
+            }
+
+            guifont {
+                type = "font"
+            %if !streq(__MULTI_HOST__, "win32")
+                value = "*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*"
+            %else
+                value = "ms sans serif"
+            %endif
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "GUI Font"
+                font_window = "guifontwindow"
+            }
+        }
+        %if streq(__MULTI_HOST__, "win32")
+        taskbar_options{
+            display_name = "Taskbar Organizer Options"
+
+	    taskbartype {
+		type = "choice"
+		value = "Taskbar"
+		choices = {"Disabled", "Taskbar", "Tray"}
+                is_basic = false
+                is_hidden = false
+                display_name = "Taskbar Style"
+	    }
+
+	    taskbarshowallwindows {
+		type = "bool"
+		value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Show all windows in Alt-Tab list"
+		depends = { "taskbartype", "is not", "Disabled" }
+	    }
+
+	    taskbargotolastwindow {
+		type = "bool"
+		value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Go to last window when selecting organizer in Alt-Tab list"
+		depends = { "taskbartype", "is not", "Disabled" }
+	    }
+	   
+        }
+        %endif
+        advanced_options {
+            display_name = "Advanced Options"
+            menus {
+                type = "window"
+                is_basic = false
+                is_hidden = false
+                display_name = "Menus"
+            }
+
+            mousewindow {
+                type = "window"
+                is_basic = false
+                is_hidden = false
+                display_name = "Mouse"
+            }
+
+            keys {
+                type = "window"
+                is_basic = false
+                is_hidden = false
+                display_name = "Keys"
+            }
+
+            windows {
+                type = "window"
+                is_basic = false
+                is_hidden = false
+                display_name = "Windows"
+            }
+        }
+    }
+    
+    project_manager {
+        display_name = "Project Manager Options"
+            showprogress {
+                type = "choice"
+                value = "On Warnings and Errors"
+                choices = {"Always", "On Warnings and Errors", "On Errors", "Never"}
+                is_basic = true
+                is_hidden = false
+                display_name = "Open build details window"
+            }
+
+            autoediterrors {
+                type = "bool"
+                value = true
+                is_basic = true
+                is_hidden = false
+                broadcast = true
+                display_name = "Automatically open editor on errors"
+            }
+
+            autoeditwarnings {
+                type = "bool"
+                value = false
+                is_basic = true
+                is_hidden = false
+                broadcast = true
+                display_name = "Automatically open editor on warnings"
+            }
+
+            alwaysusemetofixbuilderrors {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                display_name = "Use MULTI Editor on errors (even if alternate editor is specified elsewhere)"
+            }
+
+            defaultNPWdir {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Project directory root"
+                broadcast = true
+            }
+
+        build_options {
+            display_name = "Build Options"
+            BuildType {
+                type = "choice"
+                value = "Single-Thread Build"
+                choices = {"Parallel Build", "Single-Thread Build"}
+                choices_short = {"Parallel", "SingleThread"}
+                is_basic = true
+                is_hidden = false
+                display_name = "Build Type"
+            }
+
+            NumberOfParallelProcesses {
+                type = "string"
+                value = "2"
+                is_basic = false
+                is_hidden = true
+                display_name = "Number of parallel processes"
+                depends = {"BuildType", "is", "parallel"}
+            }
+
+            NumParallelBuildProcesses {
+                type = "int"
+                value = 2
+                is_basic = false
+                is_hidden = false
+                display_name = "Number of parallel processes"
+                depends = {"BuildType", "is", "parallel"}
+                min_value = 1
+                max_value = 128
+            }
+
+            UseLockFiles {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use lock files (-lockout)"
+            }
+
+            UseLowPriority {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Execute tools at low priority (-nice)"
+            }
+
+            ToolCommands {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Show tool commands (-commands)"
+            }
+            
+        }
+        connection_options {
+            display_name = "Connection Options"
+            autoConnectionMode {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Automatically share target connections"
+            }
+
+            displayConnectionTypeInChooser {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Display connection type in Connection Chooser"
+            }
+        }
+    }
+    
+    debugger {
+        #display_name = "Debugger"
+        #debugger_options {
+            display_name = "Debugger Options"
+            VERIFYHALT {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Ask before halting to set breakpoint"
+            }
+
+            procRelativeLines {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Use procedure relative line numbers (vs. file relative)"
+            }
+
+            hexmode {
+                type = "bool"
+                value = false
+                is_basic = true
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Display all numbers/characters as hex"
+            }
+
+            viewunsignedcharasint {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "View unsigned char as integer"
+            }
+
+            backgroundmode {
+                type = "choice"
+                value = "Use Color Offsets"
+                choices = {"Do Not Color", "Use Color Offsets", "Use Preset Colors"}
+                choices_short = {"Off", "Offset", "Preset"}
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Coloring for multiple debuggers"
+            }
+
+            linenumbermode {
+                type = "choice"
+                value = "Both Numbers"
+                choices = {"No Number", "File Number", "Proc Number", "Both Numbers"}
+                choices_short = {"None", "File", "Proc", "Both"}
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Line numbers in source pane"
+            }
+
+            hovervalues {
+                type = "choice"
+                value = "On Mouse Hover with Shift Key"
+                choices = {"Never (fastest and safest)", "On Mouse Hover", "On Mouse Hover with Shift Key"}
+                choices_short = {"Never", "Always", "OnShift"}
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Show variable values in tooltips"
+            }
+
+            viewsarechildrenmode {
+                type = "choice"
+                value = "Can be below Debugger"
+                choices = {"Stay above Debugger", "Can be below Debugger", "Are initially focused"}
+                choices_short = {"Children", "Toplevel", "KeepFocus"}
+                is_basic = false
+                is_hidden = false
+                display_name = "Debugger child windows"
+                exclude_on = {"linux", "solaris"}
+            }
+
+            cwindlines {
+                type = "int"
+                value = 6
+                is_basic = false
+                is_hidden = true
+                refresh_gui = true
+                display_name = "Command pane height in lines"
+                min_value = 1
+                max_value = 100
+            }
+
+            prompt {
+                type = "string"
+                value = "MULTI> "
+                is_basic = false
+                is_hidden = false
+                display_name = "Command pane prompt"
+            }
+
+            configurewindow {
+                type = "window"
+                is_basic = false
+                is_hidden = false
+                display_name = "Configure Debugger Buttons"
+            }
+       # }
+
+        advanced_debugger_options {
+            display_name = "Advanced Debugger Options"
+
+            DerefPointer {
+                type = "bool"
+                value = true
+                is_basic = true
+                is_hidden = false
+                display_name = "Automatically dereference pointers"
+            }
+            
+            BPSyntaxChecking {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Check syntax of breakpoints when they are set"
+            }
+
+            ContinuePlaybackFileOnError {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Continue running script files on error"
+            }
+
+            blockstep {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "'s' (step) and 'n' (next) are blocking by default"
+            }
+
+            leaveTypeDef {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Display typedef type instead of basic type"
+            }
+
+            ShowPosInNoDisplayMode {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Show position in non-GUI (-nodisplay) mode"
+            }
+
+            EscHalts {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Pressing Esc halts the target when connected"
+            }
+
+            RequestOsaPackage {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Prompt for OSA package when package is not found"
+            }
+
+            DeleteDeadTaskFromGroup {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Delete dead tasks from group"
+            }
+
+            autoVerifyROMSections {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Automatically verify ROM image is up-to-date"
+            }
+
+            autoDwarf2dbo {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Translate DWARF debugging information (requires dwarf2dbo license)"
+            }
+
+            autoStabs2dbo {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Translate stabs debugging information (requires stabs2dbo license)"
+            }
+
+            unifyviewwindows {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                display_name = "Reuse Data Explorer"
+            }
+
+            LongjmpStepMode {
+                type = "choice"
+                value = "Ignore/Run Away"
+                choices = {"Ignore/Run Away", "Minimize Temp Stops", "Maximize Step Speed"}
+                choices_short = {"IgnoreRunAway", "MinimizeTempStops", "MaximizeStepSpeed"}
+                is_basic = false
+                is_hidden = false
+                display_name = "Stepping over longjmps"
+            }
+
+            servertimeout {
+                type = "int"
+                value = 15
+                is_basic = false
+                is_hidden = false
+                display_name = "Debug server timeout in seconds"
+                min_value = 0
+                max_value = 2147483647
+            }
+
+            ServerPollInterval {
+                type = "int"
+                value = 5
+                is_basic = false
+                is_hidden = false
+                display_name = "Interval to refresh Task Manager (in seconds)"
+                min_value = 0
+                max_value = 2147483647
+            }
+
+            TaskMatchCriteria {
+                type = "choice"
+                value = "Task Name"
+                choices = {"Task Name", "Task Identifier", "Task Name or Identifier"}
+                choices_short = {"Name", "Id", "NameOrId"}
+                is_basic = false
+                is_hidden = false
+                display_name = "Criteria to decide if a task is in a group"
+            }
+
+            PromptQuitDebugger {
+                type = "choice"
+                value = "Confirm If Process Started"
+                choices = {"Confirm If Process Started", "Always Confirm", "Never Confirm"}
+                choices_short = {"Normal", "Always", "Never"}
+                is_basic = false
+                is_hidden = false
+                display_name = "Prompt when exiting Debugger"
+            }
+
+            maxContainerDisplaySize {
+                type = "int"
+                value = 20
+                is_basic = false
+                is_hidden = false
+                display_name = "Maximum size for container display"
+                min_value = 1
+                max_value = 1000
+            }
+
+            containerSizeIncrement {
+                type = "int"
+                value = 10
+                is_basic = false
+                is_hidden = false
+                display_name = "Increment to maximum container size"
+                min_value = 1
+                max_value = 100
+            }
+
+            PrepareAllCores {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Prepare Target prepares all cores on multicore targets"
+            }
+
+            ReloadAllCores {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Automatically reload all cores on multicore targets"
+            }
+
+	    OSAStartAutomatically {
+	        type = "bool"
+		value = true
+		is_basic = false
+		is_hidden = true
+		display_name = "Automatically start OSA"
+	    }
+
+	    OSAExplorerRefreshTargetList {
+	        type = "bool"
+		value = true
+		is_basic = false
+		is_hidden = true
+		display_name = "OSA Explorer refreshes target list"
+	    }
+	}
+        
+        data_explorer_options {
+            display_name = "Data Explorer Options"
+            minviewsize {
+                type = "size"
+                is_basic = false
+                is_hidden = false
+                min_width = 40
+                min_height = 3
+                in_pixels = false
+                display_name = "Minimum initial size (WxH)"
+            }
+
+            maxviewsize {
+                type = "size"
+                is_basic = false
+                is_hidden = false
+                min_width = 40
+                min_height = 40
+                in_pixels = false
+                display_name = "Maximum initial size (WxH)"
+            }
+
+            firstposition {
+                type = "size"
+                is_basic = false
+                is_hidden = false
+                in_pixels = false
+                display_name = "Initial Position (XxY)"
+            }
+        }
+    }
+    
+    editor_options {
+       #display_name = "MULTI Editor"
+       #multi_editor_options {
+           display_name = "Editor Options"
+           openfilesinnewbuffers {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               broadcast = true
+               display_name = "Reuse editor windows"
+           }
+
+           editorbackups {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Create backup files when saving"
+           }
+
+           allowmiddleclick {
+               type = "bool"
+           %if !streq(__MULTI_HOST__, "win32")
+               value = true
+           %else
+               value = false
+           %endif
+               is_basic = false
+               is_hidden = false
+               display_name = "Allow middle click to paste"
+           }
+
+           tabsarespaces {
+               type = "bool"
+               value = false
+               is_basic = true
+               is_hidden = false
+               display_name = "Enter spaces instead of tabs"
+           }
+
+           draganddrop {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Drag and drop text editing"
+           }
+
+           allowovertypemode {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Allow overtype mode"
+           }
+
+           tabsize {
+               type = "int"
+               value = 8
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Tab size"
+               min_value = 0
+               max_value = 100
+           }
+
+           editindent {
+               type = "int"
+               value = 4
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Indent size"
+               min_value = 1
+               max_value = 100
+           }
+
+           editsomesize {
+               type = "int"
+               value = 5
+               is_basic = false
+               is_hidden = false
+               display_name = "Ctrl+cursor jump size"
+               min_value = 1
+               max_value = 100
+           }
+
+           configurebuttons {
+               type = "window"
+               is_basic = false
+               is_hidden = false
+               display_name = "Configure Editor Buttons"
+           }
+       #}
+
+       advanced_editor_options {
+           display_name = "Advanced Editor Options"
+
+           editprint2column {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Print 2 columns in landscape"
+           }
+
+           tempFileDir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "Temp file directory"
+           }
+
+           editwidth {
+               type = "int"
+               value = 80
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Initial width in characters"
+               min_value = -1
+               max_value = 300
+           }
+
+           editheight {
+               type = "int"
+               value = 32
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Initial height in characters"
+               min_value = -1
+               max_value = 300
+           }
+
+           SelectionMarginWidth {
+               type = "int"
+               value = 13
+               is_basic = false
+               is_hidden = false
+               display_name = "Selection margin width in pixels"
+               min_value = 0
+               max_value = 100
+           }
+
+           editincrfrequency {
+               type = "int"
+               value = 120
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Generate auto-recover file every x seconds"
+               min_value = 1
+               max_value = 3600
+           }      
+        }
+           per_file_settings {
+               display_name = "Per File Options"
+
+               adaindentsize {
+                   type = "int"
+                   value = 3
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Spaces per indent for Ada"
+                   min_value = 1
+                   max_value = 100
+               }
+
+               adacontinuationsize {
+                   type = "int"
+                   value = 2
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Ada continuation line indent"
+                   min_value = 1
+                   max_value = 100
+               }
+
+               wordwrap {
+                   type = "bool"
+                   value = false
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Word wrap"
+                   refresh_gui = true
+               }
+
+               wrapcolumn {
+                   type = "int"
+                   value = 79
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Wrap column"
+                   min_value = 1
+                   max_value = 1000
+                   refresh_gui = true
+               }
+
+               wrapindent {
+                   type = "int"
+                   value = 2
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Wrap indent offset"
+                   min_value = 1
+                   max_value = 100
+                   refresh_gui = true
+               }
+
+               fillparagraphcolumn {
+                   type = "int"
+                   value = 79
+                   is_basic = false
+                   is_hidden = false
+                   display_name = "Fill paragraph column"
+                   min_value = 1
+                   max_value = 1000
+               }
+           }
+       
+       auto_indent_options {
+           display_name = "Auto Indent Options"
+           AIimplicitindent {
+               type = "bool"
+               value = true
+               is_basic = true
+               is_hidden = false
+               display_name = "Auto indent as you type"
+           }
+
+           AIimplicitonlyatinitial {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Only auto indent if first char typed is # or *"
+           }
+
+           AIimplicitindentincomments {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Auto indent comments as you type"
+           }
+
+           AIswitchintwo {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Double indent size when indenting body of switch"
+           }
+
+           AItouchcomments {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Indent comments when indenting multiple lines"
+           }
+
+           AIcommentsstayflushleft {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Comments stick flush left"
+           }
+
+           AIcharslikestarincomment {
+               type = "string"
+               value = "-"
+               is_basic = false
+               is_hidden = false
+               display_name = "C chars aligned like '*' in comments"
+           }
+
+           AIparenindentmode {
+               type = "choice"
+               value = "Indent in two"
+               choices = {"Even with parentheses", "Indent in two"}
+               choices_short = {"EvenWithParen", "IndentInTwo"}
+               is_basic = false
+               is_hidden = false
+               display_name = "C paren indent mode"
+           }
+
+           AIadaparenindentmode {
+               type = "choice"
+               value = "Even with parentheses"
+               choices = {"Even with parentheses", "Indent in two"}
+               choices_short = {"EvenWithParen", "IndentInTwo"}
+               is_basic = false
+               is_hidden = false
+               display_name = "Ada paren indent mode"
+           }
+       }
+
+       ext_editor_options {
+            display_name = "External Editor Options"
+            depends = {"editor", "is not", "MULTI Editor"}
+
+            ExtEditor_EmacsPath {
+                type = "string"
+            %if streq(__MULTI_HOST__, "win32")
+                value = "emacs.exe"
+            %else
+                value = "emacs"
+            %endif
+                is_basic = false
+                is_hidden = false
+                display_name = "Path to Emacs"
+                depends = {"editor", "is", "Emacs"}
+                file_button = true
+            }
+            
+        %if !streq(__MULTI_HOST__, "win32")
+            ExtEditor_EmacsUseXTerm {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use XTerm"
+                depends = {"editor", "is", "Emacs"}
+            }
+        %else 
+            ExtEditor_EmacsUseCmd {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use Cmd"
+                depends = {"editor", "is", "Emacs"}
+            }
+        %endif
+        
+            ExtEditor_EmacsArgumentFormat {
+                type = "string"
+                value = "+%LINE %FILE0 %FILES"
+                is_basic = false
+                is_hidden = false
+                display_name = "Command line arguments"
+                depends = {"editor", "is", "Emacs"}
+            }
+
+            ExtEditor_ViPath {
+                type = "string"
+            %if streq(__MULTI_HOST__, "win32")
+                value = "vi.exe"
+            %else
+                value = "vi"
+            %endif
+                is_basic = false
+                is_hidden = false
+                display_name = "Path to Vi"
+                depends = {"editor", "is", "Vi"}
+                file_button = true
+            }
+
+        %if !streq(__MULTI_HOST__, "win32")
+            ExtEditor_ViUseXTerm {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                display_name = "Use XTerm"
+                depends = {"editor", "is", "Vi"}
+            }
+        %else
+            ExtEditor_ViUseCmd {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use Cmd"
+                depends = {"editor", "is", "Vi"}
+            }
+        %endif
+        
+            ExtEditor_ViArgumentFormat {
+                type = "string"
+                value = "+%LINE %FILE0 %FILES"
+                is_basic = false
+                is_hidden = false
+                display_name = "Command line arguments"
+                depends = {"editor", "is", "Vi"}
+            }
+
+            ExtEditor_OtherPath {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Path to Editor"
+                depends = {"editor", "is", "Other"}
+                file_button = true
+            }
+
+         %if !streq(__MULTI_HOST__, "win32")
+            ExtEditor_OtherUseXterm {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use XTerm"
+                depends = {"editor", "is", "Other"}
+            }
+         %else
+            ExtEditor_OtherUseCmd {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Use Cmd"
+                depends = {"editor", "is", "Other"}
+            }
+         %endif
+         
+            ExtEditor_OtherArgumentFormat {
+                type = "string"
+                value = "+%LINE %FILE0 %FILES"
+                is_basic = false
+                is_hidden = false
+                display_name = "Command line arguments"
+                depends = {"editor", "is", "Other"}
+            }
+            
+        }
+    }
+
+    version_control {
+        display_name = "Version Control Options"
+
+        versioncontroltype {
+            type = "choice"
+            value = "Auto Detect"
+        %if !streq(__MULTI_HOST__, "win32")    
+            choices = {"Auto Detect", "Disable", "CVS", "Subversion", "ClearCase", "Custom"}
+            choices_short = {"AutoDetect", "Disable", "CVS", "Subversion", "ClearCase", "Custom"}
+        %else
+            choices = {"Auto Detect", "Disable", "CVS", "Subversion", "ClearCase", "SourceSafe", "Custom"}
+            choices_short = {"AutoDetect", "Disable", "CVS", "Subversion", "ClearCase", "SourceSafe", "Custom"}
+        %endif
+            is_basic = true
+            is_hidden = false
+            refresh_gui = true
+            display_name = "Version Control"
+         }
+
+        cvs_opts {
+            display_name = "CVS Options"
+            depends = {"versioncontroltype", "is", "Auto Detect", "CVS"}
+            
+            Versctrl_CVSPath {
+                type = "string"
+            %if streq(__MULTI_HOST__, "win32")
+                value = "cvs.exe"
+            %else
+                value = "cvs"
+            %endif
+                is_basic = false
+                is_hidden = false
+                display_name = "Location of CVS binary"
+                file_button = true
+            }
+        }
+        
+        svn_opts {
+            display_name = "Subversion Options"
+            depends = {"versioncontroltype", "is", "Auto Detect", "Subversion"}
+
+            Versctrl_SVNPath {
+                type = "string"
+            %if streq(__MULTI_HOST__, "win32")
+                value = "svn.exe"
+            %else
+                value = "svn"
+            %endif
+                is_basic = false
+                is_hidden = false
+                display_name = "Location of Subversion binary"
+                file_button = true
+            }
+        }
+
+        clearcase_opts {
+            display_name = "ClearCase Options"
+            depends = {"versioncontroltype", "is", "Auto Detect", "ClearCase"}
+
+            Versctrl_ClearCasePath {
+                type = "string"
+            %if streq(__MULTI_HOST__, "win32")
+                value = "cleartool.exe"
+            %else
+                value = "cleartool"
+            %endif
+                is_basic = false
+                is_hidden = false
+                display_name = "Location of ClearCase binary"
+                file_button = true
+            }
+
+            Versctrl_ClearCaseAutoCheckout {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Automatic Checkout"            
+            }
+        }
+
+    %if streq(__MULTI_HOST__, "win32")
+        sourcesafe_opts {
+            display_name = "SourceSafe Options"
+            depends = {"versioncontroltype", "is", "Auto Detect", "SourceSafe"}
+
+            Versctrl_SourceSafePath {
+                type = "string"
+                value = "ss.exe"
+                is_basic = false
+                is_hidden = false
+                display_name = "Location of SourceSafe binary"
+                file_button = true
+            }
+
+            Versctrl_SourceSafeUsername {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = true
+                display_name = "SourceSafe username"
+                file_button = true
+            }
+
+            Versctrl_SourceSafeDatabase {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "SourceSafe database location"
+                file_button = true
+            }
+
+            Versctrl_SourceSafeRoot {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Root of checkout"
+                file_button = true
+            }
+
+            Versctrl_SourceSafeAutoCheckout {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = true
+                display_name = "Automatic Checkout" 
+            }
+        }
+
+    %endif
+
+        custom_opts {
+            display_name = "Custom Version Control Options"
+            depends = {"versioncontroltype", "is", "Custom"}
+
+            Versctrl_CustomPath {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Location of Version Control binary"
+                file_button = true
+            }
+
+            Versctrl_CustomAutoCheckout {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                display_name = "Automatic Checkout
+            }
+
+            vc_undervc {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Under VC"
+            }
+
+            vc_co {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Check Out"
+            }
+
+            vc_get {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Get"
+            }
+
+            vc_unco {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Un Check Out"
+            }
+
+            vc_ci {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Check In"
+            }
+
+            vc_create {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Create"
+            }
+
+            vc_show {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Show History"
+            }
+
+            vc_who {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Who"
+            }
+
+            vc_prevver {
+                type = "string"
+                value = ""
+                is_basic = false
+                is_hidden = false
+                display_name = "Previous Version"
+            }
+
+            
+        }
+    }
+    
+    session {
+       #display_name = "Session"
+       #general_session_options {
+           display_name = "Session Options"
+           SaveCommandHistory {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Save command history between sessions"
+           }
+
+           SaveViewWindows {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Save data explorers between sessions"
+           }
+
+           SaveRunArguments {
+               type = "bool"
+               value = true
+               is_basic = true
+               is_hidden = false
+               display_name = "Save arguments between sessions"
+           }
+
+           SaveDebuggerWindowPos {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Save debugger window position"
+           }
+
+           rememberbreakpoints {
+               type = "choice"
+               value = "Across Reloads"
+               choices = {"Never", "Across Reloads", "Across Sessions"}
+               choices_short = {"Never", "AcrossReload", "AcrossSessions"}
+               is_basic = true
+               is_hidden = false
+               display_name = "Remember breakpoints"
+           }
+
+           OverwriteScriptBreakpoints {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Restored breakpoints overwrite breakpoints set by scripts"
+           }
+
+           rememberbaseaddrs {
+               type = "choice"
+               value = "Across Reloads"
+               choices = {"Never", "Across Reloads", "Across Sessions"}
+               choices_short = {"Never", "AcrossReload", "AcrossSessions"}
+               is_basic = true
+               is_hidden = false
+               display_name = "Remember base addresses (e.g. _TEXT)"
+           }
+       #}
+       connection_organizer_options {
+           display_name = "Connection Organizer Session Options"
+           SaveDebugServer {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Remember last connect command used for process"
+           }
+
+           autoSaveConnectionsinFiles {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Automatically save changed connection files"
+           }
+
+           autoSaveUserConnections {
+               type = "bool"
+               value = true
+               is_basic = false
+               is_hidden = false
+               display_name = "Automatically save 'User Methods' changes"
+               variable_name = "autoSaveUserConnections"
+           }
+       }
+       file_chooser_options {
+           display_name = "File Chooser Options"
+           rememberdirs {
+               type = "choice"
+               value = "Within Sessions"
+               choices = {"Across Sessions", "Within Sessions", "None"}
+               choices_short = {"RememberAcross", "RememberWithin","RememberNever"}
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Directory memory"
+           }
+
+           genfileset {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Use a user specified directory for general files"
+           }
+
+           genfilesdir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "General Files Directory"
+               depends = {"genfileset", "is", "true"}
+           }
+
+           sourcefileset {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Use a user specified directory for source files"
+           }
+
+           sourcefilesdir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "Source Files Directory"
+               depends = {"sourcefileset", "is", "true"}
+           }
+
+           buildfileset {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Use a user specified directory for project files"
+           }
+
+           buildfilesdir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "Project Files Directory "
+               depends = {"buildfileset", "is", "true"}
+           }
+
+           execfileset {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Use a user specified directory for executables and binaries"
+           }
+
+           execfilesdir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "Executables/Binaries Directory"
+               depends = {"execfileset", "is", "true"}
+           }
+
+           debugserverset {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               display_name = "Use a user specified directory for debug servers"
+           }
+
+           debugserverdir {
+               type = "string"
+               value = ""
+               is_basic = false
+               is_hidden = false
+               display_name = "Debug Servers Directory"
+               depends = {"debugserverset", "is", "true"}
+           }
+
+       %if !streq(__MULTI_HOST__, "win32")
+           showversioncontrol {
+               type = "bool"
+               value = false
+               is_basic = false
+               is_hidden = false
+               refresh_gui = true
+               display_name = "Show version control information on file chooser dialog box"
+           }
+       %endif
+       }
+    }
+
+    colors {
+        display_name = "Color Options"
+
+        #schemes {
+        #    display_name  = "Color Schemes"
+
+        %if !streq(__MULTI_HOST__, "win32")
+            blackwhite {
+                type = "bool"
+                value = false
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Use Two Color Mode"
+            }
+
+            colorscheme {
+                type = "choice"
+                value = "Please choose a scheme..."
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                choices =  {"Please choose a scheme...", "Default (color, white background)", "Plum (color, light background)", "Grey (grey, white background)", "Dark Grey (greys, black background)", "Dark 1 (color, black background)", "Dark 2 (color, black background)", "Beige (color, light background)"}
+                choices_short = {"Choose", "Plum", "Grey", "DarkGrey", "Dark1", "Dark2", "Beige"}
+                display_name = "Load colors from scheme"
+            }
+         %endif
+
+        #}
+
+    %if !streq(__MULTI_HOST__, "win32")
+        global_colors {
+            display_name = "Global Color Options"
+            depends = {"blackwhite", "is", "false"}
+        
+            background {
+                type = "color"
+                value = "#ffffff"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Background"
+            }
+
+            foreground {
+                type = "color"
+                value = "#000000"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Foreground"
+            }
+
+            controlcolor {
+                type = "color"
+                value = "#c0c0c0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Control Area"
+            }
+
+            select {
+                type = "color"
+                value = "#000080"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Selection"
+            }
+        }
+    %endif
+    
+        debugger_colors {
+            display_name = "Debugger Color Options"
+            depends = {"blackwhite", "is", "false"}
+
+            assembly {
+                type = "color"
+                value = "#0000ff"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Assembly"
+            }
+
+            breakcolor {
+                type = "color"
+                value = "#ff0000"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Status"
+            }
+
+            pointercolor {
+                type = "color"
+                value = "#0000ff"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Context Arrow"
+            }
+
+            bdotcolor {
+                type = "color"
+                value = "#00cd00"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Break Dot"
+            }
+
+            useFileRelLineBG {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Display colored background for file relative line numbers"
+            }
+
+            fileRelLineBG {
+                type = "color"
+                value = "#ffffff"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "File relative line number background color"
+                depends = {"useFileRelLineBG", "is", "true"}
+            }
+
+            useProcRelLineBG {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Display colored background for process relative line numbers"
+            }
+
+            procRelLineBG {
+                type = "color"
+                value = "#e4e4e4"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Process relative line number background color"
+                depends = {"useProcRelLineBG", "is", "true"}
+            }
+
+            profileHighlightLine {
+                type = "color"
+                value = "#c0c0c0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Uncovered code background color"
+            }
+        }
+
+        syntax_colors {
+            display_name = "Syntax Color Options"
+            depends = {"blackwhite", "is", "false"}
+
+            colorsyntax {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Use syntax coloring"
+            }
+
+            comment {
+                type = "color"
+                value = "#008000"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Comments"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            deadcode {
+                type = "color"
+                value = "#808080"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Dead Code"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            keyword {
+                type = "color"
+                value = "#0000ff"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Keywords"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            string {
+                type = "color"
+                value = "#800000"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Strings"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            number {
+                type = "color"
+                value = "#e000e0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Numbers"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            character {
+                type = "color"
+                value = "#c000c0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Characters"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            customized {
+                type = "color"
+                value = "#008080"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Customized"
+                depends = {"colorsyntax", "is", "true"}
+            }
+
+            cppCommentsInC {
+                type = "bool"
+                value = true
+                is_basic = false
+                is_hidden = false
+                refresh_gui = true
+                display_name = "Color C++ comments in C"
+                depends = {"colorsyntax", "is", "true"}
+            }
+        }
+
+        misc_colors {
+            display_name = "Miscellaneous Color Options"
+            depends = {"blackwhite", "is", "false"}
+
+            startedConnectionFG {
+                type = "color"
+                value = "#008000"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Connected targets"
+            }
+
+            diffHighlight {
+                type = "color"
+                value = "#e0ffd0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Diff Viewer modified text in selected region"
+            }
+
+            diffLowlight {
+                type = "color"
+                value = "#c0c0c0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Diff Viewer unchanged text in selected region"
+            }
+
+            inactiveDiffHighlight {
+                type = "color"
+                value = "#dfdfdf"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Diff Viewer modified text in unselected region"
+            }
+
+            inactiveDiffLowlight {
+                type = "color"
+                value = "#c0c0c0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                display_name = "Diff Viewer unchanged text in unselected region"
+            }
+
+            nonDiffLineNumber {
+                type = "color"
+                value = "#e4e4e4"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                no_display = true
+                display_name = "Diff Viewer line numbers in non-diff region"
+            }
+
+            diffLineNumber {
+                type = "color"
+                value = "#e0ffd0"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                no_display = true
+                display_name = "Diff Viewer line numbers in selected region"
+            }
+
+            inactiveDiffLineNumber {
+                type = "color"
+                value = "#dfdfdf"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                no_display = true
+                display_name = "Diff Viewer line numbers in unselected region"
+            }
+
+            nonDiff {
+                type = "color"
+                value = "#7f7f7f"
+                is_basic = false
+                is_hidden = false
+                broadcast = true
+                refresh_gui = true
+                no_display = true
+                display_name = "Diff Viewer no-text regions"
+            }
+        }
+    }
+}

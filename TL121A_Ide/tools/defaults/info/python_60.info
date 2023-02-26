@@ -1,0 +1,54 @@
+GUI Demo Using Tcl/Tk via Tkinter Module
+========================================
+
+A simple GUI demo using Tcl/Tk is available. To access the demo, run the
+following Python statement:
+execfile(__ghs_site_default_python_dir+os.sep+"ghs_guidemo.py");
+
+The demo uses an INTEGRITY kernel to demo dual-mode debugging (freeze-mode and
+run-mode) via MULTI-Python integration.
+
+
+Corresponding Python Commands
+=============================
+
+For similar results, run the following Python statements from the MULTI Python
+pane (the arguments may need to be changed to match your environment):
+
+# Make sure "debugger" object is created.
+if not debugger or not debugger.IsAlive(): debugger = GHS_Debugger();
+
+# Debug the program
+dw = debugger.debug("Your_INTEGRITY_PATH/sim800/kernel");
+
+# Connect with freeze-mode debug server and run the target
+fm = dw.connect("isimppc");
+dw.run();
+
+# Connect with run-mode debug server and load a module if you want.
+rm = dw.rtserv();
+rm.load("Your_INTEGRITY_PATH/sim800/pizza");
+
+# Show Task Manager window and perform some GUI operations if the new target
+# window is on, otherwise, you can directly perform the GUI operations on
+# run-mode connection object "rm".
+tw = rm.ShowTaskWindow();
+tw.selmenu("&View", "F&lat View", True, False);
+tw.dumpall();
+
+# Create a Task object
+eng = ghs_task(rm.component, "engineer", "Initial");
+eng.run();
+eng.halt();
+eng.setbp()
+eng.next();
+eng.step();
+eng.attach();
+eng.run();
+eng.halt();
+eng.detach();
+
+# Shutdown the connections and close the debugger window.
+rm.disconnect();
+fm.disconnect();
+dw.closewin();

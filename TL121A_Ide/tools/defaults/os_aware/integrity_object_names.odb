@@ -1,0 +1,1720 @@
+# INTEGRITY Object Name Configuration
+#
+# The file contains the mapping for the names used in the dumped string for
+# INTEGRITY objects over a run-mode connection.
+#
+#
+# The configuration specifies information about INTEGRITY objects' attributes:
+#    * how they are expressed in the raw string from INTEGRITY debug agent
+#    * how they are expressed in the GUI window
+#    * and how they are mapped
+#
+# Each INTEGRITY object or object list is represented as a tree, which include
+# the definition for each of its attributes, lists as a sub-node or sub-tree.
+#
+# The root entry of such a tree uses the INTEGRITY object or object list name
+# as its tag name.
+#
+# Each sub-node or sub-tree's tag name is the name from INTEGRITY target for
+# the corresponding attribute or object list.
+#
+# An attribute named "name" in each entry is the string to be shown to the user
+# in the GUI for the attribute.
+#
+#
+# By default, all object's attributes are shown except they are explicitly
+# disabled by option "show_in_msl = false".
+#
+# The option ("show_in_msl") also controls if a tuple's attribute is to be
+# shown as a column in the list of tuples.
+#
+#
+# By default, all object's attributes are not double-clickable in  the MSL 
+# except they are explicitly enabled by option "double_click = true".
+#
+#
+# By default, all columns are sorted as string except specified by "sort_type"
+# option with the following syntax:
+#       sort_type = "<TypeString>";
+#
+#   The supported sort types are:
+#       string
+#       int
+#       uint
+#       float
+#       double
+#       date
+#       filename
+#
+#   For integer attributes, their value will also be right-justified in the MSL.
+#
+#
+# By default, a simple attribute's value is considered as a string from the
+# target. But you can specify the format of an attribute's value by "format"
+# option with the following syntax:
+#	format = "<NumberType>[: <Length>|<BooleanRepresentation>]";
+#
+#   where "NumberType" could be:
+#	d/dec/decimal	- Decimal number
+#	h/hex		- Hex number
+#	b/bool/boolean	- Boolean
+#
+#   "Length" specifies the bits of hex number. It can be a constant number or
+#   "ASZ" which means "Address" size.
+#
+#   The "BooleanRepresentation" could have the following setting:
+#      Y/N	-	Yes or No
+#      T/F	-	True or False
+#      1/0	-	1 or 0
+#   and "T/F" is the default choice.
+#
+#
+# If an attribute's values are enumerated, the corresponding enumerated string
+# will be displayed by default. But you can specify to treat the enumerated
+# values as bits by option "value_type" with the following syntax:
+#	value_type = "bit | string";
+#
+# where
+#     bit	- 	The values specify bits of an integer
+#     string	-	The values are strings
+# "string" is the default choice.
+#
+# For each value of a "bit" attribute, there is a "value" attribute to
+# represrnt the value's integer value. Based on the attribute's integer value,
+# all applicable values (actually their names) will be concatenated as the
+# final value for the attribute and be shown to user .
+#
+#
+# By default, the specification for an attribute's enumerated values (for
+# simple attribute) or its tuples' attributes (for list attribute) is given
+# in the attribute's definition place. But to avoid duplication, you can use
+# option "reference" to specify where such information is really defined:
+#	reference = "<DestinationPathInHierarchy>"
+#
+# "reference" option tells MULTI that some information of the current
+# attribute is defined in another attribute in the hierarchy. Its value
+# specifies the destination attribute's path in the hierarchy.
+#
+# No relative path is supported at present.
+#
+#
+# For a list attribute, MULTI has a mechanism to automatically determine if
+# a list entry is double-clickable in the GUI list, but here are the
+# configuration options to tell MULTI the information about the elements of
+# the list:
+#	type = <ListElementObjectType>
+#       oid_attr = <AttributeNameForObjectId>
+#       aid_attr = <AttributeNameForAddressSpaceId>
+#       type_attr = <AttributeNameForObjectType>
+#
+# They indicate the INTEGRITY object type represented by each list enement,
+# and how to get ObjectId/AddressSpaceId/ObjectClass for the objects in a list.
+#
+# When these options are absent, MULTI's default rule will be used.
+#
+# An object's list attributes are usually list in the PullDown widget's menu.
+# But a configuration option "only_show_non_empty_list" for an object or the
+# general "Object" can determine whether or not to remove the empty lists from
+# the PullDown widget's menu. By default, all lists, including empty lists,
+# are available from the PullDown widget's list.
+#
+# For the lists nested in an object's information, it is straight forward to
+# check if they are empty or not. Some special criteria are used to the
+# non-nested lists:
+#	Links		- empty if "nlnk" field is 0
+#	Activities	- empty if "nact" field is 0
+#	Buffers		- empty if "buf" field does not exist or it is 0
+#			  (Buffers are only for "Activity" objects)
+#
+# An object's field related with a list is shown with a dark grey background.
+# Double-click on it will cause the corresponding field to be selected from
+# the PullDown widget's menu and the list to be shown.
+#
+# To associate an object's field with a list, use configuration option
+# "double_click_op", whose value is "list.<ListName>".
+#
+#
+# For the object attributes shown in TextFields of Object Viewer, their prompts
+# are configurable via "prompt" attribute.
+#
+#
+# For most attributes, INTEGRITY osa agent can use any inter name if it is
+# consistent with the configuration file. But some attributes must have 
+# certain names or follow certain rules. Here is a summary of them:
+#	asz		- address size
+#	kdom		- kernel domain ID
+#	errs		- error list
+#
+#	cls		- object class
+#	sub		- object sub type
+#
+#	nlnk		- number of links
+#	nact		- number of activities
+#	buf		- current buffer address
+#	op		- object operation
+#	prm		- object operation parameters
+#
+#	aslist		- AddressSpace list
+#	bufs		- buffer list
+#	links		- Link list
+#
+# 	kobjs		- kernel AddressSpace object list
+#	objs		- non-kernel AddressSpace object list
+#
+#	Null		- object operation name
+#	zlm		- object operation name
+#	snd		- object operation name
+#	rcv		- object operation name
+#	stp		- object operation name
+#	stw		- object operation name
+#	hlt		- object operation name
+#	run		- object operation name
+#	trm		- object operation name
+#	dec		- object operation name
+#	acq		- object operation name
+#	rel		- object operation name
+#	rst		- object operation name
+#
+#	Null		- object operation argument name
+#	int		- object operation argument name
+#	tc		- object operation argument name
+#
+#	*rep		- object representation
+#	*dom		- domain ID
+#	*dnm		- domain name
+#
+#	*tid		- task ID
+#	*tnm		- task name
+#
+#	own		- owner object ID of semaphore
+#	onm		- owner object name of semaphore
+#
+#	typ		- object type and Activity buffer type
+#	add		- Activity buffer address
+#
+#
+#
+# The following attribute names are hardcoded to construct Object Viewer's
+# title:
+#	nam		- task name in Task object
+#	dnm		- task's executing domain name in Task object
+#	odnm		- object's owning AddressSpace name (covered above)
+#
+# The following attribute names are hardcoded for the prompts of the
+# TextFields in Object Viewer:
+#	cls		- object class (already mentioned above)
+#	orep		- object representation (covered above)
+#	odnm		- object's owning AddressSpace name (already mentioned above)
+#
+#
+# In the configuration file, the first level names cannot be changed. For 
+# example:
+#	Object		- Abstract object information
+#	AddressSpace	- AddressSpace
+#	ActivityBuffers	- Activity buffer list
+#	acts		- Activity list
+#
+
+
+
+
+# Object common attributes
+"Object" {
+    # Object class
+#    only_show_non_empty_list = true;
+    "cls" {
+	name = "Type";
+	show_in_msl = false;
+	show_in_summary_msl = true;
+	prompt = "Type:";
+	"free" {
+	    name = "Free";
+	}
+	"sem" {
+	    name = "Semaphore";
+	}
+	"tsk" {
+	    name = "Task";
+	}
+	"lnk" {
+	    name = "Link";
+	}
+	"con" {
+	    name = "Connection";
+	}
+	"clk" {
+	    name = "Clock";
+	}
+	"act" {
+	    name = "Activity";
+	}
+	"as" {
+	    name = "AddressSpace";
+	}
+	"mr" {
+	    name = "MemoryRegion";
+	}
+	"iod" {
+	    name = "IODevice";
+	}
+	"trg" {
+	    name = "Target";
+	}
+    }
+    
+    # Object sub type: detail value will vary based on the object class.
+    "sub" {
+	name = "SubType";
+	show_in_msl = false;
+	show_in_summary_msl = true;
+    }
+
+    # Object status
+    "sts" {
+	# Consistency mode
+	name = "Validity";
+	show_in_msl = false;
+	"bc" {
+	    name = "Being Closed";
+	    tooltip = "The object is being closed";
+	}
+	"ul" {
+	    name = "Useless";
+	    tooltip = "Another object on which the object is critically dependent has been or is being closed";
+	}
+	"cs" {
+	    name = "Consistent";
+	    tooltip = "The object is consistent";
+	}
+    }
+    
+    # Object move
+    "mov" {
+	name = "Movement";
+	show_in_msl = false;
+	"src" {
+	    name = "Source End of a Move";
+	    tooltip = "The object is the source end of a move";
+	}
+	"dst" {
+	    name = "Destination End of a Move";
+	    tooltip = "The object is the destination end of a move";
+	}
+	"stn" {
+	    name = "No move in progress";
+	    tooltip = "The object is stationary (not being moved)";
+	}
+    }
+    
+    # Object links
+    "nlnk" {
+	name = "Number of Links";
+	tooltip = "The number of Links that resolve to this Object";
+	format = "d";
+	show_in_msl = false;
+    }
+    
+    # Object activities
+    "nact" {
+	name = "Number of Activities";
+	tooltip = "The number of Activities waiting to receive a message on this Object";
+	format = "d";
+	show_in_msl = false;
+    }
+
+    # Object messages
+    "nmsg" {
+	name = "Number of Messages";
+	tooltip = "The number of unreceived zero-length messages queued on this Object";
+	format = "d";
+	show_in_msl = false;
+    }
+
+    # Object representation
+    "orep" {
+	name = "Object";
+	show_in_msl = false;
+	double_click = true;
+	prompt = "Object:";
+	show_in_summary_msl = true;
+    }
+
+    # Object domain ID
+    "odom" {
+	name = "ID of Owning AddressSpace";
+	show_in_msl = false;
+	double_click = true;
+    }
+
+    # Object domain name
+    "odnm" {
+	name = "Name of Owning AddressSpace";
+	show_in_msl = false;
+	double_click = true;
+	prompt = "Owning AddressSpace:";
+	show_in_summary_msl = true;
+    }
+
+    # Representation of the object on the move's other end
+    "mrep" {
+	name = "Other End of Move";
+	tooltip = "The Object from which or to which this Object is being moved";
+	double_click = true;
+    }
+
+    # Domain ID of the object on the move's other end
+    "mdom" {
+	name = "ID of AddressSpace of Other End of Move";
+	show_in_msl = false;
+	double_click = true;
+    }
+
+    # Domain name of the object on the move's other end
+    "mdnm" {
+	name = "Name of AddressSpace of Other End of Move";
+	show_in_msl = false;
+	double_click = true;
+    }
+
+    # Operation list
+    "ops" {
+	name = "Operations"
+	double_click = true;
+	double_click_op = "list.ops";
+	# Attributes
+	"op" {
+	    name = "Operation";
+	    # Values
+	    "zlm" {
+		name = "Send Zero-Length Message on Object";
+	    }
+	    "snd" {
+		name = "Send Zero-Length Message Through Connection";
+	    }
+	    "rcv" {
+		name = "Receive Zero-Length Message Through Connection";
+	    }
+	    "stp" {
+		name = "Set Priority";
+	    }
+	    "stw" {
+		name = "Set Weight";
+	    }
+	    "hlt" {
+		name = "Halt Task";
+	    }
+	    "run" {
+		name = "Run Task";
+	    }
+	    "trm" {
+		name = "Terminate Task";
+	    }
+	    "dec" {
+		name = "Try to Obtain Semaphore";
+	    }
+	    "acq" {
+		name = "Try to Obtain Semaphore";
+	    }
+	    "rel" {
+		name = "Release Semaphore";
+	    }
+	    "rst" {
+		name = "Reset Activity";
+	    }
+	}
+	"prm" {
+	    name = "Parameters";
+	    show_in_msl = false;
+	    # Values
+	    "int" {
+		# user-provided integer
+		name = "Integer";
+	    }
+	    "tc" {
+		name = "Task ID";
+	    }
+	}
+    }
+}
+
+#
+# Object specific attributes.
+#
+
+# Task attributes
+"Task" {
+    sort_by = "ind";
+    "dom" {
+	name = "Exec AddressSpace ID";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "dnm" {
+	name = "Exec AddressSpace";
+	double_click = true;
+	tooltip = "The AddressSpace in which this Task runs"
+    }
+    "exc" {
+	name = "Executable";
+	tooltip = "The executable image associated with this Task"
+    }
+    "status" {
+	name = "Status";
+	"hlt" {
+	    name = "Halted";
+	    tooltip = "The Task's INTEGRITY status is StatHalted. Either it is a new Task or it was halted by HaltTask(), the debugger, or a breakpoint.";
+	}
+	"run" {
+	    name = "Running";
+	    tooltip = "The Task's INTEGRITY status is StatRunning. The Task is runnable with respect to the scheduler and will run whenever scheduled.";
+	}
+	"pnd" {
+	    name = "Pended";
+	    tooltip = "The Task's INTEGRITY status is StatPending. The Task is blocked but will transition to StatRunning if it is unblocked.";
+	}
+	"exc" {
+	    # Be consistent with Task Manager window and OSA Explorer
+	    name = "SUSPENDED";
+	    tooltip = "The Task's INTEGRITY status is StatException. The Task has caused an exception and been stopped.";
+	}
+	"ext" {
+	    # Be consistent with Task Manager window and OSA Explorer
+	    name = "Zombied";
+	    tooltip = "The Task's INTEGRITY status is StatExited. This particular Task was exited via ExitTask().";
+	}
+	"trm" {
+	    # Be consistent with Task Manager window and OSA Explorer
+	    name = "Zombied";
+	    tooltip = "The Task's INTEGRITY status is StatExited. This particular Task was killed by the debugger.";
+	}
+    }
+
+    "tid" {
+	name = "Task ID";
+	show_in_msl = false;
+	show_in_common_msl = true;
+	tooltip = "The kernel address of the Task's KernelSpace page";
+    }
+    "nam" {
+	name = "Task Name";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+    "aid" {
+	name = "Application ID";
+	format = "h:ASZ";
+	show_in_msl = false;
+	tooltip = "A loader-defined value identifying the INTEGRITY application to which this Task belongs";
+    }
+    "sid" {
+	name = "Application Sub-ID";
+	format = "h:ASZ";
+	show_in_msl = false;
+	tooltip = "A loader-defined value identifying this Task within its INTEGRITY application";
+    }
+    "uid" {
+	name = "User Identification";
+	format = "h:ASZ";
+	tooltip = "The identification set by SetTaskIdentification";
+    }
+    "pri" {
+	name = "Priority";
+	format = "d";
+	tooltip = "The base priority of the Task, controlled by SetPriorityAndWeight()";
+    }
+    "ap" {
+	name = "Active Priority";
+	format = "d";
+	tooltip = "The priority at which the Task is scheduled, after accounting for its base priority, its maximum priority, priority inheritance through owned Binary Semaphores, and the priorities of owned Highest Locker Semaphores";
+    }
+    "mp" {
+	name = "Maximum Priority";
+	format = "d";
+	tooltip = "The maximum priority of the Task, controlled by SetMaximumPriorityAndWeight()";
+    }
+    "wgt" {
+	name = "Weight";
+	format = "d";
+	tooltip = "The base weight of the Task, controlled by SetPriorityAndWeight()";
+    }
+    "aw" {
+	name = "Active Weight";
+	format = "d";
+	tooltip = "The weight at which the Task is scheduled, after accounting for its base weight, its maximum weight, its active priority, and its maximum priority.";
+    }
+    "mw" {
+	name = "Maximum Weight";
+	tooltip = "The maximum weight of the Task, controlled by SetMaximumPriorityAndWeight()";
+    }
+    "snm" {
+	name = "Status Notification Mask";
+	format = "h:32";
+	tooltip = "The Task's status notification mask, controlled by SetTaskStatusNotificationMask()";
+    }
+    "opt" {
+	name = "Option Mask";
+	format = "h:32";
+	tooltip = "The Task's option mask, controlled by SetTaskStatusNotificationMask()";
+    }
+    "sks" {
+	name = "Stack Start";
+	format = "h:ASZ";
+	tooltip = "The lowest address of the Task's stack, controlled by SetTaskStackLimits()";
+    }
+    "ske" {
+	name = "Stack End";
+	format = "h:ASZ";
+	tooltip = "The highest address of the Task's stack, controlled by SetTaskStackLimits()";
+    }
+    "bsm" {
+	name = "Owned Binary Semaphores";
+	double_click = true;
+	double_click_op = "list.bsm";
+	# Attributes
+	"orep" {
+	    name = "Object";
+	    double_click = true;
+	}
+	"odom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"odnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+    "hls" {
+	name = "Owned Highest Locker Semaphores";
+	type = "Semaphore";
+	double_click = true;
+	double_click_op = "list.hls";
+	# Attributes
+	"orep" {
+	    name = "Object";
+	    double_click = true;
+	}
+	"odom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"odnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+	"pri" {
+	    name = "Priority";
+	    format = "d";
+	}
+    }
+    "is" {
+	name = "Activity Interrupt Levels";
+	double_click = true;
+	double_click_op = "list.is";
+	type = "Activity";
+	# Attributes
+	"orep" {
+	    name = "Object";
+	    double_click = true;
+	    underline = true;
+	}
+	"odom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"odnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+	"ipl" {
+	    name = "Interrupt Priority Level";
+	    format = "d";
+	}
+	"ste" {
+	    name = "Activity";
+	    reference = "Activity.ste";
+	}
+    }
+    "oa" {
+	name = "Other Activities";
+	type = "Activity";
+	double_click = true;
+	double_click_op = "list.oa";
+	# Attributes
+	"orep" {
+	    name = "Object";
+	    double_click = true;
+	    underline = true;
+	}
+	"odom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"odnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+	"ipl" {
+	    name = "Interrupt Priority Level";
+	    format = "d";
+	}
+	"ste" {
+	    name = "Activity";
+	    # Why don't tooltips work here?
+	    # Values
+	    "idle" {
+		name = "Idle";
+	    }
+	    "wfs" {
+		name = "Waiting for Send";
+	    }
+	    "wfr" {
+		name = "Waiting for Receive";
+	    }
+	    "snd" {
+		name = "Send";
+	    }
+	    "rcv" {
+		name = "Receive";
+	    }
+	    "wfa" {
+		name = "Waiting for Activity";
+	    }
+	    "dlv" {
+		name = "Deliver Interrupt";
+	    }
+	    "dsm" {
+		name = "Dismiss Interrupt";
+	    }
+	    "exc" {
+		name = "Execute Code";
+	    }
+	    "irq" {
+		name = "Request Task Interrupt";
+	    }
+	    "twl" {
+		name = "WaitList";
+	    }
+	    "err" {
+		name = "Recoverable Error";
+	    }
+	    "trm" {
+		name = "Terminated Transfer";
+	    }
+	}
+    }
+}
+
+
+# Activity attributes
+"Activity" {
+    sort_by = "ind";
+    "sub" {
+	name = "SubType";
+	# Values
+	"pri" {
+	    name = "Primary";
+	}
+	"int" {
+	    name = "Interrupt";
+	}
+	"ows" {
+	    name = "OneWaySend";
+	}
+	"wl" {
+	    name = "WaitList";
+	}
+    }
+    "tid" {
+	name = "Task ID";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "tnm" {
+	name = "Task Name";
+	double_click = true;
+	tooltip = "The Task in which this Activity runs";
+	show_in_common_msl = true;
+    }
+    "id" {
+	name = "Identification";
+	format = "h:ASZ";
+	show_in_msl = false;
+	show_in_common_msl = true;
+	tooltip = "The user identification specified when the Activity was created";
+    }
+    "ipl" {
+	name = "Interrupt Priority Level";
+	tooltip = "For an Interrupt Activity, this is the priority level of interrupts caused by this Activity. For a WaitList Activity, this is the priority used to sort the Task's WaitList, and the minimum interrupt priority level of the Task in order for a WaitForActivity() or CheckForActivity() call to get this Activity.";
+    }
+    "ast" {
+	# Error code
+	name = "Activity Status";
+	error_code = true;
+    }
+    "ste" {
+	name = "Current State";
+	# Values
+	"idle" {
+	    name = "Idle";
+	    tooltip = "The Activity is idle";
+	}
+	"wfs" {
+	    name = "Waiting for Message to be Sent";
+	    tooltip = "The Activity is engaged in a message receive and is blocked on an Object waiting for a message to be sent";
+	}
+	"wfr" {
+	    name = "Waiting for Message Receiver";
+	    tooltip = "The Activity is engaged in a message send and is blocked on an Object waiting for someone to receive the message";
+	}
+	"snd" {
+	    name = "Send";
+	    tooltip = "The Activity is engaged in a message send with a peer";
+	}
+	"rcv" {
+	    name = "Receive";
+	    tooltip = "The Activity is engaged in a message receive with a peer";
+	}
+	"wfa" {
+	    name = "Waiting for Activity";
+	    tooltip = "The Activity is blocked in a WaitForActivity() call";
+	}
+	"dlv" {
+	    name = "Delivering Interrupt";
+	    tooltip = "The Activity's interrupt is being delivered to the Task";
+	}
+	"dsm" {
+	    name = "Dismissing Interrupt";
+	    tooltip = "The Activity's interrupt level is being dismissed";
+	}
+	"exc" {
+	    name = "Executing Code";
+	    tooltip = "The interrupt level is executing";
+	}
+	"irq" {
+	    name = "Requesting Task Interrupt";
+	    tooltip = "The Activity is requesting a Task interrupt";
+	}
+	"twl" {
+	    name = "WaitList";
+	    tooltip = "The Activity is on the Task's WaitList";
+	}
+	"err" {
+	    name = "Recoverable Error";
+	    tooltip = "The Activity is engaged in a message transfer that is suspended because of a recoverable transfer error";
+	}
+	"trm" {
+	    name = "Terminated Transfer";
+	    tooltip = "The Activity's message transfer has terminated";
+	}
+    }
+    "ois" {
+    # for interrupt activity
+	name = "On Task's Interrupt Stack";
+	format = "b:Y/N";
+    }
+    "xpt" {
+    # for interrupt activity
+	name = "Stopped by Exception";
+	format = "b:Y/N";
+    }
+    "sch" {
+	name = "Schedulable?";
+	# Values
+	"run" {
+	    name = "Runnable";
+	    tooltip = "The Activity is schedulable";
+	}
+	"qud" {
+	    name = "Queued";
+	    tooltip = "The Activity is queued on an Object, a WaitList, or a pending interrupt list";
+	}
+	"fake" {
+	    name = "Blocked Forever";
+	    tooltip = "The Activity is blocked indefinitely";
+	}
+	"usp" {
+	    name = "User Suspended";
+	    tooltip = "The Activity was suspended by SuspendActivity()";
+	}
+	"prz" {
+	    name = "Priority is Zero";
+	    tooltip = "The Activity cannot run because its priority is zero";
+	}
+	"blk" {
+	    name = "Suspended";
+	    tooltip = "The Activity is not schedulable";
+	}
+    }
+    "buf" {
+	name = "Current Buffer";
+	format = "h:ASZ";
+	double_click = true;
+	double_click_op = "list.Buffers";
+    }
+    "dir" {
+    # if engaged in a transfer
+	name = "Direction";
+	# Values
+	"snd" {
+	    name = "Send";
+	}
+	"rcv" {
+	    name = "Receive";
+	}
+    }
+    "mcls" {
+    # If blocked on an Object
+	name = "Blocked Object Type";
+	reference = "Object.cls";
+	show_in_msl = false;
+    }
+    "mrep" {
+    # If blocked on an Object
+	name = "Object Blocked On";
+	double_click = true;
+    }
+    "mdom" {
+    # If blocked on an Object
+	name = "AddressSpace ID Blocked On";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "mdnm" {
+    # If blocked on an Object
+	name = "AddressSpace Blocked On";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "erep" {
+    # If connected, other end of transfer
+	name = "Other End of Transfer";
+	double_click = true;
+    }
+    "edom" {
+    # If connected, other end of transfer
+	name = "Other End of Transfer (AddressSpace ID)";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "ednm" {
+    # If connected, other end of transfer
+	name = "Other End of Transfer (AddressSpace)";
+	double_click = true;
+	show_in_msl = false;
+    }
+}
+
+# Semaphore attributes
+"Semaphore" {
+    "sub" {
+	name = "SubType";
+	"bin" {
+	    name = "Binary";
+	}
+	"cnt" {
+	    name = "Count";
+	}
+	"hl" {
+	    name = "Highest Locker";
+	}
+    }
+    "pri" {
+	name = "Priority";
+#	format = "d";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+    "acq" {
+	name = "Nesting Count";
+	format = "d";
+    }
+    "own" {
+	name = "Owner ID";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "onm" {
+	name = "Owner"; # Owner name
+	double_click = true;
+	show_in_common_msl = true;
+    }
+    "val" {
+	name = "Value";
+	format = "d";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+}
+
+# Link attributes
+"Link" {
+    "tcls" {
+	name = "Target Type";
+	reference = "Object.cls";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "trep" {
+	name = "Target Object";
+	double_click = true;
+    }
+    "tdom" {
+	name = "Target AddressSpace ID";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "tdnm" {
+	name = "Target AddressSpace";
+	double_click = true;
+	show_in_msl = false;
+    }
+}
+
+# MemoryRegion attributes
+"MemoryRegion" {
+    sort_by = "ind";
+    "sub" {
+	name = "SubType";
+	"vir" {
+	    name = "Virtual";
+	}
+	"pmr" {
+	    name = "Physical";
+	}
+	"lmr" {
+	    name = "Lending Physical";
+	}
+    }
+    "space" {
+	name = "Physical AddressSpace";
+	"kernel" {
+	    name = "KernelSpace";
+	}
+	"io" {
+	    name = "I/O Port Memory";
+	}
+	show_in_msl = false;
+	show_in_common_msl = true;
+	tooltip = "The physical AddressSpace containing the memory represented by this physical MemoryRegion";
+    }
+
+    # Virtual AddressSpace containing memory represented by VMR
+    "vdom" {
+	name = "Virtual AddressSpace ID";
+	show_in_msl = false;
+	double_click = true;
+    }
+    "vdnm" {
+	name = "Virtual AddressSpace";
+	double_click = true;
+	show_in_common_msl = true;
+	tooltip = "The virtual AddressSpace containing the memory represented by this virtual MemoryRegion";
+    }
+    "first" {
+	name = "First Address";
+	format = "h:ASZ";
+	tooltip = "The lowest address of the memory represented by this MemoryRegion";
+    }
+    "last" {
+	name = "Last Address";
+	format = "h:ASZ";
+	tooltip = "The highest address of the memory represented by this MemoryRegion";
+    }
+    "attr" {
+	name = "Attributes";
+	value_type = "bit";
+	# Values: from INTEGRITY.h, MEMORY_*
+	"0x00000001" {
+	    name = "Read";
+	    value = 0x00000001;
+	}
+	"0x00000002" {
+	    name = "Write";
+	    value = 0x00000002;
+	}
+	"0x00000004" {
+	    name = "Exec";
+	    value = 0x00000004;
+	}
+	"0x00000008" {
+	    name = "Lendable";
+	    value = 0x00000008;
+	}
+	"0x00000010" {
+	    name = "I/O Inhibit";
+	    value = 0x00000800;
+	}
+	"0x00000100" {
+	    name = "Volatile";
+	    value = 0x00000100;
+	}
+	"0x00000200" {
+	    name = "I/O Space";
+	    value = 0x00000200;
+	}
+	"0x00000400" {
+	    name = "I/O Coherent";
+	    value = 0x00000400;
+	}
+	"0x00000400" {
+	    name = "Delicate";
+	    value = 0x00000800;
+	}
+	"0x00001000" {
+	    name = "Write Through with Allocate";
+	    value = 0x00001000;
+	}
+	"0x00002000" {
+	    name = "Write Through";
+	    value = 0x00002000;
+	}
+	"0x00008000" {
+	    name = "Prefetchable";
+	    value = 0x00008000;
+	}
+    }
+    "prep" {
+	name = "Physical MemoryRegion Mapped To";
+	tooltip = "The physical MemoryRegion to which this virtual MemoryRegion is mapped";
+	double_click = true;
+    }
+    "pdom" {
+	name = "AddressSpace ID of Physical MR";
+	show_in_msl = false;
+	double_click = true;
+    }
+    "pdnm" {
+	name = "AddressSpace of Physical MR";
+	show_in_msl = false;
+	double_click = true;
+    }
+    "pfirst" {
+	name = "First Physical Address of PMR";
+	tooltip = "The lowest physical address of the physical MemoryRegion to which this virtual MemoryRegion is mapped";
+    }
+    "plast" {
+	name = "Last Physical Address of PMR";
+	tooltip = "The highest physical address of the physical MemoryRegion to which this virtual MemoryRegion is mapped";
+    }
+
+    "mapcnt" {
+	name = "Mapped Pages";
+	format = "d";
+	tooltip = "For a preempted MapMemoryRegion() or UnmapMemoryRegion() operation, the amount of the virtual MemoryRegion actually mapped, in kernel-page-size units";
+	show_in_msl = false;
+    }
+
+    "lrep" {
+	name = "Lending MemoryRegion";
+	tooltip = "The MemoryRegion from which is borrowed the memory represented by this physical MemoryRegion";
+	double_click = true;
+    }
+    "ldom" {
+	name = "Lending AddressSpace ID";
+	show_in_msl = false;
+	double_click = true;
+    }
+    "ldnm" {
+	name = "Lending AddressSpace";
+	show_in_msl = false;
+	double_click = true;
+    }
+
+    "vmrs" {
+	name = "List of Mapped Virtual MemoryRegions";
+	tooltip = "The list of virtual MemoryRegions which are mapped to the current MemoryRegion object";
+	type = "MemoryRegion";
+	double_click = true;
+	double_click_op = "list.vmrs";
+	"vrep" {
+	    name = "MemoryRegion";
+	    double_click = true;
+	}
+	"vdom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"vdnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+
+    "bmrs" {
+	name = "List of MemoryRegions Which Borrow Memory from the Object";
+	tooltip = "The list of MemoryRegions which borrow the current MemoryRegion object";
+	type = "MemoryRegion";
+	double_click = true;
+	double_click_op = "list.bmrs";
+	# Attributes
+	"brep" {
+	    name = "MemoryRegion";
+	    double_click = true;
+	}
+	"bdom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"bdnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+    
+}
+
+# Clock attributes
+"Clock" {
+    "sub" {
+	name = "SubType";
+	"vir" {
+	    name = "Virtual";
+	}
+	"phy" {
+	    name = "Physical";
+	}
+    }
+    "perm" {
+	name = "Permissions";
+	value_type = "bit";
+	# Values: from INTEGRITY.h, CLOCK_*
+	"0x00000001" {
+	    name = "ReadTime";
+	    value = 0x00000001;
+	}
+	"0x00000002" {
+	    name = "SetTime";
+	    value = 0x00000002;
+	}
+	"0x00000004" {
+	    name = "SetAlarm";
+	    value = 0x00000004;
+	}
+    }
+    "set" {
+	name = "Alarm Set";
+	format = "b:Y/N";
+    }
+    "tsec" {
+	name = "Alarm Time: Seconds";
+    }
+    "tfrc" {
+	name = "Alarm Time: Fraction";
+    }
+    "rel" {
+	name = "Auto Adjust";
+	format = "b: Y/N";
+    }
+    "rpt" {
+	name = "Repeating";
+	format = "b: Y/N";
+    }
+    "isec" {
+	name = "Repeat Interval: Seconds";
+    }
+    "ifrc" {
+	name = "Repeat Interval: Fraction";
+    }
+    "drv" {
+	name = "TimerDriver";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+    "prep" {
+	name = "Physical Clock";
+	double_click = true;
+    }
+    "pdom" {
+	name = "AddressSpace ID of Physical Clock";
+	show_in_msl = false;
+	double_click = true;
+    }
+    "pdnm" {
+	name = "AddressSpace of Physical Clock";
+	show_in_msl = false;
+	double_click = true;
+    }
+    # List
+    "vclr" {
+	name = "Virtual Clocks: Alarms Not Set";
+	double_click = true;
+	double_click_op = "list.vclr";
+	type = "Clock";
+	# Attributes
+	"vrep" {
+	    name = "Clock";
+	    double_click = true;
+	}
+	"vdom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"vdnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+    # List
+    "vset" {
+	name = "Virtual Clocks: Alarms Set";
+	double_click = true;
+	double_click_op = "list.vset";
+	# Attributes
+	"tsec" {
+	    name = "Seconds";
+	}
+	"tfrc" {
+	    name = "Fraction";
+	}
+	"vrep" {
+	    name = "Clock";
+	    double_click = true;
+	}
+	"vdom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"vdnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+}
+
+# IODevice attributes
+"IODevice" {
+    "vec" {
+	name = "IODeviceVector Name";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+}
+
+# Connection attributes
+"Connection" {
+    "flg" {
+	name = "Flags";
+	value_type = "bit";
+	value_for_zero = "Standard";
+	# Values
+	"0x1" {
+	    name = "OneWay";
+	    value = 0x1;
+	}
+	"0x2" {
+	    name = "FIFO";
+	    value = 0x2;
+	}
+	"0x4" {
+	    name = "WaitForConfirmation";
+	    value = 0x4;
+	}
+    }
+    # Activities queued waiting to send.
+    "sa" {
+	name = "Activities Queued Waiting for Receive";
+	type = "Activity";
+	reference = "acts";
+	double_click = true;
+	double_click_op = "list.sa";
+    }
+    # Activities queued waiting to receive.
+    "ra" {
+	name = "Activities Queued Waiting for Send";
+	type = "Activity";
+	reference = "acts";
+	double_click = true;
+	double_click_op = "list.ra";
+    }
+    "erep" {
+    # other end
+	name = "Other End Object";
+	double_click = true;
+    }
+    "edom" {
+    # other end
+	name = "Other End AddressSpace ID";
+	double_click = true;
+	show_in_msl = false;
+    }
+    "ednm" {
+    # other end
+	name = "Other End AddressSpace";
+	double_click = true;
+	show_in_msl = false;
+    }
+}
+
+# AddressSpace attributes
+"AddressSpace" {
+    "sub" {
+	name = "SubType";
+	# Values
+	"krn" {
+	    name = "Kernel";
+	}
+	"io" {
+	    name = "I/O Space";
+	}
+	"vir" {
+	    name = "Virtual";
+	}
+    }
+    # The AddressSpace's ID and Name.
+    "dom" {
+	name = "AddressSpace ID";
+	tooltip = "The kernel address of the AddressSpace's KernelSpace page";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+    "dnm" {
+	name = "AddressSpace Name";
+	show_in_msl = false;
+	show_in_common_msl = true;
+    }
+    "aid" {
+	name = "Application ID";
+	format = "h:ASZ";
+	show_in_msl = false;
+    }
+    "sid" {
+	name = "Application Sub-ID";
+	format = "h:ASZ";
+	show_in_msl = false;
+    }
+    "flc" {
+	name = "Free Pages";
+	format = "d";
+    }
+    "nobj" {
+	name = "Object Count";
+	format = "d";
+    }
+    "tasks" {
+	name = "Tasks";
+	type = "Task";
+	# Attributes
+	"tid" {
+	    name = "Task ID";
+	}
+	"tnm" {
+	    name = "Task Name";
+	}
+    }
+    "vmrs" {
+	name = "Virtual MemoryRegions";
+	type = "MemoryRegion";
+	# Attributes
+	"first" {
+	    name = "First Address";
+	    format = "h:ASZ";
+	    double_click = true;
+	}
+	"last" {
+	    name = "Last Address";
+	    format = "h:ASZ";
+	    double_click = true;
+	}
+	"orep" {
+	    name = "Object";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+	"odom" {
+	    name = "AddressSpace ID";
+	    show_in_msl = false;
+	    double_click = true;
+	}
+    }
+    # The list is actually obtained by a separate command (osa objlist) for
+    # Kernel AddressSpace
+    "kobjs" {
+	name = "All Objects in AddressSpace";
+	double_click = true;
+	double_click_op = "list.kobjs";
+	sort_by = "ind";
+	# The object types vary, so use a general type.
+	type = "Free";
+	oid_attr = "rep";
+	# Don't specify object type attribute, otherwise, double-click on
+	# Task object in the list will not work.
+#	type_attr = "cls";
+	# Attributes
+	"ind" {
+	    name = "Index";
+	    format = "d";
+	    sort_type = "int";
+	}
+	"rep" {
+	    name = "Object";
+	    sort_type = "uint";
+	}
+	"cls" {
+	    name = "Type";
+	    # Its values are defined in "Object" section.
+	    reference = "Object.cls";
+	}
+    }
+    # The list is actually obtained by a separate command (osa objlist) for
+    # non-kernel AddressSpace
+    "objs" {
+	name = "All Objects in AddressSpace";
+	double_click = true;
+	double_click_op = "list.objs";
+	sort_by = "ind";
+	# The object types vary, so use a general type.
+	type = "Free";
+	oid_attr = "ind";
+	# Don't specify object type attribute, otherwise, double-click on
+	# Task object in the list will not work.
+#	type_attr = "cls";
+	# Attributes
+	"ind" {
+	    name = "Index";
+	    format = "d";
+	    sort_type = "int";
+	}
+	"cls" {
+	    name = "Type";
+	    # Its values are defined in "Object" section.
+	    reference = "Object.cls";
+	}
+    }
+}
+
+# Free object attributes
+"Free" {
+}
+
+# Target attributes
+# Target is a fake "top" object for the whole INTEGRITY target.
+"Target" {
+    "sub" {
+	name = "SubType";
+	"tgt" {
+	    name = "";
+	}
+    }
+    # AddressSpace list
+    "aslist" {
+	name = "AddressSpace List";
+	type = "AddressSpace";
+	double_click = true;
+	double_click_op = "list.aslist";
+	# Attributes
+	"dom" {
+	    name = "AddressSpace ID";
+	    double_click = true;
+	}
+	"dnm" {
+	    name = "AddressSpace";
+	    double_click = true;
+	}
+    }
+}
+    
+
+
+#
+# Special lists
+#
+
+# Link list attributes
+"links" {
+    name = "Links";
+    type = "Link";
+
+    # Attributes
+    "orep" {
+	name = "Object";
+	sort_type = "uint";
+	underline = true;
+    }
+
+    # Object domain ID
+    "odom" {
+	name = "AddressSpace ID";
+	show_in_msl = false;
+	double_click = true;
+	sort_type = "uint";
+    }
+
+    # Object domain name
+    "odnm" {
+	name = "AddressSpace";
+	double_click = true;
+    }
+}
+
+# Activity list attributes
+"acts" {
+    name = "Activities";
+    type = "Activity";
+
+    # Attributes
+    "orep" {
+	name = "Object";
+	sort_type = "uint";
+	underline = true;
+    }
+
+    "uid" {
+	name = "Identification";
+	sort_type = "uint";
+	format = "h:ASZ";
+    }
+    "pri" {
+	name = "Priority";
+#	format = "d";
+	sort_type = "int";
+    }
+    "tup" {
+	name = "Time Up";
+	sort_type = "uint";
+    }
+    "tlo" {
+	name = "Time Low";
+	sort_type = "uint";
+    }
+    "tid" {
+	name = "Task ID";
+	sort_type = "uint";
+	show_in_msl = false;
+    }
+    "tnm" {
+	name = "Task Name";
+    }
+
+    # Object domain ID
+    "odom" {
+	name = "AddressSpace ID";
+	show_in_msl = false;
+	double_click = true;
+	sort_type = "uint";
+    }
+
+    # Object domain name
+    "odnm" {
+	name = "AddressSpace";
+	double_click = true;
+    }
+}
+
+# Activity buffer list attributes
+"ActivityBuffers" {
+    name = "Buffers";
+
+    # Attributes
+    "dom" {
+	name = "Execution AddressSpace ID";
+	show_in_msl = false;
+	double_click = true;
+    }
+
+    # Buffer list
+    "bufs" {
+	name = "Buffers";
+	double_click = true;
+	double_click_op = "list.bufs";
+	# The entry are not clickable.
+    
+	# Attributes
+	"buf" {
+	    name = "Buffer *";
+	    format = "h:ASZ";
+	    underline = true;
+	}
+	"typ" {
+	    name = "Type";
+	    value_type = "bit";
+	    # Check against "0xf"
+	    "0xf" {
+		name = "Basic Type";
+		value = 0xf;
+#		value_for_zero = "DataImmediate";
+		value_type = "int_check";
+		"0x0" {
+		    name = "DataImmediate";
+		    value = 0x0;
+		}
+		"0x1" {
+		    name = "DataBuffer";
+		    value = 0x1;
+		}
+		"0x2" {
+		    name = "ObjectImmediate";
+		    value = 0x2;
+		}
+		"0x3" {
+		    name = "LinkImmediate";
+		    value = 0x3;
+		}
+		"0x4" {
+		    name = "MetaDataBuffer";
+		    value = 0x4;
+		}
+		"0x5" {
+		    name = "BufferPointer";
+		    value = 0x5;
+		}
+		"0x6" {
+		    name = "ZeroCopyDataBuffer";
+		    value = 0x6;
+		}
+		# Other values are "Unknown"
+	    }
+	    # Check against "0x10"
+	    "0x10" {
+		name = "TruncateLongBuffer";
+		value = 0x10;
+	    }
+	    "0x40" {
+		name = "WaitForReply";
+		value = 0x40;
+	    }
+	    "0x80" {
+		name = "LastBuffer";
+		value = 0x80;
+	    }
+	}
+    
+	# If a DataBuffer or a MetaDataBuffer, and user double-clicks TheAddress,
+	# bring up a memview of TheAddress in the execution Domain of the Activity.
+	#
+	# If an ObjectImmediate or a LinkImmediate or a ZeroCopyDataBuffer, and
+	# user double-clicks TheAddress, should bring up (Object)TheAddress,
+	# evaluated in the execution Domain of the Activity (use
+	# osa obj <TheAddress> <ExecDomain>)
+	#
+	# Note ZeroCopyDataBuffer actually passes MemoryRegion Objects, this is
+	# why you view it as an Object when double-clicked.
+    
+	"add" {
+	    name = "Address";
+	    format = "h:ASZ";
+	}
+	"len" {
+	    name = "Length";
+	    format = "h:ASZ";
+	}
+	"xfr" {
+	    name = "Transferred";
+	    format = "h:ASZ";
+	}
+    }
+}
+	    
+	
+GUI {
+    basic_information_prompt = "Object Summary:";
+    attribbute_list_menu_prompt = "Selected Attributes:";
+}

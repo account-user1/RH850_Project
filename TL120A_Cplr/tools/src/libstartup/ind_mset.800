@@ -1,0 +1,124 @@
+-- 	ind_mset.800
+--	V850/RH850 memset routine.
+--
+--	Copyright (C) 1999-2014 Green Hills Software, Inc.
+--
+--	This program is the property of Green Hills Software, Inc.  Its contents
+--	are proprietary information and no part of it is to be disclosed to
+--	anyone except employees of Green Hills Software, Inc., or as agreed
+--	in writing signed by the President of Green Hills Software, Inc.
+-- 
+
+.text
+.align 16
+#ifndef NAME
+-- No NAME, so we are memset:
+-- r6 - pointer to memory to set
+-- r7 - the value to set
+-- r8 - the number of bytes to set
+#define MEMSET 1
+#define VALUE r7
+#define BYTES r8
+-- VALLO/VALHI are needed for targets with a 64-bit store, as we need two
+-- adjacent registers
+#define VALLO r12
+#define VALHI r13
+#define NAME _memset
+#endif
+-- We assume #ifdef MEMSET that VALUE is r7 and BYTES is r8 
+-- ELSE we assume VALUE is r0 and BYTES is r7 (memclr)
+.globl NAME
+NAME:
+	mov 	BYTES, r9
+	mov 	r6, r11
+#ifdef MEMSET
+	mov	r6, r10	-- our return value
+	andi	255, VALUE, VALUE
+#endif
+	subr	r0, r11
+	and 	3, r11
+	bz	aligned
+	sub 	r11, r9
+	bnh 	byte_loop_setup
+-- r6 is the pointer to memory to clear
+-- r11 contains the number of bytes to set before r6 becomes 32-bit aligned
+-- r9 contains the number of bytes to copy after that
+.align 4
+small_loop:
+	st.b	VALUE, 0[r6]
+	add	1, r6
+#ifdef __CORE_V850E3V5__
+	loop 	r11, small_loop
+#else
+	add	-1, r11
+	bnz	small_loop
+#endif
+aligned:
+	-- construct a 32-bit VALUE vector
+#ifdef MEMSET
+#ifdef __CORE_V850E3V5__
+	bins	VALUE, 8, 8, VALUE
+	bins	VALUE, 16, 16, VALUE
+#else
+	mov	VALUE, r12
+	shl	8, VALUE
+	or	r12, VALUE
+	mov	VALUE, r12
+	shl	16, r12
+	or	r12, VALUE
+#endif
+#endif
+
+#ifdef __CORE_V850E3V5__
+	-- construct a 64-bit VALUE vector for E3 chips
+#ifdef MEMSET
+	mov	VALUE, VALLO
+#endif
+	mov	VALUE, VALHI
+#endif
+
+	mov 	r9, BYTES
+	shr	4, r9
+	bz	byte_loop_setup
+.align 4
+word_loop:
+#ifdef __CORE_V850E3V5__
+	-- st.dw despite being 64-bits only requires 32-bit alignment
+	st.dw	VALLO, 0[r6]
+	st.dw	VALLO, 8[r6]
+#else
+	st.w	VALUE, 0[r6]
+	st.w	VALUE, 4[r6]
+	st.w	VALUE, 8[r6]
+	st.w	VALUE, 12[r6]
+#endif
+	add 	16, r6
+#ifdef __CORE_V850E3V5__
+	loop	r9, word_loop
+#else
+	add	-1, r9
+	bnz	word_loop
+#endif
+	and	15, BYTES
+	bnz	byte_loop
+	jmp	[lp]
+byte_loop_setup:
+	cmp	0, BYTES
+	be 	end
+.align 4
+byte_loop:
+	st.b	VALUE, 0[r6]
+	add	1, r6
+#ifdef __CORE_V850E3V5__
+	loop 	BYTES, byte_loop
+#else
+	add	-1, BYTES
+	bnz	byte_loop
+#endif
+end:
+	jmp [lp]
+	.fsize 0
+	.scall __leaf__
+	.type	NAME,@function
+	.size	NAME,.-NAME
+

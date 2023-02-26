@@ -1,0 +1,19 @@
+<h3>INTEGRITY Virtual AddressSpace</h3>
+<hr SIZE="1" NOSHADE>
+<p>
+The result of building a virtual AddressSpace project is a fully linked ELF
+executable, called a virtual AddressSpace program. This program contains
+only the code and data for this single virtual AddressSpace. 
+</p>
+<p>
+User code for a virtual AddressSpace program begins with the standard C/C++
+function main(). The entrypoint of the program is actually _start,
+which initializes the virtual AddressSpace so that the C/C++ run-time
+environment and the INTEGRITY API can be used. _start transfers control to
+main(), the start of user code for each virtual AddressSpace.
+</p>
+<p>
+The thread of control executing into main() is known as the Initial Task.
+The name of the Initial Task as seen in the MULTI Task window is Initial,
+grouped with any other tasks that may be in the same AddressSpace. 
+</p>

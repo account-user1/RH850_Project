@@ -1,0 +1,1073 @@
+Placer 1.6
+State
+addressspace_change_filename = "                                              \
+    file = clitext(\"filechooser as\");                                       \
+    if (strlen(file) > 0) {                                                   \
+        $tf_filename = file;                                                  \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+addressspace_change_headerfilename = "                                        \
+    file = clitext(\"headerfilechooser\");                                    \
+    if (strlen(file) > 0) {                                                   \
+        $tf_headerfilename = file;                                            \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+addressspace_change_kernelfilename = "                                        \
+    file = clitext(\"filechooser kernel\");                                   \
+    if (strlen(file) > 0) {                                                   \
+        $tf_filename = file;                                                  \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+config_task_toggle_stack = "                                                  \
+    if ($bs_stack.set(1)) {                                                   \
+        $tf_stacksize.dim = 0;                                                \
+        $pd_stackmr.dim = 1;                                                  \
+    } else if ($bs_stack.set(2)) {                                            \
+        $tf_stacksize.dim = 1;                                                \
+        $pd_stackmr.dim = 0;                                                  \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+config_task_toggle_timeslice = "                                              \
+    if ($bs_timeslice.set(1) || $bs_timeslice.set(2) ) {                      \
+        $tf_seconds.dim = 1;                                                  \
+        $tf_fraction.dim = 1;                                                 \
+    } else if ($bs_timeslice.set(3)) {                                        \
+        $tf_seconds.dim = 0;                                                  \
+        $tf_fraction.dim = 0;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+dialogue_config_target_handle_bt_mpe = "                                      \
+    if ($bt_anyvas.set(1)) {                                                  \
+        $bt_mpe.dim = 1;                                                      \
+    }                                                                         \
+    // need nicer way to do this                                              \
+    dialogue_config_target_handle_textfield_filename();                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+dialogue_config_target_handle_textfield_filename = "                          \
+    $textfield_filename.dim = 1;                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+sem_binary_DimIt = "                                                          \
+    if ($bs_type.set(1)) {                                                    \
+        $tf_priority.dim=1;                                                   \
+        $tf_initialval.dim=1;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+sem_counting_DimIt = "                                                        \
+    if ($bs_type.set(2)) {                                                    \
+        $tf_priority.dim=1;                                                   \
+        $tf_initialval.dim=0;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+sem_hl_DimIt = "                                                              \
+    if ($bs_type.set(3)) {                                                    \
+        $tf_priority.dim=0;                                                   \
+        $tf_initialval.dim=1;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_activity_handle_bt_onewaysend = "                               \
+    if ($bt_onewaysend.set(1)) {                                              \
+            $tf_id.dim = 1;                                                   \
+        $tf_pri.dim =1 ;                                                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_handle_bt_mapto = "                                   \
+    if ($bt_iskernel.set(1)) {                                                \
+        $bt_mapto.dim = 1;                                                    \
+        $pd_mapto.dim=1;                                                      \
+    } else if ($bt_mapto.set(1)) {                                            \
+        $pd_mapto.dim=0;                                                      \
+    } else {                                                                  \
+        $pd_mapto.dim=1;                                                      \
+    }                                                                         \
+    window_config_memregion_toggle_start();                                   \
+    window_config_memregion_toggle_length();                                  \
+    window_config_memregion_toggle_alignval();                                \
+    window_config_memregion_toggle_options();                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_handle_bt_section = "                                 \
+    if ($bt_section.set(1)) {                                                 \
+        $tf_section.dim=0;                                                    \
+    } else {                                                                  \
+        $tf_section.dim=1;                                                    \
+    }                                                                         \
+    window_config_memregion_toggle_start();                                   \
+    window_config_memregion_toggle_length();                                  \
+    window_config_memregion_toggle_alignval();                                \
+    window_config_memregion_toggle_options();                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_toggle_alignval = "                                   \
+    if ($bt_section.set(1)) {                                                 \
+        $tf_alignval.dim=1;                                                   \
+    } else if ($bt_mapto.set(1)) {                                            \
+        $tf_alignval.dim=1;                                                   \
+    } else {                                                                  \
+        $tf_alignval.dim=0;                                                   \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_toggle_cache_options = "                              \
+    // restrict cache options                                                 \
+    if ($bs_options.set(4) || $bs_options.set(5) ||                           \
+        $bs_options.set(10) || $bs_options.set(11) || $bs_options.set(12) ) {     \
+        // only one* cache option at a time is allowed, dim the others (*except for vol/iocoherent) \
+        if ($bs_options.set(4) || $bs_options.set(5)) {                       \
+            $bs_options.dim(4) = 0;                                           \
+            $bs_options.dim(5) = 0;                                           \
+            $bs_options.dim(10) = 1;                                          \
+            $bs_options.dim(11) = 1;                                          \
+            $bs_options.dim(12) = 1;                                          \
+        } else {                                                              \
+            $bs_options.dim(4) = 1;                                           \
+            $bs_options.dim(5) = 1;                                           \
+            $bs_options.dim(10) = !$bs_options.set(10);                       \
+            $bs_options.dim(11) = !$bs_options.set(11);                       \
+            $bs_options.dim(12) = !$bs_options.set(12);                       \
+        }                                                                     \
+    } else {                                                                  \
+        // any cache option allowed now                                       \
+        $bs_options.dim(4) = 0;                                               \
+        $bs_options.dim(5) = 0;                                               \
+        $bs_options.dim(10) = 0;                                              \
+        $bs_options.dim(11) = 0;                                              \
+        $bs_options.dim(12) = 0;                                              \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_toggle_length = "                                     \
+    if ($bt_section.set(1)) {                                                 \
+        $tf_length.dim=1;                                                     \
+    } else if ($bt_mapto.set(1)) {                                            \
+        $tf_length.dim=1;                                                     \
+    } else {                                                                  \
+        $tf_length.dim=0;                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_toggle_options = "                                    \
+    if ($bt_iskernel.set(1)) {                                                \
+        if ($bt_section.set(1)) {                                             \
+            $bs_options.dim = 1;                                              \
+            } else {                                                          \
+            // allow paged and clear                                          \
+            $bs_options.dim = 1;                                              \
+            $bs_options.dim(8) = 0;                                           \
+            $bs_options.dim(9) = 0;                                           \
+        }                                                                     \
+    } else if ($bt_section.set(1)) {                                          \
+        // allow cache options : vol/iocoherent/wtwa/wtwouta/fpc              \
+        $bs_options.dim = 1;                                                  \
+        window_config_memregion_toggle_cache_options();                       \
+    } else if ($bt_mapto.set(1)) {                                            \
+            // dim unmapped/paged/clear                                       \
+        $bs_options.dim = 0;                                                  \
+        $bs_options.dim(7) = 1;                                               \
+        $bs_options.dim(8) = 1;                                               \
+        $bs_options.dim(9) = 1;                                               \
+        window_config_memregion_toggle_cache_options();                       \
+    } else {                                                                  \
+        $bs_options.dim = 0;                                                  \
+        // how to do optional ?                                               \
+        //$bs_options.dim(13) = 1;                                            \
+        // disallow unmapped if any of paged/clear options are set)           \
+        if ($bs_options.set(8) || $bs_options.set(9)) {                       \
+            $bs_options.dim(7) = 1;                                           \
+        } else {                                                              \
+            $bs_options.dim(7) = 0;                                           \
+            if ($bs_options.set(7)) {                                         \
+                // dim the others                                             \
+                $bs_options.dim(8) = 1;                                       \
+                $bs_options.dim(9) = 1;                                       \
+                $bt_mapto.dim(1) = 1;                                         \
+            } else {                                                          \
+                $bt_mapto.dim(1) = 0;                                         \
+            }                                                                 \
+        }                                                                     \
+        window_config_memregion_toggle_cache_options();                       \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_memregion_toggle_start = "                                      \
+    if ($bt_section.set(1)) {                                                 \
+        $tf_start.dim=1;                                                      \
+    } else {                                                                  \
+        $tf_start.dim=0;                                                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_task_handle_bt_allowsetinitpri = "                              \
+    if ($bt_allowsetinitpri.set(1)) {                                         \
+        $tf_priority.dim = 0;                                                 \
+        $tf_maxpriority.dim = 0;                                              \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_task_handle_bt_ashasmrs = "                                     \
+    if ($bt_ashasmrs.set(1)) {                                                \
+        $bs_stack.dim = 0;                                                    \
+    } else {                                                                  \
+        // dim use mr button                                                  \
+        $bs_stack.dim(2) = 1;                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+window_config_task_handle_bt_isinitial = "                                    \
+    if ($bt_isinitial.set(1)) {                                               \
+        $tf_obj_num.dim = 1;                                                  \
+        $tf_name.dim = 1;                                                     \
+        $tf_entrypt.dim = 1;                                                  \
+        $tf_priority.dim = 1;                                                 \
+        $tf_maxpriority.dim = 1;                                              \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+Items=dialogue_config_target
+ Dialogue(,,,420,351,"integrate.target_window","dialogue_config_target","","",0,0,1,"MULTIPIC") 0xffffffff =dialogue_config_target > -1
+ TabControl(0,0,0,1,300,NULL,NULL,NULL,NULL,NULL,(5,"General","Physical Objects","Memory","Address Spaces","Tasks"),0,0,())0xffffffff =tc_target_settings >-1
+ Button(0,78,332,74,15,"bt_anyvas",NULL,NULL,"bt_anyvas",2,0,0,0,"")0x0 =bt_anyvas >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"Save","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_okcancel >-1
+ Text(1.0,0,0,NULL,"Filename:",PNone)0xffffffff =txt_filename >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =textfield_filename >-1
+ Text(1.0,0,0,NULL,"Default Kernel Filename:",PNone)0xffffffff =txt_defkernelname >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,NULL)0xffffffff =textfield_kernelfilename >-1
+ Line(1.0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(1.0,0,0,NULL,"Reserved Kernel Objects:",PNone)0xffffffff =txt_res_kernel_objs >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_kernelobjs >-1
+ Text(1.0,0,0,NULL,"Page Size:",PNone)0xffffffff =txt_pagesize >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_pagesize >-1
+ Text(1.0,0,0,NULL,"Minimum Priority:",PNone)0xffffffff =tx_min_pri >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_min_pri >-1
+ Text(1.0,0,0,NULL,"Maximum Priority:",PNone)0xffffffff =tx_max_pri >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_max_pri >-1
+ Rectangle(1.1,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_clock >-1
+ Text(1.1,0,0,NULL,"Clocks (Timers)",PNone)0xffffffff =txt_clocks >-1
+ ButtonSet(1.1,0,0,69,22,NULL,NULL,NULL,    (3,"Add Clock","Edit Clock","Delete Clock"),    (3,"cli(\"tgt_add_clock\")","cli(\"tgt_edit_clock\")","cli(\"tgt_delete_clock\")"),    -1,2,3,0,0,61,0,    (3,NULL,NULL,NULL),    (3,"addclock","edit","delete"),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_clock >-1
+ MScrollList(1.1,0,0,1,1,NULL,NULL,NULL,0,1,2,(1,1,"",T),NULL,NULL,(0),0)0xffffffff =msl_clock >-1
+ Rectangle(1.1,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_iodevs >-1
+ Text(1.1,0,0,NULL,"IODevices",PNone)0xffffffff =txt_iodevs >-1
+ ButtonSet(1.1,0,0,69,22,NULL,NULL,NULL,    (3,"Add IODevice","Edit IODevice","Delete IODevice"),    (3,"cli(\"tgt_add_iodev\")","cli(\"tgt_edit_iodev\")","cli(\"tgt_delete_iodev\")"),    -1,2,3,0,0,61,0,    (3,NULL,NULL,NULL),    (3,"addiodevice","edit","delete"),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_iodevice >-1
+ MScrollList(1.1,0,0,1,1,NULL,NULL,NULL,0,1,2,(1,1,"",T),NULL,NULL,(0),0)0xffffffff =msl_iodevice >-1
+ Rectangle(1.2,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_physaddrranges >-1
+ Text(1.2,0,0,NULL,"Physical Address Ranges",PNone)0xffffffff =txt_phys_addr_ranges >-1
+ MScrollList(1.2,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,3),NULL,NULL,(0),0)0xffffffff =msl_physicaladdress >-1
+ ColumnHeader(1.2,0,0,1,20,NULL,NULL,NULL,0,(3,("Minimum",72)("Maximum",72)("Location",72)),("msl_physicaladdress"))0xffffffff =ch_physicaladdress >-1
+ ButtonSet(1.2,0,0,55,78,NULL,NULL,NULL,    (3,"Add","Edit","Delete"),    (3,"cli(\"tgt_add_physaddrrange\")","cli(\"tgt_edit_physaddrrange\")","cli(\"tgt_delete_physaddrrange\")"),    -1,3,3,1,0,0,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_physaddrranges >-1
+ Text(1.2,0,0,NULL,"Minimum Download Address:",PNone)0xffffffff =txt_mindladdr >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_mindl >-1
+ Text(1.2,0,0,NULL,"Maximum Download Address:",PNone)0xffffffff =txt_maxdladdr >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_maxdl >-1
+ Text(1.3,0,0,NULL,"Default Maximum Priority:",PNone)0xffffffff =txt_def_max_priority >-1
+ TextField(1.3,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_defmaxpriority >-1
+ Text(1.3,0,0,NULL,"Default Maximum Weight:",PNone)0xffffffff =txt_def_max_weight >-1
+ TextField(1.3,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_defmaxweight >-1
+ Text(1.3,0,0,NULL,"Default Memory Region Size:",PNone)0xffffffff =txt_def_mp_size >-1
+ TextField(1.3,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_mempool >-1
+ Text(1.3,0,0,NULL,"Default Heap Size:",PNone)0xffffffff =tx_defheapsize >-1
+ TextField(1.3,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_defheapsize >-1
+ Text(1.3,0,0,NULL,"Default Heap Extension Reserved Size:",PNone)0xffffffff =tx_defheapexressize >-1
+ TextField(1.3,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_defheapexressize >-1
+ Text(1.3,0,0,NULL,"Default All Shared Libraries:",PNone)0xffffffff =tx_allshlib >-1
+ PullDown(1.3,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_allshlib >-1
+ Line(1.3,0,0,1,0,NULL,PNone)0xffffffff =line1 >-1
+ Button(1.3,0,0,224,15,NULL,NULL,NULL,"Create Extra Virtual Memory Regions",2,0,0,0,"")0xffffffff =bt_cevmrs >-1
+ Button(1.3,0,0,172,15,NULL,NULL,NULL,"Memory Protection Enabled",2,0,0,0,"dialogue_config_target_handle_bt_mpe() ;")0xffffffff =bt_mpe >-1
+ Text(1.4,0,0,NULL,"Default Priority:",PNone)0xffffffff =txt_def_priority >-1
+ TextField(1.4,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_defpriority >-1
+ Text(1.4,0,0,NULL,"Default Weight:",PNone)0xffffffff =txt_def_weight >-1
+ TextField(1.4,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_defweight >-1
+ Text(1.4,0,0,NULL,"Default Stack Size:",PNone)0xffffffff =txt_def_stacksize >-1
+ TextField(1.4,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =textfield_stacksize >-1
+ Button(1.4,0,0,90,15,NULL,NULL,NULL,"Default StartIt",2,0,0,0,"")0xffffffff =bt_defstartit >-1
+MinSizes
+Sizes
+ 43,(35),(),0,0,0,0,0,1,1,Horizontal
+ 45,(41),(),-22,0,0,0,0,1,1,Horizontal
+ 16,(10),(),0,0,0,0,0,1,1,Horizontal
+ 14,(10),(),0,0,0,0,0,1,1,Horizontal
+ 41,(39),(),0,0,0,0,0,1,1,Horizontal
+ 46,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 8,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 39,(37),(),0,0,0,0,0,1,1,Horizontal
+ 37,(35),(),0,0,0,0,0,1,1,Horizontal
+ 35,(1),(42),-10,0,0,0,0,1,1,Horizontal
+ 33,(31),(),0,0,0,0,0,1,1,Horizontal
+ 31,(25),(32),0,0,0,0,0,1,1,Horizontal
+ 27,(25),(26,28),-25,0,0,0,0,1,1,Vertical
+ 28,(27),(),0,0,0,0,0,1,1,Horizontal
+ 27,(25),(29),-25,0,0,0,0,1,1,Horizontal
+ 25,(1),(33,31),-100,0,0,0,0,1,1,Vertical
+ 25,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 24,(20),(),0,0,0,0,0,1,1,Horizontal
+ 24,(21),(),-10,0,0,0,0,1,1,Vertical
+ 20,(17),(19),-40,0,0,0,0,1,1,Horizontal
+ 20,(17),(),-10,0,0,0,0,1,1,Vertical
+ 17,(1),(),-70,0,0,0,0,1,2,Vertical
+ 21,(1),(),-70,0,0,0,0,1,2,Vertical
+ 21,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 17,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 54,(52),(),0,0,0,0,0,1,1,Horizontal
+ 52,(1),(53),-20,0,0,0,0,1,1,Horizontal
+ 50,(1),(53),-20,0,0,0,0,1,1,Horizontal
+ 7,(1),(9),-20,0,0,0,0,1,1,Horizontal
+ 12,(10),(),0,0,0,0,0,1,1,Horizontal
+ 10,(1),(9),-20,0,0,0,0,1,1,Horizontal
+ 5,(1),(9),-20,0,0,0,0,1,1,Horizontal
+ 0,(1,3),(),30,0,0,0,0,1,1,Vertical
+ 1,(0),(),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (6,7),8,20,0,0,0,0,TBCenter,Top,Bottom
+ (8),5,10,0,0,0,0,Top,Top,Bottom
+ (43,42),41,5,0,0,0,0,TBCenter,Top,Bottom
+ (44,45),43,5,0,0,0,0,TBCenter,Top,Bottom
+ (45),41,12,0,0,0,0,Left,Left,Left
+ (16,15),14,5,0,0,0,0,TBCenter,Top,Bottom
+ (14,13),12,5,0,0,0,0,TBCenter,Top,Bottom
+ (40,41),39,5,0,0,0,0,TBCenter,Top,Bottom
+ (46),45,10,0,0,0,0,Top,Top,Bottom
+ (48),47,5,0,0,0,0,Top,Top,Bottom
+ (8),1,10,0,0,0,0,Left,Left,Left
+ (29),25,-10,0,0,0,0,Right,Right,Right
+ (39,37,35,41,43),42,0,0,0,0,0,Left,Left,Right
+ (47),46,20,0,0,0,0,Top,Top,Bottom
+ (39,38),37,5,0,0,0,0,TBCenter,Top,Bottom
+ (37,36),35,5,0,0,0,0,TBCenter,Top,Bottom
+ (35,34),1,40,0,0,0,0,TBCenter,Top,Top
+ (42,40,46,48,34,36,38,47,44),1,10,0,0,0,0,Left,Left,Left
+ (31,33),32,0,0,0,0,0,Left,Left,Right
+ (32,33),31,5,0,0,0,0,TBCenter,Top,Bottom
+ (30,31),25,20,0,0,0,0,TBCenter,Top,Bottom
+ (30,32),1,10,0,0,0,0,Left,Left,Left
+ (28,29),26,10,0,0,0,0,Top,Top,Bottom
+ (27),28,0,0,0,0,0,Top,Top,Bottom
+ (28,27),25,5,0,0,0,0,Left,Left,Left
+ (26),25,10,0,0,0,0,Top,Top,Top
+ (26),25,10,0,0,0,0,Left,Left,Left
+ (25),1,40,0,0,0,0,Top,Top,Top
+ (25),1,10,0,0,0,0,Left,Left,Left
+ (24),21,5,0,0,0,0,Top,Top,Top
+ (24),21,-5,0,0,0,0,Left,Right,Right
+ (23),21,-10,0,0,0,0,Top,Bottom,Bottom
+ (22),21,10,0,0,0,0,Top,Top,Top
+ (23,22),21,10,0,0,0,0,Left,Left,Left
+ (20),17,-5,0,0,0,0,Left,Right,Right
+ (20),17,5,0,0,0,0,Top,Top,Top
+ (19),17,-10,0,0,0,0,Top,Bottom,Bottom
+ (18),17,10,0,0,0,0,Top,Top,Top
+ (19,18),17,10,0,0,0,0,Left,Left,Left
+ (21),17,10,0,0,0,0,Top,Top,Bottom
+ (21,17),1,10,0,0,0,0,Left,Left,Left
+ (17),1,40,0,0,0,0,Top,Top,Top
+ (54),53,0,0,0,0,0,Left,Left,Right
+ (52),53,0,0,0,0,0,Left,Left,Right
+ (50),53,0,0,0,0,0,Left,Left,Right
+ (55),54,10,0,0,0,0,Top,Top,Bottom
+ (54,53),52,5,0,0,0,0,TBCenter,Top,Bottom
+ (52,51),50,5,0,0,0,0,TBCenter,Top,Bottom
+ (50,49),1,40,0,0,0,0,TBCenter,Top,Top
+ (55,53,51,49),1,10,0,0,0,0,Left,Left,Left
+ (16,14,7,10,12),5,0,0,0,0,0,Left,Left,Left
+ (11,12),10,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9),7,5,0,0,0,0,TBCenter,Top,Bottom
+ (5),9,0,0,0,0,0,Left,Left,Right
+ (5,4),1,40,0,0,0,0,TBCenter,Top,Top
+ (15,13,4,9,11,6),1,10,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (3),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (3),0,-10,0,0,0,0,Right,Right,Right
+
+Items=dialogue_edit_libraries
+ Dialogue(,,,247,109,"integrate.target_window","dialogue_edit_libraries","","",0,0,1,"MULTIPIC") 0xffffffff =dialogue_edit_libraries > -1
+ Text(0,0,0,NULL,"Library:",PNone)0xffffffff =tx_lib >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_lib >-1
+ Button(0,0,0,134,15,NULL,NULL,NULL,"Map upon Download",2,0,0,0,"")0xffffffff =bt_unmapped >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,2,2,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_okcancel >-1
+MinSizes
+Sizes
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (3),2,20,0,0,0,0,Top,Top,Bottom
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (2,1),0,10,0,0,0,0,TBCenter,Top,Top
+ (4),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (4),0,-10,0,0,0,0,Left,Right,Right
+ (3,1),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_activity
+ Dialogue(,,,306,293,"integrate.config_activity","window_config_activity","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_activity > -1
+ Button(0,61,276,104,15,"bt_onewaysend",NULL,NULL,"bt_onewaysend",2,0,0,0,"window_config_activity_handle_bt_onewaysend() ;")0x0 =bt_onewaysend >-1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Task Name:",PNone)0xffffffff =tx_taskname >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_taskname >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line1 >-1
+ Button(0,0,0,62,15,NULL,NULL,NULL,"Interrupt",2,0,0,0,"")0xffffffff =bt_interrupt >-1
+ Text(0,0,0,NULL,"Identification:",PNone)0xffffffff =tx_id >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_id >-1
+ Text(0,0,0,NULL,"Priority:",PNone)0xffffffff =tx_pri >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_pri >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(15),(),20,0,0,0,0,1,1,Horizontal
+ 0,(5,3,8,12,14,15,10),(),120,0,0,0,0,1,1,Vertical
+Sizes
+ 9,(6),(),0,0,0,0,0,1,1,Horizontal
+ 5,(3),(),0,0,0,0,0,1,1,Horizontal
+ 6,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 8,(3),(),-22,0,0,0,0,1,1,Horizontal
+ 14,(3),(),0,0,0,0,0,1,1,Horizontal
+ 12,(3),(),0,0,0,0,0,1,1,Horizontal
+ 3,(0),(2),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (9),8,10,0,0,0,0,Top,Top,Bottom
+ (10),9,20,0,0,0,0,Top,Top,Bottom
+ (5),3,0,0,0,0,0,Left,Left,Left
+ (14),3,0,0,0,0,0,Left,Left,Left
+ (12),3,0,0,0,0,0,Left,Left,Left
+ (15),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (15),0,-10,0,0,0,0,Left,Right,Right
+ (8),3,12,0,0,0,0,Left,Left,Left
+ (7,8),6,20,0,0,0,0,TBCenter,Top,Bottom
+ (6),5,10,0,0,0,0,Top,Top,Bottom
+ (14,13),12,5,0,0,0,0,TBCenter,Top,Bottom
+ (12,11),10,10,0,0,0,0,TBCenter,Top,Bottom
+ (5,4),3,5,0,0,0,0,TBCenter,Top,Bottom
+ (3,2),0,20,0,0,0,0,TBCenter,Top,Top
+ (3),2,0,0,0,0,0,Left,Left,Right
+ (10,6,4,2,11,13,7,9),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_as
+ Dialogue(,,,398,389,"integrate.config_as","window_config_as","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_as > -1
+ TabControl(0,0,0,1,1,NULL,NULL,NULL,NULL,NULL,(3,"Names","Language","Attributes"),0,0,())0xffffffff =tc_as >-1
+ Text(1.0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_name >-1
+ Text(1.0,0,0,NULL,"Filename:",PNone)0xffffffff =tx_filename >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_filename >-1
+ ButtonSet(1.0,0,0,23,22,NULL,NULL,NULL,    (1,"Browse"),    (1,"addressspace_change_filename"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"Open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bs_filename >-1
+ Text(1.0,0,0,NULL,"Header File Name:",PNone)0xffffffff =tx_headerfilename >-1
+ TextField(1.0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_headerfilename >-1
+ ButtonSet(1.0,0,0,23,22,NULL,NULL,NULL,    (1,"Browse"),    (1,"addressspace_change_headerfilename"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"Open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bs_headerfilename >-1
+ Text(1.1,0,0,NULL,"Language:",PNone)0xffffffff =tx_language >-1
+ PullDown(1.1,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_language >-1
+ Text(1.1,0,0,NULL,"All Shared Libraries:",PNone)0xffffffff =tx_allshlib >-1
+ PullDown(1.1,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_allshlib >-1
+ MScrollList(1.1,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0xffffffff =msl_libraries >-1
+ ColumnHeader(1.1,0,0,1,20,NULL,NULL,NULL,0,(2,("Library",172)("Unmapped",108)),("msl_libraries"))0xffffffff =ch_libraries >-1
+ ButtonSet(1.1,0,0,55,78,NULL,NULL,NULL,    (3,"Add","Edit","Delete"),    (3,"cli(\"as_add_lib\")","cli(\"as_edit_lib\")","cli(\"as_delete_lib\")"),    -1,3,3,1,0,0,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_libraries >-1
+ Text(1.2,0,0,NULL,"Maximum Priority:",PNone)0xffffffff =tx_max_priority >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxpriority >-1
+ Text(1.2,0,0,NULL,"Maximum Weight:",PNone)0xffffffff =tx_max_weight >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxweight >-1
+ Text(1.2,0,0,NULL,"Memory Pool Size:",PNone)0xffffffff =text_mempool >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_mempool >-1
+ Text(1.2,0,0,NULL,"Heap Size:",PNone)0xffffffff =tx_heapsize >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_heapsize >-1
+ Text(1.2,0,0,NULL,"Heap Extension Reserved Size:",PNone)0xffffffff =tx_heapexressize >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_heapexressize >-1
+ Text(1.2,0,0,NULL,"Arguments:",PNone)0xffffffff =tx_arguments >-1
+ TextField(1.2,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_arguments >-1
+ Button(1.2,0,0,224,15,NULL,NULL,NULL,"Create Extra Virtual Memory Regions",2,0,0,0,"")0xffffffff =bt_cevmrs >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(16,10,30),(),50,0,0,0,0,1,1,Horizontal
+ 0,(30),(),250,0,0,0,0,1,1,Vertical
+Sizes
+ 26,(18),(),0,0,0,0,0,1,1,Horizontal
+ 28,(22),(),0,0,0,0,0,1,1,Horizontal
+ 11,(14),(12),-12,0,0,0,0,1,1,Horizontal
+ 13,(14),(12),-12,0,0,0,0,1,1,Horizontal
+ 14,(1),(13,11,15),-75,0,0,0,0,1,1,Vertical
+ 14,(15),(),0,0,0,0,0,1,1,Horizontal
+ 1,(0),(30),-25,0,0,0,0,1,1,Vertical
+ 1,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 24,(22),(),0,0,0,0,0,1,1,Horizontal
+ 8,(1),(7,9),-20,0,0,0,0,1,1,Horizontal
+ 18,(1),(25),-10,0,0,0,0,1,1,Horizontal
+ 22,(18),(),0,0,0,0,0,1,1,Horizontal
+ 20,(18),(),0,0,0,0,0,1,1,Horizontal
+ 15,(1),(16),-30,0,0,0,0,1,1,Horizontal
+ 5,(8),(),0,0,0,0,0,1,1,Horizontal
+ 3,(8),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (26,25),24,5,0,0,0,0,TBCenter,Top,Bottom
+ (27,28),26,5,0,0,0,0,TBCenter,Top,Bottom
+ (13),12,12,0,0,0,0,Left,Left,Right
+ (13,12),11,5,0,0,0,0,TBCenter,Top,Bottom
+ (12),1,10,0,0,0,0,Left,Left,Left
+ (15),13,10,0,0,0,0,Top,Top,Bottom
+ (16),15,0,0,0,0,0,Top,Top,Bottom
+ (16),1,-10,0,0,0,0,Left,Right,Right
+ (14),1,10,0,0,0,0,Left,Left,Left
+ (29),28,10,0,0,0,0,Top,Top,Bottom
+ (25,23,21,19,17,27),1,10,0,0,0,0,Left,Left,Left
+ (10),1,10,0,0,0,0,Left,Left,Left
+ (11,10),1,50,0,0,0,0,TBCenter,Top,Top
+ (6,5,4),3,5,0,0,0,0,TBCenter,Top,Bottom
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (23,24),22,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,4,7),1,10,0,0,0,0,Left,Left,Left
+ (29),1,10,0,0,0,0,Left,Left,Left
+ (14),15,0,0,0,0,0,TBCenter,Top,Bottom
+ (9),8,0,0,0,0,0,Left,Left,Right
+ (8),7,0,0,0,0,0,Left,Left,Right
+ (8,7,9),5,5,0,0,0,0,TBCenter,Top,Bottom
+ (18,17),1,50,0,0,0,0,TBCenter,Top,Top
+ (21,22),20,5,0,0,0,0,TBCenter,Top,Bottom
+ (20,19),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (26,24,20,22,28),25,0,0,0,0,0,Left,Left,Right
+ (6),5,0,0,0,0,0,Left,Left,Right
+ (30),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (30),0,-10,0,0,0,0,Left,Right,Right
+ (11),12,12,0,0,0,0,Left,Left,Right
+ (15),1,10,0,0,0,0,Left,Left,Left
+ (18),25,0,0,0,0,0,Left,Left,Right
+ (5),8,0,0,0,0,0,Left,Left,Left
+ (3),7,0,0,0,0,0,Left,Left,Right
+ (2,3),1,50,0,0,0,0,TBCenter,Top,Top
+
+Items=window_config_bspmr
+ Dialogue(,,,363,178,"integrate.config_bspmr","window_config_bspmr","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_bspmr > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Physical BSPMemoryRegion:",PNone)0xffffffff =tx_phys_bspmr >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_phys_bspmr >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(8),(),20,0,0,0,0,1,1,Horizontal
+ 0,(2,7,8,4),(),80,0,0,0,0,1,1,Vertical
+Sizes
+ 5,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+ 7,(2),(),-22,0,0,0,0,1,1,Horizontal
+ 2,(0),(6),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (5),4,10,0,0,0,0,Top,Top,Bottom
+ (3,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+ (7,6),5,20,0,0,0,0,Top,Top,Bottom
+ (7),2,12,0,0,0,0,Left,Left,Left
+ (1,2),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),6,0,0,0,0,0,Left,Left,Right
+ (5,6,1,3),0,10,0,0,0,0,Left,Left,Left
+ (8),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (8),0,-10,0,0,0,0,Left,Right,Right
+
+Items=window_config_clock
+ Dialogue(,,,366,241,"integrate.config_clock","window_config_clock","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_clock > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Text(0,0,0,NULL,"Physical Clock:",PNone)0xffffffff =tx_phys_clock >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,"window_config_clock_select","",1,)0xffffffff =pd_phys_clock >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Options:",PNone)0xffffffff =tx_options >-1
+ ButtonSet(0,0,0,78,45,NULL,NULL,NULL,    (3,"ReadTime","SetTime","Alarm"),    (3,NULL,NULL,NULL),    -1,3,3,1,0,2,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_options >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(8,9),(),70,0,0,0,0,1,1,Horizontal
+ 0,(4,10,9,6,2),(),80,0,0,0,0,1,1,Vertical
+Sizes
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+ 6,(2),(),-22,0,0,0,0,1,1,Horizontal
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+ 7,(0),(),-30,0,0,0,0,1,1,Horizontal
+Positions
+ (4,3),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+ (6,5),7,20,0,0,0,0,Top,Top,Bottom
+ (6),2,12,0,0,0,0,Left,Left,Left
+ (1,2),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (9),6,-2,0,0,0,0,Left,Left,Left
+ (8,9),6,10,0,0,0,0,Top,Top,Bottom
+ (7),4,10,0,0,0,0,Top,Top,Bottom
+ (7),0,15,0,0,0,0,Left,Left,Left
+ (10),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (10),0,-10,0,0,0,0,Left,Right,Right
+ (3,1,8,5),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_collection
+ Dialogue(,,,414,278,"integrate.config_collection","window_config_collection","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_collection > -1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_name >-1
+ Text(0,0,0,NULL,"Attribute to Match:",PNone)0xffffffff =tx_attribute >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",0,)0xffffffff =pd_attribute >-1
+ MScrollList(0,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,1),NULL,NULL,(0),0)0xffffffff =msl_substrings >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(1,("Matching Substrings",300)),("msl_substrings"))0xffffffff =ch_substrings >-1
+ ButtonSet(0,0,0,55,78,NULL,NULL,NULL,    (3,"Add","Edit","Delete"),    (3,"cli(\"collect_add_substr\")","cli(\"collect_edit_substr\")","cli(\"collect_delete_substr\")"),    -1,3,3,1,0,0,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_substrings >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(),(),70,0,0,0,0,1,1,Horizontal
+ 0,(2,4,8),(),90,0,0,0,0,1,1,Vertical
+Sizes
+ 6,(5),(),0,0,0,0,0,1,1,Horizontal
+ 5,(0),(8,6,4,2),-70,0,0,0,0,1,1,Vertical
+ 5,(0),(7),-30,0,0,0,0,1,1,Horizontal
+ 4,(2),(),-22,0,0,0,0,1,1,Horizontal
+ 2,(0),(3),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (7),5,0,0,0,0,0,Top,Top,Top
+ (7),0,-10,0,0,0,0,Left,Right,Right
+ (5),6,0,0,0,0,0,Top,Top,Bottom
+ (6),4,20,0,0,0,0,Top,Top,Bottom
+ (6,5),0,10,0,0,0,0,Left,Left,Left
+ (4,3),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),3,17,0,0,0,0,Left,Left,Right
+ (2),4,-12,0,0,0,0,Left,Left,Left
+ (1,3),0,10,0,0,0,0,Left,Left,Left
+ (8),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (8),0,-10,0,0,0,0,Left,Right,Right
+ (2,1),0,20,0,0,0,0,TBCenter,Top,Top
+
+Items=window_config_connection
+ Dialogue(,,,280,158,"integrate.config_connection","window_config_connection","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_connection > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Text(0,0,0,NULL,"Ordering Type:",PNone)0xffffffff =tx_ordertype >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_ordertype >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(7),(),20,0,0,0,0,1,1,Horizontal
+ 0,(7,2,4,6),(),50,0,0,0,0,1,1,Vertical
+Sizes
+ 6,(2),(),-22,0,0,0,0,1,1,Horizontal
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (6),2,12,0,0,0,0,Left,Left,Left
+ (5,6),4,5,0,0,0,0,TBCenter,Top,Bottom
+ (3,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+ (7),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (7),0,-10,0,0,0,0,Right,Right,Right
+ (2,1),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (5,3,1),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_iodevice
+ Dialogue(,,,363,178,"integrate.config_iodevice","window_config_iodevice","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_iodevice > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Physical IODevice:",PNone)0xffffffff =tx_phys_iodev >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_phys_iodev >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(8),(),20,0,0,0,0,1,1,Horizontal
+ 0,(2,7,8,4),(),80,0,0,0,0,1,1,Vertical
+Sizes
+ 5,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+ 7,(2),(),-22,0,0,0,0,1,1,Horizontal
+ 2,(0),(6),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (5),4,10,0,0,0,0,Top,Top,Bottom
+ (3,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+ (7,6),5,20,0,0,0,0,Top,Top,Bottom
+ (7),2,12,0,0,0,0,Left,Left,Left
+ (1,2),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),6,0,0,0,0,0,Left,Left,Right
+ (5,6,1,3),0,10,0,0,0,0,Left,Left,Left
+ (8),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (8),0,-10,0,0,0,0,Left,Right,Right
+
+Items=window_config_iospace
+ Dialogue(,,,276,94,"integrate.config_iospace","window_config_iospace","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_iospace > -1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_name >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(3),(),20,0,0,0,0,1,1,Horizontal
+ 0,(3,2),(),20,0,0,0,0,1,1,Vertical
+Sizes
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (1,2),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (3),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (3),0,-10,0,0,0,0,Right,Right,Right
+ (1),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_kernel
+ Dialogue(,,,455,253,"integrate.config_kernel","window_config_kernel","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_kernel > -1
+ Text(0,0,0,NULL,"Filename:",PNone)0xffffffff =tx_filename >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_filename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Browse"),    (1,"addressspace_change_kernelfilename"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"Open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bs_filename >-1
+ Text(0,0,0,NULL,"Header File Name:",PNone)0xffffffff =tx_headerfilename >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_headerfilename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Browse"),    (1,"addressspace_change_headerfilename"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"Open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bs_headerfilename >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Maximum Priority:",PNone)0xffffffff =tx_max_priority >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxpriority >-1
+ Text(0,0,0,NULL,"Maximum Weight:",PNone)0xffffffff =tx_max_weight >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxweight >-1
+ Text(0,0,0,NULL,"Reserved Objects:",PNone)0xffffffff =tx_res_objs >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_resobj >-1
+ Text(0,0,0,NULL,"Heap Size:",PNone)0xffffffff =tx_heapsize >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_heapsize >-1
+ Text(0,0,0,NULL,"Arguments:",PNone)0xffffffff =tx_arguments >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_arguments >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(18),(),50,0,0,0,0,1,1,Horizontal
+ 0,(18,9,9,9,6,3,15),(),100,0,0,0,0,1,1,Vertical
+Sizes
+ 17,(15),(),0,0,0,0,0,1,1,Horizontal
+ 15,(13),(),0,0,0,0,0,1,1,Horizontal
+ 2,(5),(),0,0,0,0,0,1,1,Horizontal
+ 5,(0),(6,4),-20,0,0,0,0,1,1,Horizontal
+ 11,(9),(),0,0,0,0,0,1,1,Horizontal
+ 13,(9),(),0,0,0,0,0,1,1,Horizontal
+ 7,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 9,(0),(8),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (17,16),15,5,0,0,0,0,TBCenter,Top,Bottom
+ (14,15),13,5,0,0,0,0,TBCenter,Top,Bottom
+ (6),5,0,0,0,0,0,Left,Left,Right
+ (5),4,0,0,0,0,0,Left,Left,Right
+ (6,5,4),3,5,0,0,0,0,TBCenter,Top,Bottom
+ (1,2,3),0,10,0,0,0,0,TBCenter,Top,Top
+ (7),6,10,0,0,0,0,Top,Top,Bottom
+ (11,10),9,5,0,0,0,0,TBCenter,Top,Bottom
+ (17,11,13,15),9,0,0,0,0,0,Left,Left,Left
+ (13,12),11,5,0,0,0,0,TBCenter,Top,Bottom
+ (9,8),7,20,0,0,0,0,TBCenter,Top,Bottom
+ (3),2,0,0,0,0,0,Left,Left,Right
+ (18),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (18),0,-10,0,0,0,0,Left,Right,Right
+ (7),0,15,0,0,0,0,Left,Left,Left
+ (9),8,0,0,0,0,0,Left,Left,Right
+ (2),4,0,0,0,0,0,Left,Left,Right
+ (16,12,1,8,10,4,14),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_link
+ Dialogue(,,,279,121,"integrate.config_link","window_config_link","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_link > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(5),(),20,0,0,0,0,1,1,Horizontal
+ 0,(5,2,4),(),50,0,0,0,0,1,1,Vertical
+Sizes
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (3,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+ (5),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (5),0,-10,0,0,0,0,Right,Right,Right
+ (2,1),0,20,0,0,0,0,TBCenter,Top,Top
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (3,1),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_memregion
+ Dialogue(,,,523,453,"integrate.config_memregion","window_config_memregion","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_memregion > -1
+ Button(0,93,432,76,15,"bt_iskernel",NULL,NULL,"bt_iskernel",2,0,0,0,"")0x0 =bt_iskernel >-1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line3 >-1
+ Button(0,0,0,194,15,NULL,NULL,NULL,"Map to another Memory Region",2,0,0,0,"window_config_memregion_handle_bt_mapto() ;")0xffffffff =bt_mapto >-1
+ Text(0,0,0,NULL,"Map To Name:",PNone)0xffffffff =tx_mapto_name >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_mapto >-1
+ Button(0,0,0,126,15,NULL,NULL,NULL,"Use Linker Section ",2,0,0,0,"window_config_memregion_handle_bt_section() ;")0xffffffff =bt_section >-1
+ Text(0,0,0,NULL,"Section Name:",PNone)0xffffffff =tx_section >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_section >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Start Address:",PNone)0xffffffff =tx_start >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_start >-1
+ Text(0,0,0,NULL,"Length:",PNone)0xffffffff =tx_length >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_length >-1
+ Text(0,0,0,NULL,"AlignmentValue:",PNone)0xffffffff =tx_alignval >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_alignval >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line1 >-1
+ Text(0,0,0,NULL,"Options:",PNone)0xffffffff =tx_options >-1
+ ButtonSet(0,0,0,371,90,NULL,NULL,NULL,    (12,"Read","Write","Execute","Volatile","IOCoherent","StackSegment","Unmapped","Paged","Clear","WriteThroughWithAllocate","WriteThroughWithoutAllocate","FastPacketCache"),    (12,NULL,NULL,NULL,"window_config_memregion_toggle_options","window_config_memregion_toggle_options",NULL,"window_config_memregion_toggle_options","window_config_memregion_toggle_options","window_config_memregion_toggle_options","window_config_memregion_toggle_options","window_config_memregion_toggle_options","window_config_memregion_toggle_options"),    -1,3,6,1,0,2,0,    (12,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),    (0),    (12,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),    (12,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),0,0)0xffffffff =bs_options >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(21,22),(),70,0,0,0,0,1,1,Horizontal
+ 0,(23,22,19,17,15,12,9,5,3),(),170,0,0,0,0,1,1,Vertical
+Sizes
+ 19,(15),(),0,0,0,0,0,1,1,Horizontal
+ 6,(13),(),0,0,0,0,0,1,1,Horizontal
+ 3,(5),(),0,0,0,0,0,1,1,Horizontal
+ 12,(9),(),22,0,0,0,0,1,1,Horizontal
+ 9,(0),(8,7),-58,0,0,0,0,1,1,Horizontal
+ 20,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 13,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 13,(),(),0,0,0,0,0,1,1,Vertical
+ 17,(15),(),0,0,0,0,0,1,1,Horizontal
+ 15,(0),(18),-20,0,0,0,0,1,1,Horizontal
+ 5,(0),(2),-10,0,0,0,0,1,1,Horizontal
+Positions
+ (11,10,12),9,5,0,0,0,0,TBCenter,Top,Bottom
+ (19,18),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (6),5,10,0,0,0,0,Top,Top,Bottom
+ (2,3),0,20,0,0,0,0,TBCenter,Top,Top
+ (3),2,0,0,0,0,0,Left,Left,Right
+ (11),8,0,0,0,0,0,Left,Left,Left
+ (12),9,-12,0,0,0,0,Left,Left,Left
+ (9),8,12,0,0,0,0,Left,Left,Right
+ (8),7,25,0,0,0,0,Left,Left,Right
+ (9,8,7),6,20,0,0,0,0,TBCenter,Top,Bottom
+ (20),19,10,0,0,0,0,Top,Top,Bottom
+ (6,13,20),0,15,0,0,0,0,Left,Left,Left
+ (13),12,10,0,0,0,0,Top,Top,Bottom
+ (21,22),20,20,0,0,0,0,Top,Top,Bottom
+ (22),21,50,0,0,0,0,Left,Left,Right
+ (15,17,19),18,10,0,0,0,0,Left,Left,Right
+ (2,21,4,16,14,7,10,18),0,10,0,0,0,0,Left,Left,Left
+ (17,16),15,5,0,0,0,0,TBCenter,Top,Bottom
+ (15,14),13,20,0,0,0,0,TBCenter,Top,Bottom
+ (23),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (23),0,-10,0,0,0,0,Left,Right,Right
+ (4,5),3,5,0,0,0,0,TBCenter,Top,Bottom
+ (5),3,0,0,0,0,0,Left,Left,Left
+
+Items=window_config_reloc
+ Dialogue(,,,419,183,"integrate.config_reloc","window_config_reloc","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_reloc > -1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_name >-1
+ Text(0,0,0,NULL,"FileName:",PNone)0xffffffff =tx_filename >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_filename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Browse"),    (1,"addressspace_change_filename"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"Open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bs_filename >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Maximum Priority:",PNone)0xffffffff =tx_max_priority >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxpriority >-1
+ Text(0,0,0,NULL,"Maximum Weight:",PNone)0xffffffff =tx_max_weight >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxweight >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(8),(),90,0,0,0,0,1,1,Horizontal
+ 0,(11,10,8,5,2),(),70,0,0,0,0,1,1,Vertical
+Sizes
+ 2,(4),(),0,0,0,0,0,1,1,Horizontal
+ 4,(0),(5,3),-20,0,0,0,0,1,1,Horizontal
+ 10,(8),(),0,0,0,0,0,1,1,Horizontal
+ 6,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 8,(0),(7),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (3,5,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (5),4,0,0,0,0,0,Left,Left,Right
+ (4),3,0,0,0,0,0,Left,Left,Right
+ (1,2),0,10,0,0,0,0,TBCenter,Top,Top
+ (6),5,10,0,0,0,0,Top,Top,Bottom
+ (10,9),8,5,0,0,0,0,TBCenter,Top,Bottom
+ (10),8,0,0,0,0,0,Left,Left,Left
+ (8,7),6,20,0,0,0,0,TBCenter,Top,Bottom
+ (11),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (11),0,-10,0,0,0,0,Left,Right,Right
+ (6),0,15,0,0,0,0,Left,Left,Left
+ (8),7,0,0,0,0,0,Left,Left,Right
+ (2),3,0,0,0,0,0,Left,Left,Right
+ (3,9,7,1),0,10,0,0,0,0,Left,Left,Left
+
+Items=window_config_semaphore
+ Dialogue(,,,474,245,"integrate.config_semaphore","window_config_semaphore","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_semaphore > -1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Type:",PNone)0xffffffff =tx_type >-1
+ ButtonSet(0,0,0,274,15,NULL,NULL,NULL,    (3,"Binary","Counting","HighestLocker"),    (3,"sem_binary_DimIt","sem_counting_DimIt","sem_hl_DimIt"),    -1,3,3,0,0,1,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_type >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line1 >-1
+ Text(0,0,0,NULL,"Priority:",PNone)0xffffffff =tx_priority >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_priority >-1
+ Text(0,0,0,NULL,"Initial Value:",PNone)0xffffffff =tx_initialval >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_initialval >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(6,7),(),70,0,0,0,0,1,1,Horizontal
+ 0,(13,12,10,7,4,2),(),120,0,0,0,0,1,1,Vertical
+Sizes
+ 2,(0),(1),-20,0,0,0,0,1,1,Horizontal
+ 8,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 5,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 12,(10),(),0,0,0,0,0,1,1,Horizontal
+ 10,(2),(),0,0,0,0,0,1,1,Horizontal
+ 4,(2),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (2,1),0,20,0,0,0,0,TBCenter,Top,Top
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (2),1,0,0,0,0,0,Left,Left,Right
+ (8),7,10,0,0,0,0,Top,Top,Bottom
+ (8),0,15,0,0,0,0,Left,Left,Left
+ (5),4,10,0,0,0,0,Top,Top,Bottom
+ (5),0,15,0,0,0,0,Left,Left,Left
+ (6,7),5,20,0,0,0,0,TBCenter,Top,Bottom
+ (10,12,7),1,0,0,0,0,0,Left,Left,Right
+ (11,12),10,5,0,0,0,0,TBCenter,Top,Bottom
+ (10,9),8,20,0,0,0,0,TBCenter,Top,Bottom
+ (3,6,11,9),0,10,0,0,0,0,Left,Left,Left
+ (13),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (13),0,-10,0,0,0,0,Left,Right,Right
+ (3,4),2,5,0,0,0,0,TBCenter,Top,Bottom
+ (4),2,0,0,0,0,0,Left,Left,Left
+
+Items=window_config_task
+ Dialogue(,,,574,517,"integrate.config_task","window_config_task","","",0,0,1,"MULTIPIC") 0xffffffff =window_config_task > -1
+ Button(0,226,500,72,15,"bt_isinitial",NULL,NULL,"bt_isinitial",2,0,0,0,"window_config_task_handle_bt_isinitial() ;")0x0 =bt_isinitial >-1
+ Button(0,203,487,108,15,"bt_allowsetinitpri",NULL,NULL,"bt_allowsetinitpri",2,0,0,0,"window_config_task_handle_bt_allowsetinitpri() ;")0x0 =bt_allowsetinitpri >-1
+ Button(0,89,500,86,15,"bt_ashasmrs",NULL,NULL,"bt_ashasmrs",2,0,0,0,"window_config_task_handle_bt_ashasmrs() ;")0x0 =bt_ashasmrs >-1
+ Text(0,0,0,NULL,"Object Number:",PNone)0xffffffff =tx_obj_num >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_obj_num >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_name >-1
+ Text(0,0,0,NULL,"Entry Point:",PNone)0xffffffff =tx_entrypoint >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_entrypt >-1
+ Button(0,0,0,120,15,NULL,NULL,NULL,"Start Automatically",2,0,0,0,"")0xffffffff =bt_startit >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line0 >-1
+ Text(0,0,0,NULL,"Priority:",PNone)0xffffffff =tx_priority >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_priority >-1
+ Text(0,0,0,NULL,"Maximum Priority:",PNone)0xffffffff =tx_maxpriority >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxpriority >-1
+ Text(0,0,0,NULL,"Weight:",PNone)0xffffffff =tx_weight >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_weight >-1
+ Text(0,0,0,NULL,"Maximum Weight:",PNone)0xffffffff =tx_maxweight >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxweight >-1
+ Text(0,0,0,NULL,"Identification",PNone)0xffffffff =tx_id >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_id >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line1 >-1
+ Text(0,0,0,NULL,"Stack:",PNone)0xffffffff =tx_stack >-1
+ ButtonSet(0,0,0,254,15,NULL,NULL,NULL,    (2,"Specify Size","Use Memory Region"),    (2,"config_task_toggle_stack","config_task_toggle_stack"),    -1,2,2,0,0,1,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_stack >-1
+ Text(0,0,0,NULL,"Stack Size:",PNone)0xffffffff =tx_stacksize >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_stacksize >-1
+ Text(0,0,0,NULL,"Stack MemoryRegion:",PNone)0xffffffff =tx_stackmr >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_stackmr >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =line2 >-1
+ Text(0,0,0,NULL,"TimeSlice:",PNone)0xffffffff =tx_timeslice >-1
+ ButtonSet(0,0,0,340,15,NULL,NULL,NULL,    (3,"Maximum (non-preemptible)","Minimum","Other"),    (3,"config_task_toggle_timeslice","config_task_toggle_timeslice","config_task_toggle_timeslice"),    -1,3,3,0,0,1,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_timeslice >-1
+ Text(0,0,0,NULL,"Seconds:",PNone)0xffffffff =tx_seconds >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_seconds >-1
+ Text(0,0,0,NULL,"Fraction:",PNone)0xffffffff =tx_fraction >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_fraction >-1
+ ButtonSet(0,0,0,118,21,NULL,NULL,NULL,    (2,"OK","Cancel"),    (2,"cli(\"OK\")","cli(\"Cancel\")"),    0,3,3,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok >-1
+MinSizes
+ 0,(31),(),50,0,0,0,0,1,1,Horizontal
+ 0,(36,35,33,31,28,26,24,21,19,17,15,13,10,9,7,5),(),200,0,0,0,0,1,1,Vertical
+Sizes
+ 28,(0),(27),-32,0,0,0,0,1,1,Horizontal
+ 29,(11),(),0,0,0,0,0,1,1,Horizontal
+ 21,(17),(),0,0,0,0,0,1,1,Horizontal
+ 5,(0),(4),-20,0,0,0,0,1,1,Horizontal
+ 19,(13),(),0,0,0,0,0,1,1,Horizontal
+ 15,(13),(),0,0,0,0,0,1,1,Horizontal
+ 33,(0),(32),-100,0,0,0,0,1,1,Horizontal
+ 22,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 13,(0),(18),-10,0,0,0,0,1,1,Horizontal
+ 11,(0),(),-30,0,0,0,0,1,1,Horizontal
+ 35,(33),(),0,0,0,0,0,1,1,Horizontal
+ 26,(0),(27),-10,0,0,0,0,1,1,Horizontal
+ 17,(13),(),0,0,0,0,0,1,1,Horizontal
+ 7,(5),(),0,0,0,0,0,1,1,Horizontal
+ 9,(5),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (26),27,0,0,0,0,0,Left,Left,Right
+ (28,27),26,5,0,0,0,0,TBCenter,Top,Bottom
+ (28),27,12,0,0,0,0,Left,Left,Right
+ (27),0,10,0,0,0,0,Left,Left,Left
+ (23,24),22,20,0,0,0,0,TBCenter,Top,Bottom
+ (23),0,10,0,0,0,0,Left,Left,Left
+ (24),23,10,0,0,0,0,Left,Left,Right
+ (29),28,10,0,0,0,0,Top,Top,Bottom
+ (29),11,0,0,0,0,0,Left,Left,Left
+ (20,21),19,5,0,0,0,0,TBCenter,Top,Bottom
+ (13),18,0,0,0,0,0,Left,Left,Right
+ (4,5),0,20,0,0,0,0,TBCenter,Top,Top
+ (5),4,10,0,0,0,0,Left,Left,Right
+ (19,18),17,5,0,0,0,0,TBCenter,Top,Bottom
+ (15,14),13,5,0,0,0,0,TBCenter,Top,Bottom
+ (17,19,21),13,0,0,0,0,0,Left,Left,Left
+ (15),13,0,0,0,0,0,Left,Left,Left
+ (36),0,-10,0,0,0,0,Top,Bottom,Bottom
+ (36),0,-10,0,0,0,0,Left,Right,Right
+ (10),9,10,0,0,0,0,Top,Top,Bottom
+ (32,34),0,80,0,0,0,0,Left,Left,Left
+ (31,30),29,20,0,0,0,0,TBCenter,Top,Bottom
+ (22),21,10,0,0,0,0,Top,Top,Bottom
+ (22),0,15,0,0,0,0,Left,Left,Left
+ (11),0,15,0,0,0,0,Left,Left,Left
+ (11),10,10,0,0,0,0,Top,Top,Bottom
+ (35,33),34,0,0,0,0,0,Left,Left,Right
+ (32,33),31,10,0,0,0,0,TBCenter,Top,Bottom
+ (31),30,5,0,0,0,0,Left,Left,Right
+ (13,12),11,20,0,0,0,0,TBCenter,Top,Bottom
+ (10,30,25,16,12,8,6,14,18,4,20),0,10,0,0,0,0,Left,Left,Left
+ (7,9),5,0,0,0,0,0,Left,Left,Left
+ (6,7),5,5,0,0,0,0,TBCenter,Top,Bottom
+ (9,8),7,5,0,0,0,0,TBCenter,Top,Bottom
+ (25,26),24,10,0,0,0,0,TBCenter,Top,Bottom
+ (17,16),15,5,0,0,0,0,TBCenter,Top,Bottom
+ (34,35),33,5,0,0,0,0,TBCenter,Top,Bottom
+

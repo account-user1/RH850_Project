@@ -1,0 +1,144 @@
+configure cwindlines 21
+clear
+
+Q 1;
+D;
+
+bA main##End {
+    scrollcommand +MAX wid=-2;
+    echo "===============================================================================";
+    echo "Trace results are displayed in the Trace List Window when trace is retrieved.";
+    echo "Trace is automatically retrieved each time the target halts if the 'Retrieve";
+    echo "trace when target halts' option is enabled and it can be manually retrieved";
+    echo "either by clicking the \"Retrieve Trace\" (the blue down arrow) button in the";
+    echo "Trace List Window or by using the 'trace retrieve' command.";
+    echo " ";
+    echo "You should now see the trace results displayed in the Trace List Window.";
+    echo "* The right pane contains a listing of all of the instructions executed by the";
+    echo "  processor.";
+    echo "* The left pane contains a hierarchy of the function calls made by your";
+    echo "  program.";
+    echo "* The bottom pane displays a high-level view of the call stack of the program"
+    echo "  over time to enable you to see patterns or unusual program behavior.";
+    echo " ";
+    echo "The Trace List Window is often useful when you want to get a detailed look at";
+    echo "exactly what instructions were executed by your program.";
+    echo " ";
+    echo "To continue the demonstration, press 'F5' or the Go button.";
+    echo " ";
+
+    bA main##End {
+	scrollcommand +MAX wid=-2;
+	echo "===============================================================================";
+	echo "We have now opened the PathAnalyzer, which displays a graphical representation";
+	echo "of your call stack over time.  This enables you to quickly understand the";
+	echo "structure of your program and gives a visual indication of which functions";
+	echo "take what amount of time and which functions call each other.  This tool";
+	echo "is very useful for performance analysis and analyzing timing conditions";
+	echo "in your software.  In this example, it is easy to see that some calls to";
+	echo "do_tick() take longer than others, and you can quickly jump to those points";
+	echo "in time by navigating through the PathAnalyzer.";
+	echo " "
+	echo "There are also a number of other TimeMachine tools, including:";
+	echo "* To display profiling information for the trace data, press the Profile button.";
+	echo "* To display statistics about the trace data, press the Statistics button.";
+	echo " ";
+	echo "To continue the demonstration, press 'F5' or the Go button.";
+	echo " ";
+
+	trace path
+ 
+	bA main##End {
+	    scrollcommand +MAX wid=-2;
+	    echo "===============================================================================";
+	    echo "We will now demonstrate TimeMachine.  With TimeMachine, you can step";
+	    echo "backwards in time through your program execution to diagnose hard to";
+	    echo "reproduce problems.";
+	    echo " ";
+	    echo "To continue, press 'F5' or the Go button.";
+	    echo " ";
+	    bA main##End {
+	        D;
+		b main##BeforeReturn {
+                    b perform_maintenance {
+		        D;
+    			regview;
+     			localsview;
+    			callsview;
+    			scrollcommand +MAX wid=-2;
+    			echo "===============================================================================";
+    			echo "You've now \"run\" backwards to the beginning of the last call to";
+			echo "perform_maintenance().  We've opened the register window, local variables";
+    			echo "window, and call stack window.  They are displaying what we've been able to";
+    			echo "determine about the state of registers, local variables, and the call stack at";
+    			echo "this point in the execution of your program.";
+    			echo " ";
+    			echo "You can now single step, source step, and run both forwards and backwards";
+    			echo "through the trace of your program.  You can also set breakpoints, and even set";
+    			echo "conditional breakpoints if it is possible to evaluate the condition given what";
+    			echo "we know from the trace data.  At any point in the trace you can examine the";
+    			echo "contents of registers and memory.";
+    			echo " ";
+    			echo "This concludes the demo of the TimeMachine features.";
+    			echo " ";
+		    }
+
+		    scrollcommand +MAX wid=-2;
+
+		    echo "===============================================================================";
+		    echo "We've now stepped backward into the TimeMachine debugger.  This is a virtual"
+		    echo "debugger we've hooked up to a virtual target that represents the traced";
+		    echo "history of your program's execution on the real target.  You can enter";
+		    echo "TimeMachine either by pressing the TimeMachine button or by simply using the";
+		    echo "backward run control buttons available in the MULTI debugger."
+		    echo " ";
+		    echo "The TimeMachine debugger starts off at the last instruction in the trace data.";
+		    echo "We've set a breakpoint at the beginning of the perform_maintenance() function.";
+		    echo " ";
+		    echo "To run back in time to this breakpoint, click the \"Go Back\" button or use";
+		    echo "the \"bc\" command.";
+		    echo " ";
+		    d main##BeforeReturn;
+		}
+		bs;
+	    }
+	    g main##BeforeReturn;
+	}
+	g main##BeforeReturn;
+    }
+
+    g main##BeforeReturn;
+}
+
+echo "===============================================================================";
+echo "This demo session will take you through some of the basic capabilities";
+echo "of using hardware trace with TimeMachine and the MULTI debugger.";
+echo " ";
+echo "For a more in-depth look at the hardware trace and TimeMachine features";
+echo "supported by MULTI, please view the on-line help or the MULTI Debugging Manual.";
+echo " ";
+echo "You must connect to a target which supports trace to use this demo.";
+echo " ";
+
+// The following command enables both the "Automatically enable trace collection"
+// option and the "Retrieve trace when target halts" option.  This is needed
+// because the rest of this demo script assumes those options are enabled.
+trace set automatic_trace
+trace list
+
+scrollcommand +MAX wid=-2;
+echo "===============================================================================";
+echo "MULTI has successfully connected to the trace target.  The 'trace list'";
+echo "command was issued to launch the Trace List Window.  This window will";
+echo "contain a listing of the instructions executed by your program.";
+echo "From this window, you can also configure triggers and various trace";
+echo "options.  For example, to configure triggers, select Config->Set Triggers;";
+echo "to change your trace buffer size or other collection options, select";
+echo "Config->Options.";
+echo " ";
+echo "The collection of trace has already been enabled because the 'Automatically";
+echo "enable trace collection' trace option is enabled.";
+echo " "
+echo "To begin the demonstration, press 'F5' or the Go button in the main debugger";
+echo "window.";
+echo " "

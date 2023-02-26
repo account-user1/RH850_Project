@@ -1,0 +1,773 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>GHS Project Component Documentation</title></head><body>
+<div id="multi.mpm.kernel_project">
+<SPAN ID = "title">INTEGRITY KernelSpace Project</SPAN><SPAN ID = "text">
+
+A KernelSpace project is a stand-alone executable linked with
+INTEGRITY libraries suitable for running directly on a target.
+Use a KernelSpace project when only physical space is needed,
+or when further virtual AddressSpaces may be downloaded at
+run time.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.monolith_project">
+<SPAN ID = "title">INTEGRITY Monolith Project</SPAN><SPAN ID = "text">
+A monolith image is a
+stand-alone executable, suitable for running directly on a target, that
+contains a kernel and zero or more virtual AddressSpaces. Use a Monolith INTEGRITY
+Application Project to take advantage of the safety and
+security of INTEGRITY's memory mapping for application code
+without requiring run-time download.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.dynamic_project">
+<SPAN ID = "title">Dynamic Download</SPAN><SPAN ID = "text">
+A Dynamic Download
+image consists of one or more virtual AddressSpace projects that are
+downloaded via MULTI onto an INTEGRITY kernel already running on your
+target. Use a Dynamic Download INTEGRITY Application Project to bundle
+related virtual AddressSpaces without linking in a kernel
+project, so it can be downloaded independently.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.integrity_dynamic_download_commented_kernel">
+<SPAN ID = "title">INTEGRITY KernelSpace Project</SPAN><SPAN ID = "text">
+This commented out KernelSpace project was created due to a Create Dynamic Download
+from Monolith action.  To resurrect this kernel, select the parent Dynamic Download
+and choose Create Monolith from Dynamic Download.  No actions should be done
+on this kernel when it is commented out.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.program_layout">
+<SPAN ID = "title">Program Layout</SPAN><SPAN ID = "text">
+Selects which linker directives file to include in your program.  
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_libraries">
+<SPAN ID = "title">Kernel Libraries</SPAN><SPAN ID = "text">
+Select libraries to enable functionality in the kernel.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_modules">
+<SPAN ID = "title">Kernel Modules</SPAN><SPAN ID = "text">
+Select OS Modules to enable in the kernel.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.monolith_from_standalone_kernel">
+<SPAN ID = "title">Create Monolith From Stand-alone Kernel</SPAN><SPAN ID = "text">
+Creates a monolith project around the stand-alone kernel.  This will add
+the monolith build files and Integrate file.  Subsequently, you can
+add virtual AddressSpaces, if desired.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_debug">
+<SPAN ID = "title">Debugging</SPAN><SPAN ID = "text">
+Enables run-mode task debugging interface.
+Adds libdebug.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_load">
+<SPAN ID = "title">Dynamic Load</SPAN><SPAN ID = "text">
+Enables kernel to dynamically load modules, i.e. Dynamic Download projects.
+Adds libload.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_res">
+<SPAN ID = "title">Resource Manager</SPAN><SPAN ID = "text">
+Enables the Resource Manager.  The Resource Manager is a
+mechanism for sharing resources among different AddressSpaces.
+Adds libres.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_log">
+<SPAN ID = "title">EventAnalyzer</SPAN><SPAN ID = "text">
+Enables event logging. Use in tandem with the MULTI EventAnalyzer.
+Adds liblog.a to the project.
+Use of the EventAnalyzer in Live Mode requires a network stack, but
+Post-Mortem Mode does not.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_legacy_itcpip">
+<SPAN ID = "title">Legacy GHnet Stack (Kernel)</SPAN><SPAN ID = "text">
+Adds the legacy TCP/IP Stack to the kernel.
+Adds libitcpip.a to the project.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.kernel_library_itcpip">
+<SPAN ID = "title">TCP/IP Stack (Kernel)</SPAN><SPAN ID = "text">
+Adds the standard TCP/IP Stack to the kernel.
+Adds libitcpip.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_ghnet_ipv4">
+<SPAN ID = "title">GHnet IPv4 Stack (Kernel)</SPAN><SPAN ID = "text">
+Adds the GHnet IPv4 Stack to the kernel.
+Adds libip4.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_ghnet_ipv46">
+<SPAN ID = "title">GHnet IPv4/v6 Stack (Kernel)</SPAN><SPAN ID = "text">
+Adds the GHnet IPv4/v6 Stack to the kernel.
+Adds libip46.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_ghnet_ipv46router">
+<SPAN ID = "title">GHnet IPv4/v6 Routing Stack (Kernel)</SPAN><SPAN ID = "text">
+Adds the GHnet IPv4/v6 Routing Stack to the kernel.
+Adds libip46router.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_ivfs">
+<SPAN ID = "title">File System Client</SPAN><SPAN ID = "text">
+Allows use of the File System API.  
+Adds libivfs.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_vload_kernel_helper">
+<SPAN ID = "title">Virtual Dynamic Load Kernel Helper</SPAN><SPAN ID = "text">
+Adds kernel side support for a load agent in virtual AddressSpace.
+Adds libvload_kernel_helper.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_socket">
+<SPAN ID = "title">Socket</SPAN><SPAN ID = "text">
+Allows use of the Socket API.
+Adds libsocket.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_net">
+<SPAN ID = "title">Net</SPAN><SPAN ID = "text">
+Allows use of the Network Library API.
+Adds libnet.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_rpc">
+<SPAN ID = "title">RPC</SPAN><SPAN ID = "text">
+Allows use of the RPC API.
+Adds librpc.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_perf">
+<SPAN ID = "title">ResourceAnalyzer</SPAN><SPAN ID = "text">
+Enables kernel for later use of the MULTI Resource Analyzer.
+Adds libperf.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.kernel_library_core">
+<SPAN ID = "title">Core File Collection</SPAN><SPAN ID = "text">
+Enables kernel for core file collection upon error.
+Adds libcore.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.intapp_shared_libs">
+<SPAN ID = "title">Use Shared Libraries</SPAN><SPAN ID = "text">
+When checked, allows the INTEGRITY Application (Monolith or Dynamic Download) to
+be linked with shared libraries.  When unchecked, the INTEGRITY Application (Monolith or Dynamic Download)
+will be linked statically with all libraries.  Either one can be a size win depending
+on the behavior of your application.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.virtual_address_space">
+<SPAN ID = "title">Virtual AddressSpace</SPAN><SPAN ID = "text">
+<p>
+The result of building a virtual AddressSpace project is a fully linked ELF
+executable, called a virtual AddressSpace program. This program contains
+only the code and data for this single virtual AddressSpace. 
+</p>
+<p>
+User code for a virtual AddressSpace program begins with the standard C/C++
+function main(). The entrypoint of the program is actually _start,
+which initializes the virtual AddressSpace so that the C/C++ run-time
+environment and the INTEGRITY API can be used. _start transfers control to
+main(), the start of user code for each virtual AddressSpace.
+</p>
+<p>
+The thread of control executing into main() is known as the Initial Task.
+The name of the Initial Task as seen in the MULTI Task window is Initial,
+grouped with any other tasks that may be in the same AddressSpace. 
+</p>
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.virtual_libraries">
+<SPAN ID = "title">Virtual Libraries</SPAN><SPAN ID = "text">
+Enable functionality in the virtual AddressSpace by adding libraries.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.virtual_library_ivfs">
+<SPAN ID = "title">File System Client</SPAN><SPAN ID = "text">
+Allows use of the File System API.  
+Adds libivfs.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.virtual_library_socket">
+<SPAN ID = "title">Socket</SPAN><SPAN ID = "text">
+Allows use of the Socket API.
+Adds libsocket.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.virtual_library_net">
+<SPAN ID = "title">Net</SPAN><SPAN ID = "text">
+Allows use of the Network Library API.
+Adds libnet.a to the project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.num_vas_dlg">
+<SPAN ID = "title">Configuring Virtual Address Spaces</SPAN><SPAN ID = "text">
+Use this dialog to add virtual Address Spaces to the project.  You may
+either add 'n' AddressSpaces with a default name, or explicitly name
+each AddressSpace in a comma separated list.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.pick_os_modules_dlg">
+<SPAN ID = "title">Configuring OS Modules</SPAN><SPAN ID = "text">
+Use this dialog to add INTEGRITY Operating System Modules to the project.
+Some selections are mutually exclusive.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_dist">
+<SPAN ID = "title">File System (From Distribution)</SPAN><SPAN ID = "text">
+Use the File System Server provided from the INTEGRITY installation.
+This server should be used as is. If modifications are required,
+select "File System (User Configured)".
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_copy">
+<SPAN ID = "title">File System (User Configured)</SPAN><SPAN ID = "text">
+Create a File System Server in the current INTEGRITY Application.  This can be
+configured with mount points and libraries to suit your application.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_kernel_file_system_copy">
+<SPAN ID = "title">File System (Kernel, User Configured)</SPAN><SPAN ID = "text">
+Create a File System Server in the kernel of the current project.  This can be
+configured with mount points and libraries to suit your application.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_legacy_tcpip">
+<SPAN ID = "title">Legacy GHnet Stack (Virtual)</SPAN><SPAN ID = "text">
+Use the legacy virtual TCP/IP Stack Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_tcpip">
+<SPAN ID = "title">TCP/IP Stack (Virtual)</SPAN><SPAN ID = "text">
+Use the Virtual TCP/IP Stack Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_ghnet_ip4">
+<SPAN ID = "title">GHnet IPv4 Stack (Virtual)</SPAN><SPAN ID = "text">
+Use the Virtual GHnet IPv4 Stack Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_ghnet_ip46">
+<SPAN ID = "title">GHnet IPv4/v6 Stack (Virtual)</SPAN><SPAN ID = "text">
+Use the Virtual GHnet IPv4/v6 Stack Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_ghnet_ip46router">
+<SPAN ID = "title">GHnet IPv4/v6 Routing Stack (Virtual)</SPAN><SPAN ID = "text">
+Use the Virtual GHnet IPv4/v6 Routing Stack Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.int_osmod_tcpip_dd_only">
+<SPAN ID = "title">Kernel Provided Stack</SPAN><SPAN ID = "text">
+Use on a Dynamic Download when the kernel will provide a TCP/IP stack.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_fake_resource_manager_dd_only">
+<SPAN ID = "title">Kernel Provided Resource Manager</SPAN><SPAN ID = "text">
+Use on a Dynamic Download when the kernel will provide the Resource Manager.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_fs_dd_only">
+<SPAN ID = "title">Kernel Provided File System</SPAN><SPAN ID = "text">
+Use on a Dynamic Download when the kernel will provide a File System Server.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.int_osmod_ftp_server">
+<SPAN ID = "title">FTP Server</SPAN><SPAN ID = "text">
+Use the virtual FTP Server Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_web_server">
+<SPAN ID = "title">Web Server</SPAN><SPAN ID = "text">
+Use the virtual Web Server Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.int_osmod_posix_net_server_example">
+<SPAN ID = "title">POSIX Network Server</SPAN><SPAN ID = "text">
+Use the virtual POSIX Network Server Module provided from the INTEGRITY installation.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_osmod_net_server_module">
+<SPAN ID = "title">INTEGRITY Shell</SPAN><SPAN ID = "text">
+Use the virtual INTEGRITY Shell Module provided from the INTEGRITY installation.
+Most users of the INTEGRITY Shell want a File System, TCP/IP stack, and the
+FTP Server, so the new project wizard will include those OS Modules into your project
+at the same time. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_libs">
+<SPAN ID = "title">File System Libraries</SPAN><SPAN ID = "text">
+Enable various types of file systems.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_devlibs">
+<SPAN ID = "title">File System Device Libraries</SPAN><SPAN ID = "text">
+Enable functionality relating to a hardware device in the file system by adding libraries.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_clients">
+<SPAN ID = "title">Configure File System Clients</SPAN><SPAN ID = "text">
+Select which AddressSpaces should be clients of the File System Server.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mnttable">
+<SPAN ID = "title">File System Mount Table</SPAN><SPAN ID = "text">
+This file defines the Mount Table for the file system. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint">
+<SPAN ID = "title">File System Mount Point</SPAN><SPAN ID = "text">
+A File System Mount Point defines a location on the initial file system
+and configures the type of file system used at that location.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_dir">
+<SPAN ID = "title">File System Mount Point Directory</SPAN><SPAN ID = "text">
+Names a location on the initial file system.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_dev">
+<SPAN ID = "title">File System Mount Point Device</SPAN><SPAN ID = "text">
+Names a location on the initial file system.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_dev">
+<SPAN ID = "title">File System Mount Point Device</SPAN><SPAN ID = "text">
+Describes the hardware/software device used to back the file system. Choices are dependent
+upon the type of file system selected.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_physdev">
+<SPAN ID = "title">Physical Device</SPAN><SPAN ID = "text">
+The INTEGRITY IODevice used to back the file system.  The pulldown contains common names of
+IODevices, make sure your choice is available on your BSP.  Type in the name of the device
+if it is not listed.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_slice">
+<SPAN ID = "title">Physical Slice</SPAN><SPAN ID = "text">
+Slice letter to partition.  Use the string 'All' to specify there is only 1 partition.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_ramdiskname">
+<SPAN ID = "title">RAM Disk Name</SPAN><SPAN ID = "text">
+Use a buffer in RAM to back the file system
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_ramdisksize">
+<SPAN ID = "title">RAM Disk Size</SPAN><SPAN ID = "text">
+Specify how large the RAM buffer should be.  Must be power of 2.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_nfsservname">
+<SPAN ID = "title">NFS Server Name</SPAN><SPAN ID = "text">
+Machine to connect to using NFS.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_nfssharename">
+<SPAN ID = "title">NFS Share Name</SPAN><SPAN ID = "text">
+Path on machine to connect to using NFS.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_devghfile">
+<SPAN ID = "title">Use GHFile</SPAN><SPAN ID = "text">
+GHFile only uses built-in values for device characteristics, no action is required.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mnttype">
+<SPAN ID = "title">File System Type</SPAN><SPAN ID = "text">
+Select the type of file system this mount point should implement.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts">
+<SPAN ID = "title">File System Mount Point Options</SPAN><SPAN ID = "text">
+Select options based on the type of file system selected.
+
+Check 'Use Defaults' to let the underlying mount code decide the options.
+
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_rdonly">
+<SPAN ID = "title">rdonly</SPAN><SPAN ID = "text">
+Mounts the file system in read-only mode.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_sync">
+<SPAN ID = "title">sync</SPAN><SPAN ID = "text">
+Mounts the file system in synchronous mode. This causes
+all writes to the file system to write directly to the
+device driver, rather than delaying writes in the file
+system cache.  Mounting a file system in this way provides additional
+file system synchronization at the expense of write speed.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_async">
+<SPAN ID = "title">async</SPAN><SPAN ID = "text">
+Mounts the file system in asynchronous mode.  This causes
+even metadata writes to be performed asynchronously.  If a
+file system mounted in this way is not cleanly unmounted,
+the file system check utility will likely be unable to fix
+it.  Although this option provides maximum write speed, it
+should only be used on a file system that will be
+reinitialized (with `[newfs`]) at each boot.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_noatime">
+<SPAN ID = "title">noatime</SPAN><SPAN ID = "text">
+Disables automatic update of the access time for files.  This
+is useful for reducing writes to WLFS (for example) if accurate access
+time is not necessary.
+</SPAN></div>
+<hr>
+
+"multi.mpm.int_fs_mntpoint_opts_mntudp", "multi.mpm.int_fs_mntpoint_opts_tcp"}	
+
+<div id="multi.mpm.int_fs_mntpoint_opts_nfsv2">
+<SPAN ID = "title">nfsv2</SPAN><SPAN ID = "text">
+(NFS) Forces the use of version 2 of the NFS protocol.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_nfsv3">
+<SPAN ID = "title">nfsv3</SPAN><SPAN ID = "text">
+(NFS) Forces the use of version 3 of the NFS protocol.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_mntudp">
+<SPAN ID = "title">mntudp</SPAN><SPAN ID = "text">
+(NFS) Uses UDP to establish the NFS mount, even if the TCP
+transport is to be used after the file system is mounted.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_tcp">
+<SPAN ID = "title">tcp</SPAN><SPAN ID = "text">
+(NFS) Attempts to use TCP as the transport mechanism instead of the
+default UDP.  Many NFS servers do not support this.  Support for
+this option is experimental.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.int_fs_mntpoint_opts_shortnames">
+<SPAN ID = "title">shortnames</SPAN><SPAN ID = "text">
+(MS-DOS) Forces the use of short filenames, ignoring any long filenames.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_longnames">
+<SPAN ID = "title">longnames</SPAN><SPAN ID = "text">
+(MS-DOS) Use and generate long filenames.
+</SPAN></div>
+<hr>
+
+
+<div id="multi.mpm.int_fs_mntpoint_opts_ignorelongalways">
+<SPAN ID = "title">ignorelongalways</SPAN><SPAN ID = "text">
+(MS-DOS) Ignores the special long filename entries, even if deleting or
+renaming a file. This implies the `[-s`] option.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_joliet">
+<SPAN ID = "title">joliet</SPAN><SPAN ID = "text">
+(ISO9660) Use Joliet extensions on the CD if present.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_rrip">
+<SPAN ID = "title">rrip</SPAN><SPAN ID = "text">
+(ISO9660) Use Rockridge extensions on the CD if present.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_opts_rcaseins">
+<SPAN ID = "title">rcaseins</SPAN><SPAN ID = "text">
+(ISO9660) Makes Rockridge names case insensitive.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_topts">
+<SPAN ID = "title">File System Mount Point Table Options</SPAN><SPAN ID = "text">
+Select options based on the type of file system selected.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_topts_mnttab_makemp">
+<SPAN ID = "title">MNTTAB_MAKEMP</SPAN><SPAN ID = "text">
+Causes the mount point specified in the second field to be created on the underlying file system if it does not yet exist. This may be useful in connection with RAM Disks, which are always empty at startup. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_topts_mnttab_fsck">
+<SPAN ID = "title">MNTTAB_FSCK</SPAN><SPAN ID = "text">
+Requests that the file system server automatically run the appropriate file system checker program (for example, fsck_ffs for ffs) on the file system prior to mounting the file system. (See "Automatic File System Repair" later in this chapter.) The search path for the file system checker program can be controlled by altering the NULL-terminated array of strings names vfs_FsckSearchPath in the mount table file. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fs_mntpoint_topts_mnttab_req_fsck">
+<SPAN ID = "title">MNTTAB_REQ_FSCK</SPAN><SPAN ID = "text">
+When used in combination with MNTTAB_FSCK, tells the file system server to skip the mount entry if the file system checker program could not successfully correct errors on the file system. The root file system is always mounted read-only prior to running the file system checker, so if the file system checker fails to correct errors on the root file system, and the root file system entry has this option set, the root file system will remain mounted read-only. Failure to find or run the file system checker will be considered failure to correct errors for the purpose of this option. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fslib_msdosfs">
+<SPAN ID = "title">MSDOS FAT</SPAN><SPAN ID = "text">
+The MSDOS file system originated with the Microsoft DOS operating system.
+It is sometimes referred to by its primary data structure, the file allocation
+system (FAT). Like FFS, MSDOS is a hierarchical, disk-based file system. The
+MSDOS file system comes in several variants named after the number of bits in
+each entry in its file allocation table: FAT12, FAT16, and FAT32.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fslib_nfs">
+<SPAN ID = "title">NFS Client</SPAN><SPAN ID = "text">
+The Network File System (NFS) is commonly used in UNIX environments. It allows
+one machine (the NFS server) to share its files with other machines
+(NFS clients) across an IP network.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fslib_infs">
+<SPAN ID = "title">GHFile</SPAN><SPAN ID = "text">
+The GHFile file system from GHnet is an efficient, RAM-based system for storing files.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fslib_iso9660">
+<SPAN ID = "title">ISO9660</SPAN><SPAN ID = "text">
+The ISO9660 file system is commonly found on Compact Disc media. INTEGRITY
+supports the generic ISO9660 standard format as well as the Rockridge and Joliet extensions.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fslib_ffs">
+<SPAN ID = "title">FFS</SPAN><SPAN ID = "text">
+The Berkeley Fast File System (FFS) is an inode-based file system that first
+appeared in the BSD UNIX distribution from the University of California.
+The FFS file system, sometimes referred to by its predecessor's name,
+UFS (UNIX File System), is used by many BSD derivative operating systems such as NetBSD, FreeBSD, and OpenBSD.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_fsdevlib_ramdisk">
+<SPAN ID = "title">RAM Disk</SPAN><SPAN ID = "text">
+The RAM disk pseudo-device can be used to emulate a disk on systems that
+have no other storage medium. A RAM disk is especially useful as a root file
+system onto which other file systems may be mounted. 
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_file_system_extralibs">
+<SPAN ID = "title">File System Extra Library</SPAN><SPAN ID = "text">
+Auxiliary libraries required for the File System Server.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.bsp_description">
+<SPAN ID = "title">BSP Description</SPAN><SPAN ID = "text">
+Target resource file copied from INTEGRITY distribution.
+Defines the BSP for Integrate.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.linker_directives">
+<SPAN ID = "title">Linker Directives</SPAN><SPAN ID = "text">
+Linker directives file copied from INTEGRITY distribution.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_ld_ram">
+<SPAN ID = "title">RAM</SPAN><SPAN ID = "text">
+INTEGRITY linker directives file to run from RAM.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_ld_rom2ram">
+<SPAN ID = "title">ROMCOPY</SPAN><SPAN ID = "text">
+INTEGRITY linker directives file to boot from ROM and run in RAM.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_ld_virt">
+<SPAN ID = "title">INTEGRITY.ld</SPAN><SPAN ID = "text">
+INTEGRITY virtual AddressSpace linker directives file.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss">
+<SPAN ID = "title">POSIX System Server</SPAN><SPAN ID = "text">
+For applications that require a complete, certified POSIX implementation, use the POSIX system. The POSIX system provides a central server and loader which are needed to support process creation and interprocess communications.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_auth">
+<SPAN ID = "title">POSIX Authorization Table</SPAN><SPAN ID = "text">
+Defines the User and Group databases.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser">
+<SPAN ID = "title">POSIX Authorization User</SPAN><SPAN ID = "text">
+Defines a single User for access control purposes.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authgroup">
+<SPAN ID = "title">POSIX Authorization Group</SPAN><SPAN ID = "text">
+Defines a single Group for access control purposes.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_name">
+<SPAN ID = "title">User Name</SPAN><SPAN ID = "text">
+Username (max. 8 chars).
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_pwd">
+<SPAN ID = "title">Password</SPAN><SPAN ID = "text">
+Password (unencrypted) (max. 8 chars).
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_uid">
+<SPAN ID = "title">User ID</SPAN><SPAN ID = "text">
+Numerical user ID.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_group">
+<SPAN ID = "title">Group</SPAN><SPAN ID = "text">
+Primary numerical group ID.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_supgroups">
+<SPAN ID = "title">Supplemental Groups</SPAN><SPAN ID = "text">
+List of up to 8 supplemental group IDs.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authuser_homedir">
+<SPAN ID = "title">Home directory</SPAN><SPAN ID = "text">
+Home directory for POSIX User and Group Database.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authgroup_name">
+<SPAN ID = "title">Group Name</SPAN><SPAN ID = "text">
+Group name (max. 8 chars).
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.int_pss_authgroup_gid">
+<SPAN ID = "title">Group ID</SPAN><SPAN ID = "text">
+Numerical group ID.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.monolith_from_dynamic_download">
+<SPAN ID = "title">Create Monolith From Dynamic Download</SPAN><SPAN ID = "text">
+Add a new Kernel to the Dynamic Download project to make it be a Monolith,
+or resurrect one that had previously been removed, if this project had started
+out as a Monolith.
+
+You should build clean before converting or before using the converted project.
+</SPAN></div>
+<hr>
+
+<div id="multi.mpm.dynamic_download_from_monolith">
+<SPAN ID = "title">Create Dynamic Download From Monolith </SPAN><SPAN ID = "text">
+Comment out the KernelSpace entity in the Monolith project to make this project
+be a Dynamic Download.  The kernel is preserved in case this operation should
+be undone.
+
+You should build clean before converting or before using the converted project.
+</SPAN></div>
+<hr>

@@ -1,0 +1,4 @@
+#include "csih_regs.h"
+
+#define CSIH3BRS0CSIH3BRS0 CSIH3BRS
+#define CSICSIH3CTL0CSIH3PWR CSIH3PWR

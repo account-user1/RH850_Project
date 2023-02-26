@@ -1,0 +1,180 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/2.1.2'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015, 2016 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name:   CDD_NvMProxy_Cbk.h
+* Module Description: Callback operations used by NvMProxy
+* Project           : CBD 
+* Author            : Kevin Smith
+***********************************************************************************************************************
+* Version Control:
+* %version:          4 %
+* %derived_by:       cz7lt6 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 07/15/15  1        KJS       Initial Version                                                                 EA4#471
+* 01/27/16  2        KJS       Renamed template to match EA4 naming conventions                                EA4#3443
+* 06/29/16  3        OT        Added functionality for quick ignition cycles                                   EA4#6448
+* 09/28/16  4        KJS       EA4 naming convention corrections                                               EA4#7779
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef CDD_NVMPROXY_CBK_H
+#define CDD_NVMPROXY_CBK_H
+
+/************************************************ Include Statements *************************************************/
+
+#include "NvM_Types.h"
+
+/************************************************ Embedded Constants *************************************************/
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+
+FUNC(void, CDD_NvMProxy_CODE) NvMProxy_MultiBlkCallBack( NvM_ServiceIdType SrvId_Cnt_T_u08,
+                                                         NvM_RequestResultType JobSts_Cnt_T_u08 );
+
+<# 
+    /* List declaration */
+    List<string> OSAppList = new List<string>();
+    List<string> OSTaskList = new List<string>();
+    List<NvInstanceClass> NvInstanceList = new List<NvInstanceClass>();
+    List<string> NvRamAllocList = new List<string>();
+    List<OperGenClass> OperGenList = new List<OperGenClass>();
+    string OSTaskRef = "";
+    string NvBlkRef = "";
+    
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Os" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OsApplication" ) ) #>
+<# 
+    /* Gather the name of all OS Applications */
+    OSAppList.Add(ValueOf( "ar:SHORT-NAME" )); 
+#>
+<# !ENDLOOP #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OsTask" ) ) #>
+<# 
+    /* Gather the names of all OS Tasks */
+    OSTaskList.Add(ValueOf( "ar:SHORT-NAME" )); 
+#>
+<# !ENDLOOP #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Rte" ));
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "RteSwComponentInstance" )) #>
+<#
+    int CountNvRamAlloc = Count( Xp.ContainerAtDefRefTo( "RteNvRamAllocation" ) );
+    int CountTaskMapping = Count( Xp.ContainerAtDefRefTo( "RteEventToTaskMapping" ) );
+    if ( (CountTaskMapping > 0) && (CountNvRamAlloc > 0))
+    {
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "RteEventToTaskMapping" ) ) #>
+<#
+        OSTaskRef = "";
+        try
+        {
+            /* Grab any event that is mapped to a RTE task. Since this is for each component,
+            the assumption is that only one Application is used, regardless of the task selected */
+            OSTaskRef = LastValueSegmentOf(Xp.ValueRefAtDefRefTo( "RteMappedToTaskRef" ));
+        }
+        catch
+        {
+            OSTaskRef = "NONE";
+        }
+#>
+<# !ENDLOOP #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "RteNvRamAllocation" ) ) #>
+<#
+        NvBlkRef = "";
+        try
+        {
+            NvBlkRef = LastValueSegmentOf(Xp.ValueRefAtDefRefTo( "RteNvmBlockRef" ));
+        }
+        catch
+        {
+            NvBlkRef = "NONE";
+        }
+        
+        /* New class instance */
+        NvInstanceClass data = new NvInstanceClass();
+        if ( (OSTaskRef != "NONE") && (NvBlkRef != "NONE") )
+        {
+            foreach (string Appl in OSAppList)
+            {
+                if( true == OSTaskRef.Contains(Appl) )
+                {
+                    data.OSTask = Appl;
+                    data.NvBlkRef = NvBlkRef;
+                    NvInstanceList.Add(data);
+                }
+            }
+        }
+#>
+<# !ENDLOOP #>
+<# 
+    }
+#>
+<# !ENDLOOP #>
+<#
+    /* Match up NvM definitions with the configurations found in the Rte */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "NvM" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NvMBlockDescriptor" ) ) #>
+<#
+    foreach (NvInstanceClass entry in NvInstanceList)
+    {
+        if (( entry.NvBlkRef == ValueOf( "ar:SHORT-NAME" ) ) && ( true == ValueOf( Xp.ValueAtDefRefTo( "NvMBlockUseSyncMechanism" ) ) ))
+        {
+            OperGenClass data = new OperGenClass();
+            
+            data.OSAppl = entry.OSTask;
+            data.NvBlkId = ValueOf( Xp.ValueAtDefRefTo( "NvMNvramBlockIdentifier" ) );
+            data.BlkLen = ValueOf( Xp.ValueAtDefRefTo( "NvMNvBlockLength" ) );
+            data.NvDataSet = ValueOf( Xp.ValueAtDefRefTo( "NvMNvBlockNum" ) );
+            data.ReadCallBack = ValueOf( Xp.ValueAtDefRefTo( "NvMReadRamBlockFromNvCallback" ) );
+            data.WrCallBack = ValueOf( Xp.ValueAtDefRefTo( "NvMWriteRamBlockToNvCallback" ) );
+            data.RamBlk = ValueOf( Xp.ValueAtDefRefTo( "NvMRamBlockDataAddress" ) );
+
+            /* Add all information into this final list. This list is used to generate the functions. */
+            OperGenList.Add(data);
+        }
+    }
+#>
+<# !ENDLOOP #>
+<#
+    /* Generate each function required */
+    foreach (OperGenClass item in OperGenList)
+    {
+#>
+extern FUNC(Std_ReturnType, AUTOMATIC) <#= item.ReadCallBack #>( const void * NvMBuffer );
+extern FUNC(Std_ReturnType, AUTOMATIC) <#= item.WrCallBack #>( void * NvMBuffer );
+<#
+    }
+#>
+
+#endif /* CDD_NVMPROXY_CBK_H */
+
+<#+
+    public class NvInstanceClass
+    {
+        public string OSTask;
+        public string NvBlkRef;
+    }
+    
+    public class OperGenClass
+    {
+        public string OSAppl;
+        public int NvBlkId;
+        public int BlkLen;
+        public int NvDataSet;
+        public string ReadCallBack;
+        public string WrCallBack;
+        public string RamBlk;
+    }
+#>

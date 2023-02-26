@@ -1,0 +1,167 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015, 2016, 2017 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : DiagcMgr_Cfg.h
+* Module Description: DiagcMgr
+* Project           : CBD
+* Author            : Spandana Balani
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          9 %
+* %derived_by:       nz2554 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                          SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------   ----------
+* 03/11/16  1        SB         ES101A_DiagcMgr_Design version 2 implementation                              EA4#3421
+* 04/19/16  2        SB         ES101A_DiagcMgr_Design version 3 implementation                              EA4#5110
+* 05/23/16  3        SB         Updated to fix anomaly EA4#5865  NTC BF not setting                          EA4#5905
+* 06/20/16  4        SB         ES101A_DiagcMgr_Design version 4 implementation                              EA4#6251
+* 11/30/16  5        SB         Added DEMTOTNROFDTC_CNT_U08                                                  EA4#8662
+* 12/06/16  6        SB         Removed Dem.h include                                                        EA4#8822
+* 04/10/17  7        SR         Added CONST variable declarations for NtcPptyAry,
+*                               DIAGCMGRLISTOFLTCHGNTC_CNT_ENUM and DIAGCMGRNTCLTCHCNTRTHD_CNT_U08           EA4#10779
+* 08/04/17  8        SR         The Ecuc file was updated with addiitonal DTCs so constant value changed     EA4#13175
+* 09/12/17  9        SR         DIAGCMGRNTCMAP_CNT_REC and DIAGCMGRNTCPPTYARY_CNT_U08 array declarations
+*                               and D_MAXNUMOFLTCHGNTCS_CNT_U16 constant declaration is moved to
+*                               DiagcMgrStaticTypes.h since these aren't configurable                        EA4#14411
+**********************************************************************************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) ); #>
+/*******************************************************************************
+**                      Include Section                                       **
+*******************************************************************************/
+# ifndef DIAGMGR_CFG_H
+#define DIAGMGR_CFG_H
+
+#include "DiagcMgrStaticTypes.h"
+#include "NxtrDet.h"
+
+/*******************************************************************************
+**                      Module Private Data                                   **
+*******************************************************************************/
+
+    /** Number of NTCs configured in an application, 
+        typedef for variable size NTC Info Array PIMs, 
+        Application NTC array, 
+        Total number of Deounce type NTCs in an application, 
+        typedef for variable size DebCntr Array PIMs    **/   
+<#  
+    int DtcCount = Count(Xp.ContainerAtDefRefTo( "DTCEnaCndn" ));
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Os" ) );
+    string NtcOsAppl = "";
+    string NtcNrs = "";
+    int osApplCnt = 0;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OsApplication" ) ) #>
+<#  
+    string osAppl = ValueOf( "ar:SHORT-NAME" );
+    string ApplNTCs = "d";
+    int NtcIdx = 0;
+    int DebIdx = 0;
+    /* split on 'l' for application is OK since application name will always have Appl followed by number 
+        and the same will be added to standards document */
+    string[] osApplWords = osAppl.Split(new string[] { "l" }, StringSplitOptions.None);
+    string osApplSuffix = osApplWords[osApplWords.Length -1];
+#>  
+<#
+    /* Grab the Ntc OS Application Reference */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+    /* NtcNr Short Name */
+    NtcNrs = ValueOf( "ar:SHORT-NAME" );
+    try
+    {
+        NtcOsAppl = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "NTCOsApplicationRef" ));
+    }
+    catch
+    {
+        NtcOsAppl = "255";
+    }
+    if ( osAppl == NtcOsAppl ) 
+    {
+        if(0 != NtcIdx)
+        {
+            /* Append NTC to mapping initializer */
+            ApplNTCs += ",  " + NtcNrs;
+        } 
+        else 
+        {
+            /* First Initializer */
+            ApplNTCs = NtcNrs;
+        }
+        NtcIdx++;
+        if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+        {
+            DebIdx++;
+        }
+    }
+#>
+<# !ENDLOOP #>
+<# if ( 0 != NtcIdx ) 
+    {
+        string applNtcInfo = string.Format( "Ary1D_NtcInfoRec4_DiagcMgrProxyAppl{0}", osApplSuffix); 
+        string apNtcDefine = string.Format( "NTCCNTAPPL{0}_CNT_U16", osApplSuffix ).ToUpper();  
+#>
+    #define     <#= apNtcDefine#>                   <#=NtcIdx #>U
+    typedef NtcInfoRec4 <#= applNtcInfo#>[<#= apNtcDefine#>];
+    extern CONST(uint16, DiagcMgr_CODE) NTCNRARYAPPL<#=osApplSuffix#>_CNT_U16[<#= apNtcDefine#>];
+<#
+        osApplCnt++;
+    } 
+    else 
+    { 
+#>
+    /* Note: No NTCs Configured for <#= osAppl#> */
+<# 
+    } 
+#>
+<# if ( 0 != DebIdx ) 
+    {
+        string applDebInfo = string.Format( "Ary1D_s16_DiagcMgrProxyAppl{0}", osApplSuffix);  
+        string apDebDefine = string.Format( "TOTDEBNTCINAPPLX{0}_CNT_U08", osApplSuffix ).ToUpper(); 
+#>
+
+    #define     <#= apDebDefine#>               <#=DebIdx #>U
+    typedef sint16 <#= applDebInfo#>[<#= apDebDefine#> + 1U];
+<#
+        osApplCnt++;
+    } 
+    else 
+    { 
+        string applDebInfo = string.Format( "Ary1D_s16_DiagcMgrProxyAppl{0}", osApplSuffix);        
+#>
+
+    /* Note: No Debounce type NTCs Configured for <#= osAppl#> */
+    typedef sint16 <#= applDebInfo#>[1U];
+<# 
+    } 
+#>
+<# !ENDLOOP #>
+
+    /* Number of DTCs configured */
+    #define TOTNROFDTC_CNT_U08                          <#= DtcCount #>U 
+    typedef uint8 Ary1D_u08_DiagcMgr1[TOTNROFDTC_CNT_U08 + 1U]; 
+    extern CONST(uint16, DiagcMgr_CODE) DTCENAMASK[TOTNROFDTC_CNT_U08 + 1U];
+    extern CONST(uint16, DiagcMgr_CODE) DEMDTCEVEIDMAP[TOTNROFDTC_CNT_U08 + 1U];
+
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "DiagcMgrGeneral" ) ) #>
+    #define DIAGCMGR_DEMCHK                             <#= ValueOf( Xp.ValueAtDefRefTo( "DIAGCMGR_DEMCHK" )) #>
+#if ((STD_ON == NXTRDET_DIAGCMGR) && (STD_ON == DIAGCMGR_DEMCHK))
+    
+    #define DEMTOTNROFDTC_CNT_U08                       ((uint8)(<#= ValueOf( Xp.ValueAtDefRefTo( "DEMTOTNROFDTC" )) #>))
+    
+#endif
+<# !ENDLOOP #>
+
+# endif

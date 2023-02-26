@@ -1,0 +1,150 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #><#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #><#@ output extension="" #><#@ include file="Helper.tt" #><#@ include file="Logger.tt" #><#@ include file="ImcArbn_helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   ImcArbn_Cfg.h
+* Module Description: Public Configuration Header file for IMC Arbitration
+* Project           : CBD
+* Author            : Akilan Rathakrishnan
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       tzyksv %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                                 SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 15/Jan/17  1       Akilan    ImcArbn Initial Version                                                       EA4#9291   
+**********************************************************************************************************************/
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef IMCARBN_CFG_H
+#define IMCARBN_CFG_H
+/************************************************ Include Statements *************************************************/
+/******************************************** File Level Rule Deviations *********************************************/
+
+/****************************************************** Macros *******************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "ImcArbn" ) ); #>
+<#     
+string  FDDMapID;
+string  FddName;
+string  ReceiverSideSignalName;
+string  FddNameCombinedWithFddSignalName;
+string SignalGroupName = "";
+string ImcSignal = "";
+string RefFDD ="";
+string RateGroup = "";
+uint SignalGroupId = 0;
+uint SignalGroup2msCount = 0;
+uint SignalGroup10msCount = 0;
+uint SignalGroup100msCount = 0;
+uint NumberOfSignals = 0;
+Dictionary<string, string> SignalDict = new Dictionary<string, string>();
+Dictionary<string, List<string>> SignalToFddMap  = new Dictionary<string, List<string>>();
+Dictionary<string, string> FDDSignalMap = new Dictionary<string, string>();
+#>
+
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalUserGroups" )) #>
+<# FDDMapID = ValueOf("./ar:SHORT-NAME");#>
+<#
+    FddName = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalUserGroups/FddName"));
+    FddName = FddName.ToUpper();
+    ReceiverSideSignalName = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalUserGroups/ReceiverSideSignalName"));
+    ReceiverSideSignalName = ReceiverSideSignalName.ToUpper();
+    FddNameCombinedWithFddSignalName = FddName+ReceiverSideSignalName;
+    FDDSignalMap.Add(FDDMapID,FddNameCombinedWithFddSignalName);
+#>
+<# !ENDLOOP #>
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignal" )) #>
+<# ImcSignal =  ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignal/SignalName"));#>
+<# ImcSignal =  ImcSignal.ToUpper();#>
+<#  SignalToFddMap.Add(ImcSignal, new List<string>());#>
+<# !LOOP( Xp.ValueRefAtDefRefTo( "ImcArbnSignal/ImcArbnSigUsersRef" ) ) #>
+<#RefFDD = ValueOf("." ); #>
+<#RefFDD = RefFDD.Split('/')[3]; #>
+<#   SignalToFddMap[ImcSignal].Add(RefFDD);  #>
+<# !ENDLOOP #>
+<# !ENDLOOP #>
+/**********[START]FDD Signal ID  to Imc Arbitration Signal ID Mapping **********/
+<#foreach(KeyValuePair<string,List<string>> SignalToFddMapDicItem in SignalToFddMap)
+{
+    foreach(string ImcName in SignalToFddMapDicItem.Value)
+    {#>  
+#define IMCARBN_<#=FDDSignalMap[ImcName]#>_CNT_U16   IMCARBN_<#=SignalToFddMapDicItem.Key#>_CNT_U16   
+<#}#>        
+<#}#>
+/**********[END]FDD Signal ID  to Imc Arbitration Signal ID Mapping ************/
+
+/****************[START]Signal Group ID definitions*****************************/
+
+/**************** [START]2ms Signal Group IDs **********************************/
+<#SignalGroupId = 0;#>
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<# SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_2MS_GROUP")
+{#>
+#define IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08  (<#=SignalGroupId#>U)
+<#SignalGroupId = SignalGroupId + 1;#>
+<#SignalGroup2msCount = SignalGroup2msCount + 1;#>
+<#}#>
+<# !ENDLOOP #>
+
+/**************** [END]2ms Signal Group IDs ************************************/
+
+/**************** [START]10ms Signal Group IDs *********************************/
+
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<# SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_10MS_GROUP")
+{#>
+#define IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08  (<#=SignalGroupId#>U)
+<#SignalGroupId = SignalGroupId + 1;#>
+<#SignalGroup10msCount = SignalGroup10msCount + 1;#>
+<#}#>
+<# !ENDLOOP #>
+/**************** [END]10ms Signal Group IDs ***********************************/
+
+/**************** [START]100ms Signal Group IDs ********************************/
+
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<# SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_100MS_GROUP")
+{#>
+#define IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08  (<#=SignalGroupId#>U)
+<#SignalGroupId = SignalGroupId + 1;#>
+<#SignalGroup100msCount = SignalGroup100msCount + 1;#>
+<#}#>
+<# !ENDLOOP #>
+/**************** [END]100ms Signal Group IDs **********************************/
+
+/****************[END]Signal Group ID definitions*******************************/
+
+/****************[START]Signal Group Count definitions**************************/
+
+/* Number of Signal Groups configured under 2ms Rate Group */
+#define IMCARBN_NROF2MILLISECRATEGROUP_CNT_U08  (<#=SignalGroup2msCount#>U)
+
+/* Number of Signal Groups configured under 10ms Rate Group */
+#define IMCARBN_NROF10MILLISECRATEGROUP_CNT_U08  (<#=SignalGroup10msCount#>U)
+
+/* Number of Signal Groups configured under 100ms Rate Group */
+#define IMCARBN_NROF100MILLISECRATEGROUP_CNT_U08  (<#=SignalGroup100msCount#>U)
+
+/* Total number of Signal Groups configured */
+#define IMCARBN_TOTALNROFSIGGROUP_CNT_U08 (IMCARBN_NROF2MILLISECRATEGROUP_CNT_U08+IMCARBN_NROF10MILLISECRATEGROUP_CNT_U08+IMCARBN_NROF100MILLISECRATEGROUP_CNT_U08)
+
+/****************[END]Signal Group Count definitions****************************/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignal" )) #>
+<#
+   NumberOfSignals = NumberOfSignals + 1;
+#>
+<# !ENDLOOP #>
+
+/****************Total number of IMC Signals Configured ************************/
+#define IMCARBN_TOTALNROFSIG_CNT_U16   (<#=NumberOfSignals#>U)
+
+
+
+#endif /* IMCARBN_CFG_H */

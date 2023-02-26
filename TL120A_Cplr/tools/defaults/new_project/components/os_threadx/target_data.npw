@@ -1,0 +1,248 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+%if defined (__TARGET_DIR__)
+% define ARCH_DIR ${__TARGET_DIR__}/${__ARCH_NAME__}
+%else
+% define ARCH_DIR ${__MULTI_TARGET_DIR__}/${__ARCH_NAME__}
+%endif
+%define BSP_DIR  ${ARCH_DIR}/${__BSP_NAME__}
+
+board_attributes {
+    target_resources {
+
+%if defined(__OS_DIR__)
+    # Copy files from threadx install.
+
+ %if defined(THREADX_ILL5_FILE)
+  %if file_exists("${__OS_DIR__}/${THREADX_ILL5_FILE}")
+	copy_files += { "${__OS_DIR__}/${THREADX_ILL5_FILE}" }
+  %endif
+  %if file_exists("${__OS_DIR__}/${THREADX_DEMO_ILL_FILE}")
+	copy_files += { "${__OS_DIR__}/${THREADX_DEMO_ILL_FILE}" }
+  %endif
+
+ %else
+	copy_files += { "${__OS_DIR__}/${THREADX_DEMO_ILL_FILE}" }
+ %endif  # THREADX_ILL5_FILE
+
+
+ %if notempty(THREADX_DEMO_RESET_FILE)
+	copy_files += { "${__OS_DIR__}/${THREADX_DEMO_RESET_FILE}" }
+ %endif
+
+ %if defined(NEED_THREADX_README_TEXT)
+  %if file_exists("${__OS_DIR__}/readme.txt")
+  	copy_files += { "${__OS_DIR__}/readme.txt" }
+  %endif
+  %if file_exists("${__OS_DIR__}/readme_threadx.txt")
+  	copy_files += { "${__OS_DIR__}/readme_threadx.txt" }
+  %endif
+  %if file_exists("${__OS_DIR__}/readme_threadx_generic.txt")
+ 	copy_files += { "${__OS_DIR__}/readme_threadx_generic.txt" }
+  %endif
+ %endif
+ 
+%endif  # __OS_DIR__
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+
+	copy_files += {"$__DIR__/resource_readme.txt"}
+    
+	# For all GHS threadx targets, always create the threadx_ram.ld,
+	# threadx_romcopy.ld, and threadx_romrun.ld files.
+
+        concat_files {
+
+%if !defined(NO_RAM_LAYOUT)
+#
+# RAM
+#
+%if file_exists("${ARCH_DIR}/threadx_ram.ld")
+	    {
+	        output = "threadx_ram.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_ram.ld")
+		inputs += {"${BSP_DIR}/threadx_ram.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_ram.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_RAM_LAYOUT
+
+
+%if !defined(NO_ROMCOPY_LAYOUT)
+#
+# ROM Copy
+#
+%if file_exists("${ARCH_DIR}/threadx_romcopy.ld")
+	    {
+	        output = "threadx_romcopy.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_romcopy.ld")
+		inputs += {"${BSP_DIR}/threadx_romcopy.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_romcopy.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_ROMCOPY_LAYOUT
+
+
+%if !defined(NO_ROM_LAYOUT)
+#
+# ROM Run
+#
+%if file_exists("${ARCH_DIR}/threadx_romrun.ld")
+	    {
+	        output = "threadx_romrun.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_romrun.ld")
+		inputs += {"${BSP_DIR}/threadx_romrun.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_romrun.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_ROM_LAYOUT
+
+
+%if defined(__SupportsPic)
+#
+# PIC
+#
+%if file_exists("${ARCH_DIR}/threadx_pic.ld")
+	    {
+	        output = "threadx_pic.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_pic.ld")
+		inputs += {"${BSP_DIR}/threadx_pic.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_pic.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPic
+
+
+%if defined(__SupportsPid)
+#
+# PID
+#
+%if file_exists("${ARCH_DIR}/threadx_pid.ld")
+	    {
+	        output = "threadx_pid.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_pid.ld")
+		inputs += {"${BSP_DIR}/threadx_pid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_pid.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPid
+
+
+%if defined(__SupportsPic) && defined(__SupportsPid)
+#
+# PIC/PID
+#
+%if file_exists("${ARCH_DIR}/threadx_picpid.ld")
+	    {
+	        output = "threadx_picpid.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_config.ld")
+		inputs += {"${BSP_DIR}/threadx_config.ld"}
+%elseif file_exists("${ARCH_DIR}/threadx_config.ld")
+		inputs += {"${ARCH_DIR}/threadx_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/threadx_picpid.ld")
+		inputs += {"${BSP_DIR}/threadx_picpid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/threadx_picpid.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPic && __SupportsPid
+
+	}
+%endif	# TOOLCHAIN == GREEN_HILLS
+
+
+    }
+}	# board_attributes
+
+
+component.libstartup.disabled = false
+component.libsys.disabled = false
+component.stdlib_startup.disabled = false
+component.stdlib_sys.disabled = false
+
+%endif

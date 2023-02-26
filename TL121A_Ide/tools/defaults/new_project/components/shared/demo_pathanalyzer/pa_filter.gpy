@@ -1,0 +1,19 @@
+
+import sys;
+from ghs_util import *;
+
+filter_function = " ";
+if len(sys.argv) > 1:
+    filter_function = sys.argv[1];
+
+pa = winreg.WaitForWindow(None, 1.0, '', '', 'PathAnalyzer');
+if pa == None:
+    self_dbw.RunCommands("trace path", False, False);
+    pa = winreg.WaitForWindow(None, 3.0, '', '', 'PathAnalyzer');
+
+if pa != None:
+    if not pa.IsButtonDimmed("Show entire timeline"):
+	pa.SelectButton("Show entire timeline", True, False);
+    pa.ChangeTextFieldValue("txtFilter", filter_function, True, True);
+    pa.RestoreWindow(True, False);
+

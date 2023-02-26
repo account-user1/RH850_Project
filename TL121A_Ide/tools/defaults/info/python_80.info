@@ -1,0 +1,75 @@
+To Do List
+==========
+ 
+1. Syntax related
+
+   * Fix various bugs while analyzing inputted Python statements to decide
+     whether or not to immediately execute inputted Python statements.
+   * Disable syntax coloring in the Python pane prompt.
+   * Support nested compound statements' "follower" clauses in auto-indentation.
+   * Give clause names in the prompt.
+       For example:
+           Python> if x:
+	   if...2>     y = 2;
+	   if...3>     print("x+y=%d" % eval("x+y"));
+	   .....4> else:
+	   else.5>     y = -2;
+	   else.6>     print("x-y=%d" % eval("x-y"));
+
+       This feature is not important.
+
+2. Python interpreter related
+
+   * Make the Tcl/Tk module compatible with MULTI Python service on Windows.
+
+       MULTI Python service crashes when it tries to import the module
+       "Tkinter":
+	   from Tkinter import *
+    
+       The crash occurs when the MULTI Python service finds the initialization
+       function from the corresponding DLL library (_tkinter.pyd) and executes
+       it.
+
+   * Build the MULTI Python interpreter against the latest Python 2.4 release.
+
+	It is currently built against Python 2.3.3.
+
+   * Enable abort (through MULTI's ESC mechanism) for Python statement
+     execution.
+
+       This feature would be useful for statements such as the following dead
+       loop:
+	   x = 0;
+           while True:
+	       x = x + 1;
+
+   * Make the Python interpreter "echo" an object's value if the statement
+     does not change anything. Examples of statements that do not change
+     anything follow:
+         2+2
+	 x
+
+   * Support Python input functions, such as "input" and "raw_input".
+
+3. GUI related
+
+   * Support any number of Python panes.
+   * Support a separate Python pane window that shows different Python panes
+     as tabs.
+
+4. MULTI IDE components related
+
+   * Make infrastructure changes that allow retrieval of a window's basic
+     information (name and internal ID) from any MULTI IDE component. This is
+     already done in the MULTI Debugger.
+
+   * Implement a concise, but powerful, set of functions for each MULTI IDE
+     module. 
+
+5. Third-party tools support
+
+   * Support Telnet's negotiation mechanism, set the connection
+     into a proper mode, and provide necessary services if the client
+     cannot accomplish them.
+
+6. Python Debugger (for script files)

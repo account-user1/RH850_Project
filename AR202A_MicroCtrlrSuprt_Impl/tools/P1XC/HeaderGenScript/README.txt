@@ -1,0 +1,1 @@
+The file dr7f701373a_V3_Nov_13_2017.xlsx is derived from the master list file dr7f701372a_V3_DP_Nov_13_2017.xlsx shared by renesas after removing the registers not applicable for P1MC

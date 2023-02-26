@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+    <AR-PACKAGES>
+        <AR-PACKAGE UUID="9c5cf824-7831-4a06-877a-49e2b3d79a3b">
+            <SHORT-NAME>Nexteer</SHORT-NAME>
+            <AR-PACKAGES>
+                <AR-PACKAGE UUID="">
+                    <SHORT-NAME>EcucDefs_SyncCrc</SHORT-NAME>
+                    <ELEMENTS>
+                        <ECUC-DEFINITION-COLLECTION UUID="ECUS:627c9111-ec39-446b-a5a8-48bdb7d3bcc8">
+                            <SHORT-NAME>NexteerParameterDefinition_SyncCrc</SHORT-NAME>
+                            <MODULE-REFS>
+                                <MODULE-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_SyncCrc/SyncCrc</MODULE-REF>
+                            </MODULE-REFS>
+                        </ECUC-DEFINITION-COLLECTION>
+                        <ECUC-MODULE-DEF UUID="">
+                            <SHORT-NAME>SyncCrc</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">Settings for the synchronous CRC component</L-2>
+                            </DESC>
+                            <CATEGORY>VENDOR_SPECIFIC_MODULE_DEFINITION</CATEGORY>
+                            <ADMIN-DATA>
+                                <DOC-REVISIONS>
+                                    <DOC-REVISION>
+                                        <REVISION-LABEL>1.0.0</REVISION-LABEL>
+                                        <STATE>released</STATE>
+                                        <ISSUED-BY>Nexteer</ISSUED-BY>
+                                        <DATE>2015-10-03</DATE>
+                                        <MODIFICATIONS>
+                                            <MODIFICATION>
+                                                <CHANGE>
+                                                    <L-2 L="EN">Initial Release</L-2>
+                                                </CHANGE>
+                                                <REASON>
+                                                    <L-2 L="EN"></L-2>
+                                                </REASON>
+                                            </MODIFICATION>
+                                        </MODIFICATIONS>
+                                    </DOC-REVISION>
+                                </DOC-REVISIONS>
+                            </ADMIN-DATA>
+                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_SyncCrc/SyncCrc</REFINED-MODULE-DEF-REF>
+                            <SUPPORTED-CONFIG-VARIANTS>
+                                <SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+                            </SUPPORTED-CONFIG-VARIANTS>
+                            <CONTAINERS>
+                                <!-- CONTAINER DEFINITION: SyncCrcCommon -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>SyncCrcCommon</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the common settings for SyncCrc.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: SyncCrc Common: Online Calibration Ram Size -->
+                                        <ECUC-ENUMERATION-PARAM-DEF UUID="">
+                                            <SHORT-NAME>DeviceType</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Selects the device that is being used for the project. Based on the selection, the number of CRC hardware units available are defined below:
+                                                
+                                                            P1x: 4 Units
+                                                            P1M-C: 4 Units
+                                                            P1M-E: 4 Units
+                                                            P1H-C: 8 Units
+                                                            P1H-CE: 8 Units
+                                                            P1L-C: 2 Units
+                                                </L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES />
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>P1x</DEFAULT-VALUE>
+                                            <LITERALS>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1x</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1M-C</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1M-E</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1H-C</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1H-CE</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>P1L-C</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                            </LITERALS>
+                                        </ECUC-ENUMERATION-PARAM-DEF>
+                                        <!-- PARAMETER DEFINITION: SyncCrc Common: Reserved CRC Hardware Units -->
+                                        <ECUC-INTEGER-PARAM-DEF UUID="">
+                                            <SHORT-NAME>ReservedCRCHardwareUnits</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Sets the number of hardware units that are reserved from the application for dedication functions.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES>
+                                                <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                                                </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                            </IMPLEMENTATION-CONFIG-CLASSES>
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                            <MAX>8</MAX>
+                                            <MIN>0</MIN>
+                                        </ECUC-INTEGER-PARAM-DEF>
+                                        <!-- PARAMETER DEFINITION: SyncCrc Common: Online Calibration Ram Size -->
+                                        <ECUC-ENUMERATION-PARAM-DEF UUID="">
+                                            <SHORT-NAME>AutosarWrapperEnable</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Enables the AUTOSAR function wrapper so the hardware can be used instead of the software libraries.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES />
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>STD_OFF</DEFAULT-VALUE>
+                                            <LITERALS>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>STD_OFF</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>STD_ON</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                            </LITERALS>
+                                        </ECUC-ENUMERATION-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>CrcOsApplicationReference</SHORT-NAME>
+                                            <LONG-NAME>CrC Os Application Reference</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">This defines the application in which the Crc component is integrated.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                            </CONTAINERS>
+                        </ECUC-MODULE-DEF>
+                        <BSW-IMPLEMENTATION UUID="">
+                            <SHORT-NAME>SyncCrc_Impl</SHORT-NAME>
+                            <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                            <SW-VERSION>5.0.0</SW-VERSION>
+                            <USED-CODE-GENERATOR>cMICROSAR</USED-CODE-GENERATOR>
+                            <VENDOR-ID>30</VENDOR-ID>
+                            <AR-RELEASE-VERSION>4.2.0</AR-RELEASE-VERSION>
+                            <PRECONFIGURED-CONFIGURATION-REFS>
+                                <PRECONFIGURED-CONFIGURATION-REF DEST="ECUC-MODULE-CONFIGURATION-VALUES">/Nexteer/EcucDefs_SyncCrc/SyncCrc_Pre</PRECONFIGURED-CONFIGURATION-REF>
+                            </PRECONFIGURED-CONFIGURATION-REFS>
+                            <RECOMMENDED-CONFIGURATION-REFS>
+                                <RECOMMENDED-CONFIGURATION-REF DEST="ECUC-MODULE-CONFIGURATION-VALUES">/Nexteer/EcucDefs_SyncCrc/SyncCrc_Rec</RECOMMENDED-CONFIGURATION-REF>
+                            </RECOMMENDED-CONFIGURATION-REFS>
+                            <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_SyncCrc/SyncCrc</VENDOR-SPECIFIC-MODULE-DEF-REF>
+                            </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                        </BSW-IMPLEMENTATION>
+                        <ECUC-MODULE-CONFIGURATION-VALUES UUID="">
+                            <SHORT-NAME>SyncCrc_Rec</SHORT-NAME>
+                            <DEFINITION-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_SyncCrc/SyncCrc</DEFINITION-REF>
+                            <CONTAINERS></CONTAINERS>
+                        </ECUC-MODULE-CONFIGURATION-VALUES>
+                    </ELEMENTS>
+                </AR-PACKAGE>
+            </AR-PACKAGES>
+        </AR-PACKAGE>
+    </AR-PACKAGES>
+</AUTOSAR>

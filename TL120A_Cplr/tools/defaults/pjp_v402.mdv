@@ -1,0 +1,425 @@
+#
+#            Debugger STL Visualization Script
+#
+#    Copyright (c) 2001-2002 Green Hills Software, Inc.
+#
+#    This program is the property of Green Hills Software, Inc,
+#    its contents are proprietary information and no part of it
+#    is to be disclosed to anyone except employees of Green Hills
+#    Software, Inc., or as agreed in writing signed by the President
+#    of Green Hills Software, Inc.
+#
+
+list {
+	signature = {"list<*>", "std::list<*>"}
+	required_fields = {"_Mysize", "_Myhead"}
+	type = "container"
+	
+	size = "return self._Mysize;"
+	begin_iter = "return self._Myhead->_Next;"
+	next_iter = "return self->_Next;"
+	value_from_iter = "return self->_Myval;"
+
+	functions {
+		size {
+			name = "size"
+			body = "return self._Mysize"
+		}
+		front {
+			name = "front"
+			body = "return self._Myhead->_Next->_Myval"
+		}
+		back {
+			name = "back"
+			body = "return self._Myhead->_Prev->_Myval"
+		}
+	}
+}
+
+list_iterator {
+	signature = {"list<*>::*iterator", "std::list<*>::*iterator"}
+	required_fields = {"_Ptr"}
+	type = "structure"
+	predicate = "return self._Ptr != 0"
+	
+	fields {
+		next {
+			name = "_Next"
+			value = "return self._Ptr->_Next"
+		}
+		prev {
+			name = "_Prev"
+			value = "return self._Ptr->_Prev"
+		}
+		value {
+			name = "_Myval"
+			value = "return self._Ptr->_Myval"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "return self._Ptr->_Myval"
+		}
+	}
+}
+
+slist {
+	signature = {"slist<*>", "std::slist<*>"}
+	required_fields = {"_Mysize", "_Myhead"}
+	type = "container"
+	
+	size = "return self._Mysize;"
+	begin_iter = "return self._Myhead;"
+	next_iter = "return ($M_typeof(self)) self->_Next;"
+	value_from_iter = "return self->_Myval;"
+
+	functions {
+		size {
+			name = "size"
+			body = "return self._Mysize"
+		}
+		front {
+			name = "front"
+			body = "return self._Myhead->_Myval"
+		}
+		back {
+			name = "back"
+			body  = "if (self._Mytail == 0 && self._Myhead != 0) {"
+			body += "	$GHSppnode = &(self._Myhead);"
+			body += "	if (self._Myhead != 0) {"
+			body += "		while ((*$GHSppnode)->_Next != 0) {"
+			body += "			$GHSppnode = &((*$GHSppnode)->_Next);"
+			body += "		}"
+			body += "	}"
+			body += "	self._Mytail = *$GHSppnode;"
+			body += "};"
+			body += "return self._Mytail->_Myval"
+		}
+	}
+
+}
+
+slist_iterator {
+	signature = {"slist<*>::*iterator", "std::slist<*>::*iterator"}
+	required_fields = {"_Pptr"}
+	type = "structure"
+	predicate = "return self._Pptr != 0"
+	
+	fields {
+		next {
+			name = "_Next"
+			value = "return (*self._Pptr)->_Next"
+		}
+		value {
+			name = "_Myval"
+			value = "return (*self._Pptr)->_Myval"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "return (*self._Pptr)->_Myval"
+		}
+	}
+}
+
+vector {
+	signature = {"vector<*>", "std::vector<*>"}
+	required_fields = {"_Myfirst", "_Mylast"}
+	type = "container"
+	
+	size            = "return self._Mylast - self._Myfirst"
+	begin_iter      = "return self._Myfirst;"
+	next_iter       = "return self + 1;"
+        direct_iter     = "return self + $GHSIndex;"
+	value_from_iter = "return *(self);"
+	functions {
+		size {
+			name = "size"
+			body = "return self._Mylast - self._Myfirst;"
+		}
+		front {
+			name = "front"
+			body = "return *(self._Myfirst)"
+		}
+		back {
+			name = "back"
+			body = "return *(self._Mylast - 1)"
+		}
+	}
+}
+
+vector_iterator {
+	signature = { "_Vector_const_iterator<*>", "std::_Vector_const_iterator<*>", "_Vector_iterator<*>", "std::_Vector_iterator<*>", "_String_const_iterator<*>", "std::_String_const_iterator<*>", "_String_iterator<*>", "std::_String_iterator<*>" }
+	required_fields = { "_Myptr" }
+	type = "structure"
+	predicate = "return self._Myptr != 0"
+	
+	fields {
+		value {
+			name = "_Myptr"
+			value = "return *(self._Myptr)"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "return *(self._Myptr)"
+		}
+	}
+}
+
+boolvector {
+	signature = {"vector<bool, *allocator<bool>>", "std::vector<bool, *allocator<bool>>"}
+	required_fields = {"_Mysize", "_Myvec"}
+	type = "container"
+
+	size = "return self._Mysize"
+
+	begin_iter    = "$GHSOffset = 0;"
+	begin_iter   += "$GHSPtr = self._Myvec._Myfirst;"
+	begin_iter   += "return $GHSPtr;"
+
+	next_iter    = "if ($GHSOffset < _VBITS - 1) {"
+	next_iter   += "   ++$GHSOffset;"
+	next_iter   += "} else {"
+	next_iter   += "   $GHSOffset = 0;"
+	next_iter   += "   ++$GHSPtr;"
+	next_iter   += "};"
+	next_iter   += "return $GHSPtr;"
+
+        direct_iter  = "$GHSOffset += $GHSIndex;"
+        direct_iter += "$GHSPtr += ($GHSOffset - ($GHSOffset % _VBITS)) / _VBITS;"
+        direct_iter += "$GHSOffset = $GHSOffset % _VBITS;"
+        direct_iter += "return $GHSPtr;"
+
+	value_from_iter = "$GHSResult = (*$GHSPtr & (1 << $GHSOffset)) != 0; return $GHSResult;"
+	
+}
+
+ptr_iterator {
+	signature = {"_Ptrit<*>", "std::_Ptrit<*>"}
+	required_fields = {"current"}
+	type = "structure"
+	predicate = "return self.current != 0"
+
+	fields {
+		current {
+			name = "current"
+			value = "return *(self.current)"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "return *(self.current);"
+		}
+	}
+}
+
+# base class _Tree (in xtree)
+mapfind {
+	signature = {"std::map<int,*>", "std::map<const int,*>"}
+	required_fields {"_Myhead"}
+	type = "function_definer"
+
+	functions {
+		index {
+			name = "find"
+			arguments = {"keyval"}
+			body  = "$GHSpnode = self._Myhead->_Parent;"
+			body += "$GHSwhere = self._Myhead;"
+			body += "while (! $GHSpnode->_Isnil ) {"
+			body += "   if ( $GHSpnode->_Myval.first < keyval ) {"
+			body += "      $GHSpnode = $GHSpnode->_Right;"
+			body += "   } else {"
+			body += "      $GHSwhere = $GHSpnode;
+			body += "      $GHSpnode = $GHSpnode->_Left;"
+			body += "   }"
+			body += "};"
+			body += "if ($GHSwhere == self._Myhead || keyval < $GHSwhere->_Myval.first) {"
+			body += "   return \"Value not found\";"
+			body += "} else {"
+			body += "   return $GHSwhere->_Myval.second;"
+			body += "}"
+		}
+	}
+}
+
+map {
+	signature = {"map<*>", "std::map<*>", "set<*>", "std::set<*>", "multiset<*>", "std::multiset<*>", "multimap<*>", "std::multimap<*>"}
+	required_fields = {"_Mysize", "_Myhead"}
+	type = "container"
+	
+	size = "return self._Mysize;"
+	begin_iter = "return self._Myhead->_Left;"
+	
+	next_iter  = "if (self->_Isnil) { "
+	next_iter += "	return self;"
+	next_iter += "} else {"
+	next_iter += "	if (! self->_Right->_Isnil) {"
+	next_iter += "		$GHSptr = self->_Right;"
+	next_iter += "		while (! $GHSptr->_Left->_Isnil) {"
+	next_iter += "			$GHSptr = $GHSptr->_Left;"
+	next_iter += "		};"
+	next_iter += "		return $GHSptr;"
+	next_iter += "	} else {"
+	next_iter += "		$GHSptr = self;"
+	next_iter += "		$GHSpnode = $GHSptr->_Parent;"
+	next_iter += "		while(!$GHSpnode->_Isnil && $GHSptr == $GHSpnode->_Right) {"
+	next_iter += "			$GHSptr = $GHSpnode;"
+	next_iter += "			$GHSpnode = $GHSptr->_Parent;"
+	next_iter += "		};"
+	next_iter += "		return $GHSpnode;"
+	next_iter += "	};"
+	next_iter += "};"
+		
+	value_from_iter = "return self->_Myval;"
+	functions {
+		size {
+			name = "size"
+			body = "return self._Mysize"
+		}
+	}
+}
+
+map_iterator {
+	signature = {"_Tree<*>::*iterator", "std::_Tree<*>::*iterator"}
+	required_fields = {"_Ptr"}
+	type = "structure"
+	predicate = "return self._Ptr != 0"
+	
+	fields {
+		value {
+			name = "_Myval"
+			value = "return self._Ptr->_Myval"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "return self._Ptr->_Myval"
+		}
+	}
+}
+
+# base class _Hash (in xhash)
+hash {
+	signature = {"hash_map<*>", "std::hash_map<*>", "hash_set<*>", "std::hash_set<*>"}
+	required_fields = {"_List"}
+	type = "container"
+	
+	size = "return self._List._Mysize;"
+	begin_iter = "return self._List._Myhead->_Next;"
+	next_iter = "return self->_Next;"
+	value_from_iter = "return self->_Myval"
+	functions {
+		size {
+			name = "size"
+			body = "return self._List._Mysize"
+		}
+	}
+}
+
+# classes that use a deque
+queue {
+	signature = {"queue<*>", "std::queue<*>", "stack<*>", "std::stack<*>"}
+	required_fields = {"c"}
+	type = "container"
+	
+	size = "return self.c._Mysize;"
+	begin_iter  = "$GHSMyoff = self.c._Myoff;"
+	begin_iter += "return self.c;"
+
+	next_iter = "$GHSMyoff++; return self;"
+	value_from_iter  = "$GHSBlock = $GHSMyoff / self._DEQUESIZ;"
+	value_from_iter += "$GHSOff = $GHSMyoff - $GHSBlock * self._DEQUESIZ;"
+	value_from_iter += "if (self._Mapsize <= $GHSBlock) {"
+	value_from_iter += "	$GHSBlock -= self._Mapsize;"
+	value_from_iter += "};"
+	value_from_iter += "return ((self._Map)[$GHSBlock][$GHSOff]);
+}
+
+deque {
+	signature = { "deque<*>", "std::deque<*>" }
+	required_fields = { "_Mysize", "_Map", "_Myoff" }
+	type = "container"
+
+	size = "return self._Mysize;"
+	begin_iter = "$GHSMyoff = self._Myoff; return self;"
+
+	next_iter = "$GHSMyoff++; return self;
+	value_from_iter  = "$GHSBlock = $GHSMyoff / self._DEQUESIZ;"
+	value_from_iter += "$GHSOff = $GHSMyoff - $GHSBlock * self._DEQUESIZ;"
+	value_from_iter += "if (self._Mapsize <= $GHSBlock) {"
+	value_from_iter += "    $GHSBlock -= self._Mapsize;"
+	value_from_iter += "};"
+	value_from_iter += "return ((self._Map)[$GHSBlock][$GHSOff]);
+}
+
+deque_iterator {
+	signature = { "_Deque_const_iterator<*>", "std::_Deque_const_iterator<*>", "_Deque_iterator<*>", "std::_Deque_iterator<*>"}
+	required_fields = {"_Myoff", "_Mycont"}
+	type = "structure"
+	predicate = "return self._Mycont != 0"
+	
+	fields {
+		value {
+			name = "value"
+			value = "$GHSBlock = self._Myoff / self._Mycont._DEQUESIZ;"
+			value += "$GHSOff = self._Myoff - $GHSBlock * self._Mycont._DEQUESIZ;"
+			value += "if (self._Mycont->_Mapsize <= $GHSBlock) {"
+			value += "    $GHSBlock -= self._Mycont->_Mapsize;"
+			value += "};"
+			value += "return ((self._Mycont->_Map)[$GHSBlock][$GHSOff])"
+		}
+		cont {
+			name = "_Mycont"
+			value = "return self._Mycont"
+		}
+	}
+	functions {
+		deref {
+			name = "operator*"
+			body = "$GHSBlock = self._Myoff / self._Mycont._DEQUESIZ;"
+			body += "$GHSOff = self._Myoff - $GHSBlock * self._Mycont._DEQUESIZ;"
+			body += "if (self._Mycont->_Mapsize <= $GHSBlock) {"
+			body += "    $GHSBlock -= self._Mycont->_Mapsize;"
+			body += "};"
+			body += "return ((self._Mycont->_Map)[$GHSBlock][$GHSOff])"
+		}
+	}
+}
+
+pair {
+	signature = {"pair<*>", "std::pair<*>"}
+	required_fields = {"first", "second"}
+	type = "structure"
+
+	fields {
+		first {
+			name = "first"
+			value = "return self.first;"
+			mutable = false
+		}
+		second {
+			name = "second"
+			value = "return self.second;"
+		}
+	}
+}
+
+# pjp strings are null-terminated
+string {
+	signature = {"basic_string<*>", "std::basic_string<*>", "rope<*>", "std::rope<*>", "std::string" }
+	required_fields = {"_Bx", "_Myres"}
+	type = "alias"
+
+	value  = "if (16 <= (self._Myres*sizeof(self._Bx._Ptr[0]))) {"
+	value += "	return  self._Bx._Ptr;"
+	value += "} else {"
+	value += "	return  self._Bx._Buf;"
+	value += "}"
+	mutable = false
+}

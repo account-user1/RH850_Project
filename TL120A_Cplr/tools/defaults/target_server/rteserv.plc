@@ -1,0 +1,1985 @@
+Placer 1.6
+State
+OtherOptions_addArgs = "                                                      \
+                                                                              \
+    if( strlen( $tfOtherOptions ) > 0 ) {                                     \
+        argsAccum = argsAccum | \" \" | $tfOtherOptions;                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+OtherOptions_onCleanup = "                                                    \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+OtherOptions_onSetup = "                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_eval_connection = "                                   \
+                                                                              \
+    if (($pdMulticoreSupport == \"Enabled\") && ($pdSTP != \"no STP\")) {     \
+            alert \"Please disable SuperTrace Probe if using multicore mode\"; \
+        $TCGUILIB_sane = \"0\";                                               \
+    } else if ($pdSTP == \"ethernet\" && $txfStpAddress == \"\") {            \
+        alert \"Please specify a SuperTrace Probe IP Address\";               \
+        $TCGUILIB_sane = \"0\";                                               \
+    } else if (($pdMulticoreSupport == \"Disabled\") && (number($pdNumCores) > 1)) { \
+        alert \"Please enable multicore support if specifying more than 1 core\"; \
+        $TCGUILIB_sane = \"0\";                                               \
+    } else {                                                                  \
+        $TCGUILIB_sane = \"1\";                                               \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_handle_pdMulticoreSupport = "                         \
+    if ($pdMulticoreSupport == \"Enabled\") {                                 \
+        $pdNumCores.dim = 0;                                                  \
+        $txtNumCores.dim = 0;                                                 \
+        $pdSTP = \"no STP\";                                                  \
+        $pdSTP.dim = 1;                                                       \
+        $txtSTP.dim = 1;                                                      \
+    } else {                                                                  \
+            $pdNumCores = \"1\";                                              \
+        $pdNumCores.dim = 1;                                                  \
+        $txtNumCores.dim = 1;                                                 \
+        $pdSTP.dim = 0;                                                       \
+        $txtSTP.dim = 0;                                                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_handle_pdNumCores = "                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_handle_pdSTP = "                                      \
+    if ($pdSTP == \"ethernet\") {                                             \
+        $txtStpAddress.dim = 0;                                               \
+        $txfStpAddress.dim = 0;                                               \
+    } else {                                                                  \
+        $txtStpAddress.dim = 1;                                               \
+        $txfStpAddress.dim = 1;                                               \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_onCleanup = "                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_onSetup = "                                           \
+                                                                              \
+    clitext (\"setpswindowname \\\"RTE (rteserv) Connection Editor\\\"\");    \
+                                                                              \
+    OtherOptions_onSetup();                                                   \
+                                                                              \
+/* set the callbacks and properties the TCGUILIB wants */                     \
+    $TCGUILIB_editor_dlg_name      = \"RTEServConnectionEditor\";             \
+    $TCGUILIB_editor_saveargs_fn   = \"RTEServConnectionEditor_save_connection\"; \
+    $TCGUILIB_editor_readargs_fn   = \"RTEServConnectionEditor_read_connection\"; \
+    $TCGUILIB_editor_evalargs_fn   = \"RTEServConnectionEditor_eval_connection\"; \
+    $TCGUILIB_statuswin_dlg_name   = \"RTEServConnectionStatus\";             \
+                                                                              \
+/*hide(TCGUILIB_txtConnectFor); */                                            \
+                                                                              \
+    RTEServConnectionEditor_handle_pdSTP();                                   \
+    RTEServConnectionEditor_handle_pdMulticoreSupport();                      \
+    TCGUILIB_editor_onSetup();                                                \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_read_connection = "                                   \
+                                                                              \
+/*    STRINGLIB_msg = \"Reading connection\"; STRINGLIB_show_msg(); */        \
+                                                                              \
+    allArgs = $TCGUILIB_conargs;                                              \
+                                                                              \
+/* Set some defaults */                                                       \
+                                                                              \
+    $tfOtherOptions = \"\";                                                   \
+                                                                              \
+    $pdMulticoreSupport = \"Disabled\";                                       \
+    cpunamecnt = 0;                                                           \
+                                                                              \
+/* Set argv to first token */                                                 \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_string = allArgs;                                               \
+    argv = STRINGLIB_get_next_token();                                        \
+                                                                              \
+/* Parse args */                                                              \
+                                                                              \
+    while (strlen (argv) > 0) {                                               \
+                                                                              \
+        if (argv == \"-stp\") {                                               \
+            argv = STRINGLIB_get_next_token();                                \
+                                                                              \
+            if (argv == \"-usb\") {                                           \
+                $pdSTP = \"USB\";                                             \
+                                                                              \
+            } else {                                                          \
+                $pdSTP = \"ethernet\";                                        \
+                $txtStpAddress.dim = 0;                                       \
+                $txfStpAddress.dim = 0;                                       \
+                $txfStpAddress = argv;                                        \
+            }                                                                 \
+                                                                              \
+        } else if (argv == \"-multicore\") {                                  \
+            $pdMulticoreSupport = \"Enabled\";                                \
+            $pdSTP = \"no STP\";                                              \
+            $pdSTP.dim = 1;                                                   \
+            $txtSTP.dim = 1;                                                  \
+        } else if (argv == \"-cpu\") {                                        \
+/* just eat the CPU name since I don't think that matters */                  \
+            argv = STRINGLIB_get_next_token();                                \
+            cpunamecnt = cpunamecnt+1;                                        \
+        } else if( strlen( $tfOtherOptions ) == 0 ) {                         \
+            $tfOtherOptions = argv;                                           \
+        } else {                                                              \
+            $tfOtherOptions = $tfOtherOptions | \" \" | argv;                 \
+        }                                                                     \
+                                                                              \
+/* Advance argv to next token */                                              \
+                                                                              \
+        argv = STRINGLIB_get_next_token();                                    \
+    }                                                                         \
+                                                                              \
+    if ($pdMulticoreSupport == \"Enabled\") {                                 \
+            if ((cpunamecnt > 0) && (cpunamecnt < 3)) {                       \
+                $pdNumCores = text(cpunamecnt);                               \
+           } else if (cpunamecnt > 2) {                                       \
+            $pdNumCores = \"2\";                                              \
+            } else {                                                          \
+            $pdNumCores = \"1\";                                              \
+            }                                                                 \
+    } else {                                                                  \
+        $pdNumCores = \"1\";                                                  \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionEditor_save_connection = "                                   \
+                                                                              \
+/*    STRINGLIB_msg = \"Saving connection\"; STRINGLIB_show_msg(); */         \
+                                                                              \
+    argsAccum = \"\";                                                         \
+                                                                              \
+/* Add Other Options last */                                                  \
+                                                                              \
+    if ($pdSTP == \"ethernet\" && strlen($txfStpAddress) > 0) {               \
+        argsAccum = argsAccum | \" -stp \" | $txfStpAddress;                  \
+    } else if ($pdSTP == \"USB\") {                                           \
+        argsAccum = argsAccum | \" -stp -usb\";                               \
+    }                                                                         \
+                                                                              \
+    if ($pdMulticoreSupport == \"Enabled\") {                                 \
+        argsAccum = argsAccum | \" -multicore\";                              \
+    }                                                                         \
+                                                                              \
+    cpucnt = number($pdNumCores);                                             \
+    cpunum = 1;                                                               \
+    while ((cpunum <= cpucnt) && ($pdMulticoreSupport == \"Enabled\")) {      \
+            argsAccum = argsAccum | \" -cpu\";                                \
+        cpuname = \"PE\" | text(cpunum);                                      \
+        argsAccum = argsAccum | \" \" | cpuname;                              \
+        cpunum = cpunum + 1;                                                  \
+    }                                                                         \
+                                                                              \
+    if( strlen( $tfOtherOptions ) > 0 ) {                                     \
+      argsAccum = argsAccum | \" \" | $tfOtherOptions;                        \
+    }                                                                         \
+                                                                              \
+    $TCGUILIB_conargs = argsAccum;                                            \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionStatus_eval_sane = "                                         \
+                                                                              \
+    $TCGUILIB_sane = \"1\";                                                   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionStatus_eval_start = "                                        \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionStatus_eval_stop = "                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionStatus_onCleanup = "                                         \
+                                                                              \
+    TCGUILIB_statuswin_onCleanup();                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+RTEServConnectionStatus_onSetup = "                                           \
+                                                                              \
+/* set the callbacks and properties the TCGUILIB wants */                     \
+    $TCGUILIB_editor_dlg_name       = \"RTEServConnectionEditor\";            \
+    $TCGUILIB_statuswin_dlg_name    = \"RTEServConnectionStatus\";            \
+    $TCGUILIB_analyzestop_fn        = \"RTEServConnectionStatus_eval_stop\";  \
+    $TCGUILIB_analyzestart_fn       = \"RTEServConnectionStatus_eval_start\"; \
+    $TCGUILIB_statuswin_evalargs_fn = \"RTEServConnectionStatus_eval_sane\";  \
+                                                                              \
+    TCGUILIB_statuswin_onSetup();                                             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_copy_and_escape_string = "                                          \
+                                                                              \
+    STRINGLIB_index = 0;                                                      \
+    STRINGLIB_length = strlen( STRINGLIB_string );                            \
+    STRINGLIB_escaped_string = \"\";                                          \
+                                                                              \
+    while( STRINGLIB_index < STRINGLIB_length ) {                             \
+                                                                              \
+/* Get one character at index from string */                                  \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_string, STRINGLIB_index, 1 ); \
+                                                                              \
+/* If quote marks found, insert escaped quote mark in copied string */        \
+/* Otherwise, just copy in character */                                       \
+                                                                              \
+      if( index( STRINGLIB_single_char, \"\\\"\" ) != -1 ) {                  \
+                                                                              \
+        STRINGLIB_escaped_string = STRINGLIB_escaped_string | \"\\\\\\\"\";   \
+      } else {                                                                \
+                                                                              \
+        STRINGLIB_escaped_string =                                            \
+          STRINGLIB_escaped_string | STRINGLIB_single_char;                   \
+      }                                                                       \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_index = STRINGLIB_index + 1;                                  \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_escaped_string;                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_copy_and_strip_outer_quotes = "                                     \
+    STRINGLIB_stripped_string = STRINGLIB_string;                             \
+    STRING_len = strlen(STRINGLIB_stripped_string);                           \
+    STRING_first = substr(STRINGLIB_stripped_string, 0, 1);                   \
+    STRING_last  = substr(STRINGLIB_stripped_string, STRING_len - 1, 1);      \
+                                                                              \
+    if ( index(STRING_first, \"\\\"\") != -1 ) {                              \
+        STRINGLIB_stripped_string =                                           \
+            substr(STRINGLIB_stripped_string, 1, STRING_len - 1);             \
+        STRING_len = strlen(STRINGLIB_stripped_string);                       \
+    }                                                                         \
+    if ( index(STRING_last, \"\\\"\") != -1 ) {                               \
+        STRINGLIB_stripped_string =                                           \
+            substr(STRINGLIB_stripped_string, 0, STRING_len - 1);             \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_stripped_string;                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_copy_and_strip_outer_ws = "                                         \
+    STRINGLIB_stripped_string = STRINGLIB_string;                             \
+    STRING_len = strlen(STRINGLIB_stripped_string);                           \
+    STRING_first = substr(STRINGLIB_stripped_string, 0, 1);                   \
+    STRING_last  = substr(STRINGLIB_stripped_string, STRING_len - 1, 1);      \
+                                                                              \
+/* Strip leading whitespace */                                                \
+    while ( index(STRING_first, \" \") != -1 ) {                              \
+        STRINGLIB_stripped_string =                                           \
+            substr(STRINGLIB_stripped_string, 1, STRING_len - 1);             \
+        STRING_len = strlen(STRINGLIB_stripped_string);                       \
+                                                                              \
+        STRING_first = substr(STRINGLIB_stripped_string, 0, 1);               \
+    }                                                                         \
+                                                                              \
+    while ( index(STRING_last, \" \") != -1 ) {                               \
+        STRINGLIB_stripped_string =                                           \
+            substr(STRINGLIB_stripped_string, 0, STRING_len - 1);             \
+        STRING_len = strlen(STRINGLIB_stripped_string);                       \
+                                                                              \
+        STRING_last = substr(STRINGLIB_stripped_string, STRING_len - 1, 1);   \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_stripped_string;                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_count_tokens = "                                                    \
+                                                                              \
+    STRINGLIB_temp_string = \" \" | STRINGLIB_string;                         \
+    STRINGLIB_string = STRINGLIB_temp_string;                                 \
+    STRINGLIB_get_next_token();                                               \
+    STRINGLIB_num_tokens = 0;                                                 \
+                                                                              \
+    while( strlen( STRINGLIB_token ) > 0 ) {                                  \
+                                                                              \
+      STRINGLIB_num_tokens = STRINGLIB_num_tokens + 1;                        \
+      STRINGLIB_get_next_token();                                             \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_num_tokens;                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_get_next_token = "                                                  \
+                                                                              \
+    STRINGLIB_get_next_token_start();                                         \
+    STRINGLIB_get_next_token_stop();                                          \
+                                                                              \
+    STRINGLIB_token_length = STRINGLIB_token_stop - STRINGLIB_token_start;    \
+                                                                              \
+    if( STRINGLIB_token_length > 0 ) {                                        \
+                                                                              \
+      STRINGLIB_token = substr( STRINGLIB_string, STRINGLIB_token_start,      \
+                                STRINGLIB_token_length );                     \
+      STRINGLIB_string_after_token = substr( STRINGLIB_string,                \
+                                             STRINGLIB_token_stop + 1,        \
+                                             strlen( STRINGLIB_string ) -     \
+                                             STRINGLIB_token_stop );          \
+      STRINGLIB_string = STRINGLIB_string_after_token;                        \
+    } else {                                                                  \
+                                                                              \
+      STRINGLIB_token = \"\";                                                 \
+      STRINGLIB_string_after_token = \"\";                                    \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_token;                                                   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_get_next_token_peek = "                                             \
+                                                                              \
+    STRINGLIB_get_next_token_start();                                         \
+    STRINGLIB_get_next_token_stop();                                          \
+                                                                              \
+    STRINGLIB_token_length_peek = STRINGLIB_token_stop - STRINGLIB_token_start; \
+                                                                              \
+    if( STRINGLIB_token_length_peek > 0 ) {                                   \
+        STRINGLIB_token_peek = substr( STRINGLIB_string, STRINGLIB_token_start, \
+                                STRINGLIB_token_length_peek );                \
+    } else {                                                                  \
+        STRINGLIB_token_peek = \"\";                                          \
+    }                                                                         \
+                                                                              \
+    return STRINGLIB_token_peek;                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_get_next_token_start = "                                            \
+                                                                              \
+    STRINGLIB_quote_open = 0;                                                 \
+    STRINGLIB_accepted_char_found = 0;                                        \
+    STRINGLIB_length = strlen( STRINGLIB_string );                            \
+    STRINGLIB_index  = 0;                                                     \
+                                                                              \
+    while( STRINGLIB_index < STRINGLIB_length ) {                             \
+                                                                              \
+/* Get one character at index from string */                                  \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_string, STRINGLIB_index, 1 ); \
+                                                                              \
+/* Check for quote marks */                                                   \
+                                                                              \
+      if( index( STRINGLIB_single_char, \"\\\"\" ) != -1 ) {                  \
+                                                                              \
+          STRINGLIB_quote_open = 1;                                           \
+          STRINGLIB_accepted_char_found = 1;                                  \
+          break;                                                              \
+      }                                                                       \
+                                                                              \
+/* Check if it is not in the stop char string */                              \
+                                                                              \
+      if( index( STRINGLIB_stop_chars,                                        \
+                 text( STRINGLIB_single_char ) ) == -1 ) {                    \
+                                                                              \
+        STRINGLIB_accepted_char_found = 1;                                    \
+        break;                                                                \
+      }                                                                       \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_index = STRINGLIB_index + 1;                                  \
+    }                                                                         \
+                                                                              \
+    if( STRINGLIB_accepted_char_found == 1 ) {                                \
+                                                                              \
+      STRINGLIB_token_start = STRINGLIB_index;                                \
+    } else {                                                                  \
+                                                                              \
+      STRINGLIB_token_start = -1;                                             \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_get_next_token_stop = "                                             \
+                                                                              \
+    STRINGLIB_stop_char_found = 0;                                            \
+    STRINGLIB_accepted_char_found = 0;                                        \
+    STRINGLIB_length = strlen( STRINGLIB_string );                            \
+                                                                              \
+    if( STRINGLIB_token_start == -1 ) {                                       \
+                                                                              \
+      STRINGLIB_token_stop = -1;                                              \
+      return;                                                                 \
+    }                                                                         \
+                                                                              \
+    STRINGLIB_index  = STRINGLIB_token_start + 1;                             \
+    while( STRINGLIB_index < STRINGLIB_length ) {                             \
+                                                                              \
+/* Get one character at index from string */                                  \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_string, STRINGLIB_index, 1 ); \
+                                                                              \
+/* If quote marks found, toggle quote open */                                 \
+                                                                              \
+      if( index( STRINGLIB_single_char, \"\\\"\" ) != -1 ) {                  \
+                                                                              \
+        if( STRINGLIB_quote_open == 0 ) {                                     \
+                                                                              \
+          STRINGLIB_quote_open = 1;                                           \
+        } else {                                                              \
+                                                                              \
+          STRINGLIB_quote_open = 0;                                           \
+        }                                                                     \
+      }                                                                       \
+                                                                              \
+/* Check character against stop char string */                                \
+                                                                              \
+      if( index( STRINGLIB_stop_chars,                                        \
+                 text( STRINGLIB_single_char ) ) != -1 ) {                    \
+                                                                              \
+        STRINGLIB_stop_char_found = 1;                                        \
+                                                                              \
+        if( STRINGLIB_quote_open == 0 ) {                                     \
+                                                                              \
+          break;                                                              \
+        }                                                                     \
+      }                                                                       \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_index = STRINGLIB_index + 1;                                  \
+    }                                                                         \
+                                                                              \
+    STRINGLIB_token_stop = STRINGLIB_index;                                   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_get_number = "                                                      \
+    STRINGLIB_number = 0;                                                     \
+    STRINGLIB_digit_index = 0;                                                \
+    STRINGLIB_digit_length = strlen( STRINGLIB_digit_string );                \
+                                                                              \
+    while( STRINGLIB_digit_index < STRINGLIB_digit_length ) {                 \
+                                                                              \
+/* Get one character at index from digit string */                            \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_digit_string,                 \
+                                      STRINGLIB_digit_index, 1 );             \
+                                                                              \
+/* This is painful. */                                                        \
+                                                                              \
+      if( index(STRINGLIB_single_char, \"0\" ) != -1 ) {                      \
+        STRINGLIB_temp_number = 0;                                            \
+      } else if( index(STRINGLIB_single_char, \"1\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 1;                                            \
+      } else if( index(STRINGLIB_single_char, \"2\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 2;                                            \
+      } else if( index(STRINGLIB_single_char, \"3\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 3;                                            \
+      } else if( index(STRINGLIB_single_char, \"4\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 4;                                            \
+      } else if( index(STRINGLIB_single_char, \"5\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 5;                                            \
+      } else if( index(STRINGLIB_single_char, \"6\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 6;                                            \
+      } else if( index(STRINGLIB_single_char, \"7\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 7;                                            \
+      } else if( index(STRINGLIB_single_char, \"8\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 8;                                            \
+      } else if( index(STRINGLIB_single_char, \"9\" ) != -1 ) {               \
+        STRINGLIB_temp_number = 9;                                            \
+      } else {                                                                \
+        return -1;                                                            \
+      }                                                                       \
+                                                                              \
+      STRINGLIB_number = (STRINGLIB_number * 10) + STRINGLIB_temp_number;     \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_digit_index = STRINGLIB_digit_index + 1;                      \
+    }                                                                         \
+    return STRINGLIB_number;                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_init = "                                                            \
+                                                                              \
+    STRINGLIB_string = \"Empty STRINGLIB_string\";                            \
+    STRINGLIB_string_after_token = \"Empty STRINGLIB_string_after_token\";    \
+    STRINGLIB_escaped_string = \"Empty STRINGLIB_escaped_string\";            \
+    STRINGLIB_stripped_string = \"Empty STRINGLIB_stripped_string\";          \
+    STRINGLIB_token = \"Empty STRINGLIB_token\";                              \
+    STRINGLIB_token_peek = \"Empty STRINGLIB_token_peek\";                    \
+    STRINGLIB_single_char = \"Empty STRINGLIB_single_char\";                  \
+    STRINGLIB_digit_string = \"Empty STRINGLIB_digit_string\";                \
+    STRINGLIB_filename_string = \"Empty STRINGLIB_filename_string\";          \
+    STRINGLIB_stop_chars = \" \";                                             \
+    STRINGLIB_token_start = 0;                                                \
+    STRINGLIB_token_stop = 0;                                                 \
+    STRINGLIB_quote_open = 0;                                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_is_digit = "                                                        \
+                                                                              \
+    STRINGLIB_digit_index = 0;                                                \
+    STRINGLIB_digit_length = strlen( STRINGLIB_digit_string );                \
+                                                                              \
+    while( STRINGLIB_digit_index < STRINGLIB_digit_length ) {                 \
+                                                                              \
+/* Get one character at index from digit string */                            \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_digit_string,                 \
+                                      STRINGLIB_digit_index, 1 );             \
+                                                                              \
+/* If character is not a digit, return 0 */                                   \
+                                                                              \
+      if( index( STRINGLIB_single_char, \"x\" ) != -1 ||                      \
+          index( STRINGLIB_single_char, \"X\" ) != -1 ) {                     \
+                                                                              \
+        if( STRINGLIB_digit_index != 1 ) {                                    \
+                                                                              \
+          return 0;                                                           \
+        } else if( substr( STRINGLIB_digit_string, 0, 1 ) != \"0\" ) {        \
+                                                                              \
+          return 0;                                                           \
+        }                                                                     \
+      } else if( index( STRINGLIB_single_char, \"0\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"1\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"2\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"3\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"4\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"5\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"6\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"7\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"8\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"9\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"+\" ) == -1 &&               \
+                 index( STRINGLIB_single_char, \"-\" ) == -1 ) {              \
+                                                                              \
+        return 0;                                                             \
+      }                                                                       \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_digit_index = STRINGLIB_digit_index + 1;                      \
+    }                                                                         \
+                                                                              \
+/* If we got here, all characters in digit_string are digits */               \
+                                                                              \
+    return 1;                                                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_is_filename = "                                                     \
+    STRINGLIB_filename_index = 0;                                             \
+    STRINGLIB_filename_length = strlen( STRINGLIB_filename_string );          \
+                                                                              \
+    while( STRINGLIB_filename_index < STRINGLIB_filename_length ) {           \
+                                                                              \
+/* Get one character at index from filename string */                         \
+                                                                              \
+      STRINGLIB_single_char = substr( STRINGLIB_filename_string,              \
+                                      STRINGLIB_filename_index, 1 );          \
+                                                                              \
+/* If character is not a filename, return 0 */                                \
+                                                                              \
+       if (! ((STRINGLIB_single_char >= \"0\" && STRINGLIB_single_char <= \"9\") || \
+              (STRINGLIB_single_char >= \"A\" && STRINGLIB_single_char <= \"Z\") || \
+              (STRINGLIB_single_char >= \"a\" && STRINGLIB_single_char <= \"z\") || \
+              (STRINGLIB_single_char == \"{\") ||                             \
+              (STRINGLIB_single_char == \"}\") ||                             \
+              (STRINGLIB_single_char == \"[\") ||                             \
+              (STRINGLIB_single_char == \"]\") ||                             \
+              (STRINGLIB_single_char == \"(\") ||                             \
+              (STRINGLIB_single_char == \")\") ||                             \
+              (STRINGLIB_single_char == \"_\") ||                             \
+              (STRINGLIB_single_char == \"+\") ||                             \
+              (STRINGLIB_single_char == \"-\") ||                             \
+              (STRINGLIB_single_char == \".\") ||                             \
+              (STRINGLIB_single_char == \",\") ||                             \
+              (STRINGLIB_single_char == \"/\") ||                             \
+              (STRINGLIB_single_char == \"\\\\\") ||                          \
+              (STRINGLIB_single_char == \":\") ||                             \
+              (STRINGLIB_single_char == \"'\") ||                             \
+              (STRINGLIB_single_char == \" \"))) {                            \
+                                                                              \
+            return 0;                                                         \
+      }                                                                       \
+                                                                              \
+/* Increment index */                                                         \
+                                                                              \
+      STRINGLIB_filename_index = STRINGLIB_filename_index + 1;                \
+    }                                                                         \
+                                                                              \
+/* If we got here, all characters in filename_string are valid */             \
+                                                                              \
+    return 1;                                                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+STRINGLIB_show_msg = "                                                        \
+                                                                              \
+    cli( \"echo \" | STRINGLIB_msg );                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_edit_if_not_sane = "                                                 \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"goifok\") != -1) {                           \
+        theMode = \" \\\"noconnect show_sanity_errors\\\" \";                 \
+    } else {                                                                  \
+        theMode = \" noconnect \";                                            \
+    }                                                                         \
+                                                                              \
+    if ($TCGUILIB_sane == \"0\") {                                            \
+/* we should force the user to edit the thing */                              \
+        clitext (\"dialog \" | $TCGUILIB_editor_dlg_name |                    \
+                 theMode | $TCGUILIB_CID | \"\");                             \
+        TCGUILIB_read_sane ();                                                \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_footer_handle_TCGUILIB_btnApply = "                           \
+                                                                              \
+/* Ignore blank names */                                                      \
+    if (strlen($TCGUILIB_tfName) <= 0) {                                      \
+        alert (\"You must specify a name for the Connection Method.\");       \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_sane = \"0\";                                               \
+                                                                              \
+/* Let the client choose whether or not you can save */                       \
+        cli (\"callpsfunction \" | $TCGUILIB_editor_evalargs_fn);             \
+        if ($TCGUILIB_sane == \"1\") {                                        \
+                                                                              \
+            TCGUILIB_editor_save_connection ();                               \
+            TCGUILIB_editor_read_connection ();                               \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_footer_handle_TCGUILIB_btnCancel = "                          \
+                                                                              \
+    dismiss (0);                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_footer_handle_TCGUILIB_btnConnect = "                         \
+                                                                              \
+                                                                              \
+/* Ignore blank names */                                                      \
+    if (strlen($TCGUILIB_tfName) <= 0) {                                      \
+        alert (\"You must specify a name for the Connection Method.\");       \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_sane = \"0\";                                               \
+                                                                              \
+/* Let the client choose whether or not you can save */                       \
+        cli (\"callpsfunction \" | $TCGUILIB_editor_evalargs_fn);             \
+        if ($TCGUILIB_sane == \"1\") {                                        \
+                                                                              \
+/* only dismiss if the client thinks the arguments are OK */                  \
+            TCGUILIB_editor_save_connection () ;                              \
+            cli (\"connection statuswin \" | $TCGUILIB_CID |                  \
+                     \" 0 \\\"goifok closeifstarted\\\"\") ;                  \
+            dismiss (0);                                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_footer_handle_TCGUILIB_btnOK = "                              \
+                                                                              \
+/* Ignore blank names */                                                      \
+    if (strlen($TCGUILIB_tfName) <= 0) {                                      \
+        alert (\"You must specify a name for the Connection Method.\");       \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_sane = \"0\";                                               \
+                                                                              \
+/* Let the client choose whether or not you can save */                       \
+        cli (\"callpsfunction \" | $TCGUILIB_editor_evalargs_fn);             \
+        if ($TCGUILIB_sane == \"1\") {                                        \
+                                                                              \
+            TCGUILIB_editor_save_connection ();                               \
+            dismiss(0);                                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_footer_handle_TCGUILIB_btnRevert = "                          \
+                                                                              \
+    TCGUILIB_editor_read_connection ();                                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_header_handle_TCGUILIB_btnLogging = "                         \
+                                                                              \
+    $TCGUILIB_tfLogFilename.dim = !($TCGUILIB_btnLogging.set);                \
+    $TCGUILIB_btnsLogFileChooser.dim(1) = !($TCGUILIB_btnLogging.set);        \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_header_handle_choose_logfile = "                              \
+                                                                              \
+    LogFile =                                                                 \
+      clitext( \"filedialog \\\"Select\\\" \\\"Use which log file?\\\"\" );   \
+    if( strlen( LogFile ) > 0 ) {                                             \
+/* They didn't cancel, so change the thing */                                 \
+        $TCGUILIB_tfLogFilename = LogFile;                                    \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_header_handle_choose_script = "                               \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MAJOR_VERSION)\"); \
+    major_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    dlgCmd = \"filedialog \\\"Select\\\" \\\"Use which setup script?\\\" -preset \\\"ScriptFiles\\\"\"; \
+                                                                              \
+    if (major_ver >= 6) {                                                     \
+        scriptPath = clitext(\"connection report \" | $TCGUILIB_CID | \" scriptpath \\\"EMPTY\\\"\"); \
+        if (strlen(scriptPath) > 5 &&                                         \
+            substr(scriptPath, strlen(scriptPath)-5, 5) == \"EMPTY\") {       \
+              dlgCmd = dlgCmd | \" -defaultdir \\\"\" |                       \
+                substr(scriptPath, 0, strlen(scriptPath)-5) | \"\\\"\";       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    SetupScriptFile = clitext( dlgCmd );                                      \
+    if( strlen( SetupScriptFile ) > 0 ) {                                     \
+/* They didn't cancel, so change the thing */                                 \
+        $tfSetupScript = SetupScriptFile;                                     \
+                                                                              \
+/* [patmac] Mon Mar 26 15:24:20 2007 Fix for J#MULTI-20927 */                 \
+/* Automatically adjust the setup script type to the appropriate format */    \
+/* based on the setup script file's suffix. */                                \
+            if (strlen($tfSetupScript) >= 4 &&                                \
+                substr($tfSetupScript, strlen($tfSetupScript)-4, 4) == \".mbs\") { \
+            $bsSetupScript.set(1) = 1;                                        \
+        } else if (strlen($tfSetupScript) >= 4 &&                             \
+                substr($tfSetupScript, strlen($tfSetupScript)-4, 4) == \".dbs\") { \
+            $bsSetupScript.set(2) = 1;                                        \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_header_handle_edit_script = "                                 \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MAJOR_VERSION)\"); \
+    major_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MINOR_VERSION)\"); \
+    minor_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MICRO_VERSION)\"); \
+    micro_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    useScriptPathCmd = \"0\";                                                 \
+                                                                              \
+                                                                              \
+    if (major_ver == -1 && minor_ver == -1 && micro_ver == -1) {              \
+/* Unable to determine any version information.  Fallback to checking if */   \
+/* the rominithbp command, added after 5.0.5, exists. */                      \
+        STRINGLIB_init();                                                     \
+        STRINGLIB_string = clitext(\"rominithbp\");                           \
+        if (index (STRINGLIB_string, \"-setup\") != -1) {                     \
+/* The command exists. */                                                     \
+            useScriptPathCmd = \"1\";                                         \
+            major_ver = 5;                                                    \
+        } else {                                                              \
+/* The command didn't exist.  Look for the __editnewprocess command. */       \
+/* It was added for MULTI 5. */                                               \
+            STRINGLIB_init();                                                 \
+            STRINGLIB_string = clitext(\"__editnewprocess\");                 \
+            if (index (STRINGLIB_string, \"filename\") != -1) {               \
+/* The command exists. */                                                     \
+                 major_ver = 5;                                               \
+            }                                                                 \
+        }                                                                     \
+    } else if (major_ver >= 6 || (major_ver == 5 && (minor_ver > 0 || micro_ver > 5  || (minor_ver == 0 && micro_ver == 0)))) { \
+        useScriptPathCmd = \"1\";                                             \
+    }                                                                         \
+                                                                              \
+    if( $tfSetupScript != \"\" && index( $tfSetupScript, \"\\\"\" ) != -1 ) { \
+/* Limitation: can't edit setup scripts containing a double-quote */          \
+/* character */                                                               \
+        alert(\"Cannot edit a setup script file from a path containing a \\\" character.\"); \
+        return;                                                               \
+    }                                                                         \
+                                                                              \
+    if (major_ver < 5) {                                                      \
+        alert (\"Editing the target setup script from this window is not supported by this version of MULTI.\"); \
+        $TCGUILIB_btnsSetupScript.dim(1) = 1;                                 \
+    } else if ($tfSetupScript != \"\" && useScriptPathCmd == \"1\") {         \
+        scriptFile = clitext (\"connection report \" | $TCGUILIB_CID | \" scriptpath \\\"\" | $tfSetupScript | \"\\\"\"); \
+        clitext( \"__editnewprocess \\\"\" | scriptFile | \"\\\"\");          \
+    } else if ($tfSetupScript != \"\") {                                      \
+        ConFile = clitext (\"connection report \" | $TCGUILIB_CID | \" dir\"); \
+           clitext( \"__editnewprocess \\\"\" | $tfSetupScript | \"\\\" \\\"\" | ConFile | \"\\\"\" ); \
+    } else {                                                                  \
+        clitext( \"__editnewprocess untitled.mbs\" );                         \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_header_no_script_handle_TCGUILIB_btnLogging = "               \
+                                                                              \
+    $TCGUILIB_tfLogFilename.dim = !($TCGUILIB_btnLogging.set);                \
+    $TCGUILIB_btnsLogFileChooser.dim(1) = !($TCGUILIB_btnLogging.set);        \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_onCleanup = "                                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_onSetup = "                                                   \
+                                                                              \
+    $TCGUILIB_mode = %1;                                                      \
+    $TCGUILIB_CID  = %2;                                                      \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"allowconnect\") != -1 ||                     \
+        index ($TCGUILIB_mode, \"allowConnect\") != -1) {                     \
+        $TCGUILIB_btnConnect.dim = 0;                                         \
+    } else {                                                                  \
+        $TCGUILIB_btnConnect.dim = 1;                                         \
+    }                                                                         \
+                                                                              \
+    if (strlen($TCGUILIB_editor_legacyscripts) <= 0 ||                        \
+        ($TCGUILIB_editor_legacyscripts == \"0\")) {                          \
+        $bsSetupScript.set(1) = 1;                                            \
+        $bsSetupScript.dim(2) = 1;                                            \
+    }                                                                         \
+                                                                              \
+    TCGUILIB_editor_read_connection ();                                       \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"show_sanity_errors\") != -1 ||               \
+        index ($TCGUILIB_mode, \"eval_sanity\") != -1) {                      \
+        cli (\"callpsfunction \" | $TCGUILIB_editor_evalargs_fn);             \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_read_connection = "                                           \
+                                                                              \
+    $TCGUILIB_tfType.dim    = 0;                                              \
+    $TCGUILIB_tfCommand.dim = 0;                                              \
+    $TCGUILIB_tfCommand = clitext (\"connection report \" |                   \
+                                   $TCGUILIB_CID | \" fullcmd\");             \
+    $TCGUILIB_tfType    = clitext (\"connection report \" |                   \
+                                   $TCGUILIB_CID | \" type\");                \
+    $TCGUILIB_tfType.dim    = 1;                                              \
+    $TCGUILIB_tfCommand.dim = 1;                                              \
+                                                                              \
+                                                                              \
+    $TCGUILIB_tfName    = clitext (\"connection report \" |                   \
+                                   $TCGUILIB_CID | \" name\");                \
+    $TCGUILIB_conargs   = clitext (\"connection report \" |                   \
+                                   $TCGUILIB_CID | \" args\");                \
+    $TCGUILIB_SetupScript = clitext (\"connection report \" |                 \
+                                   $TCGUILIB_CID | \" setupscript\");         \
+                                                                              \
+/* read logging information */                                                \
+    logging = clitext (\"connection report \" |                               \
+                       $TCGUILIB_CID | \" logging\");                         \
+    if (index (logging, \"yes\") != -1) {                                     \
+        $TCGUILIB_btnLogging.set = 1;                                         \
+        $TCGUILIB_tfLogFilename.dim = 0;                                      \
+                                                                              \
+        $TCGUILIB_tfLogFilename = clitext (\"connection report \" |           \
+                                           $TCGUILIB_CID | \" logfile\");     \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_btnLogging.set    = 0;                                      \
+        $TCGUILIB_tfLogFilename.dim = 0;                                      \
+        $TCGUILIB_tfLogFilename     = \"\";                                   \
+        $TCGUILIB_tfLogFilename.dim = 1;                                      \
+    }                                                                         \
+                                                                              \
+    $TCGUILIB_btnsLogFileChooser.dim(1) = !($TCGUILIB_btnLogging.set);        \
+                                                                              \
+/* Read setup script information */                                           \
+    $tfSetupScript = \"\";                                                    \
+    if (strlen($TCGUILIB_SetupScript) > 0) {                                  \
+        $tfSetupScript = $TCGUILIB_SetupScript;                               \
+        $bsSetupScript.set(1) = 1;                                            \
+    }                                                                         \
+                                                                              \
+/* Call the client dialog's read function so that all of the */               \
+/* target-specific widgets will get set correctly from _conargs. */           \
+                                                                              \
+    cli (\"callpsfunction \" | $TCGUILIB_editor_readargs_fn);                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_editor_save_connection = "                                           \
+                                                                              \
+    clitext (\"connection change \" | $TCGUILIB_CID | \" name \\\"\" |        \
+             $TCGUILIB_tfName | \"\\\"\");                                    \
+                                                                              \
+/* save the logging state */                                                  \
+    if ($TCGUILIB_btnLogging.set) {                                           \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" log yes \\\"\" | \
+                 $TCGUILIB_tfLogFilename | \"\\\"\");                         \
+                                                                              \
+    } else {                                                                  \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" log no \\\"\" |  \
+                 $TCGUILIB_tfLogFilename | \"\\\"\");                         \
+    }                                                                         \
+                                                                              \
+/* Call the client dialog's save function so that _conargs will get */        \
+/* the argument line that I want to save. */                                  \
+                                                                              \
+    $TCGUILIB_SetupScript = \"\";                                             \
+    cli (\"callpsfunction \" | $TCGUILIB_editor_saveargs_fn);                 \
+                                                                              \
+    if ($bsSetupScript.set(1) == 1 &&                                         \
+        strlen( $tfSetupScript ) > 0) {                                       \
+        STRINGLIB_init();                                                     \
+        STRINGLIB_string = $tfSetupScript;                                    \
+                                                                              \
+        if (STRINGLIB_count_tokens () > 0) {                                  \
+            STRINGLIB_string = $tfSetupScript;                                \
+            STRINGLIB_copy_and_strip_outer_ws ();                             \
+            $TCGUILIB_SetupScript = STRINGLIB_stripped_string;                \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    clitext (\"connection change \" | $TCGUILIB_CID | \" args \\\"\" |        \
+             escapify($TCGUILIB_conargs) | \"\\\"\");                         \
+                                                                              \
+/* save the multi language setup script name */                               \
+    if (strlen($TCGUILIB_SetupScript) > 0) {                                  \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" setupscript \\\"\" | \
+                 escapify($TCGUILIB_SetupScript) | \"\\\"\");                 \
+    } else {                                                                  \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" setupscript \\\"\\\"\"); \
+    }                                                                         \
+                                                                              \
+                                                                              \
+/* MULTI 5 ignores the mode, so clear it. */                                  \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_string = clitext(\"__debugFlag 2088\");                         \
+    if (index (STRINGLIB_string, \"= on\") != -1) {                           \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" mode \\\"\\\"\"); \
+    }                                                                         \
+                                                                              \
+    clitext (\"connection change \" | $TCGUILIB_CID | \" sane yes\");         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_eval_sane = "                                                        \
+                                                                              \
+    $TCGUILIB_conargs = clitext (\"connection report \" |                     \
+                                 $TCGUILIB_CID | \" args\");                  \
+                                                                              \
+/* call the user's evaluation function and see what they said */              \
+    cli (\"callpsfunction \" | $TCGUILIB_statuswin_evalargs_fn | \"\");       \
+                                                                              \
+                                                                              \
+    if ($TCGUILIB_sane == \"1\") {                                            \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" sane yes\");     \
+    } else {                                                                  \
+        clitext (\"connection change \" | $TCGUILIB_CID | \" sane no\");      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_handle_connectionChange = "                                          \
+    TCGUILIB_read_sane ();                                                    \
+    TCGUILIB_read_started ();                                                 \
+                                                                              \
+    TCGUILIB_eval_sane ();                                                    \
+                                                                              \
+    TCGUILIB_read_sane ();                                                    \
+    TCGUILIB_read_started ();                                                 \
+    TCGUILIB_read_logged ();                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_logging_dialog_handle_TCGUILIB_btnCancel = "                         \
+    dismiss (0);                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_logging_dialog_handle_TCGUILIB_btnOK = "                             \
+                                                                              \
+    if ($TCGUILIB_btnUseLog.set == 1) {                                       \
+        clitext (\"connection targetlogstart \" | $TCGUILIB_TID | \" \\\"\" | \
+                 $TCGUILIB_tfLogFilename | \"\\\"\");                         \
+    } else {                                                                  \
+        clitext (\"connection targetlogstop \" | $TCGUILIB_TID | \" \");      \
+    }                                                                         \
+                                                                              \
+    dismiss (0);                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_logging_dialog_handle_TCGUILIB_btnUseLog = "                         \
+                                                                              \
+    if ($TCGUILIB_btnUseLog.set == 1) {                                       \
+        $TCGUILIB_tfLogFilename.dim = 0;                                      \
+    } else {                                                                  \
+        $TCGUILIB_tfLogFilename.dim = 1;                                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_logging_dialog_onSetup = "                                           \
+/* get the target ID from my caller */                                        \
+    $TCGUILIB_TID = %1;                                                       \
+                                                                              \
+                                                                              \
+/* configure the widgets based on the current logging state */                \
+    logged = clitext (\"connection targetislogged  \" | $TCGUILIB_TID | \"\") ; \
+                                                                              \
+    if (index (logged, \"yes\") != -1) {                                      \
+        $TCGUILIB_tfLogFilename =                                             \
+            clitext (\"connection targetlogfile  \" | $TCGUILIB_TID | \"\") ; \
+        $TCGUILIB_btnUseLog.set = 1;                                          \
+        $TCGUILIB_tfLogFilename.dim = 0;                                      \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_tfLogFilename = \"\";                                       \
+        $TCGUILIB_btnUseLog.set = 0;                                          \
+        $TCGUILIB_tfLogFilename.dim = 1;                                      \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_read_logged = "                                                      \
+    logged = clitext (\"connection targetislogged  \" | $TCGUILIB_TID | \"\") ; \
+                                                                              \
+    if (index (logged, \"yes\") != -1) {                                      \
+        logfile = clitext (\"connection targetlogfile  \" | $TCGUILIB_TID | \"\") ; \
+                                                                              \
+        if (strlen (logfile) < 1) {                                           \
+            $TCGUILIB_tfLogMsg.dim = 0;                                       \
+            $TCGUILIB_tfLogMsg = \"Logging to sterr\";                        \
+            $TCGUILIB_tfLogMsg.dim = 1;                                       \
+                                                                              \
+        } else {                                                              \
+            $TCGUILIB_tfLogMsg.dim = 0;                                       \
+            $TCGUILIB_tfLogMsg = \"Logging to \" | logfile | \"\";            \
+            $TCGUILIB_tfLogMsg.dim = 1;                                       \
+        }                                                                     \
+                                                                              \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_tfLogMsg.dim = 0;                                           \
+        $TCGUILIB_tfLogMsg = \"Connection logging is off.\";                  \
+        $TCGUILIB_tfLogMsg.dim = 1;                                           \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_read_runmode_partner = "                                             \
+/* Read in the run-mode connection partner, if present */                     \
+    $tfRunModePartner =                                                       \
+        clitext (\"connection report \" | $TCGUILIB_CID | \" partner\");      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_read_sane = "                                                        \
+    sane = clitext (\"connection report \" | $TCGUILIB_CID | \" sane\") ;     \
+                                                                              \
+    if (index (sane, \"yes\") != -1) {                                        \
+        $TCGUILIB_sane = \"1\";                                               \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_sane = \"0\";                                               \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_read_started = "                                                     \
+    started = clitext (\"connection targetisstarted \" | $TCGUILIB_TID);      \
+                                                                              \
+    if (index (started, \"yes\") != -1) {                                     \
+        $TCGUILIB_btnStart.dim       = 1;                                     \
+        $TCGUILIB_btnEdit.dim        = 1;                                     \
+        $TCGUILIB_btnStop.dim        = 0;                                     \
+        $TCGUILIB_btnSetLogging.dim  = 0;                                     \
+        $TCGUILIB_started            = \"1\";                                 \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_btnStart.dim       = 0;                                     \
+        $TCGUILIB_btnEdit.dim        = 0;                                     \
+        $TCGUILIB_btnStop.dim        = 1;                                     \
+        $TCGUILIB_btnSetLogging.dim  = 1;                                     \
+        $TCGUILIB_started      = \"0\";                                       \
+        $TCGUILIB_TID          = \"0\";                                       \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_report_messages_from_connect = "                                     \
+                                                                              \
+    theString = \"\";                                                         \
+    if ($TCGUILIB_use_msgtf == \"1\") {                                       \
+        theString = $TCGUILIB_msg_tf;                                         \
+    } else {                                                                  \
+        theString = $TCGUILIB_msg;                                            \
+    }                                                                         \
+                                                                              \
+    if (rindex (theString, \"SUCCESS\") == -1) {                              \
+        if (rindex (theString, \"FAILURE\") != -1) {                          \
+                                                                              \
+/* only display a message if the connection failed */                         \
+            msgEnd = rindex (theString, \"FAILURE\");                         \
+            theMsg = substr (theString, 0, msgEnd);                           \
+                                                                              \
+            alert (theMsg);                                                   \
+        }                                                                     \
+    } else {                                                                  \
+        msgEnd = rindex (theString, \"SUCCESS\");                             \
+        theMsg = substr (theString, 0, msgEnd);                               \
+                                                                              \
+        cli (\"echo \" | theMsg);                                             \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_save_runmode_partner = "                                             \
+/* Save the run-mode connection partner, if present */                        \
+    clitext (\"connection change \" | $TCGUILIB_CID | \" partner \\\"\" |     \
+                 escapify($tfRunModePartner) | \"\\\"\");                     \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_start = "                                                            \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"useprocess\") != -1) {                       \
+/* They want us to connect to a particular process window, */                 \
+/* which is already open.  MULTI knows which window to use and */             \
+/* how to hook it up. */                                                      \
+        if ($TCGUILIB_use_msgtf == \"1\") {                                   \
+               $TCGUILIB_msg_tf = clitext (\"connection startonprocess \" |   \
+                                          $TCGUILIB_CID | \"\");              \
+        } else {                                                              \
+               $TCGUILIB_msg = clitext (\"connection startonprocess \" |      \
+                                       $TCGUILIB_CID | \"\");                 \
+        }                                                                     \
+                                                                              \
+    } else {                                                                  \
+/* Just start the server; don't try to hook it up to a certain */             \
+/* process */                                                                 \
+        if ($TCGUILIB_use_msgtf == \"1\") {                                   \
+            $TCGUILIB_msg_tf = clitext (\"connection start \" | $TCGUILIB_CID | \"\"); \
+        } else {                                                              \
+            $TCGUILIB_msg = clitext (\"connection start \" | $TCGUILIB_CID | \"\"); \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* process the output message and find the TID */                             \
+    the_msg = \"\";                                                           \
+    if ($TCGUILIB_use_msgtf == \"1\") {                                       \
+            the_msg = $TCGUILIB_msg_tf;                                       \
+    } else {                                                                  \
+            the_msg = $TCGUILIB_msg;                                          \
+    }                                                                         \
+    successmsg = rindex (the_msg, \"SUCCESS : \");                            \
+    if (successmsg != -1) {                                                   \
+/* found a TID */                                                             \
+        $TCGUILIB_TID = substr (the_msg, successmsg + 10,                     \
+                                strlen (the_msg) - successmsg - 10);          \
+                                                                              \
+    } else {                                                                  \
+        $TCGUILIB_TID = \"0\";                                                \
+    }                                                                         \
+                                                                              \
+    TCGUILIB_read_started ();                                                 \
+                                                                              \
+/* Give the client an opportunity to look at the start */                     \
+    cli (\"callpsfunction \" | $TCGUILIB_analyzestart_fn | \"\");             \
+                                                                              \
+    if ($TCGUILIB_use_msgtf == \"1\") {                                       \
+        $TCGUILIB_msg_tf = \"\";                                              \
+    } else {                                                                  \
+        $TCGUILIB_msg = \"\";                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_status_footer_handle_TCGUILIB_btnEdit = "                            \
+    clitext (\"dialog \" | $TCGUILIB_editor_dlg_name |                        \
+             \" noconnect \" | $TCGUILIB_CID | \"\");                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_status_footer_handle_TCGUILIB_btnSetLogging = "                      \
+    clitext (\"dialog TCGUILIB_logging_dialog \" |                            \
+             \" \" | $TCGUILIB_TID | \"\");                                   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_status_footer_handle_TCGUILIB_btnStart = "                           \
+    TCGUILIB_start ();                                                        \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_status_footer_handle_TCGUILIB_btnStop = "                            \
+    TCGUILIB_stop ();                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_statuswin_onCleanup = "                                              \
+/* unregister this window with the connection manager now */                  \
+    clitext (\"connection plcunlisten TCGUILIB_handle_connectionChange\");    \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_statuswin_onSetup = "                                                \
+                                                                              \
+    $TCGUILIB_mode = %1;                                                      \
+    $TCGUILIB_CID  = %2;                                                      \
+    $TCGUILIB_TID  = %3;                                                      \
+                                                                              \
+    TCGUILIB_read_sane ();                                                    \
+    TCGUILIB_read_started ();                                                 \
+    TCGUILIB_read_logged ();                                                  \
+                                                                              \
+                                                                              \
+    if ($TCGUILIB_sane == \"0\") {                                            \
+/* not sane yet, sanify. */                                                   \
+        TCGUILIB_eval_sane ();                                                \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MAJOR_VERSION)\"); \
+    major_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MINOR_VERSION)\"); \
+    minor_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+    STRINGLIB_init();                                                         \
+    STRINGLIB_digit_string = clitext(\"mprintf(\\\"%d\\\", $_MULTI_MICRO_VERSION)\"); \
+    micro_ver = STRINGLIB_get_number();                                       \
+                                                                              \
+                                                                              \
+    if (major_ver == -1 && minor_ver == -1 && micro_ver == -1) {              \
+/* Unable to determine any version information.  Fallback to checking if */   \
+/* the rominithbp command, added after 5.0.5, exists. */                      \
+        STRINGLIB_init();                                                     \
+                                                                              \
+        STRINGLIB_string = clitext(\"rominithbp\");                           \
+        if (index (STRINGLIB_string, \"-setup\") != -1) {                     \
+/* The command exists. */                                                     \
+            $TCGUILIB_use_msgtf = \"0\";                                      \
+        } else {                                                              \
+            $TCGUILIB_use_msgtf = \"1\";                                      \
+        }                                                                     \
+    } else if (major_ver >= 6 || (major_ver == 5 && (minor_ver > 0 || micro_ver > 5  || (minor_ver == 0 && micro_ver == 0)))) { \
+        $TCGUILIB_use_msgtf = \"0\";                                          \
+    } else {                                                                  \
+        $TCGUILIB_use_msgtf = \"1\";                                          \
+    }                                                                         \
+                                                                              \
+/* register this window with the connection manager, so that it */            \
+/* will get updated when the connection changes */                            \
+    clitext (\"connection plclisten TCGUILIB_handle_connectionChange\");      \
+                                                                              \
+                                                                              \
+/* We may need to do various things if the connection is or is not started */ \
+    if ($TCGUILIB_started == \"0\") {                                         \
+/* not started yet.  Start as desired.  */                                    \
+                                                                              \
+        if (index ($TCGUILIB_mode, \"forcego\") != -1) {                      \
+            TCGUILIB_start ();                                                \
+                                                                              \
+        } else if (index ($TCGUILIB_mode, \"goifok\") != -1) {                \
+            if ($TCGUILIB_sane == \"1\") {                                    \
+                TCGUILIB_start ();                                            \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+    } else {                                                                  \
+/* started.  Are we being asked to stop it? */                                \
+        if (index ($TCGUILIB_mode, \"trystop\") != -1) {                      \
+            TCGUILIB_stop ();                                                 \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"forceclose\") != -1) {                       \
+/* We must always close the window */                                         \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"closeifok\") != -1) {                        \
+/* we should close the window if the connection is sane */                    \
+        if ($TCGUILIB_sane == \"1\") {                                        \
+            dismiss (0);                                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"closeifstarted\") != -1) {                   \
+/* we should close the window if the connection is started */                 \
+        if ($TCGUILIB_started == \"1\") {                                     \
+            dismiss (0);                                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    if (index ($TCGUILIB_mode, \"closeifstopped\") != -1) {                   \
+/* we should close the window if the connection is stopped */                 \
+        if ($TCGUILIB_started == \"0\") {                                     \
+            dismiss (0);                                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TCGUILIB_stop = "                                                             \
+                                                                              \
+    if ($TCGUILIB_use_msgtf == \"1\") {                                       \
+        $TCGUILIB_msg_tf = clitext (\"connection targetstop \" | $TCGUILIB_TID | \"\"); \
+    } else {                                                                  \
+        $TCGUILIB_msg = clitext (\"connection targetstop \" | $TCGUILIB_TID | \"\"); \
+    }                                                                         \
+                                                                              \
+    TCGUILIB_read_started ();                                                 \
+                                                                              \
+/* Give the client an opportunity to look at the start */                     \
+    cli (\"callpsfunction \" | $TCGUILIB_analyzestop_fn | \"\");              \
+                                                                              \
+    if ($TCGUILIB_use_msgtf == \"1\") {                                       \
+        $TCGUILIB_msg_tf = \"\";                                              \
+    } else {                                                                  \
+        $TCGUILIB_msg = \"\";                                                 \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+Items=OtherOptions
+ Dialogue(,,,366,30,NULL,"OtherOptions","OtherOptions_onSetup() ;","OtherOptions_onCleanup() ;",0,0,0,"MULTIPIC") 0xffffffff =OtherOptions > -1
+ Line(0,0,0,0,21,NULL,PNone)0x400 =lnVMax >-1
+ Text(0,0,2,NULL,"Other Options:",PNone)0xffffffff =txtOtherOptions >-1
+ TextField(0,87,0,289,21,NULL,NULL,NULL,256,1,"",NULL)0xffffffff =tfOtherOptions >-1
+MinSizes
+Sizes
+ 0,(1),(),0,0,0,0,0,1,1,Vertical
+ 1,(2),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 3,(0),(2),10,0,0,0,0,1,1,Horizontal
+Positions
+ (3),2,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),2,0,0,0,0,0,Left,Left,Right
+ (2),1,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (2),0,0,0,0,0,0,Left,Left,Left
+ (1),0,0,0,0,0,0,Top,Top,Top
+ (1),0,0,0,0,0,0,Left,Left,Left
+
+Items=RTEServConnectionEditor
+ Dialogue(,,,500,414,"$MULTI.rteserv_connection_editor","RTEServConnectionEditor","RTEServConnectionEditor_onSetup() ;","RTEServConnectionEditor_onCleanup() ;",0,0,0,"MULTIPIC") 0xffffffff =RTEServConnectionEditor > -1
+ Rectangle(0,0,0,1,54,"use TCGUILIB_editor_header;",2,NULL,PNone)0x400 =rctTCGUILIBHeader >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz1 >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =TCGUILIB_txtName >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfName >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz2 >-1
+ Text(0,0,0,NULL,"Type:",PNone)0xffffffff =TCGUILIB_txtType >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfType >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz3 >-1
+ Button(0,0,0,124,15,NULL,NULL,NULL,"Log Connection to file:",2,0,0,0,"TCGUILIB_editor_header_handle_TCGUILIB_btnLogging() ;")0xffffffff =TCGUILIB_btnLogging >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfLogFilename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Choose..."),    (1,"TCGUILIB_editor_header_handle_choose_logfile()"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =TCGUILIB_btnsLogFileChooser >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line1 >-1
+ TextField(0,-8,992,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCID:",NULL)0x400 =TCGUILIB_CID >-1
+ TextField(0,-8,1012,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenMode:",NULL)0x400 =TCGUILIB_mode >-1
+ TextField(0,-8,1032,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEditorDlgName:",NULL)0x400 =TCGUILIB_editor_dlg_name >-1
+ TextField(0,-8,1052,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenStatuswinDlgName:",NULL)0x400 =TCGUILIB_statuswin_dlg_name >-1
+ TextField(0,-8,1072,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSaveArgsFunc:",NULL)0x400 =TCGUILIB_editor_saveargs_fn >-1
+ TextField(0,-8,1092,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenReadArgsFunc:",NULL)0x400 =TCGUILIB_editor_readargs_fn >-1
+ TextField(0,-8,972,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenConChangedFunc:",NULL)0x400 =TCGUILIB_statuswin_changed_fn >-1
+ TextField(0,-8,952,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgs:",NULL)0x400 =TCGUILIB_conargs >-1
+ TextField(0,-8,932,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgsSane:",NULL)0x400 =TCGUILIB_sane >-1
+ TextField(0,0,912,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEvalArgsFunc:",NULL)0x400 =TCGUILIB_editor_evalargs_fn >-1
+ TextField(0,-8,795,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenLegacyScripts:",NULL)0x400 =TCGUILIB_editor_legacyscripts >-1
+ Text(0,0,0,NULL,"Target setup script:",PNone)0xffffffff =TCGUILIB_txtSetupScript >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfSetupScript >-1
+ ButtonSet(0,0,0,46,22,NULL,NULL,NULL,    (2,"Edit","Choose..."),    (2,"TCGUILIB_editor_header_handle_edit_script()","TCGUILIB_editor_header_handle_choose_script()"),    -1,1,2,0,0,61,0,    (2,NULL,NULL),    (2,"editconnection","open"),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =TCGUILIB_btnsSetupScript >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz4 >-1
+ ButtonSet(0,0,0,132,15,NULL,NULL,NULL,    (2,"MULTI","Legacy"),    (2,NULL,NULL),    -1,2,2,0,0,1,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bsSetupScript >-1
+ TextField(0,0,815,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSetupScript:",NULL)0x400 =TCGUILIB_SetupScript >-1
+ Text(0,0,0,NULL,"TCGUILIB Header Rct",PNone)0x400 =txtTCGUILIBHeaderRct >-1
+ TabControl(0,0,0,1,1,NULL,NULL,NULL,NULL,NULL,(1,"Options"),0,0,())0xffffffff =tcTabs >-1
+ Line(31.0,24,0,0,1,NULL,PNone)0x400 =lnSz1 >-1
+ Rectangle(31.0,0,0,1,60,"use OtherOptions;",2,NULL,PNone)0x400 =rctOtherOptions >-1
+ Line(31.0,0,0,0,21,NULL,PNone)0x400 =lnVMax >-1
+ Text(31.0,0,2,NULL,"Other Options:",PNone)0xffffffff =txtOtherOptions >-1
+ TextField(31.0,87,0,289,21,NULL,NULL,NULL,256,1,"",NULL)0xffffffff =tfOtherOptions >-1
+ Text(31.0,0,0,NULL,"Other Options Rct",PNone)0x400 =txtOtherOptionsRct >-1
+ Rectangle(0,0,0,1,60,"use TCGUILIB_editor_footer;",2,NULL,PNone)0x400 =rctTCGUILIBFooter >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line3 >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfCommand >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line2 >-1
+ Button(0,0,0,56,19,NULL,NULL,NULL,"Connect",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnConnect() ;")0xffffffff =TCGUILIB_btnConnect >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"OK",0,1,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnOK() ;")0xffffffff =TCGUILIB_btnOK >-1
+ Button(0,0,0,48,19,NULL,NULL,NULL,"Cancel",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnCancel() ;")0xffffffff =TCGUILIB_btnCancel >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Revert",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnRevert() ;")0xffffffff =TCGUILIB_btnRevert >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Apply",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnApply() ;")0xffffffff =TCGUILIB_btnApply >-1
+ Text(0,0,0,NULL,"TCGUILIB Footer Rct",PNone)0x400 =txtTCGUILIBFooterRct >-1
+ Line(31.0,14,0,0,1,NULL,PNone)0x400 =lnVMax >-1
+ Line(31.0,25,258,350,0,NULL,PNone)0x400 =lnHMax >-1
+ Rectangle(31.0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctSTP >-1
+ Rectangle(0,-108,-108,500,400,"use TCGUILIB_minsize_ref;",1,NULL,PNone)0x400 =rctMinsizeRef >-1
+ Text(0,10,13,NULL,"Connect for:",PNone)0x400 =TCGUILIB_minsize_txtConnectFor >-1
+ Button(0,10,68,246,15,NULL,NULL,NULL,"Board Setup (Debug board initialization sequence)",1,0,0,0,"")0x400 =TCGUILIB_minsize_btnLogging >-1
+ TextField(31.0,0,0,1,18,"foo",NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =txfStpAddress >-1
+ Text(31.0,0,0,NULL,"SuperTrace Probe is connected via:",PNone)0xffffffff =txtSTP >-1
+ PullDown(31.0,0,0,74,18,NULL,NULL,NULL,NULL,NULL,"no STP",1,(3,NULL,("no STP",NULL,,"RTEServConnectionEditor_handle_pdSTP",())("USB",NULL,,"RTEServConnectionEditor_handle_pdSTP",())("ethernet",NULL,,"RTEServConnectionEditor_handle_pdSTP",()),0))0xffffffff =pdSTP >-1
+ Text(31.0,0,0,NULL,"IP address:",PNone)0xffffffff =txtStpAddress >-1
+ Rectangle(31.0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctMulticore >-1
+ Text(31.0,0,0,NULL,"Multicore Support:",PNone)0xffffffff =txtMulticoreSupport >-1
+ PullDown(31.0,0,0,74,18,NULL,NULL,NULL,NULL,NULL,"Disabled",1,(2,NULL,("Disabled",NULL,,"RTEServConnectionEditor_handle_pdMulticoreSupport",())("Enabled",NULL,,"RTEServConnectionEditor_handle_pdMulticoreSupport",()),0))0xffffffff =pdMulticoreSupport >-1
+ Text(31.0,0,0,NULL,"Number of Cores:",PNone)0xffffffff =txtNumCores >-1
+ PullDown(31.0,0,0,32,18,NULL,NULL,NULL,NULL,NULL,"1",1,(2,NULL,("1",NULL,,"RTEServConnectionEditor_handle_pdNumCores",())("2",NULL,,"RTEServConnectionEditor_handle_pdNumCores",()),0))0xffffffff =pdNumCores >-1
+MinSizes
+ 0,(51),(),0,0,0,0,0,1,1,Horizontal
+ 0,(48,38,1),(),40,0,0,0,0,1,1,Vertical
+Sizes
+ 58,(31),(),-20,0,0,0,0,1,1,Horizontal
+ 58,(),(),75,0,0,0,0,1,1,Vertical
+ 32,(58,33,50),(),50,0,0,0,0,1,1,Vertical
+ 54,(31),(57),-20,0,0,0,0,1,1,Horizontal
+ 50,(),(),75,0,0,0,0,1,1,Vertical
+ 50,(31),(),-20,0,0,0,0,1,1,Horizontal
+ 0,(51),(),0,0,0,0,0,1,1,Horizontal
+ 0,(48,38,1),(),40,0,0,0,0,1,1,Vertical
+ 48,(32),(),0,0,0,0,0,1,1,((33),(),20,0,0,0,0,1,1,)Vertical
+ 33,(31),(),-20,0,0,0,0,1,1,Horizontal
+ 31,(0),(38,1),0,0,0,0,0,1,1,Vertical
+ 31,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 38,(0),(),0,0,0,0,0,1,1,Horizontal
+ 1,(0),(),0,0,0,0,0,1,0,Horizontal
+ 25,(10),(11),0,0,0,0,0,1,1,Horizontal
+ 27,(24),(),0,0,0,0,0,1,1,((25),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,))Vertical
+ 8,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 5,(6),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,)Vertical
+ 2,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 10,(1),(9,11),-20,1,0,0,0,1,1,Horizontal
+ 1,(8,5,2,28),(),89,0,0,0,0,1,1,Vertical
+ 12,(1),(),-20,0,0,0,0,1,1,Horizontal
+ 7,(4),(),0,0,0,0,0,1,1,Horizontal
+ 4,(1),(3),-10,0,0,0,0,1,1,Horizontal
+ 33,(34),(),0,0,0,0,0,1,1,Vertical
+ 34,(35),(),0,0,0,0,0,1,1,((36),(),0,0,0,0,0,1,1,)Vertical
+ 36,(33),(35),10,0,0,0,0,1,1,Horizontal
+ 38,(40,43),(),50,0,0,0,0,1,1,Vertical
+ 45,(44),(),0,0,0,0,0,1,1,Horizontal
+ 46,(44),(),0,0,0,0,0,1,1,Horizontal
+ 40,(38),(),4,0,0,0,0,1,1,Horizontal
+ 39,(38),(),-20,0,0,0,0,1,1,Horizontal
+ 41,(38),(),-20,0,0,0,0,1,1,Horizontal
+ 43,(44),(),0,0,0,0,0,1,1,Horizontal
+ 51,(53,52),(),30,0,0,0,0,1,1,Horizontal
+Positions
+ (61),62,0,0,0,0,0,Top,Top,Top
+ (62),60,10,0,0,0,0,Top,Top,Bottom
+ (62),60,0,0,0,0,0,Left,Left,Left
+ (61),58,5,0,0,0,0,Left,Left,Left
+ (60),59,10,0,0,0,0,Left,Left,Right
+ (60),59,0,0,0,0,0,Top,Top,Top
+ (59),58,5,0,0,0,0,Left,Left,Left
+ (59),58,15,0,0,0,0,Top,Top,Top
+ (58),31,40,0,0,0,0,Top,Top,Top
+ (58),31,10,0,0,0,0,Left,Left,Left
+ (57),55,0,0,0,0,0,Left,Left,Left
+ (57),54,0,0,0,0,0,Top,Top,Top
+ (56),55,0,0,0,0,0,Top,Top,Top
+ (56),55,10,0,0,0,0,Left,Left,Right
+ (54),57,2,0,0,0,0,Left,Left,Right
+ (55),50,5,0,0,0,0,Left,Left,Left
+ (55),50,15,0,0,0,0,Top,Top,Top
+ (54),56,10,0,0,0,0,Top,Top,Bottom
+ (50),58,15,0,0,0,0,Top,Top,Bottom
+ (50),31,10,0,0,0,0,Left,Left,Left
+ (1),0,0,0,0,0,0,Left,Left,Left
+ (1),0,0,0,0,0,0,Top,Top,Top
+ (30),1,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (30),1,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (31),1,4,0,0,0,0,Top,Top,Bottom
+ (31),0,11,0,0,0,0,Left,Left,Left
+ (32),31,40,0,0,0,0,Top,Top,Top
+ (33),50,15,0,0,0,0,Top,Top,Bottom
+ (33),31,10,0,0,0,0,Left,Left,Left
+ (37),33,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (37),33,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (38),0,0,0,0,0,0,Bottom,Bottom,Bottom
+ (38),0,0,0,0,0,0,Left,Left,Left
+ (47),38,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (47),38,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (48),31,40,0,0,0,0,Top,Top,Top
+ (12),28,10,0,0,0,0,Top,Top,Bottom
+ (26),25,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (11),1,-7,0,0,0,0,Right,Right,Right
+ (11),10,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (28),25,8,0,0,0,0,Left,Left,Left
+ (28),27,5,0,0,0,0,TBCenter,Top,Bottom
+ (26),1,-7,0,0,0,0,Right,Right,Right
+ (25),10,0,0,0,0,0,Left,Left,Left
+ (24),1,10,0,0,0,0,Left,Left,Left
+ (24,25,27),8,9,0,0,0,0,TBCenter,Top,Bottom
+ (10),9,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (8),5,10,0,0,0,0,Top,Top,Bottom
+ (5),2,10,0,0,0,0,Top,Top,Bottom
+ (2),1,10,0,0,0,0,Top,Top,Top
+ (10),9,0,0,0,0,0,Left,Left,Right
+ (9),1,10,0,0,0,0,Left,Left,Left
+ (9),8,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (12),1,10,0,0,0,0,Left,Left,Left
+ (6),5,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (6),1,10,0,0,0,0,Left,Left,Left
+ (3),2,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),1,10,0,0,0,0,Left,Left,Left
+ (7),6,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (7),4,0,0,0,0,0,Left,Left,Left
+ (4),3,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (4),1,2,0,0,0,0,Right,Right,Right
+ (36),35,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (36),35,0,0,0,0,0,Left,Left,Right
+ (35),34,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (35),33,0,0,0,0,0,Left,Left,Left
+ (34),33,0,0,0,0,0,Top,Top,Top
+ (34),33,0,0,0,0,0,Left,Left,Left
+ (45),46,0,0,0,0,0,Top,Top,Top
+ (45),46,-5,0,0,0,0,Right,Right,Left
+ (44),45,0,0,0,0,0,Top,Top,Top
+ (46),38,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (46),38,-10,0,0,0,0,Right,Right,Right
+ (39),40,-10,0,0,0,0,Top,Top,Top
+ (39),38,10,0,0,0,0,Left,Left,Left
+ (40),41,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (40),38,2,0,0,0,0,Right,Right,Right
+ (41),38,10,0,0,0,0,Left,Left,Left
+ (41),42,-10,0,0,0,0,Top,Top,Top
+ (42),38,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (42),38,10,0,0,0,0,Left,Left,Left
+ (43),44,0,0,0,0,0,Top,Top,Top
+ (43),44,-5,0,0,0,0,Right,Right,Left
+ (44),45,-11,0,0,0,0,Right,Right,Left
+
+Items=RTEServConnectionStatus
+ ColWind(,,,337,344,NULL,"RTEServConnectionStatus","RTEServConnectionStatus_onSetup() ;","RTEServConnectionStatus_onCleanup() ;",0,0,0,"MULTIPIC") 0xffffffff =RTEServConnectionStatus > -1
+ Text(0,0,0,NULL,"Connection Status:",PNone)0xffffffff =txtConnectionStatus >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hline1 >-1
+ Edit(0,0,0,1,204,NULL,NULL,NULL,1,0,0)0xffffffff =Editor >-1
+ Rectangle(0,0,0,1,65,"use TCGUILIB_status_footer;",2,NULL,PNone)0x400 =rctTCGUILIBStatusFooter >-1
+ Line(0,10,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line1 >-1
+ Button(0,0,0,64,19,NULL,NULL,NULL,"Logging...",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnSetLogging() ;")0xffffffff =TCGUILIB_btnSetLogging >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfLogMsg >-1
+ Button(0,0,0,44,19,NULL,NULL,NULL,"Edit...",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnEdit() ;")0xffffffff =TCGUILIB_btnEdit >-1
+ Button(0,0,0,46,19,NULL,NULL,NULL," Start ",0,1,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnStart() ;")0xffffffff =TCGUILIB_btnStart >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Stop",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnStop() ;")0xffffffff =TCGUILIB_btnStop >-1
+ TextField(0,-8,992,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCID:",NULL)0x400 =TCGUILIB_CID >-1
+ TextField(0,-8,1012,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenMode:",NULL)0x400 =TCGUILIB_mode >-1
+ TextField(0,-8,1032,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEditorDlgName:",NULL)0x400 =TCGUILIB_editor_dlg_name >-1
+ TextField(0,0,835,1,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenStatusDlgName:",NULL)0x400 =TCGUILIB_statuswin_dlg_name >-1
+ TextField(0,-8,855,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckStartFunc:",NULL)0x400 =TCGUILIB_analyzestart_fn >-1
+ TextField(0,-8,875,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckStopFunc:",NULL)0x400 =TCGUILIB_analyzestop_fn >-1
+ TextField(0,-8,972,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckArgsFunc:",NULL)0x400 =TCGUILIB_statuswin_evalargs_fn >-1
+ TextField(0,-8,952,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgs:",NULL)0x400 =TCGUILIB_conargs >-1
+ TextField(0,0,932,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenIsStarted:",NULL)0x400 =TCGUILIB_started >-1
+ TextField(0,0,912,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSanity:",NULL)0x400 =TCGUILIB_sane >-1
+ Text(0,0,0,NULL,"StopOrStartFailureMsg:",PNone)0x400 =TCGUILIB_msg >-1
+ TextField(0,0,795,300,17,NULL,NULL,NULL,0xc1acc10,0,"StopOrStartFailureMsg:",NULL)0x400 =TCGUILIB_msg_tf >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenTargetID:",NULL)0x400 =TCGUILIB_TID >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenUseMsgTextField:",NULL)0x400 =TCGUILIB_use_msgtf >-1
+ Text(0,0,0,NULL,"TCGUILIB Status Footer Rct",PNone)0x400 =txtTCGUILIBStatusFooterRct >-1
+MinSizes
+Sizes
+ 4,(0),(),0,0,0,0,0,1,1,Horizontal
+ 3,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 2,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 1,(),(),0,0,0,0,0,1,1,Horizontal
+ 7,(4),(10,9,8,6),-36,0,0,0,0,1,1,Horizontal
+ 5,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 4,(9),(),30,0,0,0,0,1,1,Vertical
+ 14,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 10,(9),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (25),4,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (25),4,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (4),0,0,0,0,0,0,Bottom,Bottom,Bottom
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (3),2,10,0,0,0,0,Top,Top,Bottom
+ (3),0,10,0,0,0,0,Left,Left,Left
+ (2),1,10,0,0,0,0,Top,Top,Bottom
+ (2),0,10,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (7),6,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (7),6,-2,0,0,0,0,Left,Left,Right
+ (6),4,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (6),4,10,0,0,0,0,Left,Left,Left
+ (5),4,10,0,0,0,0,Top,Top,Top
+ (8),9,0,0,0,0,0,Top,Top,Top
+ (8),9,-5,0,0,0,0,Right,Right,Left
+ (9),10,0,0,0,0,0,Top,Top,Top
+ (10),4,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (9),10,-2,0,0,0,0,Right,Right,Left
+ (10),4,-10,0,0,0,0,Right,Right,Right
+
+Items=TCGUILIB_editor_footer
+ Dialogue(,,,481,86,NULL,"TCGUILIB_editor_footer","","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_editor_footer > -1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line3 >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfCommand >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line2 >-1
+ Button(0,0,0,56,19,NULL,NULL,NULL,"Connect",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnConnect() ;")0xffffffff =TCGUILIB_btnConnect >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"OK",0,1,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnOK() ;")0xffffffff =TCGUILIB_btnOK >-1
+ Button(0,0,0,48,19,NULL,NULL,NULL,"Cancel",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnCancel() ;")0xffffffff =TCGUILIB_btnCancel >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Revert",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnRevert() ;")0xffffffff =TCGUILIB_btnRevert >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Apply",0,0,0,0,"TCGUILIB_editor_footer_handle_TCGUILIB_btnApply() ;")0xffffffff =TCGUILIB_btnApply >-1
+MinSizes
+Sizes
+ 0,(2,5),(),50,0,0,0,0,1,1,Vertical
+ 7,(6),(),0,0,0,0,0,1,1,Horizontal
+ 8,(6),(),0,0,0,0,0,1,1,Horizontal
+ 2,(0),(),4,0,0,0,0,1,1,Horizontal
+ 1,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 3,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 5,(6),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (7),8,0,0,0,0,0,Top,Top,Top
+ (7),8,-5,0,0,0,0,Right,Right,Left
+ (6),7,0,0,0,0,0,Top,Top,Top
+ (8),0,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (8),0,-10,0,0,0,0,Right,Right,Right
+ (1),2,-10,0,0,0,0,Top,Top,Top
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (2),3,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (2),0,2,0,0,0,0,Right,Right,Right
+ (3),0,10,0,0,0,0,Left,Left,Left
+ (3),4,-10,0,0,0,0,Top,Top,Top
+ (4),0,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (4),0,10,0,0,0,0,Left,Left,Left
+ (5),6,0,0,0,0,0,Top,Top,Top
+ (5),6,-5,0,0,0,0,Right,Right,Left
+ (6),7,-11,0,0,0,0,Right,Right,Left
+
+Items=TCGUILIB_editor_header
+ Dialogue(,,,474,155,NULL,"TCGUILIB_editor_header","","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_editor_header > -1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz1 >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =TCGUILIB_txtName >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfName >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz2 >-1
+ Text(0,0,0,NULL,"Type:",PNone)0xffffffff =TCGUILIB_txtType >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfType >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz3 >-1
+ Button(0,0,0,124,15,NULL,NULL,NULL,"Log Connection to file:",2,0,0,0,"TCGUILIB_editor_header_handle_TCGUILIB_btnLogging() ;")0xffffffff =TCGUILIB_btnLogging >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfLogFilename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Choose..."),    (1,"TCGUILIB_editor_header_handle_choose_logfile()"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =TCGUILIB_btnsLogFileChooser >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line1 >-1
+ TextField(0,-8,992,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCID:",NULL)0x400 =TCGUILIB_CID >-1
+ TextField(0,-8,1012,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenMode:",NULL)0x400 =TCGUILIB_mode >-1
+ TextField(0,-8,1032,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEditorDlgName:",NULL)0x400 =TCGUILIB_editor_dlg_name >-1
+ TextField(0,-8,1052,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenStatuswinDlgName:",NULL)0x400 =TCGUILIB_statuswin_dlg_name >-1
+ TextField(0,-8,1072,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSaveArgsFunc:",NULL)0x400 =TCGUILIB_editor_saveargs_fn >-1
+ TextField(0,-8,1092,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenReadArgsFunc:",NULL)0x400 =TCGUILIB_editor_readargs_fn >-1
+ TextField(0,-8,972,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenConChangedFunc:",NULL)0x400 =TCGUILIB_statuswin_changed_fn >-1
+ TextField(0,-8,952,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgs:",NULL)0x400 =TCGUILIB_conargs >-1
+ TextField(0,-8,932,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgsSane:",NULL)0x400 =TCGUILIB_sane >-1
+ TextField(0,0,912,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEvalArgsFunc:",NULL)0x400 =TCGUILIB_editor_evalargs_fn >-1
+ TextField(0,-8,795,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenLegacyScripts:",NULL)0x400 =TCGUILIB_editor_legacyscripts >-1
+ Text(0,0,0,NULL,"Target setup script:",PNone)0xffffffff =TCGUILIB_txtSetupScript >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfSetupScript >-1
+ ButtonSet(0,0,0,46,22,NULL,NULL,NULL,    (2,"Edit","Choose..."),    (2,"TCGUILIB_editor_header_handle_edit_script()","TCGUILIB_editor_header_handle_choose_script()"),    -1,1,2,0,0,61,0,    (2,NULL,NULL),    (2,"editconnection","open"),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =TCGUILIB_btnsSetupScript >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz4 >-1
+ ButtonSet(0,0,0,132,15,NULL,NULL,NULL,    (2,"MULTI","Legacy"),    (2,NULL,NULL),    -1,2,2,0,0,1,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bsSetupScript >-1
+ TextField(0,0,815,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSetupScript:",NULL)0x400 =TCGUILIB_SetupScript >-1
+MinSizes
+Sizes
+ 24,(9),(10),0,0,0,0,0,1,1,Horizontal
+ 26,(23),(),0,0,0,0,0,1,1,((24),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,))Vertical
+ 7,(8),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,)Vertical
+ 4,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 1,(2),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 9,(0),(8,10),-20,1,0,0,0,1,1,Horizontal
+ 0,(7,4,1,27),(),89,0,0,0,0,1,1,Vertical
+ 11,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 6,(3),(),0,0,0,0,0,1,1,Horizontal
+ 3,(0),(2),-10,0,0,0,0,1,1,Horizontal
+Positions
+ (11),27,10,0,0,0,0,Top,Top,Bottom
+ (25),24,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (10),0,-7,0,0,0,0,Right,Right,Right
+ (10),9,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (27),24,8,0,0,0,0,Left,Left,Left
+ (27),26,5,0,0,0,0,TBCenter,Top,Bottom
+ (25),0,-7,0,0,0,0,Right,Right,Right
+ (24),9,0,0,0,0,0,Left,Left,Left
+ (23),0,10,0,0,0,0,Left,Left,Left
+ (23,24,26),7,9,0,0,0,0,TBCenter,Top,Bottom
+ (9),8,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (7),4,10,0,0,0,0,Top,Top,Bottom
+ (4),1,10,0,0,0,0,Top,Top,Bottom
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (9),8,0,0,0,0,0,Left,Left,Right
+ (8),0,10,0,0,0,0,Left,Left,Left
+ (8),7,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (11),0,10,0,0,0,0,Left,Left,Left
+ (5),4,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (5),0,10,0,0,0,0,Left,Left,Left
+ (2),1,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (2),0,10,0,0,0,0,Left,Left,Left
+ (6),5,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (6),3,0,0,0,0,0,Left,Left,Left
+ (3),2,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),0,2,0,0,0,0,Right,Right,Right
+
+Items=TCGUILIB_editor_header_no_script
+ Dialogue(,,,418,116,NULL,"TCGUILIB_editor_header_no_script","","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_editor_header_no_script > -1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz1 >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =TCGUILIB_txtName >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfName >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz2 >-1
+ Text(0,0,0,NULL,"Type:",PNone)0xffffffff =TCGUILIB_txtType >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfType >-1
+ Line(0,-1,0,0,1,NULL,PNone)0x400 =TCGUILIB_lnSz3 >-1
+ Button(0,0,0,124,15,NULL,NULL,NULL,"Log Connection to file:",2,0,0,0,"TCGUILIB_editor_header_no_script_handle_TCGUILIB_btnLogging() ;")0xffffffff =TCGUILIB_btnLogging >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =TCGUILIB_tfLogFilename >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"Choose..."),    (1,"TCGUILIB_editor_header_handle_choose_logfile()"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"open"),    (1,NULL),    (1,NULL),0,0)0xffffffff =TCGUILIB_btnsLogFileChooser >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line1 >-1
+ TextField(0,-8,992,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCID:",NULL)0x400 =TCGUILIB_CID >-1
+ TextField(0,-8,1012,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenMode:",NULL)0x400 =TCGUILIB_mode >-1
+ TextField(0,-8,1032,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEditorDlgName:",NULL)0x400 =TCGUILIB_editor_dlg_name >-1
+ TextField(0,-8,1052,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenStatuswinDlgName:",NULL)0x400 =TCGUILIB_statuswin_dlg_name >-1
+ TextField(0,-8,1072,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSaveArgsFunc:",NULL)0x400 =TCGUILIB_editor_saveargs_fn >-1
+ TextField(0,-8,1092,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenReadArgsFunc:",NULL)0x400 =TCGUILIB_editor_readargs_fn >-1
+ TextField(0,-8,972,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenConChangedFunc:",NULL)0x400 =TCGUILIB_statuswin_changed_fn >-1
+ TextField(0,-8,952,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgs:",NULL)0x400 =TCGUILIB_conargs >-1
+ TextField(0,-8,932,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgsSane:",NULL)0x400 =TCGUILIB_sane >-1
+ TextField(0,0,912,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEvalArgsFunc:",NULL)0x400 =TCGUILIB_editor_evalargs_fn >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSetupScript:",NULL)0x400 =TCGUILIB_SetupScript >-1
+ ButtonSet(0,9992,9992,132,15,NULL,NULL,NULL,    (2,"MULTI","Legacy"),    (2,NULL,NULL),    -1,2,2,0,0,1,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0x400 =bsSetupScript >-1
+ TextField(0,9992,9992,8,17,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0x400 =tfSetupScript >-1
+ TextField(0,9992,9992,28,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenLegacyScripts:",NULL)0x400 =TCGUILIB_editor_legacyscripts >-1
+MinSizes
+Sizes
+ 7,(8),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,)Vertical
+ 4,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 1,(2),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 9,(0),(8,10),-10,0,0,0,0,1,1,Horizontal
+ 0,(7,4,1),(),65,0,0,0,0,1,1,Vertical
+ 11,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 6,(3),(),0,0,0,0,0,1,1,Horizontal
+ 3,(0),(2),-10,0,0,0,0,1,1,Horizontal
+Positions
+ (10),9,0,0,0,0,0,Top,TBCenter,TBCenter
+ (10),0,-7,0,0,0,0,Left,Right,Right
+ (11),7,10,0,0,0,0,Top,Top,Bottom
+ (9),8,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (7),4,10,0,0,0,0,Top,Top,Bottom
+ (4),1,10,0,0,0,0,Top,Top,Bottom
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (9),8,0,0,0,0,0,Left,Left,Right
+ (8),0,10,0,0,0,0,Left,Left,Left
+ (8),7,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (11),0,10,0,0,0,0,Left,Left,Left
+ (5),4,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (5),0,10,0,0,0,0,Left,Left,Left
+ (2),1,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (2),0,10,0,0,0,0,Left,Left,Left
+ (6),5,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (6),3,0,0,0,0,0,Left,Left,Left
+ (3),2,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),0,2,0,0,0,0,Right,Right,Right
+
+Items=TCGUILIB_logging_dialog
+ Dialogue(,,,286,101,NULL,"TCGUILIB_logging_dialog","TCGUILIB_logging_dialog_onSetup() ;","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_logging_dialog > -1
+ Button(0,0,0,124,15,NULL,NULL,NULL,"Log Connection To File",2,0,0,0,"TCGUILIB_logging_dialog_handle_TCGUILIB_btnUseLog() ;")0xffffffff =TCGUILIB_btnUseLog >-1
+ Text(0,0,0,NULL,"Log File:",PNone)0xffffffff =TCGUILIB_txtLogFilename >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfLogFilename >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"OK",0,1,0,0,"TCGUILIB_logging_dialog_handle_TCGUILIB_btnOK() ;")0xffffffff =TCGUILIB_btnOK >-1
+ Button(0,0,0,48,19,NULL,NULL,NULL,"Cancel",0,0,0,0,"TCGUILIB_logging_dialog_handle_TCGUILIB_btnCancel() ;")0xffffffff =TCGUILIB_btnCancel >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenTargetID:",NULL)0x400 =TCGUILIB_TID >-1
+MinSizes
+ 0,(1,4,5),(),0,0,0,0,0,1,1,Horizontal
+ 0,(1,3,4),(),40,0,0,0,0,1,1,Vertical
+Sizes
+ 3,(0),(2),-6,0,0,0,0,1,1,Horizontal
+ 4,(5),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (4),5,1,0,0,0,0,Top,Top,Top
+ (4),5,-5,0,0,0,0,Right,Right,Left
+ (5),0,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (5),0,-10,0,0,0,0,Right,Right,Right
+ (3),0,2,0,0,0,0,Right,Right,Right
+ (3),1,10,0,0,0,0,Top,Top,Bottom
+ (2),3,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (2),0,10,0,0,0,0,Left,Left,Left
+ (1),0,11,0,0,0,0,Top,Top,Top
+ (1),0,10,0,0,0,0,Left,Left,Left
+
+Items=TCGUILIB_minsize_ref
+ Dialogue(,,,336,227,NULL,NULL,"","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_minsize_ref > -1
+ Text(0,10,13,NULL,"Connect for:",PNone)0x400 =TCGUILIB_minsize_txtConnectFor >-1
+ Button(0,10,68,246,15,NULL,NULL,NULL,"Board Setup (Debug board initialization sequence)",1,0,0,0,"")0x400 =TCGUILIB_minsize_btnLogging >-1
+MinSizes
+Sizes
+ 0,(2,1),(),30,0,0,0,0,1,1,Horizontal
+Positions
+
+Items=TCGUILIB_runmode_partner
+ Dialogue(,,,365,43,NULL,"TCGUILIB_runmode_partner","","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_runmode_partner > -1
+ Line(0,0,1,0,1,NULL,PNone)0x400 =lnVMax >-1
+ Text(0,0,0,NULL,"Run-Mode Partner Connection:",PNone)0xffffffff =txtRunModePartner >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tfRunModePartner >-1
+MinSizes
+Sizes
+ 0,(1),(),0,0,0,0,0,1,1,Vertical
+ 3,(0),(),10,0,0,0,0,1,1,Horizontal
+ 1,(2,3),(),5,0,0,0,0,1,1,Vertical
+Positions
+ (3),2,5,0,0,0,0,Top,Top,Bottom
+ (1),0,0,0,0,0,0,Left,Left,Left
+ (3),2,-9,0,0,0,0,Left,Left,Left
+ (2),0,0,0,0,0,0,Top,Top,Top
+ (2),0,0,0,0,0,0,Left,Left,Left
+
+Items=TCGUILIB_status_footer
+ ColWind(,,,610,49,NULL,"TCGUILIB_status_footer","","",0,0,0,"MULTIPIC") 0xffffffff =TCGUILIB_status_footer > -1
+ Line(0,10,0,1,0,NULL,PNone)0xffffffff =TCGUILIB_line1 >-1
+ Button(0,0,0,64,19,NULL,NULL,NULL,"Logging...",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnSetLogging() ;")0xffffffff =TCGUILIB_btnSetLogging >-1
+ TextField(0,0,0,1,17,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =TCGUILIB_tfLogMsg >-1
+ Button(0,0,0,44,19,NULL,NULL,NULL,"Edit...",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnEdit() ;")0xffffffff =TCGUILIB_btnEdit >-1
+ Button(0,0,0,46,19,NULL,NULL,NULL," Start ",0,1,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnStart() ;")0xffffffff =TCGUILIB_btnStart >-1
+ Button(0,0,0,1,19,NULL,NULL,NULL,"Stop",0,0,0,0,"TCGUILIB_status_footer_handle_TCGUILIB_btnStop() ;")0xffffffff =TCGUILIB_btnStop >-1
+ TextField(0,-8,992,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCID:",NULL)0x400 =TCGUILIB_CID >-1
+ TextField(0,-8,1012,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenMode:",NULL)0x400 =TCGUILIB_mode >-1
+ TextField(0,-8,1032,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenEditorDlgName:",NULL)0x400 =TCGUILIB_editor_dlg_name >-1
+ TextField(0,0,835,1,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenStatusDlgName:",NULL)0x400 =TCGUILIB_statuswin_dlg_name >-1
+ TextField(0,-8,855,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckStartFunc:",NULL)0x400 =TCGUILIB_analyzestart_fn >-1
+ TextField(0,-8,875,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckStopFunc:",NULL)0x400 =TCGUILIB_analyzestop_fn >-1
+ TextField(0,-8,972,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenCheckArgsFunc:",NULL)0x400 =TCGUILIB_statuswin_evalargs_fn >-1
+ TextField(0,-8,952,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenArgs:",NULL)0x400 =TCGUILIB_conargs >-1
+ TextField(0,0,932,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenIsStarted:",NULL)0x400 =TCGUILIB_started >-1
+ TextField(0,0,912,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenSanity:",NULL)0x400 =TCGUILIB_sane >-1
+ Text(0,0,0,NULL,"StopOrStartFailureMsg:",PNone)0x400 =TCGUILIB_msg >-1
+ TextField(0,0,795,300,17,NULL,NULL,NULL,0xc1acc10,0,"StopOrStartFailureMsg:",NULL)0x400 =TCGUILIB_msg_tf >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenTargetID:",NULL)0x400 =TCGUILIB_TID >-1
+ TextField(0,0,775,300,17,NULL,NULL,NULL,0xc1acc10,0,"HiddenUseMsgTextField:",NULL)0x400 =TCGUILIB_use_msgtf >-1
+MinSizes
+Sizes
+ 3,(0),(6,5,4,2),-36,0,0,0,0,1,1,Horizontal
+ 1,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 0,(5),(),30,0,0,0,0,1,1,Vertical
+ 10,(0),(),-20,0,0,0,0,1,1,Horizontal
+ 6,(5),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (3),2,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),2,-2,0,0,0,0,Left,Left,Right
+ (2),0,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (2),0,10,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (4),5,0,0,0,0,0,Top,Top,Top
+ (4),5,-5,0,0,0,0,Right,Right,Left
+ (5),6,0,0,0,0,0,Top,Top,Top
+ (6),0,-10,0,0,0,0,Bottom,Bottom,Bottom
+ (5),6,-2,0,0,0,0,Right,Right,Left
+ (6),0,-10,0,0,0,0,Right,Right,Right
+

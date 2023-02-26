@@ -1,0 +1,43 @@
+// csignal standard header
+#ifndef _CSIGNAL_
+#define _CSIGNAL_
+
+#if defined(__ghs) || defined(__SC3__)
+#include <signal.h>
+
+#if defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS)
+namespace std {
+    using ::sig_atomic_t;
+    using ::raise; 
+    using ::signal;
+}
+#endif  // __NAMESPACES
+
+#else /* !__ghs */
+
+#include <yvals.h>
+
+#ifdef _STD_USING
+ #undef _STD_USING
+  #include <signal.h>
+ #define _STD_USING
+
+#else /* _STD_USING */
+ #include <signal.h>
+
+ #ifdef _GLOBAL_USING
+_STD_BEGIN
+using _CSTD sig_atomic_t; using _CSTD raise; 
+using _CSTD signal;
+_STD_END
+ #endif /* _GLOBAL_USING */
+
+#endif /* _STD_USING */
+
+#endif /* !__ghs */
+#endif /* _CSIGNAL_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

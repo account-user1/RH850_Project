@@ -1,0 +1,303 @@
+Settings {
+#	additionalTargets={"ghs_custom"}
+	customTypeOutputDirectory="generated"
+
+	alwaysOpt+={"-no_16bit_data_pointer"}
+	alwaysOpt+={"-inline_prologue"}
+	alwaysOpt+={"-globalreg=99"}
+}
+
+
+NPWTargetConversions {
+	{
+		oldname="solaris2"
+		newname="solaris"
+	}
+	{
+		oldname="windows"
+		newname="win32"
+	}
+	{
+		oldname="68"
+		newname="coldfire"
+	}
+	{
+		oldname="standalone"
+		ossignature={"include/uv_api.h"}
+		newname="uvelosity"
+	}
+}
+
+
+TargetConversions {
+	{
+		oldname="linux86"
+		newname="86_linux"
+	}
+	{
+		oldnames ={"solaris2"}
+		oldnames+={"solaris2-cross-linux86"}
+		newname="sparc_solaris"
+	}
+	{
+		oldname="win32"
+		newname="86_win32"
+	}
+	{
+		oldnames ={"L3-8245","ads800","ads8260","ar720","asppmc750"}
+		oldnames+={"asppmc750f"}
+		oldnames+={"bcm8260","c100","c3100-555","c3100-8245","cpci-680"}
+		oldnames+={"cpci-690","dy179","dy4-181","dy4-scp119","emc100"}
+		oldnames+={"ep405","ep8260","evb555","excimer745","gdais-7410"}
+		oldnames+={"ibm440","ipengine","kgm5-750","mbx800","mcp750"}
+		oldnames+={"mcp765-750","mcp765","mpc857t-iad","mvme2300"}
+		oldnames+={"mvme2400","mvme2600","mvme2700","mvme5100-7400"}
+		oldnames+={"mvme5100-750","pcore","prpmc600","rccpr","rioc4064"}
+		oldnames+={"rpx-cllf","rpx-lite823","rschgpp","rsep1a"}
+		oldnames+={"rsepmcq2","rsimp1a","rsppc4-7410","rsppc4","rsppc6"}
+		oldnames+={"rsppc7","sbsck3","sbsrl4-7400","sbsrl4","sctl"}
+		oldnames+={"si-gppm","sim800","sp103","sp103b","sp2-750"}
+		oldnames+={"sp2-8240","srctls","vgm5-7400","vym2","walnut405gp"}
+		newname="ppc_integrity"
+	}
+	{
+		oldnames ={"cdb89712","dbpxa250","edb72xx","iq80310"}
+		oldnames+={"iq80321","lh7a400","simarm"}
+		newname="arm_integrity"
+	}
+	{
+		oldnames ={"atlasjade","atlasjadel","ev64120a","idt79eb355"}
+		oldnames+={"jmr3927","jmr3927l","maltajade","maltajadel"}
+		oldnames+={"mmc5000","mmc7000","simr5000","star7"}
+		oldnames+={"vr4122l","vr4131","vr4131l"}
+		newname="mips_integrity"
+	}
+	{
+		oldnames ={"pcx86","simx86"}
+		newname="86_integrity"
+	}
+	{
+		oldnames = {"68k", "coldfire_elf"}
+		newname="coldfire_standalone"
+	}
+	{
+		oldname="mipself"
+		newname="mips_standalone"
+	}
+	{
+		oldname="mipslelf"
+		newname="mips_standalone"
+		#:config_setting=byteorder
+		options={"-littleendian"}
+	}
+	{
+		oldnames ={"vxppc", "vxwppc"}
+		newname="ppc_vxworks"
+	}
+	{
+		oldnames ={"vxmips", "vxwmips"}
+		newname="mips_vxworks"
+	}
+	{
+		oldnames ={"vx68", "vxw68"}
+		newname="coldfire_vxworks"
+	}
+	{
+		oldnames ={"vxarm", "vxwarm"}
+		newname="arm_vxworks"
+	}
+	{
+		oldnames ={"vxarmc"}
+		newname="arm_vxworks_coff"
+	}
+	{
+		oldnames ={"vx86", "vxw86"}
+		newname="86_vxworks"
+	}
+	{
+		oldnames ={"vxsol", "vxwsol"}
+		newname="sparc_vxsim"
+	}
+	{
+		oldnames ={"vxwin32", "vxwwin32"}
+		newname="86_vxsim"
+	}
+	{
+		oldnames={"v810elf", "v810elf_c2000"}
+		newname="v800_standalone"
+		#:v800_cputype=v810
+		options={"-cpu=v810"}
+	}
+	{
+		oldnames={"v830elf", "v830elf_c2000"}
+		newname="v800_standalone"
+		#:v800_cputype=v830
+		options={"-cpu=v830"}
+	}
+	{
+		oldnames={"v850elf", "v850elf_c2000"}
+		newname="v800_standalone"
+		#:v800_cputype=v850
+		options={"-cpu=v850"}
+	}
+	{
+		oldnames={"v850e_elf", "v850e_elf_c2000"}
+		newname="v800_standalone"
+		#:v800_cputype=v850e
+		options={"-cpu=v850e"}
+	}
+	{
+		oldnames={"thumb"}
+		newname="arm_standalone"
+		options={"-cpu=arm7tm"}
+		options+={"-thumb"}
+	}
+}
+
+
+FileTypeConversions {
+	{
+		oldtype="unknown"
+		newtype=""
+	}
+	{
+		oldtype="nobuild"
+		newtype="Project"
+	}
+	{
+		oldtype="options_file"
+		newtype=""
+	}
+	{
+		oldtype="board_target"
+		newtype=""
+	}
+	{
+		oldtype="program"
+		newtype="Program"
+	}
+	{
+		oldtype="subproject"
+		newtype="Subproject"
+	}
+	{
+		oldtype="select_one"
+		newtype="Select One"
+	}
+	{
+		oldtype="single_file_lib"
+		newtype="Singleton Library"
+	}
+	{
+		oldtype="library"
+		newtype="Library"
+		include_exts={"bld"}
+	}
+	{
+		oldtype="library"
+		newtype="Prebuilt Library"
+		exclude_exts={"bld"}
+	}
+	{
+		oldtype="shared_library"
+		newtype="Shared Object"
+	}
+	{
+		oldtype="include_file"
+		newtype="Header"
+	}
+	{
+		oldtype="script"
+		newtype=""
+	}
+	{
+		oldtype="C"
+		newtype="C"
+	}
+	{
+		oldtype="Fortran"
+		newtype="FORTRAN"
+	}
+	{
+		oldtype="Pascal"
+		newtype=""
+	}
+	{
+		oldtype="C++"
+		newtype="C++"
+	}
+	{
+		oldtype="Ada"
+		newtype="Ada"		
+		exclude_exts={"ads","spc","ada_spec"}
+	}
+	{
+		oldtype="Ada"
+		newtype="Ada Spec"
+		include_exts={"ads","spc","ada_spec"}
+	}
+	{
+		oldtype="object_file"
+		newtype="Object"
+		exclude_exts={"bld"}
+	}
+	{
+		oldtype="object_file"
+		newtype="Relocatable Object"
+		include_exts={"bld"}
+	}
+	{
+		oldtype="linker_file"
+		newtype="Linker Directives"
+	}
+	{
+		oldtype="assembly"
+		newtype="Assembly"
+	}
+	{
+		oldtype="Fortran-90"
+		newtype=""
+	}
+	{
+		oldtype="integrity_app"
+		newtype="INTEGRITY Application"
+	}
+	{
+		oldtype="integrate_file"
+		newtype="Integrate File"
+	}
+	{
+		oldtype="bsp_description"
+		newtype="BSP Description"
+	}
+	{
+		oldtype="Custom"
+		newtype="Custom"
+	}
+	{
+		oldtype="documentation"
+		newtype="Text"
+		exclude_exts={"demo"}
+	}
+	{
+		oldtype="documentation"
+		newtype="Demo Instructions"
+		include_exts={"demo"}
+	}
+	{
+		oldtype="connections"
+		newtype="Target Connections"
+	}
+	{
+		oldtype="board_setup"
+		newtype="Board Setup"
+	}
+	{
+		oldtype="memory_info"
+		newtype=""
+	}
+	{
+		oldtype="register_info"
+		newtype=""
+	}
+}

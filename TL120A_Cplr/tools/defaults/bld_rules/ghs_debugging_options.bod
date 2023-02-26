@@ -1,0 +1,1437 @@
+
+###############################################################################
+# ghs_debugging_options.bod
+#
+#
+#
+###############################################################################
+
+%if defined (ADA_DRIVER)
+% define ada_disabled false
+%else
+% define ada_disabled true
+%endif
+
+CommandOptions {
+    GhsCompilerOptions {
+
+    ################ Primary Options #######################
+
+	    DebugLevel {
+		    {
+			    name="-G"
+			    value=1
+			    enumLabel="MULTI"
+		    }
+		    {
+			    name="--debug"
+			    value=1
+			    enumLabel="MULTI"
+		    }
+		    {
+			    name="-g"
+			    value=2
+			    enumLabel="Plain"
+		    }
+		    {
+			    name="-gs"
+			    value=3
+			    enumLabel="Stack Trace"
+		    }
+		    {
+			    name="--no_debug"
+			    value=4
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Debugging Level"
+		    guiCategory="Debugging"
+		    commonLevel=1
+	    }
+	    DTrace {
+		    {
+			    name="-record_timemachine"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-itm"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-dtrace"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-strip_timemachine"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_itm"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_dtrace"
+			    value=0
+			    enumLabel="Off"
+		    }
+                    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="INTEGRITY TimeMachine"
+		    guiCategory="Debugging"
+		    commonLevel=1
+    		    pass={"Link"}
+		    disabled=true
+	    }
+	    EntryExitLinking {
+		    {
+			    name="-mute_entry_exit_history"
+			    value=0
+			    enumLabel="Disable"
+		    }
+		    {
+			    name="-disable_entry_exit_log"
+			    value=0
+			    enumLabel="Disable"
+		    }
+		    {
+			    name="-record_entry_exit_history"
+			    value=1
+			    enumLabel="Enable"
+		    }
+		    {
+			    name="-enable_entry_exit_log"
+			    value=1
+			    enumLabel="Enable"
+		    }
+		    {
+		    	    name="-strip_entry_exit_history"
+			    value=2
+			    enumLabel="Strip"
+		    }
+		    {
+		    	    name="-strip_entry_exit_log"
+			    value=2
+			    enumLabel="Strip"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Function Entry/Exit Logging"
+		    guiCategory="Debugging"
+		    commonLevel=1
+    		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+	    EagleLinking {
+		    {
+		    	    name="-strip_eagle_log"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-enable_eagle_log"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="EAGLE Logging"
+		    guiCategory="Debugging"
+    		    pass={"Link"}
+		    commonLevel=1
+		    disabled=true
+		    hidden=true
+	    }
+	    BlockCoverageProfiling {
+		    {
+			    name="-coverage=none"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-coverage=flag"
+			    value=1
+			    enumLabel="Flag"
+		    }
+		    {
+			    name="-coverage=count"
+			    value=2
+			    enumLabel="Count (32-bit counters)"
+		    }
+		    {
+			    name="-coverage=count64"
+			    value=3
+			    enumLabel="Count (64-bit counters)"
+			    %if !defined(__GHS_PROFILING_COVERAGE_64BIT_COUNT_SUPPORT)
+			    hidden=true
+			    %endif
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Profiling - Block Coverage"
+		    guiCategory="Debugging"
+		    commonLevel=1
+	    }
+	    CoverageChecksum {
+		    {
+			    name="-coverage_checksum"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_coverage_checksum"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Output Block Coverage Profiling Checksum"
+		    guiCategory="Debugging"
+		    commonLevel=1
+		    hidden=true
+	    }
+	    EntryExitLogging {
+		    {
+			    name="-no_gen_entry_exit_history"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_gen_entry_exit_log"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-gen_entry_exit_history"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-gen_entry_exit_log"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate Function Entry/Exit Instrumentation"
+		    guiCategory="Debugging"
+		    disabled=true
+		    hidden=true
+	    }
+	    # Only supported on RH850
+	    EntryExitArgLogging {
+                    {
+                            name="-no_gen_entry_exit_arg_history"
+                            value=0
+                            enumLabel="Off"
+                    }
+		    {
+			    name="-no_gen_entry_exit_arg_log"
+			    value=0
+			    enumLabel="Off"
+		    }
+                    {
+                            name="-gen_entry_exit_arg_history"
+                            value=1
+                            enumLabel="On"
+                    }
+		    {
+			    name="-gen_entry_exit_arg_log"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate Function Entry/Exit Instrumentation with Arguments"
+		    guiCategory="Debugging"
+		    disabled=true
+		    hidden=true
+	    }
+	    RecordEagleTag {
+	    #### elxr
+		    {
+		    	    name="-record_eagle_signal"
+			    delimiter="Space"
+		    }
+		    {
+		    	    name="-record_eagle_signal"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    guiLabel="EAGLE Record Signal"
+		    guiCategory="Debugging"
+    		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+	    MuteEagleTag {
+	    #### elxr
+		    {
+		    	    name="-mute_eagle_signal"
+			    delimiter="Space"
+		    }
+		    {
+		    	    name="-mute_eagle_signal"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    guiLabel="EAGLE Mute Signal"
+		    guiCategory="Debugging"
+    		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+	    StripEagleTag {
+	    #### elxr
+		    {
+		    	    name="-strip_eagle_signal"
+			    delimiter="Space"
+		    }
+		    {
+		    	    name="-strip_eagle_signal"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    guiLabel="EAGLE Strip Signal"
+		    guiCategory="Debugging"
+    		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+	    EagleEventLogging {
+		    {
+			    name="-no_eagle_event_log"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+		    	    name="-eagle_event_log"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="EAGLE Event Logging"
+		    guiCategory="Debugging"
+		    disabled=true
+		    hidden=true
+	    }
+	    EntryExitLinkingKernel {
+		    {
+			    name="-enable_kernel_entry_exit_history"
+			    value=1
+			    enumLabel="On"
+		    }	    
+		    {
+			    name="-enable_kernel_entry_exit_log"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-kernel_fee"
+			    value=1
+			    enumLabel="On"
+		    }
+                    {
+                            name="-strip_kernel_entry_exit_history"
+                            value=0
+                            enumLabel="Off"
+                    }		    
+                    {
+                            name="-strip_kernel_entry_exit_log"
+                            value=0
+                            enumLabel="Off"
+                    }
+                    {
+                            name="-no_kernel_fee"
+                            value=0
+                            enumLabel="Off"
+                    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Kernel Function Entry/Exit Logging"
+		    guiCategory="Debugging"
+    		    pass={"Link"}		    
+		    hidden=true
+	    }
+	    TimerProfile {
+		    {
+			    name="-timer_profile"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_timer_profile"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Profiling - Target-Based Timing"
+		    guiCategory="Debugging"
+		    disabled=true
+		    commonLevel=101
+	    }	    
+	    RuntimeErrorChecks {
+		    name="-check"
+		    enumList {
+			    {
+				    name="all"
+				    enumLabel="All"
+				    value=0
+				    hidden=true
+			    }
+			    {
+				    name="none"
+				    enumLabel="None"
+				    value=1
+				    hidden=true
+			    }
+			    {
+				    name="-"
+				    value=1
+				    hidden=true
+			    }
+			    {
+				    name="assignbound"
+				    enumLabel="Assignment Bounds"
+				    value=2
+			    }
+			    {
+				    name="noassignbound"
+				    enumLabel="No Assignment Bounds"
+				    value=2
+				    antonym=true
+			    }
+			    {
+				    name="bounds"
+				    enumLabel="Array Bounds"
+				    value=3
+			    }
+			    {
+				    name="nobounds"
+				    enumLabel="No Array Bounds"
+				    value=3
+				    antonym=true
+			    }
+			    {
+				    name="bound"
+				    enumLabel="Array Bounds"
+				    value=3
+			    }
+			    {
+				    name="nobound"
+				    enumLabel="No Array Bounds"
+				    value=3
+				    antonym=true
+			    }
+			    {
+				    name="switch"
+				    enumLabel="Case Label Bounds"
+				    value=4
+			    }
+			    {
+				    name="noswitch"
+				    enumLabel="No Case Label Bounds"
+				    value=4
+				    antonym=true
+			    }
+			    {
+				    name="zerodivide"
+				    enumLabel="Divide by Zero"
+				    value=5
+			    }
+			    {
+				    name="zero"
+				    value=5
+			    }
+			    {
+				    name="zerodiv"
+				    value=5
+			    }
+			    {
+				    name="nozerodivide"
+				    enumLabel="No Divide by Zero"
+				    value=5
+				    antonym=true
+			    }
+			    {
+				    name="nozero"
+				    value=5
+				    antonym=true
+			    }
+			    {
+				    name="nozerodiv"
+				    value=5
+				    antonym=true
+			    }
+			    {
+				    name="nilderef"
+				    enumLabel="Nil Pointer Dereference"
+				    value=6
+			    }
+			    {
+				    name="nonilderef"
+				    enumLabel="No Nil Pointer Dereference"
+				    value=6
+				    antonym=true
+			    }
+			    {
+				    name="nil"
+				    enumLabel="Nil Pointer Dereference"
+				    value=6
+			    }
+			    {
+				    name="nonil"
+				    enumLabel="No Nil Pointer Dereference"
+				    value=6
+				    antonym=true
+			    }			    
+			    {
+				    name="return"
+				    enumLabel="Return Without Value"
+				    value=7
+				    hidden=true
+			    }
+			    {
+				    name="noreturn"
+				    enumLabel="No Return Without Value"
+				    value=7
+				    antonym=true
+				    hidden=true
+			    }
+			    {
+				    name="watch"
+				    enumLabel="Write to Watchpoint"
+				    value=8
+			    }
+			    {
+				    name="nowatch"
+				    enumLabel="No Write to Watchpoint"
+				    value=8
+				    antonym=true
+			    }
+			    {
+				    name="watchpoint"
+				    enumLabel="Write to Watchpoint"
+				    value=8
+			    }
+			    {
+				    name="nowatchpoint"
+				    enumLabel="No Write to Watchpoint"
+				    value=8
+				    antonym=true
+			    }
+# this option does nothing, even for Ada
+			    {
+				    #### Ada Only
+				    name="variant"
+				    enumLabel="Variant"
+				    value=9
+				    disabled=true
+			    }
+			    {
+				    #### Ada Only
+				    name="novariant"
+				    enumLabel="No Variant"
+				    value=9
+				    antonym=true
+				    disabled=true
+			    }
+#### use variable is disabled, since ccom-only and not supported by new gui
+			    {
+				    #### CCOM Only
+				    name="use"
+				    enumLabel="Variable Read Before Write (compile-time)"
+				    value=10
+				    disabled=true
+			    }
+			    {
+				    #### CCOM Only
+				    name="usevar"
+				    enumLabel="Variable Read Before Write (compile-time)"
+				    value=10
+				    disabled=true
+			    }
+			    {
+				    #### CCOM Only
+				    name="usevariable"
+				    enumLabel="Variable Read Before Write"
+				    value=10
+				    disabled=true
+			    }
+			    {
+				    #### CCOM Only
+				    name="nousevariable"
+				    enumLabel="No Variable Read Before Write"
+				    value=10
+				    disabled=true
+				    antonym=true
+			    }
+			    {
+				    #### CCOM Only
+				    name="nouse"
+				    enumLabel="No Variable Read Before Write"
+				    value=10
+				    disabled=true
+				    antonym=true
+			    }
+			    {
+				    #### CCOM Only
+				    name="nousevar"
+				    enumLabel="No Variable Read Before Write"
+				    value=10
+				    disabled=true
+				    antonym=true
+			    }
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="EnumList"
+		    guiLabel="Run-Time Error Checks"
+		    guiCategory="Debugging"
+		    commonLevel=1
+	    }
+	    RuntimeMemoryChecks {
+		    {
+			    name="-check=alloc"
+			    enumLabel="General (Allocations Only)"
+			    value=0
+		    }
+		    {
+			    name="-check=memory"
+			    enumLabel="Intensive"
+			    value=1
+		    }
+		    {
+			    name="-check=nomemory"
+			    enumLabel="None"
+			    value=2
+		    }
+		    {
+			    name="-check=noalloc"
+			    enumLabel="None"
+			    value=2
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Run-Time Memory Checks"
+		    guiCategory="Debugging"
+		    commonLevel=1
+	    }
+    
+    ################ Debugging Options #######################
+
+	    TargetWalkableStack {
+		    {
+			    name="-gtws"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nogtws"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate Target-Walkable Stack"
+		    guiCategory="Debugging"
+	    }
+	    GhtwsLinking {
+		    {
+			    name="-enable_ghtws"
+			    value=0
+			    enumLabel="Enable"
+		    }
+		    {
+		    	    name="-strip_ghtws"
+			    value=1
+			    enumLabel="Strip"
+		    }
+		    {
+		    	    name="-no_ghtws"
+			    value=2
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Link .ghtws Info"
+		    guiCategory="Debugging"
+    		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+	    NeedGaToWalkStack {
+	    	    {
+		    	    name="-need_ga_to_walk_stack"
+			    value=0
+			    enumLabel="Enable"
+		    }
+		    {
+		    	    name="-no_need_ga_to_walk_stack"
+			    value=1
+			    enumLabel="Disable"
+			    flags={"FAKEOPTION"}
+		    }		     
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Target Walkable Stack Implies Frame Pointer"
+		    guiCategory="Debugging"
+		    disabled=true
+		    hidden=true
+	    }
+	    OLimitWithoutDebug {
+		    {
+			    name="-glimits"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noglimits"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="-Olimit= Without Debug Information"
+		    guiCategory="Debugging"
+	    }
+	    ConsistentCode {
+		    {
+			    name="-consistentcode"
+			    value=0
+			    enumLabel="On"
+		    }
+	    	    {
+			    name="-noconsistentcode"
+			    value=1
+			    enumLabel="Off"
+	    	    }
+	    	    delimiter="NoArg"
+	    	    merge="Replace"
+	    	    optionType="Enum"
+	    	    pass={"All"}
+	    	    guiLabel="Consistent code without debug information"
+	    	    guiCategory="Debugging"
+	    }
+
+	    InlineAsmDebug {
+		    {
+			    name="-gasm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nogasm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate Debug Information for #pragma asm statements"
+		    guiCategory="Debugging"
+	    }
+
+	    DTraceKernel {
+		    {
+			    name="-record_kernel_timemachine"
+			    value=1
+			    enumLabel="On"
+		    }	    
+		    {
+			    name="-kernel_itm"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-kernel_dtrace"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-strip_kernel_timemachine"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_kernel_itm"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_kernel_dtrace"
+			    value=0
+			    enumLabel="Off"
+		    }
+                    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="INTEGRITY TimeMachine Kernel"
+		    guiCategory="Debugging"
+		    commonLevel=101
+    		    pass={"Link"}
+		    disabled=true
+	    }  
+	    
+	    DataTraceEnabled {
+		    {
+			    name="-gen_timemachine"
+			    value=1
+			    enumLabel="On"
+		    }	    
+		    {
+			    name="-gen_itm"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-dtraceenabled"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-gen_dtrace"
+			    value=1
+		    }
+		    {
+			    name="-no_gen_timemachine"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_gen_itm"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_dtraceenabled"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_gen_dtrace"
+			    value=0
+		    }
+                    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="INTEGRITY TimeMachine Enabled"
+		    guiCategory="Debugging"
+		    pass={"All"}
+		    disabled=true
+	    }
+
+	    DataTraceSupported {
+		    {
+			    name="-itm_supported_ghs_internal_only"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-dtrace_supported_ghs_internal_only"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_itm_supported_ghs_internal_only"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_dtrace_supported_ghs_internal_only"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="INTEGRITY TimeMachine Supported"
+		    guiCategory="Debugging"
+		    commonLevel=1001
+		    pass={"All"}
+		    disabled=true
+	    }
+
+            DTraceImpliesNonShared {
+                    {
+                            name="-itm_implies_non_shared"
+                            value=1
+                            enumLabel="On"
+                    }
+                    {
+                            name="-dtrace_implies_non_shared"
+                            value=1
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_itm_implies_non_shared"
+                            value=0
+                            enumLabel="Off"
+                    }
+                    {
+                            name="-no_dtrace_implies_non_shared"
+                            value=0
+                            enumLabel="Off"
+                    }
+                    hidden=true
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    guiLabel="INTEGRITY TimeMachine Implies Non Shared"
+                    guiCategory="Debugging"
+                    commonLevel=1001
+                    pass={"Link"}
+                    disabled=true
+            }
+
+
+
+	    KnownSafeDataTracePICPIDUsage {
+		    {
+			    name="-knownsafedatatracepicpidusage"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_knownsafedatatracepicpidusage"
+			    value=0
+			    enumLabel="Off"
+		    }
+                    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="PIC/PID usage is INTEGRITY TimeMachine-Compatible"
+		    guiCategory="Debugging"
+		    commonLevel=1001
+		    pass={"All"}
+	    }
+
+	    DataTrace {
+		    {
+			    name="-datatrace"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_datatrace"
+			    value=0
+			    enumLabel="Off"
+		    }
+                    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="INTEGRITY TimeMachine Instrumentation"
+		    guiCategory="Debugging"
+		    commonLevel=101
+		    pass={"All"}
+		    disabled=true
+	    }
+
+	    FullBreakdots {
+		    {
+			    name="-full_breakdots"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_full_breakdots"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Full Breakdots"
+		    guiCategory="Debugging"
+	    }
+
+	    ExtendLiveness {
+		    {
+			    name="-extend_liveness"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_extend_liveness"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Extend Variable Liveness"
+		    guiCategory="Debugging"
+	    }
+
+	    KeepConstConditions {
+		    {
+			    name="-keep_const_conditions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_keep_const_conditions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Keep Constant Conditions"
+		    guiCategory="Debugging"
+	    }
+	    
+    ################ Reducing Debugging Information #######################
+	    
+	    XrefLevel {		
+		    # New Generation Compiler Only
+#		    {
+#			    name="--xref full"
+#			    value=0
+#			    enumLabel="Generate for All Objects"
+#		    }
+		    {
+			    name="--xref=full"
+			    value=0
+			    enumLabel="Generate for All Objects"
+		    }
+#		    {
+#			    name="--xref declare"
+#			    value=1
+#			    enumLabel="Generate for Object Declarations and Definitions"
+#		    }
+		    {
+			    name="--xref=declare"
+			    value=1
+			    enumLabel="Generate for Object Declarations and Definitions"
+		    }
+#		    {
+#			    name="--xref global"
+#			    value=2
+#			    enumLabel="Generate for Objects in the Global Scope"
+#		    }
+		    {
+			    name="--xref=global"
+			    value=2
+			    enumLabel="Generate for Objects in the Global Scope"
+		    }
+#		    {
+#			    name="--xref none"
+#			    value=3
+#			    enumLabel="Do Not Generate"
+#		    }
+		    {
+			    name="--xref=none"
+			    value=3
+			    enumLabel="Do Not Generate"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Cross-Reference Information"
+		    guiCategory="Debugging;Reducing Debug File Size"
+%if defined(__DISABLE_NEW_GEN__)
+#		    disabled=true
+%else
+#		    disabled=false
+%endif
+	    }
+	    FullDebugInfo {
+		    {
+			    name="-full_debug_info"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-full_type_debug_info"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-no_full_debug_info"
+			    value=1
+			    enumLabel="Reduced"
+		    }
+		    {
+			    name="-no_full_type_debug_info"
+			    value=1
+			    enumLabel="Reduced"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Debugging Information"
+		    guiCategory="Debugging;Reducing Debug File Size"
+	    }
+
+    ################ Analysis #######################
+
+	    ExperimentalSAnalysis {
+		    {
+			    name="-gsa_none"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-gsa_obj"
+			    value=1
+			    enumLabel="Per Object"
+		    }
+		    {
+			    name="-gsa_prog"
+			    value=2
+			    enumLabel="Per Object and Program"
+		    }		    
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Experimental S Analysis"
+		    guiCategory="GHS Internal"
+	    }
+	    ExperimentalTAnalysis {
+		    name="-gsa_thread"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Experimental T Analysis"
+		    guiCategory="GHS Internal"
+	    }
+
+
+    ################ Native Debugging Information #######################
+
+	    DualDebug {
+%if defined(DWARF_NOT_SUPPORTED)
+		# if target does not support Dwarf (i.e., it supports COFF instead)
+		    {
+			    name="-dual_debug"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_dual_debug"
+			    value=1
+			    enumLabel="Off"
+		    }
+%else
+		# if target supports Dwarf
+		    {
+			    name="-dwarf2"
+			    value=0
+			    enumLabel="Dwarf (v2)"
+		    }
+		    {
+			    name="-dual_debug"
+			    value=0
+			    enumLabel="Dwarf (most recent)"
+		    }
+		    {
+			    name="-dwarf1"
+			    value=1
+			    enumLabel="Legacy Dwarf (v1)"
+			    hidden=true
+		    }
+		    {
+			    name="-no_dual_debug"
+			    value=2
+			    enumLabel="Off"
+		    }
+%endif
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate MULTI and Native Information"
+		    guiCategory="Debugging;Native Debugging Information"
+	    }
+	    Dwarf2Dbo {
+		    {
+			    name="-dwarf_to_dbo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-dwarf2dbo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_dwarf2dbo"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Convert DWARF Files to MULTI (.dbo) Format"
+		    guiCategory="Debugging;Native Debugging Information"
+	    }
+	    Stabs2Dbo {
+		    {
+			    name="-stabs_to_dbo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-stabs2dbo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_stabs2dbo"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Convert Stabs Files to MULTI (.dbo) Format"
+		    guiCategory="Debugging;Native Debugging Information"
+	    }
+
+    ################ Advanced Debugging Options #######################
+    
+	    DboPath {
+		    {
+			    name="-dbopath"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-dbopath"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-dbgpath"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-dbgpath"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Search Path for .dbo Files"
+		    guiCategory="Debugging"
+	    }
+	    UseDliFiles {
+		    {
+			    name="-use_dli_files"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_dli_files"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    hidden=true		    
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Use Debug Library List (.dli) Files"
+		    guiCategory="Debugging"
+	    }
+	    SearchForDba {
+		    {
+			    name="-search_for_dba"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_search_for_dba"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Search for DBA"
+		    guiCategory="Debugging"
+	    }
+	    ForceFramePointer {
+		    {
+			    name="-ga"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noga"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Force Frame Pointer"
+		    guiCategory="Debugging"
+	    }
+	    ScanSource {
+		    {
+			    name="--scan_source"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_scan_source"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Scan source files to augment native debug info"
+		    guiCategory="Debugging"
+	    }
+	    DbgInfoExtraFile {
+		    name="-extra_file"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Add Extra File to Debug Info"
+		    guiCategory="Debugging"
+	    }
+	    WarnDboNotFoundMax {
+		    name="-warn_dbo_not_found_max"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    guiLabel="Set Maximum DBO Not Found Warnings"
+		    guiCategory="Debugging"
+	    }
+	    WaitForDbLink {
+		    {
+			    name="-wait_for_dblink"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-do_not_wait_for_dblink"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    guiLabel="Wait for Debug Translation Before Exiting"
+		    guiCategory="Debugging"
+	    }
+	    ProfileLevel {
+		    {
+			    name="-pg"
+			    value=0
+			    enumLabel="On with Call Graph"
+		    }
+		    {
+			    name="-p"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-pnone"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Profiling - Call Count"
+		    guiCategory="Debugging"
+	    }
+	    CoverageAnalysis {
+		    {
+			    name="-a"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--coverage_analysis"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_coverage_analysis"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Profiling - Legacy Coverage"
+		    guiCategory="Debugging"
+	    }	    
+	    MulticoreConfigurationFile {
+		    {
+			    name="-ghsmc_file"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    delimiter="Equal"
+		    guiLabel="Multicore Configuration File"
+		    guiCategory="Debugging"
+%if !defined(__GHS_SUPPORTS_MULTICORE_CONFIG)
+		    hidden=true
+%endif
+	    }
+	    MulticoreCoreCount {
+		    {
+			    name="-ghsmc_core_count"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    delimiter="Equal"
+		    guiLabel="Multicore Core Count"
+		    guiCategory="Debugging"
+%if !defined(__GHS_SUPPORTS_MULTICORE_CONFIG)
+		    hidden=true
+%endif
+	    }
+    }
+}    

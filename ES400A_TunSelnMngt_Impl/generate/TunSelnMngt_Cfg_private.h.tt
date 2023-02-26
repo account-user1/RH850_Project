@@ -1,0 +1,294 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2015 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   TunSelnMngt_Cfg_private.h
+* Module Description: Private configuration header file for ES400A Tuning Selection Management
+* Project           : CBD
+* Author            : Kevin Smith
+***********************************************************************************************************************
+* Version Control:
+* %version:          3 %
+* %derived_by:       cz7lt6 %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 10/08/15  1       KJS     Initial version of the private header template                                  EA4#1840
+* 03/31/16  2       KJS     Updated template to follow ES400A Rev 1                                         EA4#5092
+* 08/29/16  3       KJS     Updated template for XCP write region access and anomaly EA4#6672 corrections   EA4#7236
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef TUNSELNMNGT_CFG_PRIVATE_H
+#define TUNSELNMNGT_CFG_PRIVATE_H
+
+<#
+    /* Change context to TunSelnMngt */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "TunSelnMngt" ) );
+    
+    List<string> CalCmpTypesList = new List<string>();
+
+    /* Assign the component types to the list */
+    CalCmpTypesList.Add("CommonComponentReference");
+    CalCmpTypesList.Add("InitializationComponentReference");
+    CalCmpTypesList.Add("RuntimeComponentReference");
+
+    /* Strings for structures */
+    string StructPrefix = "Rte_Calprm_";
+    string StructSuffix = "_DEFAULT_RTE_CALPRM_GROUP_Type";
+
+    /* Variable Declaration */
+    int HeaderIncCnt = 0;
+    int MaxInitIdxCnt = 0;
+    int MaxRtIdxCnt = 0;
+    int MaxOnlineCmpCnt = 0;
+    int OnlineCalGroupCnt = 0;
+    int OnlineCalRamTblSize = 0;
+    string EnableDevMode = "";
+    
+    /* Header Count */
+    HeaderIncCnt = Count( Xp.ValueAtDefRefTo( "TunSelnMngtCommon/TunSelnMngtIncludes") );
+
+    /* Read size for online calibration RAM table */
+    OnlineCalRamTblSize = ValueOf( Xp.ValueAtDefRefTo( "TunSelnMngtCommon/OnlineCalibrationRamSize" ) );
+
+    /* Read development mode setting */
+    EnableDevMode = ValueOf( Xp.ValueAtDefRefTo( "XcpWriteAccess/EnableDevelopmentMode" ) );
+#>
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+<# /* ----[ Gather number of entries for initialization configuration ]------------------------------------------ */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "CalibrationConfiguration/InitializationCalibrationConfiguration" ) ) #>
+<#
+    foreach (string CalCmpType in CalCmpTypesList)
+    {
+        MaxInitIdxCnt += Count( Xp.ValueRefAtDefRefTo( CalCmpType ));
+    }
+#>
+<# !ENDLOOP #>
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+<# /* ----[ Gather number of entries for runtime configuration ]------------------------------------------------- */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "CalibrationConfiguration/RuntimeSelectableCalibrationConfiguration" ) ) #>
+<#
+    foreach (string CalCmpType in CalCmpTypesList)
+    {
+        MaxRtIdxCnt += Count( Xp.ValueRefAtDefRefTo( CalCmpType ));
+    }
+#>
+<# !ENDLOOP #>
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+<# /* ----[ Gather number of entries for each online calibration group ]----------------------------------------- */ #>
+<# OnlineCalGroupCnt = Count(Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" )); #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" ) ) #>
+<#
+    foreach (string CalCmpType in CalCmpTypesList)
+    {
+        if( Count( Xp.ValueRefAtDefRefTo( CalCmpType )) > 0)
+        {
+#>
+<# !LOOP( Xp.ValueRefAtDefRefTo( CalCmpType ) ) #>
+<#
+            if( (LastValueSegmentOf(".").IndexOf("Rt") > 0) || (LastValueSegmentOf(".").IndexOf("Inin") > 0) )
+            {
+                if ( (LastValueSegmentOf(".").IndexOf("Rt00") > 0) || (LastValueSegmentOf(".").IndexOf("Inin00") > 0) )
+                {
+                    MaxOnlineCmpCnt += 1;
+                }
+                else
+                {
+                    /* Do nothing */
+                }
+            }
+            else
+            {
+                /* Not a runtime or init selectable component */
+                MaxOnlineCmpCnt += 1;
+            }
+        
+#>
+<# !ENDLOOP #>
+<#
+        }
+        else
+        {
+        #>
+        crap
+        <#
+        }
+    }
+#>
+<# !ENDLOOP #>
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+/************************************************ Include Statements *************************************************/
+#include "Rte_Type.h"
+#include "CDD_XcpIf.h"
+
+<#
+    if (HeaderIncCnt > 0)
+    {
+#>
+/* Headers defined in Configurator */
+<# !LOOP( Xp.ValueAtDefRefTo( "TunSelnMngtCommon/TunSelnMngtIncludes" ) ) #>
+#include "<#= ValueOf( "." ) #>"
+<# !ENDLOOP #>
+<#
+    }
+#>
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/**************************************************** Type defs ******************************************************/
+#define MAXINITIDXCNT_CNT_U08           <#= MaxInitIdxCnt #>U
+#define MAXRTIDXCNT_CNT_U08             <#= MaxRtIdxCnt #>U
+#define MAXONLINECALCFGCNT_CNT_U08      <#= MaxOnlineCmpCnt #>U
+#define ONLINECALGROUPS_CNT_U08         <#= OnlineCalGroupCnt #>U
+#define ONLINECALRAMTBL_CNT_U16         <#= OnlineCalRamTblSize #>U
+#define PRMPTRTBLSIZEINWORD_CNT_U16     (sizeof(Rte_ParameterRefTabType) / 4U)
+
+/* The following build constant controls write access to all RAM by XCP
+ * STD_OFF  - (Default and Production setting) XCP writes are limited to the range defined by OnlineRamCalTbl_C and 
+ *            the ranges defined in the Xcp Write Access Region container that are production only. 
+ * STD_ON   - XCP writes are enabled for all of the regions defined in the Xcp Write Access Region container */
+#define TUNSELNMNGTDEVLPMODENA         <#= EnableDevMode #>
+
+/* The following error checks are to ensure that XCP and TunSelnMngt are configured properly */
+#if ( ONLINECALGROUPS_CNT_U08 != XCPIF_MAXCALSEG_CNT_U08 )
+    #error "TunselnMngt and XCP configurations do not match!"
+#endif
+
+typedef struct {
+    /* Rte_ParameterRefTabType is generated by the RTE. This will change depending on the configuration
+       of the application and the calibration component(s) used. */
+    Rte_ParameterRefTabType PrmRefTblPtr;
+    uint32                  PrmTblCrc_u32;
+} TunSelnRamTblRec1;
+
+/* Initialization, run-time and online constant tables */
+typedef struct
+{
+    uint16 SrcIdx_u16;
+    uint16 DestIdx_u16;
+    uint8 SigIdx_u08;
+} TunSelnIdxTblRec1;
+
+typedef struct
+{
+    uint8*  RamStructPtr_u08;
+    uint16  StructSize_u16;
+    uint16  TblIdx_u16;
+    uint8   GroupIdx_u08;
+} TunSelnOnlineCalIdxTblRec1;
+
+/* Enum for GetSegInfoReq_Oper */
+typedef enum
+{
+    GETSEGMODSEGINFO_ADR = 0U,
+    GETSEGMODSEGINFO_LEN = 1U
+} GetSegModSegInfo1;
+
+typedef enum
+{
+    GETSEGMODMPGIDX_SRCADR   = 0U,
+    GETSEGMODMPGIDX_DESTADR  = 1U,
+    GETSEGMODMPGIDX_LEN      = 2U
+} GetSegModMpgIdx1;
+
+
+/* The following structures and enumerations are generated for online calibration use */
+typedef enum
+{
+<# 
+    /* This loop creates the enumerated values for the online calibration groups */ 
+    int enumCounter = 0;
+    string enumName = "";
+    int enumLimit = Count( Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" ) ) #>
+<#
+    enumName = ValueOf( "ar:SHORT-NAME" ) + " = " + ValueOf( Xp.ValueAtDefRefTo( "GroupIndex" ) ) + "U";
+    if (enumCounter < (enumLimit - 1))
+    {
+        enumName += ",";
+        enumCounter++;
+    }
+#>
+    <#= enumName #>
+<# !ENDLOOP #>
+} OnlineCalGroup1;
+
+<# /* This loop creates the various structures for each group in the shared RAM space. */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" ) ) #>
+typedef struct
+{
+<#
+    int LoopCounter = 0;
+    foreach (string CalCmpType in CalCmpTypesList)
+    {
+        if( Count( Xp.ValueRefAtDefRefTo( CalCmpType )) > 0)
+        {
+#>
+<# !LOOP( Xp.ValueRefAtDefRefTo( CalCmpType ) ) #>
+<#
+            /* This section checks for Init/Runtime calibration objects that are altered by tuning selection. Only one 
+            instance of a object is allowed in the struct */
+            if ( (LastValueSegmentOf(".").IndexOf("Rt") > 0) || (LastValueSegmentOf(".").IndexOf("Inin") > 0) )
+            {
+                if ( (LastValueSegmentOf(".").IndexOf("Rt00") > 0) || (LastValueSegmentOf(".").IndexOf("Inin00") > 0) )
+                {
+                    /* Write value (Note: same string as the else path) */
+#>
+    <#= StructPrefix + LastValueSegmentOf(".") + StructSuffix #>    <#= LastValueSegmentOf(".") #>;
+<#
+                }
+            }
+            else
+            {
+                /* Value is not a Rt calibration object, include in struct (Note: This is the same as the Rt00 string) */
+#>
+    <#= StructPrefix + LastValueSegmentOf(".") + StructSuffix #>    <#= LastValueSegmentOf(".") #>;
+<#
+            }
+            LoopCounter += 1;
+#>
+<# !ENDLOOP #>
+<#
+        }
+    }
+#>
+} <#= ValueOf( "ar:SHORT-NAME" ) #>Typ;
+
+<# !ENDLOOP #>
+typedef union
+{
+    uint8 byte[ONLINECALRAMTBL_CNT_U16];
+<# !LOOP( Xp.ContainerAtDefRefTo( "OnlineCalibrationGroup" ) ) #>
+    <#= ValueOf( "ar:SHORT-NAME" ) #>Typ <#= ValueOf( "ar:SHORT-NAME" ) #>;
+<# !ENDLOOP #>
+} OnlineCalTblRec1;
+
+
+/****************************************************** Macros *******************************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/* Declared in the TunSelnMngt_Cfg_private.c */
+extern const VAR(TunSelnIdxTblRec1, AUTOMATIC) ININCALCFGTBL_REC[MAXINITIDXCNT_CNT_U08];
+extern const VAR(TunSelnIdxTblRec1, AUTOMATIC) RTCALCFGTBL_REC[MAXRTIDXCNT_CNT_U08];
+extern const VAR(TunSelnOnlineCalIdxTblRec1, AUTOMATIC) ONLINECALCFGTBL_REC[MAXONLINECALCFGCNT_CNT_U08];
+extern const VAR(uint32, AUTOMATIC) ONLINECALSEGINFOTBL_U32[ONLINECALGROUPS_CNT_U08];
+
+/* Declared in the TunSelnMngt_private.c */
+extern VAR(TunSelnRamTblRec1, AUTOMATIC) MngtRamTbl_C[2];
+extern VAR(OnlineCalTblRec1, AUTOMATIC) OnlineRamCalTbl_C;
+
+/* Declared in RTE.c */
+extern CONST(Rte_ParameterRefTabType, RTE_CONST) RteParameterRefTab;
+extern VAR(Rte_ParameterBaseType, RTE_VAR_NOINIT) RteParameterBase;
+
+/* Defined in TunSelnMngt_Cfg_private.c */
+extern FUNC(boolean, TunSelnMngt_CODE) TunSelnMngt_ChkXcpWrAcs(uint32 ReqAdr_Cnt_T_u32);
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif /* TUNSELNMNGT_CFG_PRIVATE_H */

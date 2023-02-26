@@ -1,0 +1,32 @@
+<!-- Entities -->
+
+<!ENTITY ti.BlueprintMapSet      "BlueprintMapSet">
+<!ENTITY ti.BlueprintMapping     "BlueprintMapping">
+<!ENTITY ti.Package              "Package">
+<!ENTITY ti.Blueprint            "Blueprint">
+<!ENTITY ti.PortPrototype        "PortPrototype">
+
+<!-- Elements -->
+
+<!ELEMENT BlueprintMapSet (%C.DefAttr;, ATTRLink*, GenAttrList?, BlueprintMapping*)>
+<!ELEMENT BlueprintMapping  (ATTRLink*)>
+
+<!ATTLIST BlueprintMapSet %A.ConfigItem;
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST BlueprintMapping %A.ChildItem;
+    BlueprintLink       NMTOKEN #FIXED "&ti.Blueprint;"
+    PortPrototypeLink   NMTOKEN #FIXED "&ti.PortPrototype;"
+>
+
+<!-- Links -->
+
+<!ELEMENT BlueprintMapSetLink EMPTY>
+
+<!ATTLIST BlueprintMapSetLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.BlueprintMapSet;"
+>

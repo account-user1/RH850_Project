@@ -1,0 +1,49 @@
+--
+--	V800 (V810,V850,V830) Language Independent Runtime Library
+--
+--	Copyright (C) 1996-2000 by Green Hills Software, Inc.
+--
+--    This program is the property of Green Hills Software, Inc,
+--    its contents are proprietary information and no part of it
+--    is to be disclosed to anyone except employees of Green Hills
+--    Software, Inc., or as agreed in writing signed by the President
+--    of Green Hills Software, Inc.
+--
+-- Compiler internal wrapper for Call Count Profiling.
+
+#ifdef EMBEDDED
+#include "ind_800.h"
+	.file	"ind_mcnt.800"
+	.text
+	.align	2
+	.globl	___ghs_mcount
+#ifdef __V850
+..lxtdaG.___ghs_mcount=:0
+#endif
+___ghs_mcount:
+	add	-8,sp
+	SYNC
+	st.w	lp,4[sp]
+	st.w	r7,0[sp]
+				-- r6: mcount's r6
+	mov	lp,r7		-- r7: mcount's lp on entry
+	CALL(___ghs_indmcount)
+	ld.w	0[sp],r7
+	ld.w    4[sp],lp
+	add	8,sp
+	jmp	[lp]
+	.fsize 8
+	.scall ___ghs_indmcount
+	.type ___ghs_mcount,@function
+	.size ___ghs_mcount,.-___ghs_mcount
+
+#if defined(__V850) && defined(__COFF)
+-- .scl 2 for a function means "global"
+        .def ___ghs_mcount; .val ___ghs_mcount; .scl 2; .type 36; 	.endef
+        .def .bf;	.val .;		.scl 101;	.line 2;	.endef
+        .def _.RSM;	.scl 1;		.val 0x80000080;		.endef
+        .def _.FRAMES;	.scl 1;		.val 8; 	.endef
+        .def .ef;	.val .; 	.scl 101; 	.line 3;	.endef
+#endif
+
+#endif	/* EMBEDDED */

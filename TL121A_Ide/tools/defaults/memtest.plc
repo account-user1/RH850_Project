@@ -1,0 +1,1622 @@
+Placer 1.6
+State
+MemtestDialog_SetArgs = "                                                     \
+    // Setup command name                                                     \
+    memtest_args = \"\" | $tf_startaddr | \" \" | $tf_endaddr                 \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_bs_maxerrors_decrement = "                                      \
+    errmax = number($tf_maxerrors);                                           \
+    errmax = errmax - 1;                                                      \
+    if(errmax > 1000) {                                                       \
+        errmax = 1000;                                                        \
+    } else if(errmax < 1) {                                                   \
+        errmax = 1;                                                           \
+    }                                                                         \
+    $tf_maxerrors = text(errmax);                                             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_bs_maxerrors_increment = "                                      \
+    errmax = number($tf_maxerrors);                                           \
+    errmax = errmax + 1;                                                      \
+    if(errmax > 1000) {                                                       \
+        errmax = 1000;                                                        \
+    } else if(errmax < 1) {                                                   \
+        errmax = 1;                                                           \
+    }                                                                         \
+    $tf_maxerrors = text(errmax);                                             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_bs_testiterations_decrement = "                                 \
+    iterval = number($tf_testiterations);                                     \
+    iterval = iterval - 1;                                                    \
+    if(iterval > 10000) {                                                     \
+        iterval = 10000;                                                      \
+    } else if(iterval < 1) {                                                  \
+        iterval = 1;                                                          \
+    }                                                                         \
+    $tf_testiterations = text(iterval);                                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_bs_testiterations_increment = "                                 \
+    iterval = number($tf_testiterations);                                     \
+    iterval = iterval + 1;                                                    \
+    if(iterval > 10000) {                                                     \
+        iterval = 10000;                                                      \
+    } else if(iterval < 1) {                                                  \
+        iterval = 1;                                                          \
+    }                                                                         \
+    $tf_testiterations = text(iterval);                                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_computeAddrend = "                                              \
+/*FIXME: this is a stub function. */                                          \
+    if ($bs_accesssize.set(3) == 1) {                                         \
+        $tf_endaddr = clitext(\"mprintf(\\\"0x%x\\\",\" | $tf_startaddr | \" + \" | $tf_addrsize | \"-4)\"); \
+    } else if ($bs_accesssize.set(2) == 1) {                                  \
+        $tf_endaddr = clitext(\"mprintf(\\\"0x%x\\\",\" | $tf_startaddr | \" + \" | $tf_addrsize | \"-2)\"); \
+    } else if ($bs_accesssize.set(1) == 1) {                                  \
+        $tf_endaddr = clitext(\"mprintf(\\\"0x%x\\\",\" | $tf_startaddr | \" + \" | $tf_addrsize | \"-1)\"); \
+    }                                                                         \
+/*    $tf_endaddr               = text(number($tf_startaddr) + number($tf_addrsize)); */ \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_computeAddrsize = "                                             \
+                                                                              \
+   MemtestDialog_stripAddrs();                                                \
+   $tf_addrsize.dim = 0;                                                      \
+                                                                              \
+   if(0 == isnumber($tf_startaddr)) {                                         \
+        alert(\"Start address \\\"\" | $tf_startaddr | \"\\\" is not a valid address. Try something like 0x0000\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+   if(0 == isnumber($tf_endaddr)) {                                           \
+        alert(\"End address is not a valid address. Try something like 0xffff\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+   if ($bs_accesssize.set(3) == 1) {                                          \
+/* $tf_addrsize  = text(number($tf_endaddr) - number($tf_startaddr) + 4 ); */ \
+/* $tf_addrsize  = text(number($tf_endaddr | \" & ~0x3\") - number($tf_startaddr | \" & ~0x3\") + 4 ); */ \
+        size = number($tf_endaddr) - (number($tf_endaddr) & 0x3);             \
+        size = size - (number($tf_startaddr) - (number($tf_startaddr) & 0x3)) + 4; \
+        $tf_addrsize  = text(size);                                           \
+/*$tf_addrsize  = text((number($tf_endaddr) & 0x3) - (number($tf_startaddr) & 0x3) + 4 ); */ \
+   } else if ($bs_accesssize.set(2) == 1) {                                   \
+        size = number($tf_endaddr) - (number($tf_endaddr) & 0x1);             \
+        size = size - (number($tf_startaddr) - (number($tf_startaddr) & 0x1)) + 2; \
+        $tf_addrsize  = text(size);                                           \
+/*$tf_addrsize  = text((number($tf_endaddr)) - (number($tf_startaddr)) + 2 ); */ \
+   } else if ($bs_accesssize.set(1) == 1) {                                   \
+        size = (number($tf_endaddr) - number($tf_startaddr) + 1);             \
+        $tf_addrsize  = text(size);                                           \
+   }                                                                          \
+   $tf_addrsize = text(size) | \" (\"| clitext(\"mprintf(\\\"0x%x\\\",\" | text(size) | \")\") | \") bytes\"; \
+   $tf_addrsize.dim = 1;                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_addresswalking = "                                    \
+                                                                              \
+    if ($bt_addresswalking.set == 0) {                                        \
+        if($bt_datawalking.set == 0) {                                        \
+/* Dim the walking value option since neither walking test is selected. */    \
+            $pd_walkingval.dim  = 1;                                          \
+        }                                                                     \
+        if($bt_pattern.set == 0) {                                            \
+/* Dim the pattern, since neither test that uses it is selected. */           \
+            $tf_pattern.dim  = 1;                                             \
+                                                                              \
+/* Dim the pattern option field. */                                           \
+            $pd_datapatternoption.dim  = 1;                                   \
+        }                                                                     \
+        if($bt_addresswalking.set == 0 && $bt_datawalking.set == 0 && $bt_pattern.set == 0) { \
+/* No tests are selected; dim lots of options. */                             \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+            $bt_maxaddrtransitions.dim  = 1;                                  \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+            $bt_maintainpattern.dim     = 1;                                  \
+                                                                              \
+/* Disallow iterations to be selected. Dim iterations text field. */          \
+            $bt_testiterations.dim      = 1;                                  \
+            $tf_testiterations.dim      = 1;                                  \
+                                                                              \
+/* Disallow continuous execution */                                           \
+            $bt_testcontinuous.dim      = 1;                                  \
+                                                                              \
+/* Disallow maximum errors to be selected. Undim maximum error text field. */ \
+            $bt_maxerrors.dim           = 1;                                  \
+            $tf_maxerrors.dim           = 1;                                  \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+            $bt_writeonly.dim           = 1;                                  \
+        }                                                                     \
+    } else {                                                                  \
+/* Force this radio button and alltests to be set. */                         \
+        $bt_addresswalking.set        = 1;                                    \
+        $bt_desttest.set              = 1;                                    \
+                                                                              \
+/* Clear the other radio buttons. */                                          \
+        $bt_dataread.set           = 0;                                       \
+        $bt_computecrc.set         = 0;                                       \
+        $bt_comparecrc.set         = 0;                                       \
+        $bt_consistentvals.set     = 0;                                       \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Undim (is that a word?) the walking value option. */                       \
+        $pd_walkingval.dim         = 0;                                       \
+                                                                              \
+/* Undim the destructive tests */                                             \
+        $bt_addresswalking.dim     = 0;                                       \
+        $bt_datawalking.dim        = 0;                                       \
+        $bt_pattern.dim            = 0;                                       \
+                                                                              \
+        if($bt_datawalking.set == 0 && $bt_pattern.set == 0) {                \
+/* Dim the pattern option field. */                                           \
+            $pd_datapatternoption.dim  = 1;                                   \
+        }                                                                     \
+                                                                              \
+/* Undim the pattern value field. */                                          \
+        $tf_pattern.dim            = 0;                                       \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Allow iterations to be selected. Undim iterations text field. */           \
+        $bt_testiterations.dim      = 0;                                      \
+/* Allow continuous execution */                                              \
+        $bt_testcontinuous.dim      = 0;                                      \
+/* If neither iteration button is set, choose iterations button. */           \
+        if(($bt_testiterations.set == 0) && ($bt_testcontinuous.set == 0)) {  \
+            $bt_testiterations.set      = 1;                                  \
+        }                                                                     \
+        if($bt_testiterations.set) {                                          \
+            $tf_testiterations.dim  = 0;                                      \
+        }                                                                     \
+                                                                              \
+/* Allow maximum errors to be selected. Undim maximum error text field. */    \
+        $bt_maxerrors.dim           = 0;                                      \
+/* Allow write-only test. Undim write-only test option. */                    \
+        $bt_writeonly.dim           = 0;                                      \
+/* If neither error button is set, choose maximum errors. */                  \
+        if(($bt_maxerrors.set == 0) && ($bt_writeonly.set == 0)) {            \
+            $bt_maxerrors.set      = 1;                                       \
+        }                                                                     \
+        if($bt_maxerrors.set) {                                               \
+            $tf_maxerrors.dim       = 0;                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_addrsize = "                                          \
+    MemtestDialog_computeAddrsize();                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_comparecrc = "                                        \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_comparecrc.set         = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_desttest.set           = 0;                                           \
+    $bt_dataread.set           = 0;                                           \
+    $bt_computecrc.set         = 0;                                           \
+    $bt_consistentvals.set     = 0;                                           \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Dim the destructive tests */                                               \
+    $bt_addresswalking.dim     = 1;                                           \
+    $bt_datawalking.dim        = 1;                                           \
+    $bt_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the walking value option. */                                           \
+    $pd_walkingval.dim         = 1;                                           \
+                                                                              \
+/* Dim the pattern option and pattern value fields. */                        \
+    $pd_datapatternoption.dim  = 1;                                           \
+    $tf_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+    $bt_maxaddrtransitions.dim  = 1;                                          \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+    $bt_maintainpattern.dim     = 1;                                          \
+                                                                              \
+/* Allow iterations to be selected. Undim iterations text field. */           \
+    $bt_testiterations.dim      = 0;                                          \
+/* If neither iteration button is set, choose iterations button. */           \
+    if(($bt_testiterations.set == 0) && ($bt_testcontinuous.set == 0)) {      \
+        $bt_testiterations.set      = 1;                                      \
+    }                                                                         \
+    if($bt_testiterations.set) {                                              \
+        $tf_testiterations.dim  = 0;                                          \
+    }                                                                         \
+                                                                              \
+/* Allow continuous execution */                                              \
+    $bt_testcontinuous.dim      = 0;                                          \
+                                                                              \
+/* Force maximum errors to be selected. Undim maximum error text field. */    \
+    $bt_maxerrors.set           = 1;                                          \
+    $bt_maxerrors.dim           = 0;                                          \
+    $tf_maxerrors.dim           = 0;                                          \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+    $bt_writeonly.set           = 0;                                          \
+    $bt_writeonly.dim           = 1;                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_computecrc = "                                        \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_computecrc.set         = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_desttest.set           = 0;                                           \
+    $bt_dataread.set           = 0;                                           \
+    $bt_comparecrc.set         = 0;                                           \
+    $bt_consistentvals.set     = 0;                                           \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Dim the destructive tests */                                               \
+    $bt_addresswalking.dim     = 1;                                           \
+    $bt_datawalking.dim        = 1;                                           \
+    $bt_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the walking value option. */                                           \
+    $pd_walkingval.dim         = 1;                                           \
+                                                                              \
+/* Dim the pattern option and pattern value fields. */                        \
+    $pd_datapatternoption.dim  = 1;                                           \
+    $tf_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+    $bt_maxaddrtransitions.dim  = 1;                                          \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+    $bt_maintainpattern.dim     = 1;                                          \
+                                                                              \
+/* Disallow iterations to be selected. Dim iterations text field. */          \
+    $bt_testiterations.set      = 0;                                          \
+    $bt_testiterations.dim      = 1;                                          \
+    $tf_testiterations.dim      = 1;                                          \
+                                                                              \
+/* Disallow continuous execution */                                           \
+    $bt_testcontinuous.set      = 0;                                          \
+    $bt_testcontinuous.dim      = 1;                                          \
+                                                                              \
+/* Disallow maximum errors to be selected. Undim maximum error text field. */ \
+    $bt_maxerrors.set           = 0;                                          \
+    $bt_maxerrors.dim           = 1;                                          \
+    $tf_maxerrors.dim           = 1;                                          \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+    $bt_writeonly.set           = 0;                                          \
+    $bt_writeonly.dim           = 1;                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_consistentvals = "                                    \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_consistentvals.set     = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_desttest.set           = 0;                                           \
+    $bt_dataread.set           = 0;                                           \
+    $bt_comparecrc.set         = 0;                                           \
+    $bt_computecrc.set         = 0;                                           \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Dim the destructive tests */                                               \
+    $bt_addresswalking.dim     = 1;                                           \
+    $bt_datawalking.dim        = 1;                                           \
+    $bt_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the walking value option. */                                           \
+    $pd_walkingval.dim         = 1;                                           \
+                                                                              \
+/* Dim the pattern option and pattern value fields. */                        \
+    $pd_datapatternoption.dim  = 1;                                           \
+    $tf_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+    $bt_maxaddrtransitions.dim  = 1;                                          \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+    $bt_maintainpattern.dim     = 1;                                          \
+                                                                              \
+/* Disallow iterations to be selected. Dim iterations text field. */          \
+    $bt_testiterations.set      = 0;                                          \
+    $bt_testiterations.dim      = 1;                                          \
+    $tf_testiterations.dim      = 1;                                          \
+                                                                              \
+/* Disallow continuous execution */                                           \
+    $bt_testcontinuous.set      = 0;                                          \
+    $bt_testcontinuous.dim      = 1;                                          \
+                                                                              \
+/* Disallow maximum errors to be selected. Undim maximum error text field. */ \
+    $bt_maxerrors.set           = 0;                                          \
+    $bt_maxerrors.dim           = 1;                                          \
+    $tf_maxerrors.dim           = 1;                                          \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+    $bt_writeonly.set           = 0;                                          \
+    $bt_writeonly.dim           = 1;                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_dataread = "                                          \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_dataread.set           = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_desttest.set           = 0;                                           \
+    $bt_computecrc.set         = 0;                                           \
+    $bt_comparecrc.set         = 0;                                           \
+    $bt_consistentvals.set     = 0;                                           \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Dim the destructive tests */                                               \
+    $bt_addresswalking.dim     = 1;                                           \
+    $bt_datawalking.dim        = 1;                                           \
+    $bt_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the walking value option. */                                           \
+    $pd_walkingval.dim         = 1;                                           \
+                                                                              \
+/* Dim the pattern option and pattern value fields. */                        \
+    $pd_datapatternoption.dim  = 1;                                           \
+    $tf_pattern.dim            = 1;                                           \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Undim the maximize bus transitions option. */                              \
+    $bt_maxaddrtransitions.dim  = 0;                                          \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+    $bt_maintainpattern.dim     = 1;                                          \
+                                                                              \
+/* Allow iterations to be selected. Undim iterations text field. */           \
+    $bt_testiterations.dim      = 0;                                          \
+/* If neither iteration button is set, choose iterations button. */           \
+    if(($bt_testiterations.set == 0) && ($bt_testcontinuous.set == 0)) {      \
+        $bt_testiterations.set      = 1;                                      \
+    }                                                                         \
+    if($bt_testiterations.set) {                                              \
+        $tf_testiterations.dim  = 0;                                          \
+    }                                                                         \
+                                                                              \
+/* Allow continuous execution */                                              \
+    $bt_testcontinuous.dim      = 0;                                          \
+                                                                              \
+/* Force maximum errors to be selected. Undim maximum error text field. */    \
+    $bt_maxerrors.set           = 1;                                          \
+    $bt_maxerrors.dim           = 0;                                          \
+    $tf_maxerrors.dim           = 0;                                          \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+    $bt_writeonly.set           = 0;                                          \
+    $bt_writeonly.dim           = 1;                                          \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_datawalking = "                                       \
+                                                                              \
+    if ($bt_datawalking.set == 0) {                                           \
+/* Clear this button */                                                       \
+        $bt_datawalking.set        = 0;                                       \
+                                                                              \
+        if($bt_addresswalking.set == 0) {                                     \
+/* Dim the walking value option since neither walking test is selected. */    \
+            $pd_walkingval.dim  = 1;                                          \
+        }                                                                     \
+                                                                              \
+        if($bt_addresswalking.set == 0 && $bt_datawalking.set == 0 && $bt_pattern.set == 0) { \
+/* No tests are selected; dim lots of options. */                             \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+            $bt_maxaddrtransitions.dim  = 1;                                  \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+            $bt_maintainpattern.dim     = 1;                                  \
+                                                                              \
+/* Disallow iterations to be selected. Dim iterations text field. */          \
+            $bt_testiterations.dim      = 1;                                  \
+            $tf_testiterations.dim      = 1;                                  \
+                                                                              \
+/* Disallow continuous execution */                                           \
+            $bt_testcontinuous.dim      = 1;                                  \
+                                                                              \
+/* Disallow maximum errors to be selected. Undim maximum error text field. */ \
+            $bt_maxerrors.dim           = 1;                                  \
+            $tf_maxerrors.dim           = 1;                                  \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+            $bt_writeonly.dim           = 1;                                  \
+        }                                                                     \
+                                                                              \
+    } else {                                                                  \
+/* Force this radio button to be set */                                       \
+        $bt_datawalking.set        = 1;                                       \
+        $bt_desttest.set              = 1;                                    \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+        $bt_dataread.set           = 0;                                       \
+        $bt_computecrc.set         = 0;                                       \
+        $bt_comparecrc.set         = 0;                                       \
+        $bt_consistentvals.set     = 0;                                       \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Undim the maximize bus transitions and maintain pattern value options. */  \
+        $bt_maxaddrtransitions.dim  = 0;                                      \
+        $bt_maintainpattern.dim     = 0;                                      \
+                                                                              \
+/* Undim the walking value option. */                                         \
+        $pd_walkingval.dim         = 0;                                       \
+                                                                              \
+/* Undim the destructive tests */                                             \
+        $bt_addresswalking.dim     = 0;                                       \
+        $bt_datawalking.dim        = 0;                                       \
+        $bt_pattern.dim            = 0;                                       \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Allow iterations to be selected. Undim iterations text field. */           \
+        $bt_testiterations.dim      = 0;                                      \
+/* Allow continuous execution */                                              \
+        $bt_testcontinuous.dim      = 0;                                      \
+/* If neither iteration button is set, choose iterations button. */           \
+        if(($bt_testiterations.set == 0) && ($bt_testcontinuous.set == 0)) {  \
+            $bt_testiterations.set      = 1;                                  \
+        }                                                                     \
+        if($bt_testiterations.set) {                                          \
+            $tf_testiterations.dim  = 0;                                      \
+        }                                                                     \
+                                                                              \
+/* Allow maximum errors to be selected. Undim maximum error text field. */    \
+        $bt_maxerrors.dim           = 0;                                      \
+/* Allow write-only test. Undim write-only test option. */                    \
+        $bt_writeonly.dim           = 0;                                      \
+/* If neither error button is set, choose maximum errors. */                  \
+        if(($bt_maxerrors.set == 0) && ($bt_writeonly.set == 0)) {            \
+            $bt_maxerrors.set      = 1;                                       \
+        }                                                                     \
+        if($bt_maxerrors.set) {                                               \
+            $tf_maxerrors.dim       = 0;                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_debugger = "                                          \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_debugger.set          = 1;                                            \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_targetagent.set       = 0;                                            \
+                                                                              \
+/* Dim the target agent location pulldown */                                  \
+    $pd_agentloc.dim          = 1;                                            \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_desttest = "                                          \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_desttest.set           = 1;                                           \
+                                                                              \
+/* Undim the various destructive tests */                                     \
+    $bt_addresswalking.dim     = 0;                                           \
+    $bt_datawalking.dim        = 0;                                           \
+    $bt_pattern.dim            = 0;                                           \
+                                                                              \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_dataread.set           = 0;                                           \
+    $bt_computecrc.set         = 0;                                           \
+    $bt_comparecrc.set         = 0;                                           \
+    $bt_consistentvals.set     = 0;                                           \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Appropriately dim/undim the various option fields. */                      \
+    MemtestDialog_handle_bt_addresswalking();                                 \
+    MemtestDialog_handle_bt_datawalking();                                    \
+    MemtestDialog_handle_bt_pattern();                                        \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_maxerrors = "                                         \
+                                                                              \
+/* Force this radio button to be set. */                                      \
+    $bt_maxerrors.set          = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons. */                                          \
+    $bt_writeonly.set          = 0;                                           \
+                                                                              \
+/* Undim the maximum error count field. */                                    \
+    $tf_maxerrors.dim          = 0;                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_pattern = "                                           \
+                                                                              \
+    if ($bt_pattern.set == 0) {                                               \
+/* Clear this button */                                                       \
+        $bt_pattern.set        = 0;                                           \
+                                                                              \
+/* Dim the pattern option field. */                                           \
+        $pd_datapatternoption.dim  = 1;                                       \
+                                                                              \
+/* Conditionally dim the maximize bus transitions and maintain */             \
+/* pattern value options. */                                                  \
+        if($bt_datawalking.set == 0) {                                        \
+            $bt_maxaddrtransitions.dim  = 1;                                  \
+            if($bt_addresswalking.set == 0) {                                 \
+                $bt_maintainpattern.dim     = 1;                              \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+        if($bt_addresswalking.set == 0) {                                     \
+/* Dim the pattern value, since neither test that uses it is selected. */     \
+            $tf_pattern.dim  = 1;                                             \
+        }                                                                     \
+        if($bt_addresswalking.set == 0 && $bt_datawalking.set == 0 && $bt_pattern.set == 0) { \
+/* No tests are selected; dim lots of options. */                             \
+                                                                              \
+/* Dim the maximize bus transitions option. */                                \
+            $bt_maxaddrtransitions.dim  = 1;                                  \
+                                                                              \
+/* Dim the maintain pattern option. */                                        \
+            $bt_maintainpattern.dim     = 1;                                  \
+                                                                              \
+/* Disallow iterations to be selected. Dim iterations text field. */          \
+            $bt_testiterations.dim      = 1;                                  \
+            $tf_testiterations.dim      = 1;                                  \
+                                                                              \
+/* Disallow continuous execution */                                           \
+            $bt_testcontinuous.dim      = 1;                                  \
+                                                                              \
+/* Disallow maximum errors to be selected. Undim maximum error text field. */ \
+            $bt_maxerrors.dim           = 1;                                  \
+            $tf_maxerrors.dim           = 1;                                  \
+                                                                              \
+/* Disallow write-only test option. */                                        \
+            $bt_writeonly.dim           = 1;                                  \
+        }                                                                     \
+    } else {                                                                  \
+/* Force this radio button to be set */                                       \
+        $bt_pattern.set            = 1;                                       \
+        $bt_desttest.set           = 1;                                       \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+        $bt_dataread.set           = 0;                                       \
+        $bt_computecrc.set         = 0;                                       \
+        $bt_comparecrc.set         = 0;                                       \
+        $bt_consistentvals.set     = 0;                                       \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Undim the destructive tests */                                             \
+        $bt_addresswalking.dim     = 0;                                       \
+        $bt_datawalking.dim        = 0;                                       \
+        $bt_pattern.dim            = 0;                                       \
+                                                                              \
+/* Undim the pattern option and pattern value fields. */                      \
+        $pd_datapatternoption.dim  = 0;                                       \
+        $tf_pattern.dim            = 0;                                       \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim      = 1; */                                          \
+                                                                              \
+/* Undim the maximize bus transitions and maintain pattern value options. */  \
+        $bt_maxaddrtransitions.dim  = 0;                                      \
+        $bt_maintainpattern.dim     = 0;                                      \
+                                                                              \
+/* Allow iterations to be selected. Undim iterations text field. */           \
+        $bt_testiterations.dim      = 0;                                      \
+/* If neither iteration button is set, choose iterations button. */           \
+        if(($bt_testiterations.set == 0) && ($bt_testcontinuous.set == 0)) {  \
+            $bt_testiterations.set      = 1;                                  \
+        }                                                                     \
+        if($bt_testiterations.set) {                                          \
+            $tf_testiterations.dim  = 0;                                      \
+        }                                                                     \
+                                                                              \
+/* Allow continuous execution */                                              \
+        $bt_testcontinuous.dim      = 0;                                      \
+                                                                              \
+/* Allow maximum errors to be selected. Undim maximum error text field. */    \
+        $bt_maxerrors.dim           = 0;                                      \
+/* Allow write-only test. Undim write-only test option. */                    \
+        $bt_writeonly.dim           = 0;                                      \
+/* If neither error button is set, choose maximum errors. */                  \
+        if(($bt_maxerrors.set == 0) && ($bt_writeonly.set == 0)) {            \
+            $bt_maxerrors.set      = 1;                                       \
+        }                                                                     \
+        if($bt_maxerrors.set) {                                               \
+            $tf_maxerrors.dim       = 0;                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_targetagent = "                                       \
+                                                                              \
+/* Force this radio button to be set */                                       \
+    $bt_targetagent.set       = 1;                                            \
+                                                                              \
+/* Clear the other radio buttons */                                           \
+    $bt_debugger.set          = 0;                                            \
+                                                                              \
+/* Undim the target agent location pulldown */                                \
+    $pd_agentloc.dim          = 0;                                            \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_testcontinuous = "                                    \
+                                                                              \
+/* Force this radio button to be set. */                                      \
+    $bt_testcontinuous.set     = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons. */                                          \
+    $bt_testiterations.set     = 0;                                           \
+                                                                              \
+/* Dim the test iterations field. */                                          \
+    $tf_testiterations.dim     = 1;                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_testiterations = "                                    \
+                                                                              \
+/* Force this radio button to be set. */                                      \
+    $bt_testiterations.set     = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons. */                                          \
+    $bt_testcontinuous.set     = 0;                                           \
+                                                                              \
+/* Undim the test iterations field. */                                        \
+    $tf_testiterations.dim     = 0;                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_handle_bt_writeonly = "                                         \
+                                                                              \
+/* Force this radio button to be set. */                                      \
+    $bt_writeonly.set          = 1;                                           \
+                                                                              \
+/* Clear the other radio buttons. */                                          \
+    $bt_maxerrors.set          = 0;                                           \
+                                                                              \
+/* Dim the maximum error count field. */                                      \
+    $tf_maxerrors.dim          = 1;                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_onCleanup = "                                                   \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_onSetup = "                                                     \
+                                                                              \
+/* Provide defaults for the start and end addresses */                        \
+    $tf_startaddr             = \"0x00000000\";                               \
+    $tf_endaddr               = \"0x00000000\";                               \
+                                                                              \
+    p = index(%1, \"start=\");                                                \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+6, length(%1)-p-6);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_startaddr     = select;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"end=\");                                                  \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+4, length(%1)-p-4);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_endaddr       = select;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* Default to 4-byte accesses. */                                             \
+    $bs_accesssize.set(3)             = 1;                                    \
+                                                                              \
+    p = index(%1, \"size=\");                                                 \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+5, length(%1)-p-5);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            if(select == \"4\") $bs_accesssize.set(3)  = 1;                   \
+            if(select == \"2\") $bs_accesssize.set(2)  = 1;                   \
+            if(select == \"1\") $bs_accesssize.set(1)  = 1;                   \
+                                                                              \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* Compute the address field based on the start and end fields. */            \
+    MemtestDialog_computeAddrsize();                                          \
+                                                                              \
+/* Provide a default value for the data pattern */                            \
+    $tf_pattern               = \"0x55555555\";                               \
+                                                                              \
+    p = index(%1, \"pattern=\");                                              \
+    if(p != -1) {                                                             \
+                                                                              \
+        str = substr(%1, p+8, length(%1)-p-8);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_pattern      = select;                                        \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* Clear all radio buttons */                                                 \
+    $bt_addresswalking.set     = 0;                                           \
+    $bt_datawalking.set        = 0;                                           \
+    $bt_pattern.set            = 0;                                           \
+    $bt_desttest.set           = 0;                                           \
+                                                                              \
+    $bt_dataread.set           = 0;                                           \
+    $bt_computecrc.set         = 0;                                           \
+    $bt_comparecrc.set         = 0;                                           \
+    $bt_consistentvals.set     = 0;                                           \
+                                                                              \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/*$bt_search.set             = 0; */                                          \
+                                                                              \
+/* Dim the walking value. */                                                  \
+    $pd_walkingval.dim        = 1;                                            \
+                                                                              \
+                                                                              \
+/* Set the data pattern option to Complement. */                              \
+    $pd_datapatternoption     = \"Complement\";                               \
+                                                                              \
+/* Dim the data pattern option. */                                            \
+    $pd_datapatternoption.dim = 1;                                            \
+                                                                              \
+/* Dim the data pattern value. */                                             \
+    $tf_pattern.dim           = 1;                                            \
+                                                                              \
+/* Dim the minimum size option. */                                            \
+/*$pd_searchminsize.dim     = 1; */                                           \
+                                                                              \
+                                                                              \
+/* Clear the maximize address bus transitions option. */                      \
+    $bt_maxaddrtransitions.set = 0;                                           \
+                                                                              \
+/* Clear the maintain pattern value across iterations option. */              \
+    $bt_maintainpattern.set   = 0;                                            \
+                                                                              \
+/* Default to one iteration */                                                \
+    $tf_testiterations        = \"1\";                                        \
+    $tf_testiterations.dim    = 0;                                            \
+    $bt_testiterations.set    = 1;                                            \
+    $bt_testcontinuous.set    = 0;                                            \
+    p = index(%1, \"repeat=\");                                               \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+7, length(%1)-p-7);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_testiterations = select;                                      \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"continuous\");                                            \
+    if(p != -1) {                                                             \
+        $tf_testiterations.dim    = 1;                                        \
+        $bt_testiterations.set    = 0;                                        \
+        $bt_testcontinuous.set    = 1;                                        \
+    }                                                                         \
+                                                                              \
+/* Default to maxerr=10 */                                                    \
+    $bt_maxerrors.set         = 1;                                            \
+    $bt_maxerrors.dim         = 0;                                            \
+    $bt_writeonly.set         = 0;                                            \
+                                                                              \
+/* Provide a default value for maximum error count */                         \
+    $tf_maxerrors.dim         = 0;                                            \
+    $tf_maxerrors             = \"10\";                                       \
+                                                                              \
+    p = index(%1, \"maxerr=\");                                               \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+7, length(%1)-p-7);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_maxerrors     = select;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"writeonly\");                                             \
+    if(p != -1) {                                                             \
+        $bt_maxerrors.set         = 0;                                        \
+        $bt_writeonly.set         = 1;                                        \
+        $tf_maxerrors.dim         = 1;                                        \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"test=\");                                                 \
+                                                                              \
+    if(p == -1) {                                                             \
+/* default to performing all destructive memory tests. */                     \
+        $bt_addresswalking.set  = 1;                                          \
+        $bt_datawalking.set     = 1;                                          \
+        $bt_desttest.set        = 1;                                          \
+        $bt_pattern.set         = 1;                                          \
+        $tf_pattern.dim         = 0;                                          \
+        MemtestDialog_handle_bt_addresswalking();                             \
+        MemtestDialog_handle_bt_datawalking();                                \
+        MemtestDialog_handle_bt_pattern();                                    \
+        $pd_walkingval = \"Both\";                                            \
+    } else {                                                                  \
+        p = index(%1, \"test=a0\");                                           \
+        q = index(%1, \"test=a1\");                                           \
+        if((p != -1) || (q != -1)) {                                          \
+            $bt_addresswalking.set     = 1;                                   \
+            $bt_desttest.set           = 1;                                   \
+            MemtestDialog_handle_bt_addresswalking();                         \
+            if((p != -1) && (q != -1)) {                                      \
+                $pd_walkingval = \"Both\";                                    \
+            } else if(p != -1){                                               \
+                $pd_walkingval = \"Zero\";                                    \
+            } else {                                                          \
+                $pd_walkingval = \"One\";                                     \
+            }                                                                 \
+        }                                                                     \
+        p = index(%1, \"test=d0\");                                           \
+        q = index(%1, \"test=d1\");                                           \
+        if((p != -1) || (q != -1)) {                                          \
+            $bt_datawalking.set     = 1;                                      \
+            $bt_desttest.set           = 1;                                   \
+            MemtestDialog_handle_bt_datawalking();                            \
+            if((p != -1) && (q != -1)) {                                      \
+                $pd_walkingval = \"Both\";                                    \
+            } else if(p != -1){                                               \
+                $pd_walkingval = \"Zero\";                                    \
+            } else {                                                          \
+                $pd_walkingval = \"One\";                                     \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+        p = index(%1, \"test=p\");                                            \
+        if (p != -1) {                                                        \
+            $bt_pattern.set         = 1;                                      \
+            $tf_pattern.dim         = 0;                                      \
+            MemtestDialog_handle_bt_pattern();                                \
+        }                                                                     \
+        p = index(%1, \"test=r\");                                            \
+        if (p != -1) {                                                        \
+            $bt_dataread.set        = 1;                                      \
+            MemtestDialog_handle_bt_dataread();                               \
+        }                                                                     \
+        p = index(%1, \"test=cr\");                                           \
+        if (p != -1) {                                                        \
+            $bt_computecrc.set      = 1;                                      \
+            MemtestDialog_handle_bt_computecrc();                             \
+        }                                                                     \
+        p = index(%1, \"test=cc\");                                           \
+        if (p != -1) {                                                        \
+            $bt_comparecrc.set      = 1;                                      \
+            MemtestDialog_handle_bt_comparecrc();                             \
+        }                                                                     \
+        p = index(%1, \"test=fr\");                                           \
+        if (p != -1) {                                                        \
+            $bt_consistentvals.set  = 1;                                      \
+            MemtestDialog_handle_bt_consistentvals();                         \
+        }                                                                     \
+/*p = index(%1, \"test=s\"); */                                               \
+/*if (p != -1) { */                                                           \
+/*    $bt_search.set          = 1; */                                         \
+/*    $pd_searchminsize.dim   = 0; */                                         \
+/*    MemtestDialog_handle_bt_search(); */                                    \
+/*} */                                                                        \
+    }                                                                         \
+                                                                              \
+/* Default to a debugger-based test */                                        \
+    $bt_debugger.set          = 1;                                            \
+                                                                              \
+/* Dim the target agent location setting */                                   \
+    $pd_agentloc.dim          = 1;                                            \
+                                                                              \
+    p = index(%1, \"maxtransitions\");                                        \
+    if (p != -1) {                                                            \
+        $bt_maxaddrtransitions.set      = 1;                                  \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"resetpattern\");                                          \
+    if (p != -1) {                                                            \
+        $bt_maintainpattern.set   = 1;                                        \
+    }                                                                         \
+                                                                              \
+/* Pattern option setting */                                                  \
+    p = index(%1, \"random\");                                                \
+    if (p != -1) {                                                            \
+        $pd_datapatternoption = \"Pseudorandom\";                             \
+    } else {                                                                  \
+        p = index(%1, \"complement\");                                        \
+        q = index(%1, \"rotate\");                                            \
+        if ((p != -1) && (q != -1)) {                                         \
+            $pd_datapatternoption = \"Rotate and Complement\";                \
+        } else if ((p != -1) || (q != -1)) {                                  \
+            if (p != -1) {                                                    \
+                $pd_datapatternoption = \"Complement\";                       \
+            } else {                                                          \
+                $pd_datapatternoption = \"Rotate\";                           \
+            }                                                                 \
+        } else {                                                              \
+/* For address walking and pattern tests, if no special */                    \
+/* pattern option was specified, use \"static\" */                            \
+            p = index(%1, \"-test=a\");                                       \
+            q = index(%1, \"-test=p\");                                       \
+            if ((p != -1) || (q != -1)) {                                     \
+                $pd_datapatternoption = \"Static\";                           \
+            }                                                                 \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* For processors that have more than 8 bits per address, */                  \
+/* disallow an access size of 4. */                                           \
+    p = index(%1, \"bpau\");                                                  \
+    if(p != -1) {                                                             \
+        $bs_accesssize.dim(3)  = 1;                                           \
+        if($bs_accesssize.set(3) == 1) {                                      \
+            $bs_accesssize.set(3)  = 0;                                       \
+            $bs_accesssize.set(2)  = 1;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"tgtagentdim\");                                           \
+    if(p != -1) {                                                             \
+        $bt_debugger.set      = 1;                                            \
+        $bt_targetagent.set   = 0;                                            \
+        $bt_targetagent.dim   = 1;                                            \
+        $pd_agentloc.dim      = 1;                                            \
+    } else {                                                                  \
+        p = index(%1, \"tgtagent=\");                                         \
+        if(p != -1) {                                                         \
+            $bt_debugger.set      = 0;                                        \
+            $bt_targetagent.set   = 1;                                        \
+            $pd_agentloc.dim      = 0;                                        \
+                                                                              \
+            p = index(%1, \"tgtagentstart\");                                 \
+            if(p != -1) {                                                     \
+            } else {                                                          \
+                p = index(%1, \"tgtagentend\");                               \
+                if(p != -1) {                                                 \
+                } else {                                                      \
+                    p = index(%1, \"tgtagentloc=\");                          \
+                    if(p != -1) {                                             \
+                        str = substr(%1, p+12, length(%1)-p-12);              \
+                        end = index(str, \" \");                              \
+                        if(end != 0) {                                        \
+                            select = substr(str, 0, end);                     \
+                           $pd_agentloc      = select;                        \
+                        }                                                     \
+                    }                                                         \
+                }                                                             \
+            }                                                                 \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+                                                                              \
+/* Call another subroutine to set up the memtest arguments based */           \
+/* on this change. */                                                         \
+    MemtestDialog_SetArgs ();                                                 \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_runtest = "                                                     \
+                                                                              \
+   MemtestDialog_stripAddrs();                                                \
+                                                                              \
+   if(0 == isnumber($tf_startaddr)) {                                         \
+        alert(\"Start address \\\"\" | $tf_startaddr | \"\\\" is not a valid address. Try something like 0x0000\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+   if(0 == isnumber($tf_endaddr)) {                                           \
+        alert(\"End address is not a valid address. Try something like 0xffff\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+/* Process the start and end options */                                       \
+    args = $tf_startaddr | \" \" | $tf_endaddr;                               \
+                                                                              \
+/* Add the size option and the start of the test option. */                   \
+    if ($bs_accesssize.set(3) == 1) {                                         \
+        args = args | \" -size=4\";                                           \
+    } else if ($bs_accesssize.set(2) == 1) {                                  \
+        args = args | \" -size=2\";                                           \
+    } else if ($bs_accesssize.set(1) == 1) {                                  \
+        args = args | \" -size=1\";                                           \
+    }                                                                         \
+                                                                              \
+    if (number($tf_startaddr) > number($tf_endaddr)) {                        \
+        alert(\"Start address cannot be greater than End address.\");         \
+        return;                                                               \
+    }                                                                         \
+                                                                              \
+/*Add the test option(s) and test-specific options */                         \
+/*if ($bt_search.set == 0) { */                                               \
+        if ($bt_desttest.set == 1) {                                          \
+            if ($bt_addresswalking.set == 1) {                                \
+                if ($pd_walkingval == \"Zero\" || $pd_walkingval == \"Both\" ){ \
+                    args = args | \" -test=a0\";                              \
+                }                                                             \
+                if ($pd_walkingval == \"One\" || $pd_walkingval == \"Both\" ) { \
+                    args = args | \" -test=a1\";                              \
+                }                                                             \
+            }                                                                 \
+            if ($bt_datawalking.set == 1) {                                   \
+                if ($pd_walkingval == \"Zero\" || $pd_walkingval == \"Both\" ){ \
+                    args = args | \" -test=d0\";                              \
+                }                                                             \
+                if ($pd_walkingval == \"One\" || $pd_walkingval == \"Both\" ) { \
+                    args = args | \" -test=d1\";                              \
+                }                                                             \
+            }                                                                 \
+            if ($bt_pattern.set == 1) {                                       \
+                args = args | \" -test=p\";                                   \
+            }                                                                 \
+        } else if ($bt_dataread.set == 1) {                                   \
+            args = args | \" -test=r\";                                       \
+        } else if ($bt_computecrc.set == 1) {                                 \
+            args = args | \" -test=cr\";                                      \
+        } else if ($bt_comparecrc.set == 1) {                                 \
+            args = args | \" -test=cc\";                                      \
+        } else if ($bt_consistentvals.set == 1) {                             \
+            args = args | \" -test=fr\";                                      \
+        }                                                                     \
+                                                                              \
+        if ($bt_pattern.set == 1) {                                           \
+            if($pd_datapatternoption == \"Pseudorandom\") {                   \
+                args = args | \" -random\";                                   \
+            } else if ($pd_datapatternoption == \"Complement\") {             \
+                args = args | \" -complement\";                               \
+            } else if ($pd_datapatternoption == \"Rotate\") {                 \
+                args = args | \" -rotate\";                                   \
+            } else if ($pd_datapatternoption == \"Rotate and Complement\") {  \
+                args = args | \" -rotate -complement\";                       \
+            } else if ($pd_datapatternoption == \"Static\") {                 \
+/* Do nothing. */                                                             \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+/* If the pattern is not the default, add the option. */                      \
+        if (number($tf_pattern) != 0x55555555) {                              \
+            args = args | \" -pattern=\" | $tf_pattern;                       \
+        }                                                                     \
+                                                                              \
+/* Set options for address bus transitions and retaining pattern value. */    \
+        if(($bt_maxaddrtransitions.dim != 1) && ($bt_maxaddrtransitions.set == 1)) { \
+            args = args | \" -maxtransitions\";                               \
+        }                                                                     \
+        if(($bt_maintainpattern.dim != 1) && ($bt_maintainpattern.set == 1)) { \
+            args = args | \" -resetpattern\";                                 \
+        }                                                                     \
+                                                                              \
+/* If the iteration count is not the default, add the option. */              \
+        if($bt_testcontinuous.set == 1) {                                     \
+            args = args | \" -continuous\";                                   \
+        } else if ($bt_testiterations.set == 1) {                             \
+            if(number($tf_testiterations) != 1) {                             \
+                args = args | \" -repeat=\" | $tf_testiterations;             \
+            }                                                                 \
+            if (number($tf_testiterations) < 1) {                             \
+                alert(\"Iterations must be at least 1.\");                    \
+                return;                                                       \
+            }                                                                 \
+            if (number($tf_testiterations) > 10000) {                         \
+                alert(\"Iterations cannot be greater than 10000.\");          \
+                return;                                                       \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+        if($bt_writeonly.set == 1) {                                          \
+            args = args | \" -writeonly\";                                    \
+        } else {                                                              \
+/* If the maximum error count is not the default, add the option. */          \
+            if (number($tf_maxerrors) != 10) {                                \
+                args = args | \" -maxerr=\" | $tf_maxerrors;                  \
+            }                                                                 \
+                                                                              \
+            if (number($tf_maxerrors) < 1) {                                  \
+                alert(\"Max errors must be at least 1.\");                    \
+                return;                                                       \
+            }                                                                 \
+                                                                              \
+            if (number($tf_maxerrors) > 1000) {                               \
+                alert(\"Max errors cannot be greater than 1000.\");           \
+                return;                                                       \
+            }                                                                 \
+        }                                                                     \
+                                                                              \
+                                                                              \
+/*} else { */                                                                 \
+/*    # The search test is different from the others. */                      \
+/*    args = args | \"s\"; */                                                 \
+                                                                              \
+/* If the minimum size is not the default, add the option. */                 \
+/*    if ($pd_searchminsize != \"1KB\") { */                                  \
+/*        if ($pd_searchminsize == \"512 B\") { */                            \
+/*            args = args | \" -minsize=0x200\"; */                           \
+/*        } else if ($pd_searchminsize == \"2KB\") { */                       \
+/*            args = args | \" -minsize=0x800\"; */                           \
+/*        } else if ($pd_searchminsize == \"4KB\") { */                       \
+/*            args = args | \" -minsize=0x1000\"; */                          \
+/*        } else if ($pd_searchminsize == \"8KB\") { */                       \
+/*            args = args | \" -minsize=0x2000\"; */                          \
+/*        } else if ($pd_searchminsize == \"16KB\") { */                      \
+/*            args = args | \" -minsize=0x4000\"; */                          \
+/*        } else if ($pd_searchminsize == \"32KB\") { */                      \
+/*            args = args | \" -minsize=0x8000\"; */                          \
+/*        } else if ($pd_searchminsize == \"64KB\") { */                      \
+/*            args = args | \" -minsize=0x10000\"; */                         \
+/*        } else if ($pd_searchminsize == \"128KB\") { */                     \
+/*            args = args | \" -minsize=0x20000\"; */                         \
+/*        } else if ($pd_searchminsize == \"256KB\") { */                     \
+/*            args = args | \" -minsize=0x40000\"; */                         \
+/*        } */                                                                \
+/*    } */                                                                    \
+/*} */                                                                        \
+                                                                              \
+/* Handle target agent options. */                                            \
+    if ($bt_targetagent.set) {                                                \
+        args = args | \" -tgtagent\";                                         \
+        if ($pd_agentloc == \"Start of test range\") {                        \
+            args = args | \" -tgtagentstart\";                                \
+        } else if ($pd_agentloc == \"End of test range\") {                   \
+            args = args | \" -tgtagentend\";                                  \
+        } else if ($pd_agentloc == \"<specify location>\") {                  \
+            alert(\"Please specify a valid location for the target agent in the \\\"Agent location\\\" field.\"); \
+            return;                                                           \
+        } else {                                                              \
+            args = args | \" -tgtagentloc=\" | $pd_agentloc;                  \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    // Use delayed command execution                                          \
+    //cli(\"print \\\"memtest \" | args | \" -fromgui\\\"\");                 \
+                                                                              \
+    cli(\"eval($_DELAYCMDEXEC = 1)\");                                        \
+    cli(\"memtest \" | args | \" -fromgui\");                                 \
+    cli(\"eval($_DELAYCMDEXEC = 0)\");                                        \
+                                                                              \
+    // Dismiss the dialog. The return value is ignored.                       \
+    // Comment this out since some people suggest leaving the dialog around.  \
+    // dismiss(0);                                                            \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestDialog_stripAddrs = "                                                  \
+    p = index($tf_startaddr, \" \");                                          \
+    if(p != -1 && p != 0) {                                                   \
+        str = substr($tf_startaddr, 0, p);                                    \
+        $tf_startaddr     = str;                                              \
+    }                                                                         \
+                                                                              \
+    p = index($tf_endaddr, \" \");                                            \
+    if(p != -1 && p != 0) {                                                   \
+        str = substr($tf_endaddr, 0, p);                                      \
+        $tf_endaddr     = str;                                                \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_handle_bt_advanced = "                                          \
+    args = $tf_startaddr | \" \" | $tf_endaddr;                               \
+                                                                              \
+    if ($bs_accesssize.set(3) == 1) {                                         \
+        args = args | \" -size=4\";                                           \
+    } else if ($bs_accesssize.set(2) == 1) {                                  \
+        args = args | \" -size=2\";                                           \
+    } else if ($bs_accesssize.set(1) == 1) {                                  \
+        args = args | \" -size=1\";                                           \
+    }                                                                         \
+                                                                              \
+    //cli(\"print \\\"memtest \" | args | \" -save\\\"\");                    \
+    cli(\"memtest \" | args | \" -save\");                                    \
+                                                                              \
+    do_dismiss = 1;                                                           \
+    //cli(\"print \\\"memtest gui\\\"\");                                     \
+    cli(\"memtest guiadv\");                                                  \
+    dismiss(0);                                                               \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_handle_bt_exhaustive = "                                        \
+    args = \" -test=a0 -test=a1 -test=d0 -test=d1 -test=p -random -maxtransitions -tgtagent -tgtagentstart\"; \
+    do_dismiss = 0;                                                           \
+    MemtestWizard_runtest();                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_handle_bt_memread = "                                           \
+    args = \" -test=r\";                                                      \
+    do_dismiss = 0;                                                           \
+    MemtestWizard_runtest();                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_handle_bt_ok_cancel = "                                         \
+    dismiss(0)                                                                \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_handle_bt_quick = "                                             \
+    args = \" -test=a0 -test=a1 -test=d0 -test=d1\";                          \
+    do_dismiss = 0;                                                           \
+    MemtestWizard_runtest();                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_onSetup = "                                                     \
+                                                                              \
+/* Provide defaults for the start and end addresses */                        \
+    $tf_startaddr             = \"0x00000000\";                               \
+    $tf_endaddr               = \"0x00000000\";                               \
+                                                                              \
+    p = index(%1, \"start=\");                                                \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+6, length(%1)-p-6);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_startaddr     = select;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"end=\");                                                  \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+4, length(%1)-p-4);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            $tf_endaddr       = select;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* Default to 4-byte accesses. */                                             \
+    $bs_accesssize.set(3)             = 1;                                    \
+                                                                              \
+    p = index(%1, \"size=\");                                                 \
+    if(p != -1) {                                                             \
+        str = substr(%1, p+5, length(%1)-p-5);                                \
+        end = index(str, \" \");                                              \
+        if(end != 0) {                                                        \
+            select = substr(str, 0, end);                                     \
+            if(select == \"4\") $bs_accesssize.set(3)  = 1;                   \
+            if(select == \"2\") $bs_accesssize.set(2)  = 1;                   \
+            if(select == \"1\") $bs_accesssize.set(1)  = 1;                   \
+                                                                              \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+/* For processors that have more than 8 bits per address, */                  \
+/* disallow an access size of 4. */                                           \
+    p = index(%1, \"bpau\");                                                  \
+    if(p != -1) {                                                             \
+        $bs_accesssize.dim(3)  = 1;                                           \
+        if($bs_accesssize.set(3) == 1) {                                      \
+            $bs_accesssize.set(3)  = 0;                                       \
+            $bs_accesssize.set(2)  = 1;                                       \
+        }                                                                     \
+    }                                                                         \
+                                                                              \
+    p = index(%1, \"tgtagentdim\");                                           \
+    if(p != -1) {                                                             \
+        $bt_exhaustive.dim  = 1;                                              \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+MemtestWizard_runtest = "                                                     \
+   MemtestDialog_stripAddrs();                                                \
+                                                                              \
+   if(0 == isnumber($tf_startaddr)) {                                         \
+        alert(\"Start address \\\"\" | $tf_startaddr | \"\\\" is not a valid address. Try something like 0x0000\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+   if(0 == isnumber($tf_endaddr)) {                                           \
+        alert(\"End address is not a valid address. Try something like 0xffff\"); \
+        return;                                                               \
+   }                                                                          \
+                                                                              \
+    args = $tf_startaddr | \" \" | $tf_endaddr | args;                        \
+                                                                              \
+    if ($bs_accesssize.set(3) == 1) {                                         \
+        args = args | \" -size=4\";                                           \
+    } else if ($bs_accesssize.set(2) == 1) {                                  \
+        args = args | \" -size=2\";                                           \
+    } else if ($bs_accesssize.set(1) == 1) {                                  \
+        args = args | \" -size=1\";                                           \
+    }                                                                         \
+                                                                              \
+                                                                              \
+    //cli(\"print \\\"memtest \" | args | \" -fromgui\\\"\");                 \
+    cli(\"memtest \" | args | \" -fromgui\");                                 \
+    if(do_dismiss == 1) {                                                     \
+        dismiss(0);                                                           \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+Items=MemtestDialog
+ ColWind(,,,328,557,"perform_memory_test_window","MemtestDialog","MemtestDialog_onSetup() ;","MemtestDialog_onCleanup() ;",0,0,1,"MULTIPIC") 0xffffffff =MemtestDialog > -1
+ Text(0,0,0,NULL,"Start address",PNone)0xffffffff =tx_startaddr >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_startaddr >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =vl_startaddr >-1
+ Text(0,0,0,NULL,"End address",PNone)0xffffffff =tx_endaddr >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_endaddr >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_endaddr >-1
+ Button(0,7,0,92,21,NULL,NULL,NULL,"Size (bytes)",0,0,0,0,"MemtestDialog_handle_bt_addrsize() ;")0xffffffff =bt_addrsize >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_addrsize >-1
+ Line(0,-300,0,0,18,NULL,PNone)0xffffffff =vl_addrsize >-1
+ Text(0,0,0,NULL,"Access size",PNone)0xffffffff =tx_accesssize >-1
+ ButtonSet(0,0,0,132,15,NULL,NULL,NULL,    (3,"1","2","4"),    (3,NULL,NULL,NULL),    -1,3,3,0,0,1,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_accesssize >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_accesssize >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_startaddr >-1
+ Text(0,0,0,NULL,"Test choice",PNone)0xffffffff =tx_testchoice >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_testchoice >-1
+ Button(0,21,0,184,15,NULL,NULL,NULL,"Memory tests (destructive)",1,0,0,0,"MemtestDialog_handle_bt_desttest() ;")0xffffffff =bt_desttest >-1
+ Button(0,0,0,114,15,NULL,NULL,NULL,"Address walking",2,0,0,0,"MemtestDialog_handle_bt_addresswalking() ;")0xffffffff =bt_addresswalking >-1
+ Button(0,0,0,94,15,NULL,NULL,NULL,"Data walking",2,0,0,0,"MemtestDialog_handle_bt_datawalking() ;")0xffffffff =bt_datawalking >-1
+ Text(0,0,0,NULL,"Walking value",PNone)0xffffffff =tx_walkingval >-1
+ PullDown(0,0,0,54,19,NULL,NULL,NULL,NULL,NULL,"One",1,(3,NULL,("One",NULL,,NULL,())("Zero",NULL,,NULL,())("Both",NULL,,NULL,()),0))0xffffffff =pd_walkingval >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_walkingval >-1
+ Button(0,0,0,92,15,NULL,NULL,NULL,"Data pattern",2,0,0,0,"MemtestDialog_handle_bt_pattern() ;")0xffffffff =bt_pattern >-1
+ Text(0,0,0,NULL,"Pattern option",PNone)0xffffffff =tx_datapatternoption >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"Complement",1,(5,NULL,("Complement",NULL,,NULL,())("Static",NULL,,NULL,())("Rotate and Complement",NULL,,NULL,())("Rotate",NULL,,NULL,())("Pseudorandom",NULL,,NULL,()),0))0xffffffff =pd_datapatternoption >-1
+ Line(0,-300,0,0,1,NULL,PNone)0xffffffff =vl_datapatternoption >-1
+ Text(0,0,0,NULL,"Pattern value",PNone)0xffffffff =tx_pattern >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_pattern >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_pattern >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_pattern >-1
+ Button(0,0,0,200,15,NULL,NULL,NULL,"Memory read (nondestructive)",1,0,0,0,"MemtestDialog_handle_bt_dataread() ;")0xffffffff =bt_dataread >-1
+ Button(0,0,0,224,15,NULL,NULL,NULL,"CRC computation (nondestructive)",1,0,0,0,"MemtestDialog_handle_bt_computecrc() ;")0xffffffff =bt_computecrc >-1
+ Button(0,0,0,202,15,NULL,NULL,NULL,"CRC compare (nondestructive)",1,0,0,0,"MemtestDialog_handle_bt_comparecrc() ;")0xffffffff =bt_comparecrc >-1
+ Button(0,0,0,248,15,NULL,NULL,NULL,"Find start/end ranges (nondestructive)",1,0,0,0,"MemtestDialog_handle_bt_consistentvals() ;")0xffffffff =bt_consistentvals >-1
+ Line(0,0,-635,0,1,NULL,PNone)0xffffffff =vl_searchminsize >-1
+ Line(0,0,0,1,-1,NULL,PNone)0xffffffff =hl_walkingval >-1
+ Text(0,0,0,NULL,"Test options",PNone)0xffffffff =tx_testoptions >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_testoptions >-1
+ Button(0,0,0,214,15,NULL,NULL,NULL,"Maximize address bus transitions",2,0,0,0,"")0xffffffff =bt_maxaddrtransitions >-1
+ Button(0,0,0,250,15,NULL,NULL,NULL,"Reset pattern value between iterations",2,0,0,0,"")0xffffffff =bt_maintainpattern >-1
+ Button(0,0,0,150,15,NULL,NULL,NULL,"Repeat test (1-10000)",1,0,0,1,"MemtestDialog_handle_bt_testiterations() ;")0xffffffff =bt_testiterations >-1
+ TextField(0,0,0,1,19,"1",NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_testiterations >-1
+ ButtonSet(0,0,0,11,20,NULL,NULL,NULL,    (2,"Increment","Decrement"),    (2,"MemtestDialog_bs_testiterations_increment","MemtestDialog_bs_testiterations_decrement"),    -1,2,2,1,0,61,0,    (2,NULL,NULL),    (2,"arrowup","arrowdown"),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_testiterations >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =vl_testiterations >-1
+ Button(0,0,0,146,15,NULL,NULL,NULL,"Run test continuously",1,0,0,0,"MemtestDialog_handle_bt_testcontinuous() ;")0xffffffff =bt_testcontinuous >-1
+ Button(0,0,0,142,15,NULL,NULL,NULL,"Max. errors (1-1000)",1,0,0,1,"MemtestDialog_handle_bt_maxerrors() ;")0xffffffff =bt_maxerrors >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_maxerrors >-1
+ ButtonSet(0,0,0,11,20,NULL,NULL,NULL,    (2,"Increment","Decrement"),    (2,"MemtestDialog_bs_maxerrors_increment","MemtestDialog_bs_maxerrors_decrement"),    -1,2,2,1,0,61,0,    (2,NULL,NULL),    (2,"arrowup","arrowdown"),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_maxerrors >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =vl_maxerrors >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_maxerrors >-1
+ Button(0,0,0,174,15,NULL,NULL,NULL,"Write-only test (no errors)",1,0,0,0,"MemtestDialog_handle_bt_writeonly() ;")0xffffffff =bt_writeonly >-1
+ Text(0,0,0,NULL,"Test method",PNone)0xffffffff =tx_testmethod >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_testmethod >-1
+ Button(0,0,0,72,15,NULL,NULL,NULL,"Debugger",1,0,0,0,"MemtestDialog_handle_bt_debugger() ;")0xffffffff =bt_debugger >-1
+ Button(0,0,0,92,15,NULL,NULL,NULL,"Target agent",1,0,0,0,"MemtestDialog_handle_bt_targetagent() ;")0xffffffff =bt_targetagent >-1
+ Text(0,0,0,NULL,"Agent location",PNone)0xffffffff =tx_agentloc >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"Start of test range",0,(3,NULL,("Start of test range",NULL,,NULL,())("End of test range",NULL,,NULL,())("<specify location>",NULL,,NULL,()),0))0xffffffff =pd_agentloc >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =vl_agentloc >-1
+ ButtonSet(0,0,0,198,21,NULL,NULL,NULL,    (2,"Test memory","Cancel"),    (2,"MemtestDialog_runtest","dismiss(0)"),    -1,2,2,0,0,0,0,    (2,NULL,NULL),    (0),    (2,NULL,NULL),    (2,NULL,NULL),0,0)0xffffffff =bs_ok_cancel >-1
+ Line(0,0,-200,1,0,NULL,PNone)0xffffffff =hl_dummy >-1
+ Line(0,0,-200,1,0,NULL,PNone)0xffffffff =hl_dummy2 >-1
+MinSizes
+Sizes
+ 60,(7),(),0,0,0,0,0,2,1,Horizontal
+ 59,(23),(),15,0,0,0,0,1,1,Horizontal
+ 56,(24),(),0,0,0,0,0,1,1,Horizontal
+ 8,(0),(13),0,-3,0,0,0,1,1,Horizontal
+ 49,(40),(),0,0,0,0,0,1,1,Horizontal
+ 29,(26),(),10,0,0,0,0,1,1,Horizontal
+ 24,(0),(60),-10,0,0,0,0,1,1,Horizontal
+ 25,(23),(),0,0,0,0,0,1,1,((24),(),0,0,0,0,0,1,1,)Vertical
+ 0,(33),(),0,8,0,0,0,1,1,Horizontal
+ 46,(0),(47,49),0,-6,0,0,0,1,1,Horizontal
+ 41,(46),(),0,0,0,0,0,1,1,Horizontal
+ 27,(24),(),22,0,0,0,0,1,1,Horizontal
+ 35,(19),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,)Horizontal
+ 52,(0),(51),0,-4,0,0,0,1,1,Horizontal
+ 37,(0),(36),0,-4,0,0,0,1,1,Horizontal
+ 15,(0),(14),0,-4,0,0,0,1,1,Horizontal
+ 5,(0),(13),0,-3,0,0,0,1,1,Horizontal
+ 2,(0),(13),0,-3,0,0,0,1,1,Horizontal
+ 13,(1),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,))Horizontal
+ 0,(39,33,44,32,31,30,9,18,58,57,54,53,51,48,43,28,36,22,21,17,14,12,6,3,16,38,25,50),(),57,0,0,2,0,1,1,Vertical
+ 57,(55),(),0,0,0,0,0,1,1,((56),(),0,0,0,0,0,1,1,)Vertical
+ 48,(45),(),0,0,0,0,0,1,1,((46),(),0,0,0,0,0,1,1,((47),(),0,0,0,0,0,1,1,))Vertical
+ 28,(26),(),0,0,0,0,0,1,1,((27),(),0,0,0,0,0,1,1,)Vertical
+ 43,(41),(),0,0,0,0,0,1,1,((42),(),0,0,0,0,0,1,1,((40),(),0,0,0,0,0,1,1,))Vertical
+ 12,(10),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,)Vertical
+ 3,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 6,(4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,)Vertical
+ 34,(),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,)Vertical
+ 21,(19),(),0,0,0,0,0,1,1,((20),(),0,0,0,0,0,1,0,)Vertical
+Positions
+ (60),0,0,0,0,0,0,Left,Left,Left
+ (59),23,0,0,0,0,0,Left,Left,Left
+ (58),0,0,-2,0,0,0,Right,Right,Right
+ (50),48,3,0,0,0,0,Top,Top,Bottom
+ (39),38,0,0,0,0,0,Top,Top,Bottom
+ (46,41),49,0,0,0,0,0,Left,Left,Right
+ (49),0,-200,0,0,0,0,Top,Top,Top
+ (26,23),0,0,7,0,0,0,Left,Left,Left
+ (16),14,4,0,0,0,0,Top,Top,Bottom
+ (24),59,0,0,0,0,0,Left,Left,Right
+ (23,24,25),22,0,0,0,0,0,TBCenter,Top,Bottom
+ (33),32,0,0,0,0,0,Top,Top,Bottom
+ (44),43,1,0,0,0,0,Top,Top,Bottom
+ (38),36,1,0,0,0,0,Top,Top,Bottom
+ (32),31,0,0,0,0,0,Top,Top,Bottom
+ (31),30,0,0,0,0,0,Top,Top,Bottom
+ (30),28,0,0,0,1,0,Top,Top,Bottom
+ (9,8,7),6,4,0,0,0,0,TBCenter,Top,Bottom
+ (54),53,0,0,0,0,0,Top,Top,Bottom
+ (22,17,18),0,0,5,0,0,0,Left,Left,Left
+ (18),17,0,0,0,0,0,Top,Top,Bottom
+ (56),55,0,2,0,0,0,Left,Left,Right
+ (47,42),41,-8,0,0,0,0,Left,Left,Right
+ (27),59,-12,0,0,0,0,Left,Left,Right
+ (8,2,5),13,0,1,0,0,0,Left,Left,Right
+ (20),35,0,1,0,0,0,Left,Left,Right
+ (57),0,-300,0,0,0,0,Left,Left,Left
+ (35,29,19,55),0,0,7,0,0,0,Left,Left,Left
+ (50,39,38,40,44,54,53,45,30,31,32,33,49),0,0,3,0,0,0,Left,Left,Left
+ (52),51,0,1,0,0,0,Left,Left,Right
+ (37),36,0,1,0,0,0,Left,Left,Right
+ (15),14,0,1,0,0,0,Left,Left,Right
+ (11),13,0,3,0,0,0,Left,Left,Right
+ (13,51,36,14,10,4,1),0,0,1,0,0,0,Left,Left,Left
+ (58),57,8,0,0,0,0,Top,Top,Bottom
+ (57,55,56),54,0,0,0,0,0,TBCenter,Top,Bottom
+ (53),51,4,0,0,0,0,Top,Top,Bottom
+ (52,51),50,0,0,0,0,0,TBCenter,Top,Bottom
+ (29),0,-200,0,0,0,0,Top,Top,Top
+ (48),0,-300,0,0,0,0,Left,Left,Left
+ (48,45,46,47),44,0,0,0,1,0,TBCenter,Top,Bottom
+ (28,26,27),25,3,0,0,0,0,TBCenter,Top,Bottom
+ (28),0,-300,0,0,0,0,Left,Left,Left
+ (41,42,40,43),39,1,0,0,0,0,TBCenter,Top,Bottom
+ (43),0,-300,0,0,0,0,Left,Left,Left
+ (36,37),33,4,0,0,0,0,TBCenter,Top,Bottom
+ (35),0,-300,0,0,0,0,Top,Top,Top
+ (17),16,0,0,0,0,0,Top,Top,Bottom
+ (14,15),12,4,0,0,0,0,TBCenter,Top,Bottom
+ (13),0,-300,0,0,0,0,Top,Top,Top
+ (12,11,10),9,4,0,0,0,0,TBCenter,Top,Bottom
+ (12),0,-300,0,0,0,0,Left,Left,Left
+ (6,5,4),3,4,0,0,0,0,TBCenter,Top,Bottom
+ (1,2,3),0,4,0,0,0,0,TBCenter,Top,Top
+ (22),21,4,0,0,0,0,TBCenter,Top,Bottom
+ (21,20,19),18,0,0,0,0,0,TBCenter,Top,Bottom
+ (3),0,-300,0,0,0,0,Left,Left,Left
+ (6),0,-300,0,0,0,0,Left,Left,Left
+ (34),0,-300,0,0,0,0,Left,Left,Left
+ (21),0,-300,0,0,0,0,Left,Left,Left
+
+Items=MemtestWizard
+ ColWind(,,,292,229,"memory_test_wizard","MemtestWizard","MemtestWizard_onSetup() ;","",0,0,1,"MULTIPIC") 0xffffffff =MemtestWizard > -1
+ Text(0,0,0,NULL,"Start address",PNone)0xffffffff =tx_startaddr >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_startaddr >-1
+ Line(0,0,0,1,1,NULL,PNone)0xffffffff =vl_startaddr >-1
+ Text(0,0,0,NULL,"End address",PNone)0xffffffff =tx_endaddr >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_endaddr >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_endaddr >-1
+ Text(0,0,0,NULL,"Access size",PNone)0xffffffff =tx_accesssize >-1
+ ButtonSet(0,0,0,114,15,NULL,NULL,NULL,    (3,"1","2","4"),    (3,NULL,NULL,NULL),    -1,3,3,0,0,1,0,    (3,NULL,NULL,NULL),    (0),    (3,NULL,NULL,NULL),    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_accesssize >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =vl_accesssize >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_startaddr >-1
+ Text(0,0,0,NULL,"Test choice",PNone)0xffffffff =tx_testchoice >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =hl_testchoice >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"Quick (using Debugger)",0,0,0,0,"MemtestWizard_handle_bt_quick() ;")0xffffffff =bt_quick >-1
+ Button(0,0,0,234,20,NULL,NULL,NULL,"Exhaustive (using target agent)",0,0,0,0,"MemtestWizard_handle_bt_exhaustive() ;")0xffffffff =bt_exhaustive >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"Memory read (nondestructive)",0,0,0,0,"MemtestWizard_handle_bt_memread() ;")0xffffffff =bt_memread >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"Advanced...",0,0,0,0,"MemtestWizard_handle_bt_advanced() ;")0xffffffff =bt_advanced >-1
+ Button(0,0,0,58,20,NULL,NULL,NULL,"Cancel",0,0,0,0,"MemtestWizard_handle_bt_ok_cancel() ;")0xffffffff =bt_ok_cancel >-1
+MinSizes
+Sizes
+ 13,(14),(),0,0,0,0,0,1,1,Horizontal
+ 16,(14),(),0,0,0,0,0,1,1,Horizontal
+ 15,(14),(),0,0,0,0,0,1,1,Horizontal
+ 0,(14),(),0,0,0,0,0,5,4,Horizontal
+ 12,(0),(11),0,-4,0,0,0,1,1,Horizontal
+ 5,(0),(10),0,-3,0,0,0,1,1,Horizontal
+ 2,(0),(10),0,-3,0,0,0,1,1,Horizontal
+ 10,(1),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,))Horizontal
+ 0,(13,3,6,9,11,17,14,15,16),(),39,0,0,2,0,1,1,Vertical
+ 9,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 3,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 6,(4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (16),15,15,0,0,0,0,Top,Top,Bottom
+ (15),14,5,0,0,0,0,Top,Top,Bottom
+ (14),13,5,0,0,0,0,Top,Top,Bottom
+ (16,15,14,13,17),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (17),16,0,0,0,1,0,Top,Top,Bottom
+ (8,7,9),6,4,0,0,0,0,Top,Top,Bottom
+ (13),11,4,0,0,0,0,Top,Top,Bottom
+ (2,5),10,0,1,0,0,0,Left,Left,Right
+ (12),11,0,1,0,0,0,Left,Left,Right
+ (8),10,0,3,0,0,0,Left,Left,Right
+ (10,11,7,4,1),0,0,1,0,0,0,Left,Left,Left
+ (11,12),9,4,0,0,0,0,TBCenter,Top,Bottom
+ (10),0,-300,0,0,0,0,Top,Top,Top
+ (9),0,-300,0,0,0,0,Left,Left,Left
+ (6,5,4),3,4,0,0,0,0,TBCenter,Top,Bottom
+ (1,2,3),0,4,0,0,0,0,TBCenter,Top,Top
+ (3),0,-300,0,0,0,0,Left,Left,Left
+ (6),0,-300,0,0,0,0,Left,Left,Left
+

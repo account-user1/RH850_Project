@@ -1,0 +1,165 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_velosity/vel_osmodules.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component_template.velosity_os_module {
+    parent_context_types = { "velosity_dynamic_download", "velosity_monolith" }
+    parent_context_filetypes = { "velOSity Application" }
+    
+    tags = { "velOSity_OS_MODULE" }    
+    display_type_name = "OS Module"
+    top_file_type = "Program"
+    #bg_color="#ffcccc"
+#    fg_color="#000000"
+    icon_name = "os_module"
+    bg_color="#ecffce"
+
+    dlg_info {
+    	add {
+	    auto_import = false
+	}
+    }
+}
+
+component_template.velosity_os_module_dist {
+    use_template = "velosity_os_module"
+    actions {
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/vel_osmodules.py os_dist_paste_parent_local_std" }
+	    }
+	}
+    }
+}
+
+component.velosity_os_modules_kernel_ivfsserver {
+    display_object_name = "File System (Kernel, User Configured)"    
+    display_type_name = "Kernel OS Module"
+    default = false
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_copy" }
+
+    parent_context_types = { "velosity_kernel" }
+    tags = { "KERNEL_OS_MODULES" }
+    provides = { "FileSystemServer" }    
+    mutually_exclusives = {"File System (User Configured)", "File System (POSIX, User Configured)", "File System (From Distribution)" }
+        isparent = true
+    dlg_info {
+    	add {
+	    menu_str = "Configure velOSity &File System"
+	    cmd_str = "AddVELKFS"
+	    dlg_filelist =  "${__DIR__}/vel_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    auto_import = false
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+	}
+	edit {
+	    menu_str = "Configure velOSity &File System"
+	    cmd_str = "EditVELKFS"
+	    dlg_filelist =  "${__DIR__}/vel_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+	    
+	    right_click_list = { "EditVELFSClients", "AddVELFSMnttable" }
+	}
+    }
+    attributes {
+	tf_mnttable {
+	    type = "childlist"
+	    tags = "FS_Mounttable"
+	    copy_define_to_instance = "tf_diskname"
+	    unique_names=true
+	    default = "$(PROJ_DIR)/mounttable.c"
+	    build_file_setting = "python ${__DIR__}/vel_fs.py fs_find_mounttable $all_c_files"
+	}
+	msl_libs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_KERNEL_LIBRARY"
+            # This requires a copy of every fs_server_library since one (NFS) is different
+            build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_kernel_library_"
+	}
+#  All these should have kernel versions
+	msl_devlibs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_DEVICE_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_kernel_device_library_"
+	}
+	msl_posixauthclient {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_EXTRA_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_kernel_library_"
+	}
+	tf_name {
+	    type = "string"
+	    default = "$INT_KERNEL_PROJ_NAME"
+	    read_only = true
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/vel_osmodules.py os_fs_kernel_add_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/vel_osmodules.py os_fs_kernel_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		10 += { "defineProject HAS_FILE_SYSTEM TRUE" }
+	    }
+	}	
+    }
+}
+
+component.velosity_os_modules_file_system_add_clients {
+    display_type_name = "Add File System Clients"
+    
+    description = "Pick clients for velOSity File System"
+    
+    #parent_context_types  = { "velosity_os_modules_file_system_copy", "velosity_os_modules_kernel_ivfsserver", "velosity_os_modules_file_system_dist"}
+    #parent_context_types = { "velOSity Application" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add File System &Clients"
+	    cmd_str = "AddVELFSClients"
+	    dlg_filelist = "${__DIR__}/vel_fs.plc" 
+	    dlg_namelist = "vel_fs_add_clients"
+	    
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_clients" }
+	}
+	edit {
+	    menu_str = "Configure File System &Clients"
+	    cmd_str = "EditVELFSClients"
+	    dlg_filelist = "${__DIR__}/vel_fs.plc" 
+	    dlg_namelist = "vel_fs_add_clients"
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_clients" }
+	}
+    }
+
+    is_parent = false
+    attributes {
+	msl_opts {
+	    type = "childlist"
+	    fill_with_instances = true
+	    tags_list = { "VELOSITY_RELOCATABLE", "velOSity_Kernel" }
+	    attribute_name_list =  { "msl_opts", "msl_opts" }
+	    attribute_type_list = { "kernel_library_ivfs" , "kernel_library_ivfs" }
+	}
+    }
+}
+
+%endif
+
+%endif

@@ -1,0 +1,85 @@
+import ghs_window;
+#import ghs_constants;
+#import ghs_winreg;
+
+class GHS_TraceWindow(ghs_window.GHS_Window):
+    """ Describe MULTI Trace window information. """
+    #
+    # Initialize object
+    #
+    # GHS: Validated
+    #
+    def __init__(self, compName="", wn="", wid="0", className="",
+		 regSvcName="", service=""):
+	ghs_window.GHS_Window.__init__(self, compName, wn, wid, className,
+				       regSvcName, service);
+
+
+    #
+    # Start the collection of trace data.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated
+    #
+    def StartTracing(self, block=True):
+	return self.SelectMenu("&File", "&Enable Trace", block);
+    # Define some aliases for the function
+    starttracing = StartTracing;
+    StartTrace = StartTracing;
+    starttrace = StartTracing;
+    TraceOn = StartTracing;
+    traceon = StartTracing;
+    EnableTrace = StartTracing;
+    enabletrace = StartTracing;
+    #
+    # Stop the collection of trace data.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated
+    #
+    def StopTracing(self, block=True):
+	return self.SelectMenu("&File", "D&isable Trace", block);
+    # Define some aliases for the function
+    stoptracing = StopTracing;
+    StopTrace = StopTracing;
+    stoptrace = StopTracing;
+    TraceOff = StopTracing;
+    traceoff = StopTracing;
+    DisableTrace = StopTracing;
+    disabletrace = StopTracing;
+    #
+    # Flush trace buffer.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated
+    #
+    def FlushTraceBuffer(self, block=True):
+	return self.SelectMenu("&File", "F&lush Trace Buffer", block);
+    # Define some aliases for the function
+    flushtracebuffer = FlushTraceBuffer;
+    FlushTraceBuf = FlushTraceBuffer;
+    flushtracebuf = FlushTraceBuffer;
+    #
+    # Jump to trigger.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated
+    #
+    def JumpToTrigger(self, block=True):
+	return self.SelectMenu("&Search", "&Jump to Trigger", block);
+    # Define some aliases for the function
+    jumptotrigger = JumpToTrigger;
+
+
+    ##########################################################################
+    #
+    # More APIs......
+    #
+    ##########################################################################
+
+# Define some aliases for the class
+#ghs_tracewindow = GHS_TraceWindow;

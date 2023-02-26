@@ -1,0 +1,95 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  Gw_AsrPduRCfg5.plugin
+*  Module     :  MSSV
+*
+*  Description:  Entry point of MSSV Core.
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Erich Schondelmaier           visehs        Vector Informatik GmbH
+*  
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2015-09-23    visehs                    Initial version
+*                                                     Added CheckQMDefines
+*  01.00.01   2016-01-16    visehs                    Adapted to the current source code version
+*  01.01.00   2016-03-11    visehs                    Switching is safe now
+*                           visehs                    Added DET
+*  01.01.01   2016-04-16    visehs                    Removed Version Check
+*  01.02.00   2016-09-15    visehs                    FEAT-2154 must be disabled
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : MSSV_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x010200)
+  reg.SetPackageName("Gw_AsrPduRCfg5")
+  reg.SetInputFiles(["PduR.c", "PduR_Lcfg.c", "PduR_PBcfg.c"])
+  return reg
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the MSSV plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+* Requirements : N/A
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check QM inactive", CheckQMDefines)
+}
+
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks the setting of QM-related preprocessor defines.
+*                Typically it checks that QM features are inactive in safety context.
+* Requirements : N/A
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  AssertDefineIsStdOn("PDUR_DEV_ERROR_DETECT")
+  AssertDefineIsStdOff("PDUR_ERROR_NOTIFICATION")
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : MSSV_core calls this function to allow the plugin a version check against the BSW sources.
+*                Check against the major and minor version of the source code.
+*                Note: The version check is not necessary if only rule CheckQMDefines is implemented in this plugin.
+**********************************************************************************************************************/
+def CheckVersions()
+{
+}
+
+

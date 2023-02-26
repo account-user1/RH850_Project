@@ -1,0 +1,37 @@
+Nexteer Manufacturing Component Development Guide
+========================================================================================================================
+The following guidelines apply to both common and program specific components.  There are some notable changes since
+EA3 in the context of CMS.  First and foremost, Nexteer services no longer share an ID with customer services by
+default.  As such, all Nexteer CMS services are defined within a pair of ODX files (one each for the common services
+and the program specific services).  These ODX files become the starting point when creating or editing CMS services.
+From there, various scripts assist in code generation, ARXML generation, merging, and documentation generation.
+
+Another noteworthy change is to the program specific services.  The intent on EA4 is to share the program specific
+services between all programs from the same customer.  This will allow the programs to share a set of common customer
+specific manufacturing requirements.
+
+
+Component Modification Guide
+------------------------------------------------------------------------------------------------------------------------
+1. Update ODX file in doc folder (See OdxGuide.txt for more information).
+2. Run OdxGen.bat in tools folder.
+    - Automatically modifies the SrvXXXX.c files updating headers and adding functions, files as needed.
+    - Updates the MfgSrvCfg.h in the tools/contract folder to enable all services for QAC/Polyspace.
+    - Creates *MfgSrvCfg.arxml in tools folder that will be imported into Configurator upon integration.
+3. Update the AUTOSAR model as needed to define any inputs or outputs to support changes.
+4. Run RteGen.bat as per typical component development.
+5. Hand edit source files to add necessary content following component development guidelines.
+
+
+
+Component Creation Guide
+------------------------------------------------------------------------------------------------------------------------
+1. Create component structure using CreateComponent.bat script.
+2. Create an ODX file describing all of the services for your program (See OdxGuide.txt for more information).
+3. Save ODX file in doc folder and name it ProgMfgSrv.odx-d.
+4. Copy OdxGen.bat from NM010A_ProgMfgSrv_Impl/tools into tools folder and execute it.
+    - Creates source file templates for each service in src folder.
+    - Creates MfgSrvCfg.h in tools/control to allow static analysis.
+    - Creates a ProgMfgSrvCfg.arxml that will be imported into Configurator during integration.
+5. Create AUTOSAR model as per component development guidelines and execute RteGen.bat.
+6. Hand edit template SrvXXX.c files to populate with required content as per component development guidelines.

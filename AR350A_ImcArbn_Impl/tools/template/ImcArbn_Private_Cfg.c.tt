@@ -1,0 +1,371 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #><#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #><#@ output extension="" #><#@ include file="Helper.tt" #><#@ include file="Logger.tt" #><#@ include file="ImcArbn_helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   ImcArbn_Cfg.c
+* Module Description: Private configuration source file for IMC Arbitration
+* Project           : CBD
+* Author            : Akilan Rathakrishnan
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       tzyksv %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                                 SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 15/Jan/17  1       Akilan    ImcArbn Initial Version                                                       EA4#9291
+* 01/Feb/17  2       Akilan    Changed positions of start bit and destination size                           EA4#9291
+* 17/Mar/17  3       JK        Anomaly fix EA4#10556 - Incorrect bit mask                                    EA4#10576
+**********************************************************************************************************************/
+#include "Rte_ImcArbn.h"
+/************************************************ Include Statements *************************************************/
+#include "ImcArbn_Private_Cfg.h"
+/******************************************** File Level Rule Deviations *********************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "ImcArbn" ) ); #>
+<#     
+string  SignalNameReference;
+string  SignalName;
+string  DataType;
+string SignalId = "";
+string SignalGroupName = "";
+string DestSize;
+string ErrorText;
+string PrimaryOnlySignalGroupString = "FALSE";
+string RateGroup = "";
+uint StartBit;
+string DestBitMask;
+uint NumberOfSignals = 0;
+bool PrimaryOnlySignalGroup = false;
+Dictionary<string, string> SignalDict = new Dictionary<string, string>();
+
+#>
+
+/*********** ImcArbn Signal Wrapper functions prototype ************************/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignal" )) #>
+<#
+    SignalName = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignal/SignalName"));
+    DestSize = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignal/DestSize"));    
+    SignalDict.Add(SignalName,DestSize);
+#>
+/* Wrapper function to get value of <#=SignalName#> */
+static FUNC(uint32, RTE_IMCARBN_APPL_CODE) Get<#=SignalName#>(void);
+<# !ENDLOOP #>
+
+/*************** [START]Configuration of individual Signal Groups **************/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<# SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+/* Signal configuration for the signal group <#=SignalGroupName#>  */
+static const SigPrmRec1  <#=SignalGroupName.ToUpper()#>_REC[] =
+{
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup/ImcArbnSigRef" )) #>
+    {
+<#
+    SignalNameReference = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "ImcArbnSigRef/ImcArbnSigNameRef" ));
+    StartBit = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSigRef/StartBit"));
+    DestSize = SignalDict[SignalNameReference].ToString();
+    if(DestSize == "1")
+    {
+        DestBitMask = "0x00000001U";
+    }
+    else if(DestSize == "2")
+    {
+        DestBitMask = "0x00000003U";    
+    } 
+    else if(DestSize == "3")
+    {
+        DestBitMask = "0x00000007U";       
+    }
+    else if(DestSize == "4")
+    {
+        DestBitMask = "0x0000000FU";       
+    } 
+    else if(DestSize == "5")
+    {
+        DestBitMask = "0x0000001FU";       
+    } 
+    else if(DestSize == "6")
+    {
+        DestBitMask = "0x0000003FU";       
+    } 
+    else if(DestSize == "7")
+    {
+        DestBitMask = "0x0000007FU";       
+    } 
+    else if(DestSize == "8")
+    {
+        DestBitMask = "0x000000FFU";       
+    } 
+    else if(DestSize == "9")
+    {
+        DestBitMask = "0x0000001FFU";       
+    } 
+    else if(DestSize == "10")
+    {
+        DestBitMask = "0x000003FFU";      
+    } 
+    else if(DestSize == "11")
+    {
+        DestBitMask = "0x000007FFU"; 
+    } 
+    else if(DestSize == "12")
+    {
+        DestBitMask = "0x00000FFFU";     
+    } 
+    else if(DestSize == "13")
+    {
+        DestBitMask = "0x00001FFFU";   
+    } 
+    else if(DestSize == "14")
+    {
+        DestBitMask = "0x00003FFFU"; 
+    } 
+    else if(DestSize == "15")
+    {
+        DestBitMask = "0x00007FFFU";     
+    } 
+    else if(DestSize == "16")
+    {
+        DestBitMask = "0x0000FFFFU";     
+    } 
+    else if(DestSize == "17")
+    {
+        DestBitMask = "0x0001FFFFU";
+    } 
+    else if(DestSize == "18")
+    {
+        DestBitMask = "0x0003FFFFU";
+    } 
+    else if(DestSize == "19")
+    {
+        DestBitMask = "0x0007FFFFU";
+    }    
+    else if(DestSize == "20")
+    {
+        DestBitMask = "0x000FFFFFU";
+    } 
+    else if(DestSize == "21")
+    {
+        DestBitMask = "0x001FFFFFU";
+    } 
+    else if(DestSize == "22")
+    {
+        DestBitMask = "0x003FFFFFU";
+    } 
+    else if(DestSize == "23")
+    {
+        DestBitMask = "0x007FFFFFU";
+    } 
+    else if(DestSize == "24")
+    {
+        DestBitMask = "0x00FFFFFFU";
+    } 
+    else if(DestSize == "25")
+    {
+        DestBitMask = "0x01FFFFFFU";
+    } 
+    else if(DestSize == "26")
+    {
+        DestBitMask = "0x03FFFFFFU";
+    } 
+    else if(DestSize == "27")
+    {
+        DestBitMask = "0x07FFFFFFU";
+    } 
+    else if(DestSize == "28")
+    {
+        DestBitMask = "0x0FFFFFFFU";
+    } 
+    else if(DestSize == "29")
+    {
+        DestBitMask = "0x1FFFFFFFU";
+    } 
+    else if(DestSize == "30")
+    {
+        DestBitMask = "0x3FFFFFFFU";
+    } 
+    else if(DestSize == "31")
+    {
+        DestBitMask = "0x7FFFFFFFU";
+    } 
+    else if(DestSize == "32")
+    {
+        DestBitMask = "0xFFFFFFFFU";
+    }
+    else
+    {   
+        DestBitMask = "0x00000000U";
+        /* Throw error and exit*/
+        ErrorText = "\n**ERROR**\nImcArbnConfigErr_001: Invalid number of Destination Size set. Please check DestSize for the Signal " + SignalNameReference +"\n";
+        Assert(false, ErrorText);
+    }
+
+    SignalId = "IMCARBN_" + SignalNameReference.ToString().ToUpper() + "_CNT_U16";
+#>
+        &Get<#=SignalNameReference#>, /* Pointer to the Signal wrapper function */
+        <#=DestBitMask#>, /* Bitmask used for the signal to pack or unpack the signal */
+        <#=SignalId#>, /* Signal ID */
+        <#=StartBit#>U, /* Start position of the Signal in the Signal Group */
+    },
+
+<# !ENDLOOP #>
+};
+<# !ENDLOOP #>
+/************************ [END]Configuration of individual Signal Groups *******/
+
+/************************ [START]Configuration of all Signal Groups ************/
+const SigGroupRec1 SIGGROUPCONFIG_REC[IMCARBN_TOTALNROFSIGGROUP_CNT_U08] =
+{
+/*************** [START]Signal Groups Configured under 2ms Rate Group **********/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_2MS_GROUP")
+{#>
+<#SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#PrimaryOnlySignalGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/PrimarySrcOnlySignalGroup"));#>
+<# if(PrimaryOnlySignalGroup == true)
+{
+    PrimaryOnlySignalGroupString = "TRUE";
+}
+else
+{
+    PrimaryOnlySignalGroupString = "FALSE";
+}
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup/ImcArbnSigRef" )) #>
+<#NumberOfSignals = NumberOfSignals +1;#>
+<# !ENDLOOP #>
+    {
+        &<#=SignalGroupName.ToUpper()#>_REC[0], /*Signal Group Structure */
+        <#=NumberOfSignals#>U, /* Number of Signals Configured under the Signal Group */
+        IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08, /* Signal Group ID */
+        <#=PrimaryOnlySignalGroupString#>, /* Transmit on Primary Source only */
+    },
+<#}#>
+<#NumberOfSignals = 0;#>
+<# !ENDLOOP #>
+/*************** [END]Signal Groups Configured under 2ms Rate Group ************/
+/*************** [START]Signal Groups Configured under 10ms Rate Group *********/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_10MS_GROUP")
+{#>
+<#SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#PrimaryOnlySignalGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/PrimarySrcOnlySignalGroup"));#>
+<# if(PrimaryOnlySignalGroup == true)
+{
+    PrimaryOnlySignalGroupString = "TRUE";
+}
+else
+{
+    PrimaryOnlySignalGroupString = "FALSE";
+}
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup/ImcArbnSigRef" )) #>
+<#NumberOfSignals = NumberOfSignals +1;#>
+<# !ENDLOOP #>
+    {
+        &<#=SignalGroupName.ToUpper()#>_REC[0], /*Signal Group Structure */
+        <#=NumberOfSignals#>U, /* Number of Signals Configured under the Signal Group */
+        IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08, /* Signal Group ID */
+        <#=PrimaryOnlySignalGroupString#>, /* Transmit on Primary Source only */
+    },
+<#}#>
+<#NumberOfSignals = 0;#>
+<# !ENDLOOP #>
+/*************** [END]Signal Groups Configured under 10ms Rate Group ***********/
+/*************** [START]Signal Groups Configured under 100ms Rate Group ********/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup" )) #>
+<#RateGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/ImcArbnGroupTxRate"));#>
+<# if(RateGroup == "IMCARBN_100MS_GROUP")
+{#>
+<#SignalGroupName = ValueOf("./ar:SHORT-NAME");#>
+<#PrimaryOnlySignalGroup = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignalGroup/ImcArbnSGAttributes/PrimarySrcOnlySignalGroup"));#>
+<# if(PrimaryOnlySignalGroup == true)
+{
+    PrimaryOnlySignalGroupString = "TRUE";
+}
+else
+{
+    PrimaryOnlySignalGroupString = "FALSE";
+}
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignalGroup/ImcArbnSigRef" )) #>
+<#NumberOfSignals = NumberOfSignals +1;#>
+<# !ENDLOOP #>
+    {
+        &<#=SignalGroupName.ToUpper()#>_REC[0], /*Signal Group Structure */
+        <#=NumberOfSignals#>U, /* Number of Signals Configured under the Signal Group */
+        IMCARBN_<#=SignalGroupName.ToUpper()#>_CNT_U08, /* Signal Group ID */
+        <#=PrimaryOnlySignalGroupString#>, /* Transmit on Primary Source only */
+    },
+<#}#>
+<#NumberOfSignals = 0;#>
+<# !ENDLOOP #>
+/*************** [END]Signal Groups Configured under 100ms Rate Group **********/
+};
+/************************ [END]Configuration of all Signal Groups **************/
+
+/***********[START] Signal functions definitions *******************************/
+<# !LOOP( Xp.ContainerAtDefRefTo("ImcArbnSignal" )) #>
+<#
+
+    SignalName = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignal/SignalName"));
+    DataType = ValueOf( Xp.ValueAtDefRefTo("ImcArbnSignal/DataType"));
+#>
+/* Wrapper function to get value of <#=SignalName#> */
+static FUNC(uint32, RTE_IMCARBN_APPL_CODE) Get<#=SignalName#>(void)
+{
+    uint32 RetVal_Uls_T_u32;
+<#if(DataType == "float32")
+{#>
+    float32 SigVal_Uls_T_f32;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_f32); 
+    RetVal_Uls_T_u32 =  *((uint32*)&SigVal_Uls_T_f32);
+<#}#>
+<#if(DataType == "sint32")
+{#>
+    sint32 SigVal_Uls_T_s32;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_s32); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_s32;
+<#}#>
+<#if(DataType == "uint16")
+{#>
+    uint16 SigVal_Uls_T_u16;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_u16); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_u16;
+<#}#>
+<#if(DataType == "sint16")
+{#>
+    sint16 SigVal_Uls_T_s16;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_s16); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_s16;
+<#}#>
+<#if(DataType == "uint8")
+{#>
+    uint8 SigVal_Uls_T_u08;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_u08); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_u08;
+<#}#>
+<#if(DataType == "sint8")
+{#>
+    sint8 SigVal_Uls_T_s08;
+    (void)Rte_Read_<#=SignalName#>_Val(&SigVal_Uls_T_s08); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_s08;
+<#}#>
+<#if(DataType == "boolean")
+{#>
+    boolean SigVal_Uls_T_logl;
+    (void)Rte_Read_<#=SignalName#>_Logl(&SigVal_Uls_T_logl); 
+    RetVal_Uls_T_u32 =  (uint32)SigVal_Uls_T_logl;
+<#}#>
+<#if(DataType == "uint32")
+{#>  
+    (void)Rte_Read_<#=SignalName#>_Val(&RetVal_Uls_T_u32); 
+<#}#>
+    return(RetVal_Uls_T_u32);
+}
+<# !ENDLOOP #>
+/***********[END] Signal functions definitions *********************************/
+
+

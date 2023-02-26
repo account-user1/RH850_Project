@@ -1,0 +1,126 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015, 2016 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name:   CDD_NvMProxy_Cfg.c
+* Module Description: Implementation of NvM Proxy ES006A
+* Project           : CBD 
+* Author            : Kevin Smith
+***********************************************************************************************************************
+* Version Control:
+* %version:          4 %
+* %derived_by:       cz7lt6 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 05/01/15  1        KJS       Initial Version                                                                 EA4#471
+* 09/02/15  2        KJS       Set the ApplCallBack back to NULL_PTR at the start of each loop iteration       EA4#1484
+* 01/26/16  3        KJS       Updated name of included header, NTC indexes, and file name to EA4 standards    EA4#3443
+* 01/29/16  4        KJS       Removed CDD_ prefix from the module reference                                   EA4#6371
+**********************************************************************************************************************/
+
+#include "CDD_NvMProxy_Cfg_private.h"
+#include "NvM.h"
+
+/******************************************** File Level Rule Deviations *********************************************/
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+
+/********************************************* Embedded Local Constants **********************************************/
+
+/******************************************* Module Specific Data Types **********************************************/
+
+/******************************************** Module Specific Variables **********************************************/
+<#
+    /* Grab the NvM OS Application Reference */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "CDD_NvMProxy/NvMProxyCommon" ) );
+    string NvMOsApp = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "NvMOsApplicationRef" ));
+    
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "CDD_NvMProxy" ) );
+    int BlkCount = Count(Xp.ContainerAtDefRefTo( "NvMProxyBlkSet" ));
+    int BlkIdx = 0;
+    int NvmBlkId = 0;
+    string FltResp = "";
+    string Comma = "";
+    string Name = "";
+    string RefName = "";
+    string ApplCallBack = "NULL_PTR";
+#>
+#define CDD_NvMProxy_START_SEC_CONST_UNSPECIFIED
+#include "CDD_NvMProxy_MemMap.h"
+
+/* Table Contents: <NvM Block Number>, <Fault Response Index (0xFF, disabled)> */
+const VAR(NvMProxyCrcFltDescrTblTyp, RTE_VAR_DEFAULT_RTE_<#= NvMOsApp #>_PIM_GROUP) NvMProxy_CrcFltDescrTbl[] = {
+<# !LOOP( Xp.ContainerAtDefRefTo( "NvMProxyBlkSet" ) ) #>
+<#
+    /* NvM Proxy Short Name */
+    ApplCallBack = "NULL_PTR";
+    Name = ValueOf( "ar:SHORT-NAME" );
+    RefName = RefValueOf(Xp.ValueRefAtDefRefTo( "NvMBlkRef" ), "ar:SHORT-NAME");
+
+    /* Fault Response */
+    switch(ValueOf( Xp.ValueAtDefRefTo( "NvMBlkFlt" )).ToString() as string)
+    {
+        case "NTC_0x06":
+            FltResp = "NTCNR06IDX_CNT_U08";
+        break;
+        case "NTC_0x07":
+            FltResp = "NTCNR07IDX_CNT_U08";
+        break;
+        case "NTC_0x08":
+            FltResp = "NTCNR08IDX_CNT_U08";
+        break;
+        case "NTC_0x0A":
+            FltResp = "NTCNR0AIDX_CNT_U08";
+        break;
+        case "None":
+        default:
+            FltResp = "NTCCHKDISAD_CNT_U08";
+        break;
+    };
+    
+    if(ValueOf( Xp.ValueAtDefRefTo( "NvMProxyApplCallCbk" )).ToString() != "NULL_PTR")
+    {
+        ApplCallBack = "&" + ValueOf( Xp.ValueAtDefRefTo( "NvMProxyApplCallCbk" )).ToString();
+    }
+
+    /* NvM Block ID */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "NvM" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NvMBlockDescriptor" ) ) #>
+<#
+    if (RefName == ValueOf( "ar:SHORT-NAME" ))
+    {
+        NvmBlkId = ValueOf( Xp.ValueAtDefRefTo( "NvMNvramBlockIdentifier" ));
+    }
+#>
+<# !ENDLOOP #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "NvMProxy" ) );
+
+    /* Determine if comma is required */
+    if( BlkIdx == (BlkCount - 1) )
+    {
+        Comma = " ";
+    }
+    else
+    {
+        Comma = ",";
+    }
+    BlkIdx++;
+#>
+    {<#= ApplCallBack #>, <#= FormatHex(NvmBlkId, 2, HexCase.Upper) #>U, <#= FltResp #>}<#= Comma #> /* <#= Name #> */
+<# !ENDLOOP #>
+};
+
+#define CDD_NvMProxy_STOP_SEC_CONST_UNSPECIFIED
+#include "CDD_NvMProxy_MemMap.h"
+
+/******************************************** Local Function Prototypes **********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+
+/* End of File */

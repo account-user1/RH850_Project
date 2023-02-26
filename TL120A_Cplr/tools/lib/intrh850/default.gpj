@@ -1,0 +1,55 @@
+#!gbuild
+#macro DO_FSPLIT=true
+#macro DO_FHARD=true
+#macro DO_FSOFT=true
+#macro DO_FSINGLE=true
+macro FLOAT_FUNCTIONS=true
+macro HARDWARE_SQRT=true
+macro IS_INTLIB=true
+macro USE_LARGE_VTBL_OFFSETS=true
+primaryTarget=v800_standalone.tgt
+[Project]
+	-cpu=rh850
+	--single_tda
+#wbuild autoconvert:silent
+	:outputDir=objs
+	-object_dir=objs
+	-ansi
+	-pic
+	-no_callt
+	-X1102
+	-Xdata_spans_32k
+	-Xvolatile_bitops
+	-dbg_source_root ../..
+	-DEMBEDDED
+	-DRODATA_IS_INDEPENDENT
+	-DSUPPORTS_PACKED_STRUCTURES
+	-D__INTEGRITY_SHARED_LIBS # Adds a number of symbols INTEGRITY needs
+	-codefactor
+	-gs
+	-gtws
+	-I../../src/libsys
+	:sourceDir=../../src/libsys
+	-noobj
+	-Ospace
+	-nopid
+	-reserve_r2
+	-startfile_dir=.
+	:noSelfDepend
+	:select=850
+	:select=800
+	:select=cxx
+	:select=c
+	:debug_option=ghs_library
+	-registermode=32
+	-no_divq
+	:deflibdirs=.
+	-v850e_mul_errata
+	-XINTEGRITY # See r356843
+libstartup.gpj		[Library]
+	:sourceDir=../../src/libstartup
+crt0.gpj		[Select One]
+	:sourceDir=../../src/libstartup
+	:sourceDir=../../src/libstartup
+libsys.gpj		[Library]
+	:sourceDir=../../src/libsys

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Vector Employee (Vector Informatik GmbH) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="DaVinciExecutionReport">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ValidationResults">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ValidationResultId" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="fatalerrors" type="xs:int"/>
+						<xs:attribute name="errors" type="xs:int"/>
+						<xs:attribute name="warnings" type="xs:int"/>
+						<xs:attribute name="improvements" type="xs:int"/>
+						<xs:attribute name="infos" type="xs:int"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="GenerationProcessResult">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="GenerationResult" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="result" type="GenerationProcessResultType"/>
+						<xs:attribute name="lastexecutiontime" type="xs:string"/>
+						<xs:attribute name="lastexecutionduration" type="xs:double"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ValidationResultId">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ValidationResult" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:pattern value="[0-9]{5}"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="message" type="xs:string" use="required"/>
+			<xs:attribute name="origin" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ValidationResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Description" type="xs:string"/>
+				<xs:element name="ErroneousCEs" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="CE" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Variants" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Variant" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="severity" type="SeverityType" use="required"/>
+			<xs:attribute name="ondemandresult" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="CE">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Object" type="xs:string" minOccurs="0"/>
+				<xs:element name="Definition" type="xs:string" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="GenerationResult">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="State" type="StateType"/>
+				<xs:element name="Phases">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Phase" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ErrorMessage" type="xs:string" minOccurs="0"/>
+				<xs:element ref="Generator" minOccurs="0"/>
+				<xs:element name="ModulConfigurations" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ModuleConfiguration" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="generationtype"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ModuleConfiguration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Definition" type="xs:string" minOccurs="0"/>
+				<xs:element name="ObjectLink" type="xs:string"/>
+				<xs:element name="ConfigurationVariant" type="ConfigurationVariantType"/>
+				<xs:element name="SupportsPostBuildVariance" type="xs:boolean"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Generator">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Name" type="xs:string"/>
+				<xs:element name="Version" type="xs:string"/>
+				<xs:element name="MSN" type="xs:string"/>
+				<xs:element name="Definition" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Phase">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="GeneratedFiles" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="File" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="generationinfo" type="FileGenerationInfoType"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ConsoleOutputs" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ConsoleOutput" type="xs:string" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ReturnCodes" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="ReturnCode" type="xs:int" maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="type" type="PhaseType"/>
+			<xs:attribute name="state" type="StateType"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="AspectType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Object"/>
+			<xs:enumeration value="Definition"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SeverityType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FatalError"/>
+			<xs:enumeration value="Error"/>
+			<xs:enumeration value="Warning"/>
+			<xs:enumeration value="Improvement"/>
+			<xs:enumeration value="Info"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GenerationProcessResultType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="SUCCESSFUL"/>
+			<xs:enumeration value="WARNING"/>
+			<xs:enumeration value="CANCELED"/>
+			<xs:enumeration value="ERROR"/>
+			<xs:enumeration value="FATAL_ERROR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StateType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NONE"/>
+			<xs:enumeration value="SUCCESSFUL"/>
+			<xs:enumeration value="SUSPENDED"/>
+			<xs:enumeration value="FAILED"/>
+			<xs:enumeration value="CANCELED"/>
+			<xs:enumeration value="RUNNING"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="GenerationType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="GENERATOR"/>
+			<xs:enumeration value="GENERATION_STEP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ConfigurationVariantType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VARIANT_PRE_COMPILE"/>
+			<xs:enumeration value="VARIANT_LINK_TIME"/>
+			<xs:enumeration value="VARIANT_POST_BUILD_LOADABLE"/>
+			<xs:enumeration value="PRECONFIGURED_CONFIGURATION"/>
+			<xs:enumeration value="RECOMMENDED_CONFIGURATION"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FileGenerationInfoType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FILE_CREATED"/>
+			<xs:enumeration value="FILE_UPDATED"/>
+			<xs:enumeration value="FILE_IS_UP_TO_DATE"/>
+			<xs:enumeration value="FILE_GENERATION_FAILED"/>
+			<xs:enumeration value="FILE_GENERATED_WITH_ERRORS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PhaseType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CW_PREPARATION"/>
+			<xs:enumeration value="CALCULATION"/>
+			<xs:enumeration value="VALIDATION"/>
+			<xs:enumeration value="GENERATION"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

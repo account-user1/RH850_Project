@@ -1,0 +1,78 @@
+DESCRIPTION:
+
+    This example demonstrates a wide variety of MULTI's capabilities.
+
+  - Host I/O Capability:
+    MULTI provides an interface by which an embedded application
+    can access the host machine's disk drives, keyboard, and console
+    (via the INPUT/OUTPUT window).
+  
+  - Runtime Error Checking:
+    There are a number of intentional errors in this demonstration
+    program.  These errors will not cause the application to
+    fail, and are composed of completely legal C statements.
+    Program errors such as these are easy to create, can manifest themselves
+    unpredictably, and are difficult to reproduce and debug.
+    MULTI's runtime error checking libraries will detect these errors
+    at the first execution, allowing you to concentrate on more important
+    issues.
+
+  - Mixed-Language Debugging Capability:
+    This application is composed of C and C++ source files.
+    MULTI can seamlessly build and debug mixed-language applications
+    written in C, C++, EC++, FORTRAN, or Assembly.
+
+  - Formatted Display of Variables / Structs / Arrays:
+    This demonstration uses a linked list of structs, arrays of pointers,
+    bitfields and other complex variables.  MULTI provides exceptional
+    formatted visibility into these program elements
+
+
+DEMO SCRIPT:
+
+1. Build Project, Connect to a Remote Target, and Open Debugger.
+
+    Build the project by selecting catalog.gpj and clicking the Build
+    button in the Project Manager.
+
+    Connect to a remote target by clicking the Connect button and
+    selecting an appropriate connection method.
+
+    Open the Debugger on the Current Project.  This can be done by
+    clicking the Debug button or selecting "Debug->Debug catalog".
+
+
+2. Running the Application
+
+    When you opened the debugger, the "catalog.rc" script was executed.
+    This script initializes the demo and sets command line arguments for
+    the catalog program.
+
+    The script will guide you through the demo.  Follow the instructions 
+    printed to the command pane.
+
+
+TROUBLESHOOTING:
+
+1. Memory
+    If you get the message:
+        Stopped by runtime error: Maximum heap use exceeded
+    in the command pane, your board does not have enough memory to run this
+    demo.  Try building it for a generic target and running the demo on the
+    simulator.
+
+2. Data file location
+    If you get the message:
+        Could not open the input file.
+    in the command pane, the demo was unable to find the data file it
+    requires to run.  This data file, catalogfile, is placed in the
+    project's source directory.
+
+    If you are running from RAM, you can hard-code the full path to the
+    data file's location in the catalog.rc script.
+
+    If you are loading from ROM, command line arguments are not supported,
+    so you need to hard-code the location of the file in the source code
+    of the catalog program's main function.
+    
+    

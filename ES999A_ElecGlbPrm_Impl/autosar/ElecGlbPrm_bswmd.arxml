@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+	<AR-PACKAGES>
+		<AR-PACKAGE UUID="1a558d5f-22b4-45518-b46b-79a97233bf1d">
+			<SHORT-NAME>Nexteer</SHORT-NAME>
+			<ELEMENTS>
+				<ECUC-MODULE-DEF UUID="e844ce6b-b9e6-407b-925f-8fadc04bd789">
+					<SHORT-NAME>ElecGlbPrm</SHORT-NAME>
+					<DESC>
+						<L-2 L="EN">Configuration of the Electrical Global Paramters.</L-2>
+					</DESC>
+					<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+					<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+					<SUPPORTED-CONFIG-VARIANTS>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+					</SUPPORTED-CONFIG-VARIANTS>
+					<CONTAINERS>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-4bc3-a0b7-9b75d12bc950">
+							<SHORT-NAME>ElecGlbPrmCfg</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This is the container for the Electrical Gloabl paramters which are configurable</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<!-- PARAMETER DEFINITION: InverterCount-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>InverterCount</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of invereters in the system.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>1</DEFAULT-VALUE>
+									<MAX>2</MAX>
+									<MIN>1</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: MotCtrlInterTrigSrc-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>MotCtrlInterTrigSrc</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This signal allows a configuration of the type of MotCtrlISR source The thought here is that various
+													FDDs may be affected by this decision so its setting is of a global nature.  Via implementation the 
+													expected setting is ELECGLBPRM_MOTCTRLINTRPTTRIGSRC_CNT_U08 = ELECGLBPRM_MOTCTRLINTRPTTRIGCFGx_CNT_U08.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>0xFF</MAX>
+									<MIN>0x00</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmFreqMax-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>PwmFreqMax</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Maximum PWM Frequency - High end of PWM frequency dither range.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>18000</DEFAULT-VALUE>
+									<MAX>22000</MAX>
+									<MIN>14000</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmFreqMin-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>PwmFreqMin</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Minimum PWM Frequency - Low end of PWM frequency dither range.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>14000</DEFAULT-VALUE>
+									<MAX>22000</MAX>
+									<MIN>14000</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmPerdMax-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>PwmPerdMax</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Maximum PWM period in units of NanoSec.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>71429</DEFAULT-VALUE>
+									<MAX>71429</MAX>
+									<MIN>45454</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmPerdMin-->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>PwmPerdMin</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Minimum PWM period in units of NanoSec.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>55555</DEFAULT-VALUE>
+									<MAX>71429</MAX>
+									<MIN>45454</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmPerdNom2 -->
+								<ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbf31233aa">
+									<SHORT-NAME>PwmPerdNomX2</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Motor Control ISR Period Nominal Times 2 - This constant is 2 times ELECGLBPRM_PWMPERDNOM_MICROSEC_U7P9 in second.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0.000125</DEFAULT-VALUE>
+									<MAX>0.0001428571429</MAX>
+									<MIN>9.09090909e-05</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: PwmPerdNom -->
+								<ECUC-FLOAT-PARAM-DEF UUID="44f0b65d-1da6-4db3-a1f0-77cbf31233aa">
+									<SHORT-NAME>PwmPerdNom</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Pwm Period Nominal in units of MicroSec.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>62.5</DEFAULT-VALUE>
+									<MAX>71.42857143</MAX>
+									<MIN>45.45454545</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: HwTqSnsrTickCnt -->
+								<ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+									<SHORT-NAME>HwTqSnsrTickCnt</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Number of SENT ticks for the HwTq Sensor.  This value is used in the RSENTnSPCT register.
+										Note that the value here should be subtracted by 1 before being written to the register .</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>17</DEFAULT-VALUE>
+									<MAX>128</MAX>
+									<MIN>1</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: HwAgIfLtchEna -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="">
+									<SHORT-NAME>HwAgIfLtchEna</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Handwheel Angle Interface Latch Enable .</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+							</PARAMETERS>
+							<SUB-CONTAINERS>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+					</CONTAINERS>
+				</ECUC-MODULE-DEF>
+			</ELEMENTS>
+		</AR-PACKAGE>
+	</AR-PACKAGES>
+</AUTOSAR>

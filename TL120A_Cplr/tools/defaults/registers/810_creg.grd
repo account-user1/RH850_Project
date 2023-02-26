@@ -1,0 +1,92 @@
+# Converted with command: rdf2grd.pl -c 810_creg.rdf
+
+##############################################################################
+#
+# This file contains the fundamental description of V810 control registers.
+#
+# Take care when modifying this file, especially if you are not familiar with
+# the register description file format.
+#
+##############################################################################
+
+# General information
+general {
+    version = 1
+}
+
+# Bitfield definitions
+bitfield {
+    eipsw_bitfield {
+        "Z" {loc="0..0"}
+        "S" {loc="1..1"}
+        "OV" {loc="2..2"}
+        "CY" {loc="3..3"}
+        "FPR" {loc="4..4"}
+        "FUD" {loc="5..5"}
+        "FOV" {loc="6..6"}
+        "FZD" {loc="7..7"}
+        "FIV" {loc="8..8"}
+        "FRO" {loc="9..9"}
+        "ID" {loc="12..12"}
+        "AE" {loc="13..13"}
+        "EP" {loc="14..14"}
+        "NP" {loc="15..15"}
+        "I0" {loc="16..16"}
+        "I1" {loc="17..17"}
+        "I2" {loc="18..18"}
+        "I3" {loc="19..19"}
+    }
+    ecr_bitfield {
+        "EICC" {loc="0..15"}
+        "FECC" {loc="16..31"}
+    }
+    pir_bitfield {
+        "PT" {loc="4..15"}
+    }
+    tkcw_bitfield {
+        "RD" {loc="0..1"}
+        "RDI" {loc="2..2"}
+        "FPT" {loc="3..3"}
+        "FUT" {loc="4..4"}
+        "FVT" {loc="5..5"}
+        "FZT" {loc="6..6"}
+        "FIT" {loc="7..7"}
+        "OTM" {loc="8..8"}
+    }
+    chcw_bitfield {
+        "ICC" {loc="0..0"}
+        "ICE" {loc="1..1"}
+        "ICD" {loc="4..4"}
+        "ICR" {loc="5..5"}
+        "CEC" {loc="8..19"}
+        "CEN" {loc="20..31"}
+    }
+}
+
+# Register definitions
+register {
+    # Control Registers
+    pc {address=32; type="code *"}
+    eipc {address=33; type="code *"}
+    eipsw {address=34; type="eipsw_bitfield"}
+    fepc {address=35; type="code *"}
+    fepsw {address=36; type="eipsw_bitfield"}
+    ecr {address=37; type="ecr_bitfield"; permission="write/none"}
+    psw {address=38; type="eipsw_bitfield"}
+    pir {address=39; type="pir_bitfield"; permission="write/none"}
+    tkcw {address=40; type="tkcw_bitfield"; permission="write/none"}
+    chcw {address=57; type="chcw_bitfield"}
+    adtre {address=58}
+}
+
+# Group definitions
+group {
+    control {
+        sn = "Control"
+        ln = "Control Registers"
+	top_level_index = 20
+        register += {"pc"}
+        register += {"psw", "eipc", "eipsw", "fepc", "fepsw", "ecr"}
+        register += {"pir", "tkcw", "chcw", "adtre"}
+    }
+}

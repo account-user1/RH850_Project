@@ -1,0 +1,2 @@
+@echo off
+"C:\Program Files\MATLAB\R2013b\polyspace\bin\polyspace-code-prover-nodesktop.exe" -lang C -options-file "C:\Component\ES224A_HwTq9Meas_Impl\tools\Polyspace\~CodeProver\options_command.txt" -results-dir "C:\Component\ES224A_HwTq9Meas_Impl\tools\Polyspace\~CodeProver" > "C:\Component\ES224A_HwTq9Meas_Impl\tools\Polyspace\~CodeProver\rte1.log" 2>&1

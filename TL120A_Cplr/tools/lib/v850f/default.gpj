@@ -1,0 +1,12 @@
+#!gbuild
+macro DO_FSINGLE=true
+macro SUPPRESS_FNONE=true
+macro TRGLIBDIR=${%expand_path(.)}
+primaryTarget=v800_standalone.tgt
+[Project]
+	-new_assembler
+	-no_callt
+	-DGHS_NO_FLT_SUBNORM
+	-cpu=v850e1f
+	-v850e_mul_errata
+../v850/v850lib.gpj	[Project]

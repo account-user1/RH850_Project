@@ -1,0 +1,257 @@
+// cstdio standard header
+#ifndef _CSTDIO_
+#define _CSTDIO_
+#include <yvals.h>
+
+#ifdef _STD_USING
+ #undef _STD_USING
+  #include <stdio.h>
+ #define _STD_USING
+
+#else /* _STD_USING */
+ #include <stdio.h>
+#endif /* _STD_USING */
+
+#if defined(__ghs) && (defined(__windows) || defined(__linux))
+// All of these have to be functions, otherwise ::feof will get a syntax error
+#undef feof
+#undef ferror
+#undef getc
+#undef putc
+#endif // __ghs && (__windows || __linux)
+
+#if defined(__ghs) && defined(__OSE)
+// OSE's stdio.h defines zzgets() and gets is a macro, but we need a function.
+#pragma ghs nowarning 1899  /* do not warn about the use of gets() */
+#define gets_ose gets
+#undef gets
+inline char * gets( char *buffer ) { return gets_ose( buffer ); }
+#pragma ghs endnowarning /* 1899 */
+#endif // __ghs && __OSE
+
+ #if defined(__GLIBC__)	/* compiler test */
+
+  #if __GNUC__ < 3 || defined (__ghs)
+_C_STD_BEGIN
+_C_LIB_DECL
+ #if defined __ghs && defined __GNUC__ && defined __THROW
+FILE *fdopen(int, const char *) __THROW;
+int fileno(FILE *) __THROW;
+int fwide(FILE *, int) __THROW;
+ #else
+FILE *fdopen(int, const char *);
+int fileno(FILE *);
+int fwide(FILE *, int);
+ #endif
+_END_C_LIB_DECL
+_C_STD_END
+  #endif /* __GNUC__ < 3 */
+
+  #define _HAS_POINTER_CLIB	1
+  #define _RBEGIN	_IO_read_base
+  #define _RNEXT	_IO_read_ptr
+  #define _REND		_IO_read_end
+  #define _WBEGIN	_IO_write_base
+  #define _WNEXT	_IO_write_ptr
+  #define _WEND		_IO_write_end
+ #endif /* defined(__GLIBC__) */
+
+ #if defined(__APPLE__)	/* compiler test */
+_C_STD_BEGIN
+_C_LIB_DECL
+int fwide(FILE *, int);
+_END_C_LIB_DECL
+_C_STD_END
+
+  #undef fileno
+
+  #define _IOBASE	_bf._base
+  #define _IOPTR		_p
+  #define _IORCNT	_r
+  #define _IOWCNT	_w
+ #endif /* defined(__APPLE__) */
+
+ #if !defined(__GLIBC__) && !defined(__APPLE__)	/* compiler test */
+
+  #if defined(__BORLANDC__)
+   #undef fileno
+
+   #define _IOBASE	buffer
+   #define _IOPTR	curp
+   #define _IOCNT	level
+
+_C_STD_BEGIN
+_C_LIB_DECL
+int fwide(FILE *, int);
+_END_C_LIB_DECL
+_C_STD_END
+
+  #elif defined(__MWERKS__) && !defined(__SC3__)
+   #define _IOBASE	buffer
+   #define _IOPTR	buffer_ptr
+   #define _IOCNT	buffer_len
+
+  #elif defined(__ghs) && defined(__sun) && (defined(__sysV4) \
+		|| defined(SUNOS))	/* Solaris native */
+   #define __SOLARIS
+   #define _FILET
+   #define _Filet	FILE
+   #define _IOBASE	_base
+   #define _IOPTR	_ptr
+   #define _IOCNT	_cnt
+
+  #elif defined(__ghs) && defined(__VXWORKS) /* vxWorks */
+   #undef  fileno
+	
+   #define _FILET
+   #define _Filet	__sFILE
+   #define _IOBASE _bf._base
+   #define _IOPTR	_p
+   #define _IOCNT	_bf._size
+   #define _IORCNT _r
+   #define _IOWCNT _w
+
+  #elif defined(__ghs) && defined(_WIN32)
+/* Win32 */
+   #define _FILET
+   #define _Filet        _iobuf
+   #define _IOBASE       _base
+   #define _IOPTR        _ptr
+   #define _IOCNT        _cnt
+
+  #elif defined(__ghs) && defined(__LYNX)
+/* LynxOS */
+   #define _FILET
+   #define _Filet        __iobuf
+   #define _IOBASE       _base
+   #define _IOPTR        _ptr
+   #define _IOCNT        _cnt
+
+  #elif defined(__ghs) && defined(__LINUX)
+/* Linux */
+   #define _FILET
+   #define _Filet        _IO_FILE
+   #define _IORBASE      _IO_read_base
+   #define _IOWBASE      _IO_write_base
+   #define _IORPTR       _IO_read_ptr
+   #define _IOWPTR       _IO_write_ptr
+   #define _IOREND       _IO_read_end
+   #define _IOWEND       _IO_write_end
+
+  #elif defined(__ghs) && defined(__OSE)
+/* OSE */
+   #define _FILET
+   #define _Filet        _FILE
+   #define _IOBASE       NOT_AVAIL_USE_EFS_EXAMINE_FILE_INSTEAD
+   #define _IOPTR        NOT_AVAIL_USE_EFS_EXAMINE_FILE_INSTEAD
+   #define _IOCNT        NOT_AVAIL_USE_EFS_EXAMINE_FILE_INSTEAD
+
+  #elif defined(__ghs) && defined(_MC_EXEC)
+   #define _FILET
+   #define _Filet        _FILE
+   #define _IORBASE      _Buf
+   #define _IOWBASE      _Buf
+   #define _IORPTR       _Next
+   #define _IOWPTR       _Next
+   #define _IOREND       _Rend
+   #define _IOWEND       _Wend
+
+  #elif defined(__ghs) && defined(__INTEGRITY)
+   #define _FILET
+   #define _Filet	_iobuf
+   #define _IOBASE	_io_base
+   #define _IOPTR	_io_next
+   #define _IOCNT	_io_left
+
+  #elif defined(__ghs) || defined(__SC3__)
+extern int __define_Filet_iobuf;
+   #define _FILET
+   #define _Filet	_iobuf
+   #define _IOBASE	_io_base
+   #define _IOPTR	_io_next
+   #define _IOCNT	_io_left
+
+  #else	/* elif defined(__sun) */
+   #define _IOBASE	_base
+   #define _IOPTR	_ptr
+   #define _IOCNT	_cnt
+  #endif /* defined(__BORLANDC__) */
+
+ #endif /* !defined(__GLIBC__) etc. */
+
+ #if defined(_WIN32_C_LIB) && !defined(__MWERKS__)	/* compiler test */ \
+	&& !defined(__BORLANDC__)
+  #undef fileno
+
+_C_STD_BEGIN
+_C_LIB_DECL
+FILE *fdopen(int, const char *);
+int fileno(FILE *);
+_END_C_LIB_DECL
+_C_STD_END
+ #endif /* defined(_WIN32_C_LIB) etc. */
+
+ #ifndef _HAS_POINTER_CLIB
+  #define _HAS_CONVENTIONAL_CLIB	1
+ #endif /* _HAS_POINTER_CLIB */
+
+ #ifdef _GLOBAL_USING
+_STD_BEGIN
+using _CSTD size_t; using _CSTD fpos_t; 
+//#if !defined(__ghs) || !defined(__SOLARIS)
+using _CSTD FILE;
+//#endif	// !__ghs || !__SOLARIS
+using _CSTD clearerr; using _CSTD fclose; using _CSTD feof;
+using _CSTD ferror; using _CSTD fflush; using _CSTD fgetc;
+using _CSTD fgetpos; using _CSTD fgets; using _CSTD fopen;
+using _CSTD fprintf; using _CSTD fputc; using _CSTD fputs;
+using _CSTD fread; using _CSTD freopen; using _CSTD fscanf;
+using _CSTD fseek; using _CSTD fsetpos; using _CSTD ftell;
+using _CSTD fwrite; 
+#if !defined(__ghs) || !(defined(__OSE))
+using _CSTD getc; using _CSTD getchar;
+#endif	// !__ghs || !defined(__OSE)
+using _CSTD gets; using _CSTD perror;
+#if !defined(__ghs) || !(defined(__OSE))
+using _CSTD putc; using _CSTD putchar;
+#endif	// !__ghs || !defined(__OSE)
+using _CSTD printf; using _CSTD puts; using _CSTD remove;
+using _CSTD rename; using _CSTD rewind; using _CSTD scanf;
+using _CSTD setbuf; using _CSTD setvbuf; using _CSTD sprintf;
+using _CSTD sscanf; using _CSTD tmpfile; using _CSTD tmpnam;
+using _CSTD ungetc; 
+#if defined(__ghs__)
+using _CSTD vfprintf; using _CSTD vprintf; using _CSTD vsprintf;
+#endif
+ #if _HAS_C9X
+using _CSTD snprintf; using _CSTD vsnprintf;
+using _CSTD vfscanf; using _CSTD vscanf; using _CSTD vsscanf;
+ #endif /* _HAS_C9X */
+
+_STD_END
+ #endif /* _GLOBAL_USING */
+
+#ifndef _Filet
+ #define _Filet	FILE
+#endif /* _Filet */
+
+#ifndef _FPOSOFF
+
+ #if defined(__GLIBC__)	/* compiler test */ \
+	&& !(__GLIBC__ < 2 || __GLIBC__ == 2 && __GLIBC_MINOR__ < 2)
+  #define _FPOSOFF(fp)  ((long)(fp).__pos)
+
+ #elif defined(__ghs) && defined(_MC_EXEC)
+  #define _FPOSOFF(fp)  ((long)(fp)._Off)
+
+ #else /* !defined(__GLIBC__) etc. */
+  #define _FPOSOFF(fp)  ((long)(fp))
+ #endif /* !defined(__GLIBC__) etc. */
+
+#endif /* _FPOSOFF */
+#endif /* _CSTDIO_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

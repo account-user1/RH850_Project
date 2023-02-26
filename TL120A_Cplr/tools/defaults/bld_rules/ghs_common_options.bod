@@ -1,0 +1,33 @@
+# This file defines options that are shared by the compiler and intex.
+
+%if !defined(__GHS_COMMON_OPTIONS__)
+%define __GHS_COMMON_OPTIONS__
+
+CommandOptions {
+    GhsCommonOptions {
+	OutputName {
+	    {
+		    name="-o"
+		    delimiter="Space"
+	    }
+	    {
+		    name="--output"
+		    delimiter="Space"
+	    }
+	    {
+		    name="--output"
+		    delimiter="Equal"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"None"}
+	    flags={"OUTPUTNAME"}
+	    valueIsFilename=true
+	    guiLabel="Output Filename"
+	    guiCategory="Project"
+	    commonLevel=101
+	}
+    }
+}
+
+%endif # __GHS_COMMON_OPTIONS

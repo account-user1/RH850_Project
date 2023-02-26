@@ -1,0 +1,512 @@
+CommandOptions {
+
+    GhsCompilerOptions {
+
+    ############### Operating System Options ###################
+    
+	AltSysLib {
+		{
+			name="-syslib"
+			delimiter="Equal"
+		}
+		merge="Replace"
+		optionType="String"
+		pass={"All"}
+		disabled=false
+		guiLabel="Additional System Library"
+		guiCategory="Target;Operating System"
+		commonLevel=101
+	}
+
+    	OsDir {
+		{
+	    		name="-os_dir"
+	    		delimiter="Equal"
+		}
+		{
+	    		name="-os_dir"
+	    		delimiter="Space"
+		}
+		{
+	    		name="-rtos_dir"
+	    		delimiter="Equal"
+		}
+		{
+	    		name="-rtos_dir"
+	    		delimiter="Space"
+		}
+		{
+			name="-threadx_dir"
+	    		delimiter="Equal"
+		}
+		{
+			name="-ose_dir"
+	    		delimiter="Equal"
+		}
+		{
+			name="-linux_dir"
+	    		delimiter="Equal"
+		}
+		{
+			name="-linux_dir"
+	    		delimiter="Space"
+		}
+		{
+			name="-vxworks_dir"
+	    		delimiter="Equal"
+		}
+		merge="Replace"
+		optionType="String"
+		pass={"All"}
+		disabled=false
+		guiLabel="OS Directory"
+		guiCategory="Target;Operating System"
+		commonLevel=101
+    	}
+
+    ############### ThreadX Options ###################
+    
+	    ThreadX_EventLogging {
+		    {
+			    name="-event_logging"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_event_logging"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Event Logging"
+		    guiCategory="Target;Operating System"
+		    commonLevel=101
+	    }
+	    ThreadX_UseDemoLibrary {
+		    {
+			    name="-use_demo_library"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_demo_library"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Use ThreadX Demo Library"
+		    guiCategory="Target;Operating System"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    ThreadXDemoDir{
+		    {
+                        name="-threadx_demo_dir"
+                        delimiter="Equal"
+		    }
+                    {
+                        name="-threadx_demo_dir"
+                        delimiter="Space"
+                    }
+		    {
+                        name="-os_demo_dir"
+                        delimiter="Equal"
+		    }
+                    {
+                        name="-os_demo_dir"
+                        delimiter="Space"
+                    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="ThreadX Demo Library Directory"
+		    guiCategory="Target;Operating System"
+		    commonLevel=101
+		    hidden=true
+	    }
+    
+    ################## Unix (Solaris/Linux) pThread Options
+
+	    unix_Pthreads {
+	            {
+			    name="-pthreads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-pthread"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_pthreads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_pthread"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Linking with Pthread Library"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+
+	    # Due to how documentation is profiled, we need to have two
+	    # versions of this option - one for Linux and Solaris native
+	    # targets, and one for the PPC targets (this is because
+	    # architectures and revisions are profiled seperately)
+	    Pthreads {
+	            {
+			    name="-pthreads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-pthread"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_pthreads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_pthread"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Linking with Pthread Library"
+		    guiCategory="Linker"
+		    commonLevel=101
+	    }
+
+    ############### Integrity Options ###################
+
+	Integrity_Kernel {
+	    DEFAULT {
+		name="-kernel"
+		value=0
+		enumLabel="On (Link with the default kernel)"
+	    }
+	    {
+		name="-kernel=kernel"
+		value=0
+		enumLabel="On (Link with the default kernel)"
+	    }
+	    OFF {
+		name="-no_kernel"
+		value=1
+		enumLabel="Off"
+	    }
+	    OPT {
+		name="-kernel=kernel_opt"
+		enumLabel="Link with kernel optimized for production use"
+		value=2
+	    }
+	    SMALL {
+		name="-kernel=kernel_small"
+		enumLabel="Link with kernel optimized for minimal size (no virtual-memory support)"
+		value=3
+		hidden=true
+	    }
+	    FAST {
+		name="-kernel=kernel_fast"
+		enumLabel="Link with kernel optimized for maximum speed (no virtual-memory support)"
+		value=4
+		hidden=true
+	    }
+	    CHECKED {
+		name="-kernel=kernel_checked"
+		enumLabel="Link with kernel with checked debug output enabled"
+		value=5
+	    }
+            VEL {
+                name="-kernel=kernel_vel"
+                enumLabel="Link with velOSity kernel"
+                value=6
+            }
+            VEL_CHECKED {
+                name="-kernel=kernel_vel_checked"
+                enumLabel="Link with velOSity kernel with checked debug output enabled"
+                value=7
+            }
+            VEL_OPT {
+                name="-kernel=kernel_vel_opt"
+                enumLabel="Link with velOSity kernel optimized for production use"
+                value=8
+            }
+            NOVIRT {
+                name="-kernel=kernel_novirt"
+                enumLabel="Link with kernel with no virtual-memory support"
+                value=9
+                hidden=true
+            }
+            MMU {
+                name="-kernel=kernel_nommu"
+                enumLabel="Link with kernel with no MMU or cache support (ARM only)"
+                value=10
+                hidden=true
+            }
+            INDRT1 {
+                name="-kernel=kernel_indrt1"
+                enumLabel="Link with kernel built for INDRT1"
+                value=11
+                hidden=true
+            }
+            INDRT2 {
+                name="-kernel=kernel_indrt2"
+                enumLabel="Link with kernel built for INDRT2"
+                value=12
+                hidden=true
+            }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Kernel Project"
+	    guiCategory="Target;Operating System"
+	    commonLevel=1
+	}
+	Integrity_Libbsp {
+	    {
+		name="-libbsp"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-no_libbsp"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Include libbsp.a"
+	    guiCategory="Target;Advanced Operating System"
+	    commonLevel=1001
+	}
+	Integrity_irel {
+	    ON {
+		name="-irel"
+		value=0
+		enumLabel="On"
+	    }
+	    OFF {
+		name="-no_irel"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Relocatable Module"
+	    guiCategory="Target;Advanced Operating System"
+	    commonLevel=1001
+	}
+        Integrity_irelprog {
+            ON {
+                name="-irelprog"
+                value=0
+                enumLabel="On"
+            }
+            OFF {
+                name="-no_irelprog"
+                value=1
+                enumLabel="Off"
+            }
+            delimiter="NoArg"
+            merge="Replace"
+            optionType="Enum"
+            pass={"All"}
+            disabled=true
+            guiLabel="INTEGRITY Relocatable Program"
+            guiCategory="Target;Advanced Operating System"
+            commonLevel=1001
+	    hidden=true
+        }
+        Integrity_posix_dll {
+            ON {
+                name="--posix_dll"
+                value=0
+                enumLabel="On"
+            }
+            OFF {
+                name="--no_posix_dll"
+                value=1
+                enumLabel="Off"
+            }
+            delimiter="NoArg"
+            merge="Replace"
+            optionType="Enum"
+            pass={"All"}
+            disabled=true
+            guiLabel="POSIX DLL"
+            guiCategory="Target;Operating System"
+            commonLevel=101
+        }   
+	Integrity_dyload {
+	    {
+		name="-dyload"
+		delimiter="Equal"
+	    }
+	    {
+		name="-dyload"
+		delimiter="Space"
+	    }
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Relocatable Module Base Image"
+	    guiCategory="Target;Advanced Operating System"
+	    commonLevel=1001
+	}
+	Integrity_POSIX {
+	    ON {
+		name="--integrity_posix"
+		value=0
+		enumLabel="On"
+	    }
+	    OFF {
+		name="--no_integrity_posix"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Full POSIX-2001 Compilation Support"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	IntegrityPosixMode {
+	    {
+		name=":integrity_posix_mode=noposix"
+		value=0
+		enumLabel="No POSIX Libraries"
+	    }
+	    {
+		name=":integrity_posix_mode=single"
+		value=1
+		enumLabel="Single Address Space POSIX Libraries"
+	    }
+	    {
+		name=":integrity_posix_mode=system"
+		value=2
+		enumLabel="Full POSIX System Libraries"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="INTEGRITY Posix Mode"
+	    guiCategory="Target;Operating System"
+	    hidden=false
+	    commonLevel=101
+	} 
+	Integrity_UtilLib {
+	    ON {
+		name="--util_lib"
+		value=0
+		enumLabel="On"
+	    }
+	    OFF {
+		name="--no_util_lib"
+		value=0
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    disabled=true
+	    hidden=true
+	    guiLabel="Link Against Standard Utility Library"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrity_InitLibs {
+	    ON {
+		name="--init_libs"
+		value=0
+		enumLabel="On"
+	    }
+	    OFF {
+		name="--no_init_libs"
+		value=0
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"Link"}
+	    disabled=true
+	    hidden=true
+	    guiLabel="Link Against Standard Initialization Libraries"
+	    guiCategory="Target;Operating System"
+	    commonLevel=101
+	}
+	Integrate {
+	#this should not be set or used from the GUI
+	    {
+		name="-integrate"
+		value=0
+		enumLabel="On"
+	    }
+	    {
+		name="-no_integrate"
+		value=1
+		enumLabel="Off"
+	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    pass={"All"}
+	    disabled=true
+	    guiLabel="Integrate"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+	IntegrityOption {
+	#deprecated: this should no longer be needed
+	    name=":integrity_option"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"Link"}
+	    disabled=true
+	    guiLabel="Integrity Option"
+	    guiCategory="Target;Operating System"
+	    hidden=true
+	}
+    }
+
+}

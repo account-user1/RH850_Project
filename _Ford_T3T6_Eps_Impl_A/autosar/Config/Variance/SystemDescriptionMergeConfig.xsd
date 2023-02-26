@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://com.vector.cfg.workflow.merge/input" targetNamespace="http://com.vector.cfg.workflow.merge/input" elementFormDefault="qualified">
+	<element name="INPUT" type="tns:INPUT" />
+	<complexType name="INPUT">
+        <annotation>
+        	<documentation>Use INPUT for specifying the MODELs to be merged.
+A MODEL is mainly a collection of .arxml files.
+
+INPUT must contain at least 2 MODELs.
+The MODELs are processed in the order in which they are given in the .xml file.
+The first MODEL is loaded and optionally pre-processed.
+Then the following MODELs are successively loaded, optionally pre-processed and merged into the first MODEL.
+After all MODELs have been merged into the result can optionally be post-processed.
+
+The pre-processing of each MODEL and the merging of each model into the result can be customized to adapt the merge process to the specific project data.</documentation>
+        </annotation>
+        <sequence>
+			<element name="MODEL" type="tns:MODEL" minOccurs="2" maxOccurs="unbounded"/>
+			<element name="POST-PROCESSING" type="tns:PROCESSORS" minOccurs="0"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="MODEL">
+        <annotation>
+        	<documentation>Use MODEL to specify a single model to be merged with other models.
+
+A MODEL consists of a name (for logging purposes), an optional post-build-condition and 1 or more FILEs.
+The MODEL's condition is used when merging input files for a CFG5 project with post-build-selectable variance.
+Each MODEL corresponds to one variant containing the input data for that variant.
+The MODEL's condition must be set to the post-build-condition of the corresponding variant in the form (/short/name/path/to/criterion1 == 0) &amp;&amp; (/short/name/path/to/criterion2 == 1).
+The merger uses the condition to create the AUTOSAR variation points for accomodating the different contents of all MODELs in a single .arxml file.
+Using the condition attribute is optional.
+When the conditions of the MODELs are omitted no variation points are created and the merger tries to create a result containing the super-set of all MODELs.
+
+A MODEL may contain further optional child elements for adapting the merge process.</documentation>
+        </annotation>
+        <sequence>
+			<element name="FILE" type="tns:FILE" maxOccurs="unbounded" />
+			<element name="ECU-INSTANCE" type="tns:ECU-INSTANCE" maxOccurs="1" minOccurs="0"></element>
+			<element name="SYSTEM" type="tns:SYSTEM" maxOccurs="1" minOccurs="0"></element>
+			<element name="PRE-PROCESSING" type="tns:PROCESSORS"
+				minOccurs="0" />
+			<element name="MERGE" type="tns:MERGERS" minOccurs="0" />
+		</sequence>
+		<attribute name="name" type="string" />
+		<attribute name="condition" type="string" />
+	</complexType>
+
+	<complexType name="FILE">
+        <annotation>
+        	<documentation>Use FILE elements to specify the .arxml files a MODEL is made up of.
+The file location can be given relative to the merge configuration .xml file using the FILE element's name attribute.
+When the merger is called in the context of the Cfg5 workflow Cfg5 wildcards may be used as well (for specifying locations relative to the project folder, SIP folder, etc.).</documentation>
+        </annotation>
+        <attribute name="name" type="string"/>
+	</complexType>
+
+	<complexType name="PROCESSORS">
+        <annotation>
+        	<documentation>Use PROCESSORS to pre-process a MODEL's content before it is merged into the result or to post-process the result after all MODELs have been merged.
+PROCESSORS are useful when merging content originating from different sources where the same element differs in its AUTOSAR representations (e.g. several input files contain an ECU instance but with different short names and/or in a different package).
+
+The following default pre-processings are built into the merger:
+Refactoring ECU instances: The merger refactors the ECU instances of all MODELs to have the same short name and to be contained in the same package (i.e. have the same short name path). All but one ECU instances (see ECU-INSTANCE) of a MODEL are discarded.
+Refactoring systems: The merger refactors the systems of all MODELs to have the same short name and to be contained in the same package (i.e. have the same short name path). All but one systems (see SYSTEM) of a MODEL are discarded.
+Refactoring root SW composition prototypes: The merger refactors the root SW composition prototypes of all MODELs to have the same short name. As the parent systems are also refactored the root SW composition prototypes also have the same short name paths.
+Refactoring composition SW component types: The merger refactors the composition SW component types of the root SW composition prototypes of all MODELs to have the same short and to be contained in the same package (i.e. have the same short name path).</documentation>
+        </annotation>
+        <choice minOccurs="0" maxOccurs="unbounded">
+			<element name="DISCARD-BY-NAME" type="tns:DISCARD-BY-NAME"/>
+			<element name="DISCARD-EXPLICITLY" type="tns:DISCARD-EXPLICITLY"/>
+			<element name="REPLACE" type="tns:REPLACE"/>
+			<element name="MOVE" type="tns:MOVE"/>
+			<element name="DISCARD-BY-BROKEN-REFS" type="tns:DISCARD-BY-BROKEN-REFS"/>
+		</choice>
+	</complexType>
+
+	<complexType name="MERGERS">
+        <annotation>
+        	<documentation>Use MERGERS to customize the process of merging an (optionally pre-processed) MODEL into the result.
+In contrast to PROCESSORS (which concern themselves with a single MODEL only) MERGERS have a two-MODEL-scope.
+
+The following default adaptations are built into the merger:
+Prevention of name clashes for data types (and data type related elements such as compu methods, constant specifications, mode declaration groups, blueprints, ...): If two MODELs contain any such elements with equal short name paths but different content, the merger automatically adapts the short names so that the merge result can contain the super-set of all elements without violating short name uniqueness.
+Prevention of name clashes for port prototypes: When during merge of composition SW component types port prototypes with equal short names but different content (e.g. direction) are detected, the merger automatically adapts the short names so that the merge result can contain the super-set of all elements without violating short name uniqueness.
+Automatic merging of SW component prototypes: When during merge of composition SW component types two SW component prototypes with different short names but equal SW component type are detected, the merger automatically adapts the short names so that the merge result contains only one SW component prototype of that SW component type. This is only done if the corresponding SW component type is not instantiated twice in the merged composition SW component typ.</documentation>
+        </annotation>
+        <choice minOccurs="0" maxOccurs="unbounded">
+			<element name="MERGE-BY-NAME" type="tns:MERGE-BY-NAME" />
+			<element name="MERGE-EXPLICITLY"
+				type="tns:MERGE-EXPLICITLY" />
+			<element name="POSTFIX-ON-NAME-CLASH"
+				type="tns:POSTFIX-ON-NAME-CLASH" />
+			<element name="IGNORE-DIFF" type="tns:IGNORE-DIFF"></element>
+			<element name="MERGE-BY-FEATURES" type="tns:MERGE-BY-FEATURES"></element>
+		</choice>
+	</complexType>
+
+	<complexType name="DISCARD-BY-NAME">
+        <annotation>
+        	<documentation>Use DISCARD-BY-NAME to discard certain elements of a MODEL (i.e. remove them from the MODEL before merging).
+The metaClass attribute must be set to the AUTOSAR meta class of the elements to be discarded.
+The given meta class can be an abstract super class but must be derived from Referrable (the abstract super class of all elements with a short name).
+The pattern attribute can be set to a regular expression.
+All elements of the given metaClass with a short name matching the given pattern will be discarded.
+
+Example:
+A MODEL contains ISignalTriggerings which must not be part of the merge result and these ISignalTriggerings can be identified by the name-postfix '_PF'.
+Use DISCARD-BY-NAME with metaClass set to 'ISignalTriggering' and pattern set to '.*_PF'.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"/>
+		<attribute name="pattern" type="string"/>
+	</complexType>
+
+	<complexType name="DISCARD-EXPLICITLY">
+        <annotation>
+        	<documentation>Use DISCARD-EXPLICITLY to discard certain elements of a MODEL (i.e. remove them from the MODEL before merging).
+The element attribute must be set to the short name path of the element to be discarded.
+
+Example:
+A MODEL contains a LinSlave with short name path '/A/B/EcuInstance/LinSlave' which must not be part of the merge result.
+Use DISCARD-EXPLICITLY with element set to '/A/B/EcuInstance/LinSlave'.</documentation>
+        </annotation>
+        <attribute name="element" type="string"/>
+	</complexType>
+
+	<complexType name="REPLACE">
+        <annotation>
+        	<documentation>Use REPLACE to discard a certain element of a MODEL and redirect all references pointing at that element to another element.
+The element attribute must be set to the short name path of the element to be discarded.
+The by attribute is set to the short name path of the element to which to redirect the references pointing at the discarded element.
+
+Example:
+One of the MODELs contains an incompletely specified NmEcu with short name path '/A/B/NmConfig_LEFT/NmEcu_LEFT'.
+This NmEcu is only a vestige serving as target for references of other elements to point at but none of its attributes are configured.
+One of the other MODELs contains a completely configured NmEcu with short name path '/X/Y/NmConfig_RIGHT/NmEcu_RIGHT'.
+The merge result should contain NmEcu_RIGHT. NmEcu_LEFT should be discarded, but the elements referring to NmEcu_LEFT should be part of the merge result, only they should be pointing at NmEcu_RIGHT.
+Use REPLACE with element set to '/A/B/NmConfig_LEFT/NmEcu_LEFT' and by set to '/X/Y/NmConfig_RIGHT/NmEcu_RIGHT'.</documentation>
+        </annotation>
+        <attribute name="element" type="string"/>
+		<attribute name="by" type="string"/>
+	</complexType>
+
+	<complexType name="MERGE-BY-NAME">
+        <annotation>
+        	<documentation>Use MERGE-BY-NAME to merge elements of a certain meta class even though their short names are not equal.
+The metaClass attribute must be set to the AUTOSAR meta class of the elements to be merged.
+The pattern attribute is set to a regular expression matched against the elements' short names.
+The replace attribute is set to a pattern-replace expression corresponding to the given pattern.
+If the short name of an element of the given meta class matches the given pattern the pattern-replace expression is used to create a key for that element.
+Elements with equal keys are merged.
+
+Example:
+All SW component types of MODEL A are post-fixed with '_A' and all SW component types of MODEL B are post-fixed with '_B'.
+Otherwise there are only minor differences in the software component description of both MODELs.
+So the merge result should not contain two redundant software component descriptions.
+Use MERGE-BY-NAME with metaClass set to 'SwComponentType', pattern set to '(.*)_[AB]' and replace set to '$1' in the MERGERS section of MODEL B.
+Let MODEL A contain the SW component type Type_A and let MODEL B contain the SW component type Type_B.
+Now when MODEL B is merged into MODEL A the key calculated for both SW component types is 'Type'.
+So Type_A and Type_B will be merged instead of appearing as redundant SW component types in the merge result.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"/>
+		<attribute name="pattern" type="string"/>
+		<attribute name="replace" type="string"/>
+	</complexType>
+
+	<complexType name="MERGE-EXPLICITLY">
+        <annotation>
+        	<documentation>Alias for MOVE.</documentation>
+        </annotation>
+        <attribute name="element" type="string"/>
+		<attribute name="with" type="string"/>
+	</complexType>
+
+	<complexType name="DISCARD-BY-BROKEN-REFS">
+        <annotation>
+        	<documentation>Use DISCARD-BY-BROKEN-REFS for discarding elements if certain references cannot be resolved.
+The metaClass attribute must be set to the AUTOSAR meta class of the elements to be discarded.
+The features attribute is set to the reference features to be examinded for elements of the given meta class.
+The features attribute is expected to be of the form 'MetaClassName1.feature1 MetaClassName2.feature2 ...'.
+An element is discarded if none of the given references can be resolved in the model.
+
+Example:
+A MODEL contains ISignalTriggerings pointing at ISignals which are not not part of the MODEL.
+The ISignalTriggerings should not be part of the merge result.
+Use DISCARD-BY-BROKEN-REFS with metaClass set to 'ISignalTriggering' and features set to 'ISignalTriggering.iSignal'.
+
+Note:
+The features attribute may also be used to specify backward-references.
+Use DISCARD-BY-BROKEN-REFS with metaClass set to 'ISignal' and features set to 'ISignalTriggering.iSignal' for discarding ISignals which are not referenced by an ISignalTriggering.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"/>
+		<attribute name="features" type="string"/>
+	</complexType>
+
+	<complexType name="MOVE">
+        <annotation>
+        	<documentation>Use MOVE to refactor referrables.
+The from attribute must be set to the short name path of the element to be moved.
+The to attribute is set to the short name path of the target location where the element is to be moved to.
+References pointing to the moved element are redirected to the new location.
+MOVE is used by the merger itself for automatically refactoring ECU instances and systems (see ECU-INSTANCE and SYSTEM).
+
+Example:
+Two MODELs contain a CanCluster with a different short name and contained in a different package.
+Nevertheless these CanCluster artefacts describe complementary aspects of the same communication cluster.
+In MODEL A the CanCluster has the short name path '/A/B/Cluster_A'.
+In MODEL B the CanCluster has the short name path '/X/Y/Cluster_B'.
+The merge result is supposed to contain a single CanCluster '/U/V/CanCluster' merged from Cluster_A and Cluster_B.
+Use MOVE with from set to '/A/B/Cluster_A' and to set to '/U/V/CanCluster' in MODEL A.
+Use MOVE with from set to '/X/Y/Cluster_B' and to set to '/U/V/CanCluster' in MODEL B.
+
+Note:
+Despite its name MOVE can be used to simply rename elements.
+Use MOVE with from set to '/A/B/OldName' and to set to '/A/B/NewName' for renaming elements.</documentation>
+        </annotation>
+        <attribute name="from" type="string"/>
+		<attribute name="to" type="string"/>
+	</complexType>
+
+	<complexType name="POSTFIX-ON-NAME-CLASH">
+        <annotation>
+        	<documentation>Use POSTFIX-ON-NAME-CLASH for renaming elements in order to prevent them from being merged with different elements who happen to have the same short name path.
+The metaClass attribute must be set to the AUTOSAR meta class of the elements to be post-fixed.
+The postfix attribute is set to the post-fix to be applied to the elements' short names.
+
+Example:
+MODEL A and MODEL B accidentally both contain one port interface with the same short name path but different content.
+The merge result should contain both port interfaces.
+Use POSTFIX-ON-NAME-CLASH with metaClass set to 'PortInterface' and postfix set to '_B' in the MERGERS section of MODEL B.
+The merge result will contain both port interfaces without violating short name uniqueness.
+When there are no clashing short names POSTFIX-ON-NAME-CLASH has no impact on the merge result.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"/>
+		<attribute name="postfix" type="string"/>
+	</complexType>
+
+	<complexType name="ECU-INSTANCE">
+        <annotation>
+        	<documentation>The merger is specially designed to process and create ECU extracts.
+When ECU instances are present in the input files the merger expects each MODEL to describe one variant of the same ECU instance or otherwise it expects all MODELs to form a single ECU extract when merged together.
+Use ECU-INSTANCE if the MODEL's .arxml files contain more than one ECU instance.
+
+Using ECU-INSTANCE is optional.
+The merger will try to automatically detect the relevant ECU instance.
+When there is only one ECU instance, this ECU instance is used.
+When there are more than one ECU instances the one referenced by the given SYSTEM (if present) is used.
+If neither ECU-INSTANCE nor SYSTEM are specified and if there are multiple ECU instances the merger looks for the single system referencing any ECU instance.
+If such a pair of system and ECU instance can be found this system and its corresponding ECU instance are used by the merger.
+If no relevant ECU instance can be unambiguously determined by the merger and the number of ECU instances in a MODEL is greater than 0 an error is issued.
+
+The information automatically determined by the merger or explicitly given using ECU-INSTANCE and SYSTEM is used to perform default pre-processings.
+The merger adapts the ECU instances' short names and package locations so the after having been merged only one ECU instance is contained in the result .arxml file.
+If the input files contain no ECU instances no default pre-processings are performed.</documentation>
+        </annotation>
+        <attribute name="shortNamePath" type="string"></attribute>
+	</complexType>
+
+	<complexType name="SYSTEM">
+        <annotation>
+        	<documentation>The merger is specially designed to process and create ECU extracts.
+When systems are present in the input files the merger expects each MODEL to describe one variant of the same system or otherwise it expects all MODELs to form a single ECU extract when merged together.
+Use SYSTEM if the MODEL's .arxml files contain more than one system.
+
+Using SYSTEM is optional.
+The merger will try to automatically detect the relevant system.
+When there is only one system, this system is used.
+When there are more than one systems the one referencing the given ECU-INSTANCE (if present) is used.
+If neither ECU-INSTANCE nor SYSTEM are specified and if there are multiple systems the merger looks for the single system referencing any ECU instance.
+If such a pair of system and ECU instance can be found this system and its corresponding ECU instance are used by the merger.
+If no relevant system can be unambiguously determined by the merger and the number of systems in a MODEL is greater than 0 an error is issued.
+
+The information automatically determined by the merger or explicitly given using ECU-INSTANCE and SYSTEM is used to perform default pre-processings.
+The merger adapts the systems' short names and package locations so the after having been merged only one system is contained in the result .arxml file.
+If the input files contain no systems no default pre-processings are performed.</documentation>
+        </annotation>
+        <attribute name="shortNamePath" type="string"></attribute>
+	</complexType>
+
+	<complexType name="IGNORE-DIFF">
+        <annotation>
+        	<documentation>Use IGNORE-DIFF for ignoring irrelevant differences.
+The metaClass attribute is set to the AUTOSAR meta class of the elements at which to ignore differences.
+The feature attribute is set to the feature at which to ignore differences.
+
+The following default ignores are built into the merger:
+ARObject.timestamp,
+ARObject.checksum,
+Identifiable.uuid,
+Identifiable.category,
+MultilanguageReferrable.longName
+HasIntroductionDocumentationBlock.introduction,
+HasDescMultiLanguageOverviewParagraph.desc,
+System.ecuExtractVersion,
+System.systemVersion,
+System.systemDocumentation.
+
+At elements of the given meta class the merge result will contain the feature value of the first MODEL containing that element.
+The built in defaults should suffice so normally it should not be necessary to use IGNORE-DIFF.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"></attribute>
+		<attribute name="feature" type="string"></attribute>
+	</complexType>
+
+	<complexType name="MERGE-BY-FEATURES">
+        <annotation>
+        	<documentation>Use MERGE-BY-FEATURES for specifying your own logic on how to merge elements of a certain meta class.
+The metaClass attribute is set to the AUTOSAR meta class of the elements to merge.
+The features attribute is set to the features from the values of which to built the key by which to merge the elements.
+The features attribute is expected to be of the form 'MetaClassName1.feature1 MetaClassName2.feature2 ...'.
+
+The merger has a multitude of built in defaults for how to merge certain elements.
+The built in defaults should suffice so normally it should not be necessary to use MERGE-BY-FEATURES.
+
+Example:
+In some special case it might be necessary to merge system mappings using their long names (instead of their short names).
+Use MERGE-BY-FEATURES with metaClass set to 'SystemMapping' and features set to 'MultilanguageReferrable.longName'.</documentation>
+        </annotation>
+        <attribute name="metaClass" type="string"></attribute>
+		<attribute name="features" type="string"></attribute>
+	</complexType>
+</schema>

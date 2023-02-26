@@ -1,0 +1,39 @@
+<!-- Entities -->
+
+<!ENTITY ti.MappingSet               "MappingSet">
+<!ENTITY ti.ModeRequestTypeMap       "ModeRequestTypeMap">
+<!ENTITY ti.DataTypeMap              "DataTypeMap">
+<!ENTITY ti.Package                  "Package">
+<!ENTITY ti.DataType                 "DataType">
+<!ENTITY ti.ModeDclrGroup            "ModeDclrGroup">
+
+<!-- Elements -->
+
+<!ELEMENT MappingSet         (%C.DefAttr;, ATTRLink*, GenAttrList?, ModeRequestTypeMap*, DataTypeMap*)>
+<!ELEMENT ModeRequestTypeMap (ATTRLink*)>
+<!ELEMENT DataTypeMap        (ATTRLink*)>
+
+<!ATTLIST MappingSet %A.ConfigItem;
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST ModeRequestTypeMap %A.ChildItem;
+    ModeDeclarationGroupLink  NMTOKEN #FIXED "&ti.ModeDclrGroup;"
+    DataTypeLink  NMTOKEN #FIXED "&ti.DataType;"
+>
+
+<!ATTLIST DataTypeMap %A.ChildItem;
+    AppDataTypeLink  NMTOKEN #FIXED "&ti.DataType;"
+    DataTypeLink  NMTOKEN #FIXED "&ti.DataType;"
+>
+
+<!-- Links -->
+
+<!ELEMENT MappingSetLink EMPTY>
+
+<!ATTLIST MappingSetLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.MappingSet;"
+>

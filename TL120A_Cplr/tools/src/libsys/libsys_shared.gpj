@@ -1,0 +1,79 @@
+#!gbuild
+[Library]
+	-ansi
+	--incorrect_pragma_warnings
+	--unknown_pragma_warnings
+	--prototype_warnings
+	--diag_error 236
+	--no_coverage_analysis
+	-check=nomemory
+	{!isdefined(SUPPRESS_FNONE)} -fnone
+	-pnone
+	-Onoinline
+#ind_crt1.c
+#	{optional} -argcheck=none
+#	{optional} -globalreg=99
+#	-gtws
+ind_io.c
+ind_bcnt.c
+ind_call.gpj		[Select One]
+ind_dots.gpj		[Select One]
+ind_errn.c
+ind_exit.c
+	-gtws
+ind_gcnt.gpj		[Select One]
+ind_gmtm.c
+ind_gmtm.c
+ 	-DTIME_ALTERNATE_COMPILE
+ 	{optional}-time64
+	-o ind_gmtm64.o
+ind_gpid.c
+ind_gprf.c
+ind_heap.c
+	--unsigned_pointer
+ind_alloc.c
+ind_iob.c
+ind_loctm.c
+ind_loctm.c
+ 	-DTIME_ALTERNATE_COMPILE
+ 	{optional}-time64
+	-o ind_loctm64.o
+ind_mcnt.gpj		[Select One]
+ind_mprf.c
+ind_renm.c
+ind_sgnl.c
+	-gtws
+ind_stat.c
+ind_syst.c
+#ind_thrd.c
+ind_except.c
+#ind_lock.c
+ind_time.c
+ind_time.c
+ 	-DTIME_ALTERNATE_COMPILE
+ 	{optional}-time64
+	-o ind_time64.o
+ind_tmzn.c
+ind_trnc.c
+ind_manprf.c
+	# Avoid generating a tracereg usage warning for the interrupt function.
+	{optional} -no_tracereg_check
+arm_manprf.h
+bf_manprf.h
+coldfire_manprf.h
+mip_manprf.h
+ppc_manprf.h
+indsyscl.h
+ind_io.h
+indos.h
+ind_crt1.h
+ind_heap.h
+ind_thrd.h
+indlibvariant.h
+{selectone_optional}ind_targ1.gpj		[Select One]
+ind_stackcheck.c
+ind_stackcanary.c
+ind_stackcanary2.c
+ind_cov.c
+ind_multicore.c
+ind_multicore_hlp.gpj		[Select One]

@@ -1,0 +1,99 @@
+lib_build_options="-DEMBEDDED :select=800 :select=cxx :select=cc :select=c"
+asm_extension="800"
+
+exports {
+    ASM_EXTENSION="800"
+    SUPPORTS_TRACE_DEMO="1"
+}
+
+%if defined (__TOOLS_DEFAULTS_DIR__)
+%define DEFN_DIR ${__TOOLS_DEFAULTS_DIR__}/target_server
+%else
+%define DEFN_DIR ${__MULTI_DEFAULTS_DIR__}/target_server
+%endif
+
+target_connection {
+    simrh850 {
+	required_args=""
+	replaceable_args=""
+	suggested_args=""
+	enabled=true
+    }
+    850eserv {
+	required_args=""
+	replaceable_args=""
+	suggested_args=""
+	enabled=false
+    }
+    monserv {
+	required_args=""
+	replaceable_args=""
+	suggested_args=""
+	enabled=false
+%if !file_exists("${DEFN_DIR}/monserv.npw")
+	disabled_on_current_host=true	
+%endif
+    }
+    rteserv {
+	required_args=""
+	replaceable_args=""
+	suggested_args=""
+	enabled=false
+    }
+}
+
+target_connection {
+
+#
+# Make decisions based on cpu type
+#
+%if !defined(__CPU_NAME__)
+%elif streq(__CPU_NAME__,"v850","v850sa1","v851","v852","v853","v854")
+%elif streq(__CPU_NAME__,"v850e")
+    simrh850.required_args="-cpu=v850e"
+%elif streq(__CPU_NAME__,"v850e2")
+    simrh850.required_args="-cpu=v850e2"
+%endif
+
+
+#
+# Make decisions based on project type.
+#
+%if defined(PRJ_REQUIRES_REAL_HARDWARE)
+    # The LED demo et. al. will not work on a simulator.
+    simrh850.disabled_for_current_project=true;
+%endif
+%if defined(PRJ_REQUIRES_TRACE)
+    monserv.disabled_for_current_project = true;
+%endif
+
+#
+# Make decisions based on host.
+#
+%if streq(__MULTI_HOST__,"linux86")
+    rteserv.disabled_on_current_host=true
+%elif streq(__MULTI_HOST__,"solaris2")
+    monserv.suggested_args="-sp /dev/ttyb"
+    rteserv.disabled_on_current_host=true
+%elif streq(__MULTI_HOST__,"win32")
+    monserv.suggested_args="-sp COM1"
+%endif
+
+}
+
+component.libstartup.actions.add.standard {
+	10  += { "defineLocal CUST_LIBSTARTUP_OPTS -pic" }
+%if !defined(__CPU_NAME__)
+%elif streq(__CPU_NAME__, "v850e1f")
+        101 += { "python ${__DIR__}/npw.py add_suppress_fnone_macro" }
+%endif
+}
+
+component.libsys.actions.add.standard {
+%if !defined(__CPU_NAME__)
+%elif streq(__CPU_NAME__, "v850e1f")
+        101 += { "python ${__DIR__}/npw.py add_suppress_fnone_macro" }
+%endif
+}
+
+

@@ -1,0 +1,1083 @@
+# This file describes how to convert the trace execution log into a
+# log for the MULTI EventAnalyzer(tm).
+
+# This file is divided into different types of descriptions.  Each description
+# may contain integer values, or "locations".  A location is a way to find a
+# particular address in the system.
+
+# The following description types are available:
+#
+# Format:
+# Description Name
+# - Brief explanation of description
+# Field - Brief explanation of field
+# Field - Brief explanation of field
+# ...
+
+# An (L) after the field name indicates that the field specifies a location.
+
+# EventExecutionDescription*  (any value can be used where * is indicated,
+#                              allowing for multiple instances of this type)
+# - An EventAnalyzer(tm) event is generated when the specified Location field
+#   is executed.
+# Location (L) - When this location is executed, insert an event into the
+#                EventAnalyzer(tm) log being generated.  This is only checked
+#                for kernel address spaces.
+# OutputTask (optional) - Specifies that the event always be output into the
+#                         task name specified.
+# UserLocation (L) - When this location is executed insert an event into the
+#                    EventAnalyzer(tm) log being generated.  The next execution
+#                    at Location is ignored so that the event is not logged at
+#                    both the user and kernel level.
+# (For a description of the type/subtype/MEV_Extra parts of the event, see the
+#  corresponding .mc file in defaults/event_analyzer).
+# Type         - The high 16 bits describing the event type
+# Subtype      - The low 16 bit event sub-type
+# ExtraSize     - The total size in bytes of the MEV_Extra fields for this event
+
+# ContextSwitchDescription* (any value can be used where * is indicated,
+#                            allowing for multiple instances of this type)
+# - When the specified variable is written, indicates that a context switch
+#   has been performed, which will cause a ContextSwitch message to be
+#   written into the EventAnalyzer(tm) log.
+# Write (L) - When this variable is written, it indicates that the context has
+#             changed.  Currently, the new task is assumed to be the value
+#             written to the specified location.
+
+# DomainPointerWriteDescription
+# - When the specified variable is written, indicates that the current domain
+#   has been changed.  This is not currently used by the EventAnalyzer(tm),
+#   but is used by other tools.
+# Write (L) - When this variable is written, it indicates that the domain has
+#             changed.  Currently, the new domain is assumed to be the value
+#             written to the specified location.
+
+# The following location types are available:
+# Format:
+# LocationType*
+# - Explanation of location type
+# Field - brief explanation of field
+# Field - brief explanation of field
+# ...
+
+# Any location type specified with a * will require CodeReplay(tm), which may
+# increase processing time significantly.
+
+# GlobalFunctionEnd
+# - Returns the address of the last instruction in a global function, not
+#   including NOP.
+# - NOTE: Currently, this is only supported for kernel address spaces.
+# Function - a string containing the function name
+# Optional - a string, if set to any value, no error is printed if the symbol
+#            is not found (this field can be omitted)
+
+# AddressExpression
+# - Returns the value of any valid address expression, which is translated
+#   by the MULTI Debugger.  The address expression cannot use any item which
+#   requires TimeMachine (registers, local/static variables, dereferences,
+#   etc.)  The value will only be evaluated once per address space.
+#   Any of the following are valid:
+#   - Hardcoded address values
+#   - Addresses of global symbols
+#   - $entadr(function) / $retadr(function)
+# Expression - a string containing the address expression
+# Optional - a string, if set to any value, no error is printed if the
+#            expression cannot be evaluated (this field can be omitted)
+
+
+#
+# Interrupt events are logged only if the program is built with
+# eventanalyzer support.
+#
+EventExecutionDescription00020001 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_el_interrupt"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x02
+    Subtype   = 0x01
+    ExtraSize = 4
+}
+
+EventExecutionDescription00020003 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_el_interrupt_end"
+	Optional = "1"
+    }
+    OutputTask = "Interrupts"
+    Type      = 0x02
+    Subtype   = 0x03
+    ExtraSize = 4
+}
+
+
+#
+# ThreadX Service Calls
+#
+
+EventExecutionDescription00030000 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_allocate"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_allocate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x00
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030001 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_pool_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_pool_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x01
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030002 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_pool_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_pool_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x02
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030003 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_release"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_release"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x03
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003002a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_pool_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_pool_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2a
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003002b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_byte_pool_prioritize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_byte_pool_prioritize"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2b
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030004 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_allocate"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_allocate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x04
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030005 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_pool_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_pool_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x05
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030006 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_pool_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_pool_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x06
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030007 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_release"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_release"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x07
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030028 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_pool_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_pool_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x28
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030029 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_block_pool_prioritize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_block_pool_prioritize"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x29
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030008 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_event_flags_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_event_flags_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x08
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030009 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_event_flags_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_event_flags_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x09
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003000a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_event_flags_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_event_flags_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0a
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003000b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_event_flags_set"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_event_flags_set"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0b
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003002c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_event_flags_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_event_flags_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003000d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0d
+    ExtraSize = 16
+}
+
+EventExecutionDescription0003000e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003000f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_flush"
+	Optional = "1"
+    }	
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_flush"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x0f
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030010 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_receive"
+	Optional = "1"
+    }	
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_receive"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x10
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030011 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_send"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_send"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x11
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030033 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x33
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030034 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_front_send"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_front_send"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x34
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030035 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_queue_prioritize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_queue_prioritize"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x35
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030012 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x12
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030013 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x13
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030014 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x14
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030015 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_put"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_put"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x15
+    ExtraSize = 8
+}
+
+EventExecutionDescription00030036 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x36
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030037 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_semaphore_prioritize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_semaphore_prioritize"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x37
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030016 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x16
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030017 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x17
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030018 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_identify"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_identify"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x18
+    ExtraSize = 0
+}
+
+EventExecutionDescription00030019 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_preemption_change"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_preemption_change"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x19
+    ExtraSize = 12
+}
+
+EventExecutionDescription0003001a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_priority_change"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_priority_change"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1a
+    ExtraSize = 12
+}
+
+
+EventExecutionDescription0003001b {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_relinquish"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_relinquish"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1b
+    ExtraSize = 0
+}
+
+EventExecutionDescription0003001c {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_resume"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_resume"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1c
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003001d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_sleep"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_sleep"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1d
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003001e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_suspend"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_suspend"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003001f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_terminate"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_terminate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x1f
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030020 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_time_slice_change"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_time_slice_change"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x20
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030038 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x38
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030039 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_thread_wait_abort"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_wait_abort"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x39
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030023 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_activate"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_activate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x23
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030024 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_change"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_change"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x24
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030025 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x25
+    ExtraSize = 16
+}
+
+EventExecutionDescription00030026 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_deactivate"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_deactivate"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x26
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030027 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x27
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003003a {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_timer_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_timer_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x3a
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030021 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_time_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_time_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x21
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030022 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_time_set"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_time_set"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x22
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003002d {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_create"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_create"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2d
+    ExtraSize = 8
+}
+
+EventExecutionDescription0003002e {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_delete"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_delete"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2e
+    ExtraSize = 4
+}
+
+EventExecutionDescription0003002f {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x2f
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030032 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_put"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_put"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x32
+    ExtraSize = 12
+}
+
+EventExecutionDescription00030030 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_info_get"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_info_get"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x30
+    ExtraSize = 4
+}
+
+EventExecutionDescription00030031 {
+    UserLocation {
+	Type = "AddressExpression"
+	Expression = "&_txe_mutex_prioritize"
+	Optional = "1"
+    }
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_mutex_prioritize"
+	Optional = "1"
+    }
+    Type      = 0x03
+    Subtype   = 0x31
+    ExtraSize = 4
+}
+
+
+#
+#
+# Status change/context switch/domain change descriptions
+#
+# Status change events can't be easily recorded because they occur
+# within particular functions. One possible way would be to record
+# writes to 
+#
+
+
+ContextSwitchDescription0 {
+    Write {
+	Type = "AddressExpression"
+	Expression = "&_tx_thread_current_ptr"
+    }
+}
+
+
+#
+# User Events. These cannot be distinguished unless the first
+# argument is interpreted as the Subtype.
+#
+
+EventExecutionDescription00040000 {
+    Location {
+	Type = "AddressExpression"
+	Expression = "&_tx_el_user_event_insert"
+	Optional = "1"
+    }
+    Type      = 0x04
+    Subtype   = 0x00
+    ExtraSize = 4
+}

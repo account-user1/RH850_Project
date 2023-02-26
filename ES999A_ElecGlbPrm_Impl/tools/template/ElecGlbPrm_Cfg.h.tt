@@ -1,0 +1,74 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2016, 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   ElecGlbPrm_Cfg.h
+* Module Description: Configuration header file for Electrical Global Parameters.
+* Project           : CBD
+* Author            : Avinash James
+***********************************************************************************************************************
+* Version Control:
+* %version:          3 %
+* %derived_by:       rzk04c %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 12/14/16  1       AJM     Initial version of the configurable header                                      EA4#8920 
+* 02/10/17  2       AJM     Updated as per version 6.3.0                                                    EA4#9797 
+* 05/08/17  3       AJM     Updated as per version 6.4.0                                                    EA4#11642 
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef ELECGLBPRM_CFG_H
+#define ELECGLBPRM_CFG_H
+
+/************************************************ Include Statements *************************************************/
+#include "Std_Types.h"
+
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "EleGlbPrm" ) );
+#>
+
+/* Inverter Count */
+#define ELECGLBPRM_IVTRCNT_CNT_U08		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/InverterCount")) #>U
+
+/* Maximum PWM Frequency */
+#define ELECGLBPRM_PWMFRQMAX_HZ_U32 	<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmFreqMax")) #>U
+
+/* Minimum PWM Frequency */
+#define ELECGLBPRM_PWMFRQMIN_HZ_U32		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmFreqMin")) #>U
+
+/* Maximum PWM Period */
+#define ELECGLBPRM_PWMPERDMAX_NANOSEC_U32		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmPerdMax")) #>U
+
+/* Minimum PWM Period */
+#define ELECGLBPRM_PWMPERDMIN_NANOSEC_U32		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmPerdMin")) #>U
+
+/* Motor Control ISR Period Times 2 */
+/* This constant is 2 times ELECGLBPRM_PWMPERDNOM_MICROSEC_U7P9 in seconds */
+#define ELECGLBPRM_PWMPERDNOMX2_SEC_F32		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmPerdNomX2")) #>F 
+
+/* Nominal PWM Period */
+#define ELECGLBPRM_PWMPERDNOM_MICROSEC_U7P9		<#= (int)(ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/PwmPerdNom")) * 512.0F)#>U
+
+/* Motor Control ISR Source Select */
+#define ELECGLBPRM_MOTCTRLINTRPTTRIGSRC_CNT_U08		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/MotCtrlInterTrigSrc")) #>U
+
+/* Handwheel Torque Sensor Tick Count */
+#define ELECGLBPRM_HWTQSNSRTICKCNT_CNT_U08		<#= ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/HwTqSnsrTickCnt")) #>U
+
+/* Handwheel Angle Interface Latch Enable */
+<#string HwAgIfLtchEna = (ValueOf(Xp.ValueAtDefRefTo("ElecGlbPrmCfg/HwAgIfLtchEna")))? "TRUE":"FALSE";; #>
+#define ELECGLBPRM_HWAGIFFLTLTCHENA_CNT_LGC		<#=HwAgIfLtchEna#>
+
+/****************************************************** Macros *******************************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif/*ELECGLBPRM_CFG_H*/
+

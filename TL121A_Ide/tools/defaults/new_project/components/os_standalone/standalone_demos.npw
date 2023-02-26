@@ -1,0 +1,332 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+%if defined (__SUPPORTS_C__)
+%if file_exists("${__DIR__}/demo_trace_debug")
+component.exec_trace_demo {
+#	display_type_name = "Trace Debugging Demo (C)"
+	display_object_name = "TimeMachine Debugging"
+#	display_group = "Demos"
+#	description  = "A small program used to demonstrate using the trace "
+#	description += "debugging capabilities of the MULTI IDE."
+	documentation_files += { "${__DIR__}/standalone_demos_docs.gpd" }
+	doc_anchor_ids += { "multi.mpm.exec_trace_demo" }
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if !defined(SUPPORTS_TRACE_DEMO) || (SUPPORTS_TRACE_DEMO == 0)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddTraceDebugC"
+		dlg_cmdlist = {"SetProgramProperties_TraceDebugC", "AddLinkMap_TraceDebugC"}
+	    }
+	    edit {
+		cmd_str = "EditTraceDebugC"
+		dlg_cmdlist = {"ChangeLinkMap_TraceDebugC"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_trace"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_TraceDebugC"
+		    	same_object_dialogs =  { "AddLinkMap_TraceDebugC" }
+		    }
+		}
+
+		default="trace_dbg"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE trace_debug_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_trace_debug" }
+%if defined(SUPPRESS_WARNINGS)
+% if !defined(SUPPRESS_WARNINGS_OPTION)
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT -w" }
+% else
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT ${SUPPRESS_WARNINGS_OPTION}" }
+% endif
+%endif
+			20 += { "python ${__DIR__}/standalone_demos.py copy_trace_debug_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_TraceDebugC"
+		    edit.cmd_str = "ChangeLinkMap_TraceDebugC"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+# The In-Memory TimeMachine Demo is identical to the normal TimeMachine
+# demo but with an extra readme.txt file and -inmemtm automatically added.
+# It depends on the existence of both the inmem_tm and trace_debug demo
+# directories.
+%if defined(__SUPPORTS_C__)
+%if file_exists("${__DIR__}/demo_inmem_tm") && file_exists("${__DIR__}/demo_trace_debug")
+component.inmem_tm_demo {
+#	display_type_name = "In-Memory TimeMachine Demo (C)"
+	display_object_name = "In-Memory TimeMachine"
+#	display_group = "Demos"
+	description  = "This example program demonstrates using TimeMachine "
+	description += "with In-Memory TimeMachine."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if !defined(SUPPORTS_INMEMTM_DEMO) || (SUPPORTS_INMEMTM_DEMO == 0)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddInMemTMDemo"
+		dlg_cmdlist = {"SetProgramProperties_InMemTMDemo", "AddLinkMap_InMemTMDemo"}
+	    }
+	    edit {
+		cmd_str = "EditInMemTMDemo"
+		dlg_cmdlist = {"ChangeLinkMap_InMemTMDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_time"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_InMemTMDemo"
+		    	same_object_dialogs =  { "AddLinkMap_InMemTMDemo" }
+		    }
+		}
+
+		default="timemachine"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE inmem_tm_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_inmem_tm" }
+			15 += { "defineLocal ABS_PRJ_SRC_DIR_2 ${__DIR__}/demo_trace_debug" }
+			20 += { "python ${__DIR__}/standalone_demos.py copy_inmem_tm_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_InMemTMDemo"
+		    edit.cmd_str = "ChangeLinkMap_InMemTMDemo"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+
+%if defined(__SUPPORTS_C__)
+%if file_exists("${__DIR__}/demo_memcheck")
+component.std_memcheck_demo {
+#	display_type_name = "Memory Checking Demo (C)"
+	display_object_name = "Memory Checking"
+#	display_group = "Demos"
+	description  = "This example demonstrates the memory leak "
+	description += "detection capabilities of the MULTI Debugger."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if defined(NO_INSTRUMENTED_CODE) || defined(NO_MEMCHECKING) || defined(TOO_SMALL_FOR_MEMCHECK)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddStdMemcheckDemo"
+		dlg_cmdlist = {"SetProgramProperties_StdMemcheckDemo", "AddLinkMap_StdMemcheckDemo"}
+	    }
+	    edit {
+		cmd_str = "EditStdMemcheckDemo"
+		dlg_cmdlist = {"ChangeLinkMap_StdMemcheckDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_memcheck"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_StdMemcheckDemo"
+		    	same_object_dialogs =  { "AddLinkMap_StdMemcheckDemo" }
+		    }
+		}
+
+		default="memcheck"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE std_memcheck_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_memcheck" }
+			20 += { "python ${__DIR__}/standalone_demos.py copy_std_memcheck_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_StdMemcheckDemo"
+		    edit.cmd_str = "ChangeLinkMap_StdMemcheckDemo"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+
+%if defined(__SUPPORTS_CXX__)
+%if file_exists("${__DIR__}/demo_profile")
+component.std_profiling_demo {
+#	display_type_name = "Profiling Demo (C++)"
+	display_object_name = "Target Profiling"
+#	display_group = "Demos"
+	description  = "This example demonstrates the profiling capabilities "
+	description += "of the MULTI IDE."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if defined(TOO_SMALL_FOR_CXX) || defined(NO_PROFILING_DEMO) || defined(VDSP_BROKEN_CXX) || defined(SCLLC_BROKEN_CXX) || defined(TOO_SMALL_FOR_CXX_PROFILE)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddStdProfileDemo"
+		dlg_cmdlist = {"SetProgramProperties_StdProfileDemo", "AddLinkMap_StdProfileDemo"}
+	    }
+	    edit {
+		cmd_str = "EditStdProfileDemo"
+		dlg_cmdlist = {"ChangeLinkMap_StdProfileDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_prof_cc"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_StdProfileDemo"
+		    	same_object_dialogs =  { "AddLinkMap_StdProfileDemo" }
+		    }
+		}
+
+		default="profiling_cc"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE std_profiling_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_profile" }
+			20 += { "python ${__DIR__}/standalone_demos.py copy_std_profile_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_StdProfileDemo"
+		    edit.cmd_str = "ChangeLinkMap_StdProfileDemo"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+
+%if defined (__SUPPORTS_C__)
+%if file_exists("${__DIR__}/demo_led")
+component.led_demo {
+	display_object_name = "LED Blinking"
+#	display_group = "Demos"
+	description  = "This example demonstrates blinking the LEDs on your "
+	description += "target board".
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+%if !defined(LED_DEMO_FILE_DIR)
+	disabled = true
+%endif
+
+	dlg_info {
+	    add {
+		cmd_str = "AddLEDDemo"
+		dlg_cmdlist = {"SetProgramProperties_LEDDemo", "AddLinkMap_LEDDemo"}
+	    }
+	    edit {
+		cmd_str = "EditLEDDemo"
+		dlg_cmdlist = {"ChangeLinkMap_LEDDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_led"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_LEDDemo"
+		    	same_object_dialogs =  { "AddLinkMap_LEDDemo" }
+		    }
+		}
+
+		default="blink"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE led_demo" }
+  	            }
+	            standard {
+%if defined(LED_DEMO_FILE_DIR)
+			15 += { "defineLocal ABS_LED_SRC_DIR ${LED_DEMO_FILE_DIR}" }
+%endif			
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_led" }
+			20 += { "python ${__DIR__}/standalone_demos.py copy_led_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_LEDDemo"
+		    edit.cmd_str = "ChangeLinkMap_LEDDemo"
+		}
+	    }
+	}
+}
+%endif
+%endif
+
+%endif

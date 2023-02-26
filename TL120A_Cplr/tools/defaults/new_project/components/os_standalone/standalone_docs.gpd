@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>GHS Project Component Documentation</title></head><body>
+<div id="multi.mpm.attribute.program_layout">
+Determines whether your program loads and executes from RAM and/or ROM. The most common choices are:<br><br>
+standalone_ram.ld - the program is loaded to and executes from RAM<br><br>
+standalone_romcopy.ld - the program is loaded to ROM. During startup the program copies itself to RAM<br><br>
+standalone_romrun.ld - the program is loaded to and executes from ROM
+</div>
+<hr>
+
+<div id="multi.mpm.std_linker_directives">
+Controls how your executable is linked and loaded in to memory.  This file is
+where you define the starting address and size of memory regions and specify
+which sections will be loaded in to those regions.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_ram">
+The program is linked so that it is loaded into, and executes out of RAM. Such
+programs are usually downloaded and started by running the Debugger and a
+debug server. This layout is generally used in the early stages of development.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_romcopy">
+The program is linked so that it can be loaded into ROM/FLASH, but copies
+itself to RAM and executes out of RAM. Such programs are burned into flash and
+connected to by using the Debugger and a debug server. This layout can be used
+for producing a final executable. It is faster than the romrun layout and
+offers software breakpoint debugging, but takes longer to initialize and
+requires more RAM.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_romrun">
+The program is linked so that it can be loaded into, and executes out of
+ROM/FLASH. Such programs must be burned into flash (for example, by using
+MULTI Fast Flash Programmer) and connected to by using the Debugger and a
+debug server. This layout may be used for producing a final executable. It
+requires the least amount of RAM, but is typically slower, and cannot be
+debugged using software breakpoints.  Some Debugger features that rely on
+software breakpoints may not be available in this mode, including
+System Calls, Command Line Procedure Calls, and Run-Time Error Checking.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_romdebug">
+The program is linked so that it can be loaded into, and executes primarily
+out of ROM/FLASH, with a few hook functions used by the Debugger copied into
+and executing from RAM.  Such programs must be burned into flash (for example,
+by using MULTI Fast Flash Programmer) and connected to by using the Debugger
+and a debug server. This layout may be used for producing a final executable.
+It requires only slightly more RAM than romrun mode, with similar performance.
+It cannot be debugged using software breakpoints, but some Debugger features
+not available in romrun mode will work, including System Calls, Command Line
+Procedure Calls, and Run-Time Error Checking.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_pic">
+Creates an executable with code sections that can be lcoated anywhere in memory.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_pid">
+Creates an executable with data sections that can be located anywhere in memory.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_picpid">
+Creates an executable with code and data sections that can be located anywhere
+in memory.
+</div>
+<hr>
+
+<div id="multi.mpm.std_ld_custom">
+<span id="title">
+Documentation for Linker Directives
+</span>
+<span id="text"></span>
+</div>
+<hr>
+
+<div id="multi.mpm.attribute.custom_libraries">
+You can include customizable versions of standard Green Hills libraries.
+</div>
+<hr>
+
+
+<div id="multi.mpm.exec_trace_demo">
+This example demonstrates the trace debugging capabilities of the MULTI 
+TimeMachine Debugger.
+</div>
+<hr>
+
+
+<div id="multi.mpm.standalone_program_cfg">
+<span id="title">
+Configuring a Standalone Program
+</span>
+<span id="text">
+The settings in this dialog control how your program is linked and allow you
+to include optional, customizable versions of various libraries.
+</span>
+</div>
+<hr>
+
+
+

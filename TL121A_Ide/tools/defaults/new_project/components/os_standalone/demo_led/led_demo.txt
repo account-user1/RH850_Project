@@ -1,0 +1,74 @@
+DESCRIPTION:
+
+    This program displays different patterns using the leds on your board.
+
+    The implementation is divided into three C files:
+
+        led_demo.c     - A hardware-independent program which links
+                         against an abstract LED-and-timer API (defined
+                         in parts_led.h and parts_timer.h) and uses
+                         these abstract services to implement the
+                         binary counter
+ 
+        parts_led.c    - Some functions that toggle whatever LED array is
+                         available for your specific board
+ 
+        parts_timer.c  - Some functions that implement sleep and timing
+                         services using the clock hardware on your
+                         specific board
+
+	parts_switch.c - Some functions that implement detection of physical
+	                 switch settings on the board.
+
+
+GETTING STARTED:
+
+1. Build Project, Connect to a Remote Target, and Open Debugger.
+
+   * Build the project by clicking the "Build" button in the Builder's toolbar
+
+   * Connect to your board by clicking the "Connect" button in the Builder's
+     toolbar
+
+   * Open the Debugger by clicking the "Debug" button in the Builder's toolbar
+
+
+2. Run the Demo
+
+   * Click the "Go" button in the Debugger's toolbar.  You should see
+     your program download via the current connection, and then the
+     LEDs on your board should begin blinking in various patterns.
+
+   * Locate the "main()" function in the led_demo.c file.  (This
+     should be the first source file displayed when you open the
+     Debugger.)
+
+   * Click on the green dot (called a "breakdot") to the left of the
+     switch statement of line 6 of main().
+
+   * Wait for the program to stop at your breakpoint.  (This should
+     happen within about half a second.)  You should see a red arrow
+     labelled "STOPPED" pointing at the top of the for loop.  This
+     indicates that your program has halted.
+
+     The switch statement you are about to enter chooses a light blinking
+     pattern based on the state of the switches on your board.  If your board
+     has no switches or support has not been implemented, the patterns are
+     rotated through sequentially.
+
+   * Click the "Go" button several times to see the lights blink in their
+     chosen pattern.  If your board has switches try changing their position.
+   
+   * Click the breakpoint (red stop-sign icon) to clear it.  You
+     should see that it becomes a green dot again.
+  
+   * Click the "Go" button in the Debugger's toolbar.  This will
+     resume execution of the counter program, and you should see the
+     LEDs continue blinking.
+
+   * The program will not exit but you may halt or kill it.  You may then
+     click the "Go" button again to download and run it again.  Reconnecting
+     is usually not necessary.
+
+   
+

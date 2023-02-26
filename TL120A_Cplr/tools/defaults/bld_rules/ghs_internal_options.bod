@@ -1,0 +1,1831 @@
+###############################################################################
+# ghs_internal_options.bod
+# 
+# These options are for internal GHS use only
+# and do not normally show up in the GUI
+###############################################################################
+
+CommandOptions {
+
+    GhsCompilerOptions {
+	    GDump {
+	    #### Internal - hidden
+		    {
+			    name="-gdump"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nogdump"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    guiLabel="Run GDUMP"
+		    guiCategory="GHS Internal"
+	    }
+	    SC_UseLLT {
+	    #### STARCORE - hidden
+		    {
+			    name="-sc_llt"
+			    value=0
+			    enumLabel="On"
+			    flags={"AlternateToolchain"}
+		    }
+		    {
+			    name="-nosc_llt"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    guiLabel="Use LLT"
+		    guiCategory="GHS Internal"
+	    }
+	    SC_LLTConf {
+	    #### STARCORE - hidden
+		    {
+			    name="--lltconf"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    hidden=true
+		    guiLabel="LLT Configuration File"
+		    guiCategory="GHS Internal"
+		    valueIsFilename=true
+	    }
+	    Mips_CallingSequence {
+	    #advanced option
+		    {
+			    name="-embedded_calling_sequence"
+			    value=0
+			    enumLabel="Embedded Calling Sequence"
+		    }
+		    {
+			    name="-workstation_calling_sequence"
+			    value=1
+			    enumLabel="Workstation Calling Sequence"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    guiLabel="Calling Sequence"
+		    guiCategory="Target"
+	    }	    
+	    Mips_O32Support {
+		    {
+			    name="-no_o32"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-o32"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+                    hidden=true 
+		    guiLabel="O32 ABI Support"
+		    guiCategory="Target"
+	    }
+	    V800_16BitDataPointer {
+		    {
+			    name="-16bit_data_pointer"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_16bit_data_pointer"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    disabled=true
+		    guiLabel="16-Bit Data Pointers on V850E"
+		    guiCategory="GHS Internal"
+		    commonLevel=101
+	    }
+	    ppc_FuncEndLabel {
+		    {
+			    name="--func_end_label"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_func_end_label"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    guiLabel="Function End Label"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    HostSpecificAlttoolsdir {
+	    # hidden - allows you to specify  a dir in the form of
+	    # os_dir/<host> instead of os_dir/bin
+		    name=":linux_option=host_specific_alttoolsdir"
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    value=1
+		    hidden=true
+		    guiLabel="Host specific alternate tools directory"
+		    enumLabel="On"
+		    guiCategory="GHS Internal"
+	    }
+	    StdLibBase{
+	    # hidden - very advanced
+		    {
+			    name="-stdlibbase"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-stdlibbase"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    hidden=true
+		    pass={"All"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Alternate Standard Library Base"
+		    guiCategory="GHS Internal"
+	    }
+	    RegChgMask{
+	    # hidden
+		    {
+			    name="-regchgmask"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    hidden=true
+		    pass={"All"}
+		    guiLabel="Reg Chg Mask - Optimization Option"
+		    guiCategory="GHS Internal"
+	    }
+	    MinAlignment {
+#		    {
+#			    name="--struct_min_alignment 1"
+#			    enumLabel="1-byte"
+#			    value=0
+#		    }
+		    {
+			    name="--struct_min_alignment=1"
+			    enumLabel="1-byte"
+			    value=0
+		    }
+#		    {
+#			    name="--struct_min_alignment 2"
+#			    enumLabel="2-byte"
+#			    value=1
+#		    }
+		    {
+			    name="--struct_min_alignment=2"
+			    enumLabel="2-byte"
+			    value=1
+		    }
+#		    {
+#			    name="--struct_min_alignment 4"
+#			    enumLabel="4-byte"
+#			    value=2
+#		    }
+		    {
+			    name="--struct_min_alignment=4"
+			    enumLabel="4-byte"
+			    value=2
+		    }
+#		    {
+#			    name="--struct_min_alignment 8"
+#			    enumLabel="8-byte"
+#			    value=3
+#		    }
+		    {
+			    name="--struct_min_alignment=8"
+			    enumLabel="8-byte"
+			    value=3
+		    }
+		    delimiter="NoArg"
+		    hidden=true
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Minimum Structure Alignment"
+		    guiCategory="GHS Internal"
+	    }
+	    AlignStandaloneObjects {
+	    # hidden
+		    {
+			    name="-align_standalone_objects"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_align_standalone_objects"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    pass={"All"}
+		    guiLabel="Align Standalone Objects"
+		    guiCategory="GHS Internal"
+	    }
+	    LexicalConstructs {
+	    # hidden
+		    {
+			    name="--lexical_constructs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_lexical_constructs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    pass={"All"}
+		    guiLabel="Line Debug Info Detail"
+		    guiCategory="GHS Internal"
+	    }
+	    MinL{
+	    # hidden
+		    {
+			    name="--minl"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Omit Linking Against Standard C++ Run-Time Library"
+		    guiCategory="GHS Internal"
+	    }
+    	    KeepGeneratedC {
+	    # hidden
+		    {
+	    		    name="--keep_gen_c"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+    		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    hidden=true
+		    guiLabel="Keep Generated .ic C Files"
+		    guiCategory="GHS Internal"
+    	    }
+    	    DualObj {
+	    # hidden
+		    {
+	    		    name="-no_dual_obj"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+    		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    hidden=true
+		    guiLabel="Disable dual_obj"
+		    guiCategory="GHS Internal"
+    	    }
+	    ExtractVptrs {
+	    # This is an optimization for UVFD to not update the vptrs inside
+	    # of base class constructors.  This relies on the user writing
+	    # code that doesn't try to use virtual functions in these
+	    # constructors.  We don't validate it, so I say we don't
+	    # support it.
+		    {
+			    name="--extract_vptrs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_extract_vptrs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Do Not Use Virtual Tables in Base Class Constructor"
+		    guiCategory="C/C++ Compiler;C++;Virtual Tables"
+		    commonLevel=101
+   	    }
+	    Elxr_CrcInitVal {
+	    # this should be hidden since it's specified in the driver options
+		    name="-crc_initval"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="CRC Initial Value"
+		    guiCategory="GHS Internal"
+	    }
+	    Elxr_CrcPolynomial {
+	    # this should be hidden since it's specified in the driver options
+		    name="-crc_polynomial"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="CRC Polynomial"
+		    guiCategory="GHS Internal"
+	    }
+	    Experiment {
+		    {
+			    name="-experiment"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_experiment"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Experiment"
+		    guiCategory="GHS Internal"
+	    }
+	    IgnoreQuietly {
+		    {
+			    name="-ignore_quietly"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ignore_quietly"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Accept Unknown Options without Warning"
+		    guiCategory="GHS Internal"
+	    }
+	    InlineDepth {
+		    name="--inline_depth"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="-OI Heuristics - Depth"
+		    guiCategory="GHS Internal"
+	    }
+	    InlineComplexity {
+		    name="--inline_complexity"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="-OI Heuristics - Complexity"
+		    guiCategory="GHS Internal"
+	    }
+	    InlineMultiplier {
+		    name="--inline_multiplier"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="-OI Heuristics - Multiplier"
+		    guiCategory="GHS Internal"
+	    }
+	    ReclaimSize {
+		    name="--reclaim_size"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Reclaim Size"
+		    guiCategory="GHS Internal"
+	    }
+	    SdaRange{
+		    {
+			    name="-sdarange"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="SDA Range"
+		    guiCategory="GHS Internal"
+	    }
+	    TdaRange{
+		    {
+			    name="-tdarange"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="TDA Range"
+		    guiCategory="GHS Internal"
+	    }
+	    ZdaRange{
+		    {
+			    name="-zdarange"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="ZDA Range"
+		    guiCategory="GHS Internal"
+	    }
+	    BackBranchNops{
+		    {
+			    name="-backbranchnops"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Back Branch Nops"
+		    guiCategory="GHS Internal"
+	    }	    
+	    Suppress{
+		    {
+			    name="-suppress"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Suppress"
+		    guiCategory="GHS Internal"
+	    }
+	    DefinitionListFile {
+		    {
+			    name="--definition_list_file"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Template Instantiation - Definition List File (Nikola)"
+		    guiCategory="GHS Internal"
+	    }
+	    File {
+		    {
+			    name="-file"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="rarely used"
+		    guiCategory="GHS Internal"
+	    }
+	    UseAsmPreproc{
+		    {
+			    name="-use_asm_preproc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_asm_preproc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="invokes translator on asm files for RH32"
+		    guiCategory="GHS Internal"
+	    }
+	    ProgName{
+		    {
+			    name="-print_progname"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_progname"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Prepends Program Name to Error Message"
+		    guiCategory="GHS Internal"
+	    }
+	    Ose431{
+		    {
+			    name="-ose_431"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="OSE 431 - Remove?"
+		    guiCategory="GHS Internal"
+	    }
+	    Otree{
+		    {
+			    name="-Otree"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-O$$$"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Onotree"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Otree - Remove?"
+		    guiCategory="GHS Internal"
+	    }
+	    PrivateDefines{
+		    {
+			    name="-private_defines"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_private_defines"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Enables Predefined Symbols for Building Our Libraries"
+		    guiCategory="GHS Internal"
+	    }
+	    ConsolidatedDefaultLdFiles {
+		    {
+			    name="-consolidated_default_lds"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_consolidated_default_lds"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Enables Searching for Consolidated Default Linker Directive Files"
+		    guiCategory="GHS Internal"
+	    }
+
+	    CompatibilityMode {
+	    # hidden / driver-only
+		    {
+			    name="-compat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-c2000"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-compat_only"
+			    value=2
+			    enumLabel="On (c2000 mode not supported)"
+		    }
+		    {
+			    name="-c2000_only"
+			    value=3
+			    enumLabel="Off (compat mode not supported)"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Use Compatibility Mode Target"
+		    guiCategory="GHS Internal"
+	    }
+
+    ###################### Linux Options
+
+	Linux_Version {
+	    name="-linux_version"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    hidden=true
+	    guiLabel="Linux Version"
+	    guiCategory="GHS Internal"
+	}
+
+   ###################### VxWorks Options
+
+	VxWorks_Version {
+	    name="-vxworks_version"
+	    delimiter="Equal"
+	    merge="Replace"
+	    optionType="String"
+	    pass={"All"}
+	    hidden=true
+	    guiLabel="VxWorks Version"
+	    guiCategory="GHS Internal"
+	}
+
+    ###################### Trace Register Reservation
+
+	    TraceReg {
+		    {
+			    name="-tracereg"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_tracereg"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Trace Register Reservation"
+		    guiCategory="GHS Internal"
+		    commonLevel=1
+		    pass={"All"}
+		    hidden=true
+		    disabled=true
+	    }
+
+	    TraceRegCheck {
+		    {
+			    name="-tracereg_check"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_tracereg_check"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Trace Register Usage Check"
+		    guiCategory="GHS Internal"
+		    commonLevel=101
+		    pass={"All"}
+		    hidden=true
+		    disabled=true
+	    }
+
+	    LinkTraceRegCheck {
+		    {
+			    name="-link_itmreg_check"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-link_tracereg_check"
+			    value=1
+		    }
+		    {
+			    name="-no_link_itmreg_check"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_link_tracereg_check"
+			    value=0
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Trace Linker Compatibility Warnings"
+		    guiCategory="GHS Internal"
+		    commonLevel=101
+		    pass={"Link"}
+		    hidden=true
+		    disabled=true
+	    }
+
+    ################# Legacy Command Settings ########################
+    
+	    SysLibraries {
+		    {
+			    name=":syslibraries"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="System Libraries"
+		    guiCategory="GHS Internal"
+	    }
+	    SysLibdirs {
+		    flags={"RELATIVEPATH"}
+		    {
+			    name=":syslibdirs"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="System Library Directories"
+		    guiCategory="GHS Internal"
+	    }
+	    DefLibraries {
+		    {
+			    name=":deflibraries"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Default Libraries"
+		    guiCategory="GHS Internal"
+	    }
+	    DefLibdirs {
+		    flags={"RELATIVEPATH"}
+		    {
+			    name=":deflibdirs"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Default Library Directories"
+		    guiCategory="GHS Internal"
+	    }
+	    GhsLibrary {
+		    {
+			    name=":debug_option=ghs_library"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    value=1
+		    guiLabel="Green Hills Library"
+		    enumLabel="On"
+		    hidden=true
+		    guiCategory="GHS Internal"
+		    }
+	    AdaCompilerName {
+		    {
+			    name="-ada_compiler.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Ada Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    AdaCompilerPath {
+		    {
+			    name="-ada_compiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Ada Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    AdaCompilerArgs {
+		    {
+			    name="-ada_compiler.args"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Ada Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    ECCompilerArgs {
+		    {
+			    name="-ec_compiler.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Edison C Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    ECCompilerPath {
+		    {
+			    name="-ec_compiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Edison C Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    OldCCompilerName {
+		    {
+			    name="-oldc_compiler.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Old C Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    OldCCompilerPath {
+		    {
+			    name="-oldc_compiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Old C Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    OldCCompilerArgs {
+		    {
+			    name="-oldc_compiler.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Old C Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    NativeCCompilerName {
+		    {
+			    name="-nativeccompiler.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Native C Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    NativeCCompilerPath {
+		    {
+			    name="-nativeccompiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Native C Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    NativeCCompilerArgs {
+		    {
+			    name="-nativeccompiler.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Native C Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    CCompilerName {
+		    {
+			    name="-ec_compiler.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="C Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    CxxCompilerName {
+		    {
+			    name="-cxx_compiler.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="C++ Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    CxxCompilerPath {
+		    {
+			    name="-cxx_compiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="C++ Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    CxxCompilerArgs {
+		    {
+			    name="-cxx_compiler.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="C++ Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    CxxfeArgs {
+		    {
+			    name="-cxxfe.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="C++ Translator Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    PascalCompilerName {
+		    {
+			    name="-pascal_compiler.name"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Pascal Compiler"
+		    guiCategory="GHS Internal"
+	    }
+	    PascalCompilerPath {
+		    {
+			    name="-pascal_compiler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Pascal Compiler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    PascalCompilerArgs {
+		    {
+			    name="-pascal_compiler.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Pascal Compiler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    AssemblerPath {
+		    {
+			    name="-assembler.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Assembler Path"
+		    guiCategory="GHS Internal"
+	    }
+	    AssemblerArgs {
+		    {
+			    name="-assembler.args"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    hidden=true
+		    guiLabel="Assembler Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    PrelinkerName {
+		    {
+			    name="-prelink.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Prelinker"
+		    guiCategory="GHS Internal"
+	    }
+	    PrelinkerPath {
+		    {
+			    name="-prelink.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Prelinker Path"
+		    guiCategory="GHS Internal"
+	    }
+	    PrelinkerArgs {
+		    {
+			    name="-prelink.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Prelinker Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    LinkerArgs {
+		    {
+			    name="-linker.args"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Linker Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    SharedLinkerName {
+		    {
+			    name="-sharedlinker.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Shared Linker"
+		    guiCategory="GHS Internal"
+	    }
+	    SharedLinkerPath {
+		    {
+			    name="-sharedlinker.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Shared Linker Path"
+		    guiCategory="GHS Internal"
+	    }
+	    SharedLinkerArgs {
+		    {
+			    name="-sharedlinker.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Shared Linker Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    StripName {
+		    {
+			    name="-strip.name"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Strip Utility"
+		    guiCategory="GHS Internal"
+	    }
+	    StripDir {
+		    {
+			    name="-strip.dir"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="Strip Utility Path"
+		    guiCategory="GHS Internal"
+	    }
+            StripArgs {
+                    {
+                            name="-strip.args"
+                    }
+                    delimiter="Equal"
+                    merge="Concat"
+                    optionType="String"
+                    pass={"Link"}
+                    hidden=true
+                    guiLabel="Strip Utility Arguments"
+                    guiCategory="GHS Internal"
+            }
+	    DblinkName {
+		    {
+			name="-dblink.name"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="MULTI Debug Info Linker"
+		    guiCategory="GHS Internal"
+	    }
+	    DblinkDir {
+		    {
+			name="-dblink.dir"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="MULTI Debug Info Linker Path"
+		    guiCategory="GHS Internal"
+	    }
+	    DblinkArgs {
+		    {
+			name="-dblink.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="MULTI Debug Info Linker Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    GsrcanalyzerName {
+		    {
+			name="-gsa.name"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="MULTI Source Analyzer"
+		    guiCategory="GHS Internal"
+	    }
+	    GsrcanalyzerDir {
+		    {
+			name="-gsa.dir"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="MULTI Source Analyzer"
+		    guiCategory="GHS Internal"
+	    }
+	    GsrcanalyzerArgs {
+		    {
+			name="-gsa.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="MULTI Source Analyzer"
+		    guiCategory="GHS Internal"
+	    }
+	    NMUtilityName {
+		    {
+			    name="-nm_utility.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="NM Utility"
+		    guiCategory="GHS Internal"
+	    }
+	    NMUtilityPath {
+		    {
+			    name="-nm_utility.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="NM Utility Path"
+		    guiCategory="GHS Internal"
+	    }
+	    NmUtilityArgs {
+		    {
+			    name="-nm_utility.args"
+		    }
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="String"
+		    pass={"Link"}
+		    hidden=true
+		    guiLabel="NM Utility Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    CustomProcessorName {
+		    {
+			    name="-custom_processor.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Custom Processor"
+		    guiCategory="GHS Internal"
+	    }
+	    CustomProcessorPath {
+		    {
+			    name="-custom_processor.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Custom Processor Path"
+		    guiCategory="GHS Internal"
+	    }
+	    CustomProcessorArgs {
+		    {
+			    name="-custom_processor.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Custom Processor Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    ArchiverName {
+		    {
+			    name="-archiver.name"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Archiver"
+		    guiCategory="GHS Internal"
+	    }
+	    ArchiverPath {
+		    {
+			    name="-archiver.dir"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Archiver Path"
+		    guiCategory="GHS Internal"
+	    }
+	    ArchiverArgs {
+		    {
+			    name="-archiver.args"
+		    }
+		    merge="Concat"
+		    optionType="String"
+		    pass={"All"}
+		    delimiter="Equal"
+		    hidden=true
+		    guiLabel="Archiver Arguments"
+		    guiCategory="GHS Internal"
+	    }
+	    AutoInstantiation {
+		    {
+			    name="--auto_instantiation"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-template=auto"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_auto_instantiation"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-template=noauto"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Auto-Instantiation of Templates"
+		    guiCategory="GHS Internal"
+		    hidden=true
+	    }
+	    AlternateToolsDir {
+		    {
+			    name="-alttools"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Alternate Tools Directory"
+		    guiCategory="GHS Internal"
+		    hidden=true
+	    }
+	    TraceEdge {
+		    {
+			    name="-traceedge"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_traceedge"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="TraceEdge Instrumentation"
+		    guiCategory="GHS Internal"
+		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+
+	    TraceEdgeIgnore {
+		    {
+			    name="-traceedge_ignore"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="TraceEdge Ignore List"
+		    guiCategory="GHS Internal"
+		    disabled=true
+		    hidden=true
+	    }
+
+	    InMemTimeMachine {
+		    {
+			    name="-inmemtm"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_inmemtm"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="In-Memory TimeMachine Instrumentation"
+		    guiCategory="GHS Internal"
+		    pass={"Link"}
+		    disabled=true
+		    hidden=true
+	    }
+
+	    InMemTMIgnore {
+		    {
+			    name="-inmemtm_ignore"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="In-Memory TimeMachine Ignore List"
+		    guiCategory="GHS Internal"
+		    disabled=true
+		    hidden=true
+	    }
+	    ExternInline {
+		    {
+			    name="--extern_inline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_extern_inline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Inline Functions with Extern"
+		    guiCategory="GHS Internal"
+		    commonLevel=101
+		    disabled=true
+		    hidden=true
+	    }
+    
+	    ForInits {
+		    {
+			    name="--new_for_init"
+			    value=0
+			    enumLabel="New"
+		    }
+		    {
+			    name="--old_for_init"
+			    value=1
+			    enumLabel="Old"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="For-Loop Initialization Scope"
+		    guiCategory="GHS Internal"
+		    disabled=true
+		    hidden=true
+	    }
+	    ForInitDiffWarning {
+		    {
+			    name="--for_init_diff_warning"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_for_init_diff_warning"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="New-Style 'for-init' Code"
+		    guiCategory="GHS Internal"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    EnumIsSigned {
+		    {
+			    name="--signed_enum_fields"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="--unsigned_enum_fields"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Signedness of Enum Bitfield Type"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+		    hidden=true
+		}
+	    TemplateMode {
+		    {
+			    name="-tall"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="--instantiate=all"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-tlocal"
+			    value=1
+			    enumLabel="Local Only"
+		    }
+		    {
+			    name="--instantiate=local"
+			    value=1
+			    enumLabel="Local Only"
+		    }
+		    {
+			    name="-tused"
+			    value=2
+			    enumLabel="Used Only"
+		    }
+		    {
+			    name="--instantiate=used"
+			    value=2
+			    enumLabel="Used Only"
+		    }
+		    {
+			    name="-tnone"
+			    value=3
+			    enumLabel="None"
+		    }
+		    {
+			    name="-tnever"
+			    value=3
+			    enumLabel="None"
+		    }
+		    {
+			    name="--instantiate=none"
+			    value=3
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Manual Template Instantiation Mode"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }
+	    MaxComplexity{
+	    	{
+			name="-maxcomplexity"
+		}
+	    	delimiter="Equal"
+		merge="Replace"
+		optionType="string"
+		pass={"All"}
+		guiLabel="Max Complexity"
+		guiCategory="C/C++ Compiler"
+		hidden=true
+	    }
+	    DotCisCxx {
+		    {
+			    name="-dotciscxx"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nodotciscxx"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_dotciscxx"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel=".c Files are C++"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    NoUseBeforeSetWarnings {
+		    #### ecom only ####
+		    {
+			    name="--use_before_set_warnings"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_use_before_set_warnings"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Use Before 'Set'"
+		    guiCategory="Compiler Diagnostics;C/C++ Messages"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    PrepareFeedbackOptimizations {
+		    {
+			    name="-prepare_for_feedback"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_prepare_for_feedback"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Prepare For Feedback"
+		    guiCategory="Optimization"
+		    hidden=true
+	    }
+	    FeedbackOptimizations {
+		    {
+			    name="-feedback"
+			    value=0
+			    enumLabel="On"
+			    delimiter="Equal"
+			    optionType="List"
+			    valueIsFilename=true
+		    }
+		    {
+			    name="-no_feedback"
+			    value=1
+			    enumLabel="Off"
+			    delimiter="NoArg"
+			    optionType="Enum"
+		    }
+		    merge="Replace"
+		    pass={"All"}
+		    guiLabel="Use Feedback"
+		    guiCategory="Optimization"
+		    hidden=true
+	    }
+	    DiscretionaryErrors {
+		    {
+			    name="--discretionary_errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="-pedantic-errors"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--discretionary_warnings"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-pedantic"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="ANSI C and Standard C++ Extensions"
+		    guiCategory="C/C++ Compiler"
+		    hidden=true
+	    }
+	    FullMacroDebugInfo {
+		    {
+			    name="-full_macro_debug_info"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-no_full_macro_debug_info"
+			    value=1
+			    enumLabel="Reduced"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Macro Debugging Information"
+		    guiCategory="Debugging;Reducing Debug File Size"
+		    hidden=true
+	    }
+	    RelativeXofPath {
+		    {
+			    name="--relative_xof_path"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_relative_xof_path"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Relative Xof Path"
+		    guiCategory="Debugging"
+		    hidden=true
+	    }	    
+	    PCHValidate {
+		    {
+			    name="--pch_validate"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_pch_validate"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="PCH Validate"
+		    guiCategory="GHS Internal"
+		    hidden=true
+	    }
+    }
+}

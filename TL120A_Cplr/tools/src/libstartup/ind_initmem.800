@@ -1,0 +1,176 @@
+--
+--      V850 Language Independent Library
+--
+--      Copyright (C) 2015-2015 by Green Hills Software Inc.
+--
+--      This program is the property of Green Hills Software, Inc,
+--      its contents are proprietary information and no part of it
+--      is to be disclosed to anyone except employees of Green Hills
+--      Software, Inc., or as agreed in writing signed by the President
+--      of Green Hills Software, Inc.
+--
+-- ind_initmem.800: RAM Initialization at Startup.
+
+/* In ind_initmem.800, a __ghs_board_memory_init function is implemented as 
+ * an entry point for initializing RAM at startup, utilizing the RAM
+ * initialization table that the linker generates and places in the .secinfo
+ * section. The table is bounded by the symbols __ghsbinfo_init and
+ * __ghseinfo_init and contains records detailing sections that reside in
+ * RAM and should be initialized at startup.   __ghs_board_memory_init looks 
+ * through the RAM initialization table and initializes the RAM region specified 
+ * by each entry. By default the RAM regions are initialized to be 0. Optionally 
+ * one can specify a 32-bit word pattern to write to RAM regions at 
+ * initialization.
+ *
+ * __ghs_board_memory_init is called in _start, before it calls __ghs_ind_crt0 
+ * to clear uninitialized sections, copy initialized sections, or decompress 
+ * compressed initialized sections from ROM to RAM. 
+ *
+ * ind_initmem.o resides in libstartup.a. Since __ghs_board_memory_init is 
+ * declared as a weak function, by default the linker will not pull in 
+ *__ghs_board_memory_init from libstartup.a(ind_initmem.o), so the call is 
+ * skipped and RAM Initialization is disabled.  Optionally one can force the 
+ * linker to pull in __ghs_board_memory_init from libstartup.a and enable RAM 
+ * Initialization. 
+ *
+ * __ghs_board_memory_init should not use stack, should only use registers
+ * and should preserve the registers that are set up in _start before it is
+ * called. For example, on V850, _start saves argc, argv, envp passed to main
+ * in C in r7/r8/r9 before calling __ghs_board_memory_init, therefore
+ * __ghs_board_memory_init should not trash these registers if you want to
+ * support program environment for your program.
+ *
+ * Initializing RAM at startup is only supported when the program is built to
+ * boot from ROM and is not built for PIC or PID.
+ */
+
+
+#include "ind_800.h"
+
+	.file "ind_initmem.800"
+
+	.weak	___ghs_rombootcodestart
+	.weak	___ghs_rombootcodeend
+	.weak	___ghsbinfo_tinit
+	.weak	___ghsbinfo_ainit
+	.weak	___ghsbegin_stack
+	.weak	___ghsend_stack
+
+	-- The value used for initializing RAM, a weak symbol that may be set by
+	-- the linker option -ram_init_val=n. By default, the value is 0.
+	.weak	___ghs_ram_initializer	
+
+	-- Declaring __ghs_board_memory_init weak allows one to link 
+	-- his/own customized version
+	.weak	___ghs_board_memory_init
+
+	.text
+	.align	2
+..lxtdaG.___ghs_board_memory_init=:0
+___ghs_board_memory_init:
+
+        -- If the program is not built to boot from ROM, return
+	MOV32(___ghs_rombootcodeend,r1)
+	MOV32(___ghs_rombootcodestart,r14)
+	cmp	r1,r14
+	be	return
+
+	-- Since __ghs_board_memory_init is called early in _start before
+	-- other initializations, special care needs to be taken to preserve
+	-- r7/r8/r9, which hold (argc,argv,envp) passed to main() in C.
+	-- Do not trash these registers.
+	-- In 20 register mode, we cannot use r15-r24.
+
+	-- The fill value for initializing the memory regions in RAM
+	MOV32(___ghs_ram_initializer,r6)
+
+#ifdef SUPPORT_PROGRAM_ENVIRONMENT
+	MOV32(___ghsbegin_stack,r1)
+	MOV32(___ghsend_stack,r5)
+#endif
+	mov	-4,r11			-- mask for rounding address to 4-byte
+					-- alignment
+
+        -- The linker puts RAM sections that need to be initialized in the
+        -- table in [__ghsbinfo_init, __ghseinfo_init) in .secinfo. Look 
+	-- through sections in the table and initialize the memory regions 
+	-- for them. For each entry in the table,
+        --    word #1:    section address (start address to be initialized)
+        --    word #2:    section size (bytes to be initialized)
+
+	MOV32(___ghsbinfo_init,r12)	-- r12: pointer to the table entry
+	MOV32(___ghseinfo_init,r10)	-- r10: end of table
+
+init_ram_table_loop:
+	-- reached the end of table, return 
+	cmp	r10,r12
+	bnl	return
+
+	ld.w	4[r12],r14		-- the section's size
+	cmp	zero,r14	 	-- skip the section if it is empty
+	be	next
+
+	ld.w	0[r12],r13		-- the section's address
+
+#ifdef SUPPORT_PROGRAM_ENVIRONMENT
+	cmp	r1,r13
+	bne	stack_init_ready
+
+        -- For .stack, take care to not overwrite the environment for the 
+	-- program, i.e (argc, argv, envp) passed to main().
+	-- Adjust the size to be initialized by subtracting the 
+	-- size of existing stack frames from the size of .stack section.
+	--
+        -- The following assumes the stack grows downward, which is the case
+        -- on V850/RH850
+
+	-- size = size - (__ghsend_stack - current_SP)
+	add	sp,r14
+	sub	r5,r14
+stack_init_ready:
+#endif
+	add	r13,r14			-- the end address
+	and	r11,r13			-- round down start address to 4-byte
+	mov	r13,ep
+	add	3,r14
+	and	r11,r14			-- round up end address to 4-byte
+	subr	r14,r13		
+	shr	2,r13			-- the # of 32-bit accesses
+
+	mov	r13,r14
+	shr	2,r14			-- unroll the loop by factor=4
+	be	one_word_loop_setup
+four_words_loop:
+	st.w	r6,0[ep]
+	st.w	r6,4[ep]
+	st.w	r6,8[ep]
+	st.w	r6,12[ep]
+	addi	16,ep,ep
+#ifdef __CORE_V850E3V5__
+	loop	r14,four_words_loop
+#else
+	add	-1,r14
+	bnz	four_words_loop
+#endif
+one_word_loop_setup:
+	andi	3,r13,r14
+	be	next
+one_word_loop:
+	sst.w	r6,0[ep]
+	add	4,ep
+#ifdef __CORE_V850E3V5__
+	loop	r14,one_word_loop
+#else
+	add	-1,r14
+	bnz	one_word_loop
+#endif
+next:
+	add	8,r12
+	br	init_ram_table_loop
+return:
+	jmp	[lp]
+        .fsize  ___ghs_board_memory_init,0
+        .scall  ___ghs_board_memory_init,__leaf__
+	.type	___ghs_board_memory_init,@function
+	.size	___ghs_board_memory_init,.-___ghs_board_memory_init
+

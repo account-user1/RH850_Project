@@ -1,0 +1,187 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.program.disabled = false
+
+%if file_exists("${__DIR__}/hello_world")
+component.tx_hello_c {
+        display_type_name = "Example"
+	display_object_name = "Hello World (C)"
+	sort_key="AAA-C"
+	description = "A simple example program written in C."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Example (C)"
+		cmd_str = "AddTxHelloC"
+		dlg_cmdlist = {"SetProgramProperties_TxHelloC", "AddLinkMap_TxHelloC"}
+	    }
+	    edit {
+	        menu_str = "Configure Hello World Example (C)"
+		cmd_str = "EditTxHelloC"
+		dlg_cmdlist = {"ChangeLinkMap_TxHelloC"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_hello"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_TxHelloC"
+		    	same_object_dialogs =  { "AddLinkMap_TxHelloC" }
+		    }
+		}
+
+		default="hello"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE tx_hello_c" }
+  	            }
+	            standard {
+	                15 += { "defineLocal ABS_SRC_NAME ${__DIR__}/hello_world/hello.c" }
+	                20 += { "python ${__SHARED_PY_DIR__}/projects.py copy_file_into_project" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_TxHelloC"
+		    edit.cmd_str = "ChangeLinkMap_TxHelloC"
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/hello_world")
+component.tx_hello_cxx {
+        display_type_name = "Example"
+	display_object_name = "Hello World (C++)"
+	sort_key="AAA-Cxx"
+	description = "A simple example program written in C++."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Hello World Example (C++)"
+		cmd_str = "AddTxHelloCxx"
+		dlg_cmdlist = {"SetProgramProperties_TxHelloCxx", "AddLinkMap_TxHelloCxx"}
+	    }
+	    edit {
+	        menu_str = "Configure Hello World Example (C++)"
+		cmd_str = "EditTxHelloCxx"
+		dlg_cmdlist = {"ChangeLinkMap_TxHelloCxx"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_hello_cc"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_TxHelloCxx"
+		    	same_object_dialogs =  { "AddLinkMap_TxHelloCxx" }
+		    }
+		}
+
+		default="hello_cc"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE tx_hello_cxx" }
+  	            }
+	            standard {
+	                15 += { "defineLocal ABS_SRC_NAME ${__DIR__}/hello_world/hello.cc" }
+	                20 += { "python ${__SHARED_PY_DIR__}/projects.py copy_file_into_project" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_TxHelloCxx"
+		    edit.cmd_str = "ChangeLinkMap_TxHelloCxx"
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_sorter")
+component.tx_sorter {
+        display_type_name = "Demo"
+	display_object_name = "Product Demonstration"
+	description  = "This program is a simple demonstration system which "
+	description += "shows the debugging capabilities of MULTI for ThreadX."
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+	dlg_info {
+	    add {
+	        menu_str = "Add Product Demonstration"
+		cmd_str = "AddTxSorterDemo"
+		dlg_cmdlist = {"SetProgramProperties_TxSorterDemo", "AddLinkMap_TxSorterDemo"}
+	    }
+	    edit {
+	        menu_str = "Configure Product Demonstration"
+		cmd_str = "EditTxSorterDemo"
+		dlg_cmdlist = {"ChangeLinkMap_TxSorterDemo"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_sorter"
+	    }
+  	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProgramProperties_TxSorterDemo"
+		    	same_object_dialogs =  { "AddLinkMap_TxSorterDemo" }
+		    }
+		}
+
+		default="sorter"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE tx_sorter" }
+  	            }
+	            standard {
+		        10 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_sorter" }
+%if defined(THREADX_MAIN_FILE_BASE)
+			13 += { "defineLocal MAIN_FILE_BASE ${THREADX_MAIN_FILE_BASE}" }
+%endif
+		    	15 += { "python ${__DIR__}/threadx_common.py copy_sorter_demo" }
+		    }
+		}
+	    }
+	    linkMap {
+	    	dlg_info {
+		    add.cmd_str = "AddLinkMap_TxSorterDemo"
+		    edit.cmd_str = "ChangeLinkMap_TxSorterDemo"
+		}
+	    }
+	    event_analyzer {
+	        choices {
+		    off.default = false
+		    on.default = true
+		}
+	    }
+	}
+}
+%endif
+
+%endif

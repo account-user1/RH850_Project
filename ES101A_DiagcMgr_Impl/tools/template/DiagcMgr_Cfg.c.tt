@@ -1,0 +1,853 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015, 2016, 2017 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name  : DiagcMgr_Cfg.c
+* Module Description: DiagcMgr
+* Project           : CBD
+* Author            : Spandana Balani
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          8 %
+* %derived_by:       nz2554 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                         SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------   ----------
+* 02/26/16  1        SB         ES101A_DiagcMgr_Design version 2 implementation                              EA4#3421
+* 04/19/16  2        SB         ES101A_DiagcMgr_Design version 3 implementation                              EA4#5110
+* 05/23/16  3        SB         Updated to fix anomaly EA4#5865  NTC BF not setting                          EA4#5905
+* 06/20/16  4        SB         ES101A_DiagcMgr_Design version 4 implementation                              EA4#6251
+* 08/30/16  5        SB         Updated logic for DEMDTCEVEIDMAP                                             EA4#6368
+* 09/23/16  6        SB         Added error codes                                                            EA4#7191
+* 04/10/17  7        SR         Added NtcPPtyAry definition. Also added CONST definitions for the config
+*                               params DIAGCMGRLISTOFLTCHGNTC_CNT_ENUM and DIAGCMGRNTCLTCHCNTRTHD_CNT_U08    EA4#10779
+*                               Added Enviroment.Exit codes 13/14/15 for invalid config at generation.
+* 08/04/17  8        SR         Fix for Anomaly EA4#12478                                                    EA4#13175
+**********************************************************************************************************************/
+
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) ); #>
+
+/*******************************************************************************
+**                      Include Section                                       **
+*******************************************************************************/
+#define DIAGCMGR_C 
+#include "DiagcMgr_Cfg.h"
+#include "Dem.h"
+
+/*******************************************************************************
+**                      Module Private Data                                   **
+*******************************************************************************/
+/* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */ 
+
+#define DiagcMgr_START_SEC_CODE
+#include "DiagcMgr_MemMap.h"
+<#
+    int DtcCount = Count(Xp.ContainerAtDefRefTo( "DTCEnaCndn" ));
+    const int NtcMapSize = 512;
+    string NtcNrs = "";
+    int osApplCnt = 0;  
+    List<NtcInfoClass> NtcInfoList = new List<NtcInfoClass>();
+    for (int i = 0; i < NtcMapSize; i++)
+    {
+        NtcInfoClass tmp = new NtcInfoClass();
+        tmp.id = i;
+        tmp.NtcNr          = "NTCNR_0X" + i.ToString("X3"); 
+        tmp.OsAppl         = "255U";
+        tmp.NtcInfoIdx     = 255;
+        tmp.DebCntrIdx     = 0;
+        NtcInfoList.Add(tmp);
+    }
+#>
+
+    /* 
+     * Description: NTC to Application Index and Info Index aint with DebCntrIdx Map 
+     * Usage:       Index into the table with the desired NTC (1 to <#=NtcMapSize#>)
+     *              An application value 0xFFU indicates no mapping exists for the NTC
+     */
+    CONST(NtcMapRec1, DiagcMgr_CODE) DIAGCMGRNTCMAP_CNT_REC[D_MAXNUMBEROFNTCS_CNT_U16]= {
+    /*  ApplIdx , NtcInfoIdx, DebCntrIdx  */
+<# 
+    int InfoIdxCntr0 =0;
+    int InfoIdxCntr1 =0;
+    int InfoIdxCntr2 =0;
+    int InfoIdxCntr3 =0;
+    int InfoIdxCntr4 =0;
+    int InfoIdxCntr5 =0;
+    int InfoIdxCntr6 =0;
+    int InfoIdxCntr7 =0;
+    int InfoIdxCntr8 =0;
+    int InfoIdxCntr9 =0;
+    int InfoIdxCntr10 =0;
+    int ApplIdx = 255;
+    int DebCntr0 =0;
+    int DebCntr1 =0;
+    int DebCntr2 =0;
+    int DebCntr3 =0;
+    int DebCntr4 =0;
+    int DebCntr5 =0;
+    int DebCntr6 =0;
+    int DebCntr7 =0;
+    int DebCntr8 =0;
+    int DebCntr9 =0;
+    int DebCntr10 =0;
+    bool NtcFound = false;
+    long DTCEna = 0;
+    long DTCEnaMask0 = 0;
+    long DTCEnaMask1 = 0;
+    long DTCEnaMask2 = 0;
+    long DTCEnaMask3 = 0;
+    long DTCEnaMask4 = 0;
+    long DTCEnaMask5 = 0;
+    long DTCEnaMask6 = 0;
+    long DTCEnaMask7 = 0;
+    long DTCEnaMask8 = 0;
+    long DTCEnaMask9 = 0;
+    long DTCEnaMask10 = 0;
+    long DTCEnaMask11 = 0;
+    long DTCEnaMask12 = 0;
+    long DTCEnaMask13 = 0;
+    long DTCEnaMask14 = 0;
+    long DTCEnaMask15 = 0;
+    foreach(NtcInfoClass element in NtcInfoList)
+    {
+        NtcFound = false;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+        if(element.NtcNr ==  ValueOf( "ar:SHORT-NAME" )) 
+        {
+            element.OsAppl = LastValueSegmentOf(Xp.ValueRefAtDefRefTo("NTCOsApplicationRef"));
+            if((element.OsAppl == "Appl0") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr0;
+                InfoIdxCntr0++;
+                ApplIdx = 0;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr0++;
+                    element.DebCntrIdx = DebCntr0;
+                }
+            }
+            if((element.OsAppl == "Appl1") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr1;
+                InfoIdxCntr1++;
+                ApplIdx = 1;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr1++;
+                    element.DebCntrIdx = DebCntr1;
+                }
+            }
+            if((element.OsAppl == "Appl2") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr2;
+                InfoIdxCntr2++;
+                ApplIdx = 2;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr2++;
+                    element.DebCntrIdx = DebCntr2;
+                }
+            }
+            if((element.OsAppl == "Appl3") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr3;
+                InfoIdxCntr3++;
+                ApplIdx = 3;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr3++;
+                    element.DebCntrIdx = DebCntr3;
+                }
+            }
+            if((element.OsAppl == "Appl4") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr4;
+                InfoIdxCntr4++;
+                ApplIdx = 4;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr4++;
+                    element.DebCntrIdx = DebCntr4;
+                }
+            }
+            if((element.OsAppl == "Appl5") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr5;
+                InfoIdxCntr5++;
+                ApplIdx = 5;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr5++;
+                    element.DebCntrIdx = DebCntr5;
+                }
+            }
+            if((element.OsAppl == "Appl6") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr6;
+                InfoIdxCntr6++;
+                ApplIdx = 6;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr6++;
+                    element.DebCntrIdx = DebCntr6;
+                }
+            }
+            if((element.OsAppl == "Appl7") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr7;
+                InfoIdxCntr7++;
+                ApplIdx = 7;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr7++;
+                    element.DebCntrIdx = DebCntr7;
+                }
+            }
+            if((element.OsAppl == "Appl8") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr8;
+                InfoIdxCntr8++;
+                ApplIdx = 8;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr8++;
+                    element.DebCntrIdx = DebCntr8;
+                }
+            }
+            if((element.OsAppl == "Appl9") )
+            {
+                element.NtcInfoIdx = InfoIdxCntr9;
+                InfoIdxCntr9++;
+                ApplIdx = 9;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr9++;
+                    element.DebCntrIdx = DebCntr9;
+                }
+            }
+            if((element.OsAppl == "Appl10") ) 
+            {
+                element.NtcInfoIdx = InfoIdxCntr10;
+                InfoIdxCntr10++;
+                ApplIdx = 10;
+                if((ValueOf( Xp.ValueAtDefRefTo( "Debounce" )) == "true"))
+                {
+                    DebCntr10++;
+                    element.DebCntrIdx = DebCntr10; 
+                }
+            }
+            NtcFound = true;
+#>
+        { 0x<#= ApplIdx.ToString("X2") #>U,     0x<#= element.NtcInfoIdx.ToString("X2") #>U,        0x<#= element.DebCntrIdx.ToString("X2") #>U }, /* <#= element.NtcNr #> */
+<#
+        }
+#>
+<# !ENDLOOP #>
+<#
+        if (NtcFound == false)
+        {
+            ApplIdx = 255;
+#>
+        { 0x<#= ApplIdx.ToString("X2") #>U,     0x<#= element.NtcInfoIdx.ToString("X2") #>U,        0x<#= element.DebCntrIdx.ToString("X2") #>U }, /* <#= element.NtcNr #> */
+<#
+        }
+    }
+#>
+    };
+
+<# /* Create the ConfigParam NtcPPtyAry */ #>
+<#
+    int PptyAryElemPopd = 0;
+    int PptyAryMaxSize = 512;
+    int PptyAryVal = 0;
+    int NtcPwrCycLtch = 0;
+    int MfgNtcInhibInOper = 0;
+    int MfgNtcInhibInNonOper = 0;
+    bool WrittenOnceForThisNTC = false;
+    int curr_ntcnum;
+    int startofrow_ntcnr;
+#>
+/* 
+     * Description: Configuration for the properties for each of the 512 NTCs in system
+     *              based on the NTC master list of the project
+     * Usage:       Every active NTC should be configured as per NTC Master List
+     */
+CONST(uint8, DiagcMgr_CODE) DIAGCMGRNTCPPTYARY_CNT_U08[D_MAXNUMBEROFNTCS_CNT_U16]= {<#
+    foreach(NtcInfoClass element in NtcInfoList)
+    {
+        WrittenOnceForThisNTC = false;
+        startofrow_ntcnr = (element.id - 15);
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+        if(element.NtcNr ==  ValueOf( "ar:SHORT-NAME" )) 
+        {
+            WrittenOnceForThisNTC = true;
+            if(PptyAryElemPopd < (PptyAryMaxSize-1))
+            {
+                NtcPwrCycLtch = (ValueOf(Xp.ValueAtDefRefTo("NtcPwrCycLtch")) == true)?1:0;
+                MfgNtcInhibInOper = (ValueOf(Xp.ValueAtDefRefTo("MfgNtcInhibInOper")) == true)?1:0;
+                MfgNtcInhibInNonOper = (ValueOf(Xp.ValueAtDefRefTo("MfgNtcInhibInNonOper")) == true)?1:0;
+                PptyAryVal = (NtcPwrCycLtch<<0)|(MfgNtcInhibInNonOper<<1)|(MfgNtcInhibInOper<<2);
+                PptyAryElemPopd++;
+#>0X<#=PptyAryVal.ToString("X2")#>U,<#if((PptyAryElemPopd%16)==0){#>  /*NTCNR_0X<#=startofrow_ntcnr.ToString("X3")#> - <#=element.NtcNr#>*/
+                                                                                    <#}
+            }
+            else if(PptyAryElemPopd == (PptyAryMaxSize-1))
+            {
+                NtcPwrCycLtch = (ValueOf(Xp.ValueAtDefRefTo("NtcPwrCycLtch")) == true)?1:0;
+                MfgNtcInhibInOper = (ValueOf(Xp.ValueAtDefRefTo("MfgNtcInhibInOper")) == true)?1:0;
+                MfgNtcInhibInNonOper = (ValueOf(Xp.ValueAtDefRefTo("MfgNtcInhibInNonOper")) == true)?1:0;
+                PptyAryVal = (NtcPwrCycLtch<<0)|(MfgNtcInhibInNonOper<<1)|(MfgNtcInhibInOper<<2);
+#>0X<#=PptyAryVal.ToString("X2")#>U}; /*NTCNR_0X<#=startofrow_ntcnr.ToString("X3")#> - <#=element.NtcNr#>*/
+<#
+                PptyAryElemPopd++;
+            }
+        }
+#>
+<#!ENDLOOP#>
+<#
+        if((PptyAryElemPopd < (PptyAryMaxSize-1)) && (WrittenOnceForThisNTC==false))
+        {
+            PptyAryElemPopd++;
+#>0X00U,<#if((PptyAryElemPopd%16)==0){#>  /*NTCNR_0X<#=startofrow_ntcnr.ToString("X3")#> - <#=element.NtcNr#>*/
+                                                                                    <#}
+        }
+        else if((PptyAryElemPopd == (PptyAryMaxSize-1)) && (WrittenOnceForThisNTC==false))
+        {
+#>0X00U}; /*NTCNR_0X<#=startofrow_ntcnr.ToString("X3")#> - <#=element.NtcNr#>*/
+<#
+            PptyAryElemPopd++;
+        }
+#>
+<#
+    }
+#>
+
+
+<# /* Create the ConfigParam DIAGCMGRLISTOFLTCHGNTC_CNT_ENUM */ #>
+<#
+    int NumOfLtchNTCs = 0;
+    int MaxNumOfLtchNTCs = 20;
+#>
+    /* 
+     * Description: List of the NTC numbers for Latch-Capable NTCs of this project. 
+     * Usage:       Upto 20 NTCs for a project can be configured as latch capable.
+     *              The NTCs for which LtchgEna is set to true will be reflected here.
+     *              Any remaining unconfigured elements are set to NTC_RESD(0X000U)
+     */
+    CONST(uint16,DiagcMgr_CODE) DIAGCMGRLISTOFLTCHGNTC_CNT_ENUM[D_MAXNUMOFLTCHGNTCS_CNT_U16] = {<#
+    foreach(NtcInfoClass element in NtcInfoList)
+    {
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+        if(element.NtcNr ==  ValueOf( "ar:SHORT-NAME" )) 
+        {
+            if((ValueOf( Xp.ValueAtDefRefTo( "LtchgEna" )) == "true"))
+            {
+                if(NumOfLtchNTCs < (MaxNumOfLtchNTCs-1) )
+                {
+                    if(((NumOfLtchNTCs%5)==0)&&(NumOfLtchNTCs!=0)){
+#> 
+                                                                                                0X<#=(element.id).ToString("X3")#>U,<#}
+                    else{#>0X<#=(element.id).ToString("X3")#>U,<#
+                    }
+                }
+                else
+                {
+                    if(NumOfLtchNTCs >= MaxNumOfLtchNTCs)
+                    {
+                        /* More than 20 NTCs configured as Latching*/
+                        Environment.Exit(14);
+                    }
+                    else{
+#>0X<#=(element.id).ToString("X3")#>U};<#}
+                }
+                NumOfLtchNTCs++;
+            }
+        }
+#>
+<#!ENDLOOP#>
+<#
+    }
+    int DupNumLtchdNtcs = NumOfLtchNTCs;
+    for(int RemNtcs=0;RemNtcs<(MaxNumOfLtchNTCs-NumOfLtchNTCs);RemNtcs++)
+    {
+        if(RemNtcs<(MaxNumOfLtchNTCs-NumOfLtchNTCs-1))
+        {
+            if(((DupNumLtchdNtcs%5)==0) && (DupNumLtchdNtcs!=0)){
+#> 
+                                                                                                0X000U,<#}
+            else{#>0x000U,<#}
+        }
+        else
+        {
+#>0x000U};<#
+        }
+        DupNumLtchdNtcs++;
+    }
+#>
+
+
+<# /* Create the ConfigParam DIAGCMGRNTCLTCHCNTRTHD_CNT_U08 */ #>
+<#
+    NumOfLtchNTCs = 0;
+    MaxNumOfLtchNTCs = 20;
+    int threshold = 0;
+#>
+    /* 
+     * Description: List of the Thresholds for latch capable NTCs 
+     * Usage:       Each latch capable NTC must have a threshold set from 1-255
+     *              If LtchEna is false but threshold is set it wont appear here.
+     */
+    CONST(uint8,DiagcMgr_CODE) DIAGCMGRNTCLTCHCNTRTHD_CNT_U08[D_MAXNUMOFLTCHGNTCS_CNT_U16] = {<#
+    foreach(NtcInfoClass element in NtcInfoList)
+    {
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+        if(element.NtcNr ==  ValueOf( "ar:SHORT-NAME" )) 
+        {
+            if((ValueOf( Xp.ValueAtDefRefTo( "LtchgEna" )) == "true"))
+            {   threshold = (ValueOf( Xp.ValueAtDefRefTo("LtchCntrThd")));
+                if(NumOfLtchNTCs < (MaxNumOfLtchNTCs-1))
+                {
+#>0X<#=threshold.ToString("X2")#>U,<#if(((NumOfLtchNTCs%5)==0) && (NumOfLtchNTCs!=0)){#>
+
+                                                                                              <#}
+                }
+                else
+                {
+#>0X<#=threshold.ToString("X2")#>U};<#
+                }
+                NumOfLtchNTCs++;
+            }
+            else if(ValueOf( Xp.ValueAtDefRefTo("LtchCntrThd")) != 0)
+            {
+                /*Latching Threshold set to Non-zero value for Non-latched NTC: Did you mean to make this NTC latching?*/
+                Environment.Exit(15);
+            }
+        }
+#>
+<#!ENDLOOP#>
+<#
+    }
+    DupNumLtchdNtcs = NumOfLtchNTCs;
+    for(int RemNtcs=0;RemNtcs<(MaxNumOfLtchNTCs-NumOfLtchNTCs);RemNtcs++)
+    {
+        if(RemNtcs<(MaxNumOfLtchNTCs-NumOfLtchNTCs-1))
+        {
+#>0XFFU,<#if(((DupNumLtchdNtcs%5)==0) && (DupNumLtchdNtcs!=0)){#>
+                                                                                              <#}
+        }
+        else
+        {
+#>0XFFU};
+<#
+        }
+    }
+#>
+
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Os" ) );
+#>
+    /** Ntc Info Arrays **/
+    /* 
+     * Description: NtcNr reference for NtcInfoAry 
+     */
+<# !LOOP( Xp.ContainerAtDefRefTo( "OsApplication" ) ) #>
+<#  
+    string osAppl = ValueOf( "ar:SHORT-NAME" );
+    string ApplNTCs = "d";
+    int NtcIdx = 0;
+    /* split on 'l' for application is OK since application name will always have Appl followed by number 
+        and the same will be added to standards document */
+    string[] osApplWords = osAppl.Split(new string[] { "l" }, StringSplitOptions.None); 
+    string osApplSuffix = osApplWords[osApplWords.Length -1];
+#>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#>  
+<# 
+    bool ApplXNtc = false;
+    foreach(NtcInfoClass element in NtcInfoList)
+    {
+        ApplXNtc = false;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+        if(element.NtcNr ==  ValueOf( "ar:SHORT-NAME" )) 
+        {
+            NtcNrs = element.NtcNr;
+            /* split on 'l' for application is OK since application name will always have Appl followed by number 
+                and the same will be added to standards document */
+            string[] NtcWords = NtcNrs.Split(new string[] { "_" }, StringSplitOptions.None); 
+            string NtcSuffix = NtcWords[NtcWords.Length -1];
+            
+            element.OsAppl = LastValueSegmentOf(Xp.ValueRefAtDefRefTo("NTCOsApplicationRef"));
+            if ( osAppl == element.OsAppl ) 
+            {
+                if(0 != NtcIdx)
+                {
+                    /* Append NTC to mapping initializer */
+                    ApplNTCs += "U ,    " + NtcSuffix;
+                } 
+                else 
+                {
+                    /* First Initializer */
+                    ApplNTCs = NtcSuffix;
+                }
+                NtcIdx++;
+                ApplXNtc = true;
+            }
+        }
+#>
+<# !ENDLOOP #>
+<#
+    }
+#>
+<# if (( 0 != NtcIdx ) || (ApplXNtc == true))
+    {
+        string apNtcDefine = string.Format( "NTCCNTAPPL{0}_CNT_U16", osApplSuffix ).ToUpper(); 
+#>  
+    CONST(uint16, DiagcMgr_CODE) NTCNRARYAPPL<#=osApplSuffix#>_CNT_U16[<#=apNtcDefine #>] = 
+    { <#=  ApplNTCs #>U }; /* <#= NtcIdx #> */ 
+<#
+        osApplCnt++;
+    } 
+    else 
+    { 
+#>
+    /* Note: No NTCs Configured for <#= osAppl#> */
+<# 
+    }
+#>
+<# !ENDLOOP #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#>
+
+    /* Table Contents: DTCENAMASK */
+    CONST(uint16, DiagcMgr_CODE) DTCENAMASK[TOTNROFDTC_CNT_U08 +1U] = {
+    <#= FormatHex(0, 4, HexCase.Upper) #>U,
+<#
+	int DiagcDtcIdxCount = Count(Xp.ContainerAtDefRefTo( "DTCEnaCndn" ));
+    List<int> EveIdList = new List<int>();
+	for(int i=1; i<= DiagcDtcIdxCount; i++)
+	{
+		EveIdList.Add(i);
+	}
+    foreach(int idx in EveIdList)
+	{
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "DTCEnaCndn" ) ) #>
+<#
+  if((ValueOf( Xp.ValueAtDefRefTo( "DiagcMgrDTCIdx" )) == idx))
+  {
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__0" )) == "true"))
+    {
+        DTCEnaMask0 = (int)Math.Pow(2, 0);
+    }
+    else
+    {
+        DTCEnaMask0 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__1" )) == "true"))
+    {
+        DTCEnaMask1 = (int)Math.Pow(2, 1);
+    }
+    else
+    {
+        DTCEnaMask1 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__2" )) == "true"))
+    {
+        DTCEnaMask2 = (int)Math.Pow(2, 2);
+    }
+    else
+    {
+        DTCEnaMask2 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__3" )) == "true"))
+    {
+        DTCEnaMask3 = (int)Math.Pow(2, 3);
+    }
+    else
+    {
+        DTCEnaMask3 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__4" )) == "true"))
+    {
+        DTCEnaMask4 = (int)Math.Pow(2, 4);
+    }
+    else
+    {
+        DTCEnaMask4 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__5" )) == "true"))
+    {
+        DTCEnaMask5 = (int)Math.Pow(2, 5);
+    }
+    else
+    {
+        DTCEnaMask5 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__6" )) == "true"))
+    {
+        DTCEnaMask6 =(int)Math.Pow(2, 6);
+    }
+    else
+    {
+        DTCEnaMask6 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__7" )) == "true"))
+    {
+        DTCEnaMask7 = (int)Math.Pow(2, 7);
+    }
+    else
+    {
+        DTCEnaMask7 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__8" )) == "true"))
+    {
+        DTCEnaMask8 = (int)Math.Pow(2, 8);
+    }
+    else
+    {
+        DTCEnaMask8 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit__9" )) == "true"))
+    {
+        DTCEnaMask9 = (int)Math.Pow(2, 9);
+    }
+    else
+    {
+        DTCEnaMask9 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_10" )) == "true"))
+    {
+        DTCEnaMask10 = (int)Math.Pow(2, 10);
+    }
+    else
+    {
+        DTCEnaMask10 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_11" )) == "true"))
+    {
+        DTCEnaMask11 = (int)Math.Pow(2, 11);
+    }
+    else
+    {
+        DTCEnaMask11 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_12" )) == "true"))
+    {
+        DTCEnaMask12 = (int)Math.Pow(2, 12);
+    }
+    else
+    {
+        DTCEnaMask12 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_13" )) == "true"))
+    {
+        DTCEnaMask13 = (int)Math.Pow(2, 13);
+    }
+    else
+    {
+        DTCEnaMask13 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_14" )) == "true"))
+    {
+        DTCEnaMask14 = (int)Math.Pow(2, 14);
+    }
+    else
+    {
+        DTCEnaMask14 = 0;
+    }
+    if((ValueOf( Xp.ValueAtDefRefTo( "Bit_15" )) == "true"))
+    {
+        DTCEnaMask15 = (int)Math.Pow(2, 15);
+    }
+    else
+    {
+        DTCEnaMask15 = 0;
+    }
+    DTCEna =    ((DTCEnaMask0) + (DTCEnaMask1) + (DTCEnaMask2) + (DTCEnaMask3) + 
+                (DTCEnaMask4) + (DTCEnaMask5) + (DTCEnaMask6) + (DTCEnaMask7) + 
+                (DTCEnaMask8) + (DTCEnaMask9) + (DTCEnaMask10) + (DTCEnaMask11) + 
+                (DTCEnaMask12) + (DTCEnaMask13) + (DTCEnaMask14) + (DTCEnaMask15));
+#>
+    <#= FormatHex(DTCEna, 4, HexCase.Upper) #>U,
+<#}#><# !ENDLOOP #><#}#>
+    };
+
+    /* Table Contents: DEMDTCEVEIDMAP */
+    CONST(uint16, DiagcMgr_CODE) DEMDTCEVEIDMAP[TOTNROFDTC_CNT_U08 +1U]= {
+    <#= FormatHex(0, 4, HexCase.Upper) #>U,
+<#
+	bool EveIdFlg = false;
+	bool DTCIdxSeqFlg = false;
+	string DTC =  "";
+	string EveIdMappedDTC =  "";
+	string EveParam =  "";
+
+	foreach(int idx in EveIdList)
+	{
+		EveIdFlg = false;
+		DTCIdxSeqFlg = false;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "DTCEnaCndn" ) ) #>
+<# 
+		if(ValueOf( Xp.ValueAtDefRefTo( "DiagcMgrDTCIdx" )) == idx)
+		{
+			DTCIdxSeqFlg = true;
+			
+			try
+			{
+				DTC = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "DTC" ));
+			}
+			catch
+			{
+				DTC = "";
+			}
+#>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Dem" ) );
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "DemEventParameter" ) ) #>
+<# 
+			try
+			{
+				EveIdMappedDTC = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "DemDTCClassRef" ));
+			}
+			catch
+			{
+				EveIdMappedDTC = "Event not mapped";
+			}
+		
+			if ( DTC == EveIdMappedDTC ) 
+			{
+				EveParam = ValueOf( "ar:SHORT-NAME" );
+			} 
+#>
+<# !ENDLOOP #>
+<#	
+			EveIdFlg = true;
+		}
+#>
+<# !ENDLOOP #>
+<#
+		if((EveIdFlg == true) && (EveParam !=  ""))
+		{
+#>
+    DemConf_DemEventParameter_<#= EveParam #>,
+<#
+		}
+		
+		/* When the DTCIdx is not in the sequential order */
+		if(DTCIdxSeqFlg == false)
+		{
+			Environment.Exit(12);
+		}
+		
+	}
+#>
+    };
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#>
+<#
+    int DiagcDtcCount = Count(Xp.ContainerAtDefRefTo( "DTCEnaCndn" ));
+#>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Dem" ) );
+#>
+<#
+    bool DemDiagcDTCIdx = false;
+    bool DemDiagcDTCCnt = false;
+    int DemDtcCount = Count(Xp.ContainerAtDefRefTo( "DemDTCClass" ));
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "DemDTCClass" ) ) #>
+<#      
+    string DemDTC = ValueOf( "ar:SHORT-NAME" );
+    string DigcDTC =  "";
+    int DemDtcCntIdx = 0;
+    int DiagcDtcCntIdx = 0;
+    
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+#><# !LOOP( Xp.ContainerAtDefRefTo( "DTCEnaCndn" ) ) #>
+<#     
+    DigcDTC = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "DTC" ));
+    if ( DemDTC == DigcDTC ) 
+    {
+        DiagcDtcCntIdx++;
+    }
+    if ( DiagcDtcCntIdx != 0 ) 
+    {
+        DemDtcCntIdx++;
+    } 
+    if ( DiagcDtcCntIdx > 1 ) 
+    {
+        DemDiagcDTCIdx = true;
+    }
+    if ( DemDtcCount != DiagcDtcCount ) 
+    {
+        DemDiagcDTCCnt = true;
+    }
+#>
+<# !ENDLOOP #>
+<# !ENDLOOP #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "DiagcMgr" ) );
+    bool InvldLtchCntrThd = false;
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo( "NTCNR" ) ) #>
+<#
+    if(ValueOf( Xp.ValueAtDefRefTo( "LtchgEna" )) == "true")
+    {
+        if(ValueOf( Xp.ValueAtDefRefTo( "LtchCntrThd" )) == 0)
+        {
+            InvldLtchCntrThd = true;
+        }
+    }
+#>
+<#!ENDLOOP#>
+<# 
+    /* More than one Dem DTC is configured under same enable conditions  */
+    if(DemDiagcDTCIdx == true)
+    {
+        Environment.Exit(10);
+    } 
+    /* Number of Dem DTCs and DiagcMgr Enable conditions don't match */
+    if(DemDiagcDTCCnt == true)
+    {
+        Environment.Exit(11);
+    } 
+    /* An NTC that is set to be latching has invalid threshold set
+       Valid Range is 1-255*/
+    if(InvldLtchCntrThd == true)
+    {
+        Environment.Exit(13);
+    } 
+#>
+#define DiagcMgr_STOP_SEC_CODE
+#include "DiagcMgr_MemMap.h"
+
+<#+
+    public class NtcInfoClass {
+    public int    id;
+    public string NtcNr;
+    public string OsAppl;
+    public int    NtcInfoIdx;
+    public int    DebCntrIdx;
+    }   
+#>

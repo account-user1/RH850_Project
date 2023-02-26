@@ -1,0 +1,169 @@
+# This file will not be read in automatically by the component database
+# system. It's intended to be included in a .npw file in the components/os_*
+# directories.
+
+# None of these demos are supported on INTEGRITY, velOSity, or u-velOSity
+%if !streq(__OS_NAME__, "integrity", "velosity", "uvelosity")
+
+### Program Framework
+component.program.disabled = false
+
+### Shortcuts to Framework types
+component.top_level_project.dlg_info.edit {
+    right_click_list += { "SetProgramInfo" }
+    right_click_list += { "SetLibraryInfo" }
+    right_click_list += { "SetProjInfo" }
+}
+
+
+##############################################################################
+### Examples
+
+# Hello World
+%if defined(__SUPPORTS_C__)
+  component.hello_world_c.disabled = false
+  component.hello_world_lib_c.disabled = false
+%endif
+
+%if defined(__SUPPORTS_CXX__) && !defined(TOO_SMALL_FOR_CXX)
+  component.hello_world_cxx.disabled = false
+  component.hello_world_lib_cxx.disabled = false
+%endif
+
+%if defined(__PREFERS_ADA__) && defined(__SUPPORTS_ADA__)
+  component.hello_world_ada.disabled = false
+%endif
+
+
+
+##############################################################################
+### Demos
+
+%if !defined(NO_SHARED_DEMOS)
+
+
+# Demos requiring a C compiler
+%if defined(__SUPPORTS_C__)
+
+  # Basic Debugging
+  component.basic_debug_demo.disabled = false
+
+  # Code Coverage
+  %if !defined(NO_INSTRUMENTED_CODE) && !defined(NO_CODE_COVERAGE)
+    component.coverage_demo.disabled = false
+  %endif
+
+  # Run-Time Error Checking
+  %if defined (SUPPORTS_RTEC) && !defined(NO_INSTRUMENTED_CODE) && !defined(TOO_SMALL_FOR_RTEC)
+    # Standard Run-Time Error Checking
+    component.rtec_demo.disabled = false
+    # Custom Run-Time Error Checking
+    component.custom_rtec_demo.disabled = false
+  %endif 
+
+  # Memory Leak Detection
+  %if defined(SUPPORTS_MEMLEAK) && !defined(NO_INSTRUMENTED_CODE)
+    component.memleak_demo.disabled = false
+  %endif
+
+  # Profiling
+  %if defined(SUPPORTS_UNIX_PROFILING)
+    component.profile_demo.disabled = false
+  %endif
+
+  # Performace Timing
+  %if !defined(NO_TIMING_PROFILING)
+    component.timing_demo.disabled = false
+  %endif
+
+
+  ### Process Debugging Demos
+
+  # Fork Debugging
+  %if defined(SUPPORTS_FORK)
+    component.fork_debug_demo.disabled = false
+  %endif
+
+  # Exec Debugging
+  %if defined(SUPPORTS_EXEC)
+    component.exec_debug_demo.disabled = false
+  %endif
+
+  # Threadded Debugging
+  %if defined(SUPPORTS_THREAD_DEBUGGING)
+    component.thread_debug_demo.disabled = false
+  %endif
+
+
+  ### Data Visualization Demos
+
+  # Graph Visualization
+  component.ddv_demo.disabled = false
+
+  # Tree Visualization
+  component.ddv_tree_demo.disabled = false
+
+  %if defined(SUPPORTS_DSPLINK_GPP) && defined(MORPHEUS_DM320)
+    component.dsplink_hello_gpp_demo.disabled = false
+    component.dsplink_framework_gpp_demo.disabled = false
+  %endif
+ 
+  %if defined(SUPPORTS_DSPLINK_GPP) && (defined(MORPHEUS_DM320) || defined(DAVINCI_DM644x))
+    component.dsplink_loop_gpp_demo.disabled = false
+    component.dsplink_message_gpp_demo.disabled = false
+    component.dsplink_scale_gpp_demo.disabled = false
+  %endif 
+
+
+  # Custom Filetypes
+  %if !defined(NO_CUSTOM_TYPES)
+    component.custom_filetypes_demo.disabled = false
+  %endif
+
+
+  # Path Analyzer
+  %if defined(SUPPORTS_TRACE_DEMO) && (SUPPORTS_TRACE_DEMO > 0)
+    component.demo_pathanalyzer.disabled = false
+    component.demo_pathanalyzer_advanced.disabled = false
+  %endif
+
+%endif
+
+
+
+# Demos requiring a C++ compiler
+%if defined(__SUPPORTS_CXX__)
+
+  # DoubleCheck
+  %if streq(__TOOLCHAIN__, "GREEN_HILLS")
+    component.double_check_demo.disabled = false
+  %endif
+
+  # Catalog
+  %if !defined(TOO_SMALL_FOR_CXX) && !defined(TOO_SMALL_TO_HOLD_CATALOG_DEMO) && !defined(NO_INSTRUMENTED_CODE) && !defined(SCLLC_BROKEN_CXX)
+    component.catalog_demo.disabled = false
+  %endif
+
+  # Graph Visualization
+  %if !defined(TOO_SMALL_FOR_CXX) && !defined(TOO_SMALL_TO_HOLD_CATALOG_DEMO) && !defined(NO_STL_VIS) && !defined(SCLLC_BROKEN_CXX)
+    component.ddv_cxx_demo.disabled = false
+  %endif
+
+  # STL Visualization
+  %if !defined(TOO_SMALL_FOR_CXX) && !defined(TOO_SMALL_TO_HOLD_CATALOG_DEMO) && !defined(NO_STL_VIS) && !defined(SCLLC_BROKEN_CXX)
+    component.stl_vis_demo.disabled = false
+  %endif
+
+  # Editor Cross-References
+  %if !defined(TOO_SMALL_FOR_CXX)
+    component.editor_xref_demo.disabled = false
+  %endif
+
+
+%endif
+
+
+
+%endif 	# NO_SHARED_DEMOS
+
+%endif  # integrity,velosity,uvelosity

@@ -1,0 +1,267 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer
+* Nexteer Confidential
+*
+* Module File Name  : MfgSrvCfg.c.tt
+* Module Description: Nexteer Manufacturing Services
+* Project           : CBD
+* Author            : Jared Julien
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          3 %
+* %derived_by:       kzdyfh %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author    Change Description                                                             SCR #
+* -------   -------  --------  -----------------------------------------------------------------------------  ---------
+* 11/04/15  1        JWJ       Initial Template Version                                                       EA4#
+* 06/07/17  2        JWJ       Changed NULL to NULL_PTR to support OS update                                  EA4#11834
+* 07/07/17  3        JWJ       Update type for non-trusted function table to new structure type               EA4#13539
+**********************************************************************************************************************/
+<#
+	ChangeContext( Xp.ModuleConfAtDefRefTo( "NxtrMfgSrvGeneral" ) );
+	string MfgSrvApplRef = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "MfgSrvApplRef" ) );
+
+	ChangeContext( Xp.ModuleConfAtDefRefTo( "NxtrMfgSrv" ) );
+
+	List<string> ApplicationsList = new List<string>();
+
+	System.Text.RegularExpressions.Regex trailNr = new System.Text.RegularExpressions.Regex(@"\d+$");
+#>
+
+<# !LOOP(Xp.ContainerAtDefRefTo( "CommonService" )) #><#
+	string applPath = Xp.ValueRefAtDefRefTo( "Application" );
+	if (Exists( applPath ))
+	{
+		string appl = trailNr.Match( LastValueSegmentOf( applPath ) ).Value;
+		if ((ApplicationsList.Contains( appl ) == false) && (appl != MfgSrvApplRef))
+		{
+			/* Accrue a list of all applications referenced by services that are not this application */
+			ApplicationsList.Add(appl);
+		}
+	}
+#>
+<# !ENDLOOP #>
+
+<# !LOOP(Xp.ContainerAtDefRefTo( "ProgramSpecificService" )) #><#
+	string applPath = Xp.ValueRefAtDefRefTo( "Application" );
+	if (Exists( applPath ))
+	{
+		string appl = trailNr.Match( LastValueSegmentOf( applPath ) ).Value;
+		if ((ApplicationsList.Contains( appl ) == false) && (appl != MfgSrvApplRef))
+		{
+			/* Accrue a list of all applications referenced by services that are not this application */
+			ApplicationsList.Add(appl);
+		}
+	}
+#>
+<# !ENDLOOP #>
+
+/************************************************ Include Statements *************************************************/
+#include "Rte_CmnMfgSrv.h"
+#include "CmnMfgSrv.h"
+#include "MfgSrvCfg.h"
+#include "CmnMfgSrvTyp.h"
+#include "Os.h"
+
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/********************************************* Embedded Local Constants **********************************************/
+
+/* Enabled services lookup/configuration */
+<# int ActiveCount = 0; #>
+<# !LOOP(Xp.ContainerAtDefRefTo("CommonService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		ActiveCount += 1;
+	}
+#><# !ENDLOOP #>
+<# !LOOP(Xp.ContainerAtDefRefTo("ProgramSpecificService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		ActiveCount += 1;
+	}
+#><# !ENDLOOP #>
+CONST(MfgSrvTblRec, AUTOMATIC) CmnMfgSrv_MfgSrvTbl_Cnt_str[<#= ActiveCount #>u] =
+{
+/* A: Nexteer Session (NRC: 0x7F)
+ * B: Security Access (NRC: 0x33)
+ *                                            Checks
+ *   Type   Id       Sub    ReqLen   ResLen    A   B    Appl   Handler */
+<# !LOOP(Xp.ContainerAtDefRefTo("CommonService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		string TypeRef = Xp.ValueAtDefRefTo( "ServiceType" );
+		string TypeStr = ValueOf( TypeRef );
+		string Type = TypeStr.Substring(TypeStr.Length - 2);
+
+		string IdRef = Xp.ValueAtDefRefTo( "ServiceId" );
+		string IdStr = Exists( IdRef ) ? ValueOf( IdRef ) : "65535";
+		string Id = Int32.Parse( IdStr ).ToString( "X4" );
+
+		string SubRef = Xp.ValueAtDefRefTo( "SubFunction" );
+		string SubStr = Exists( SubRef ) ? ValueOf( SubRef ) : "255";
+		string Sub = Int32.Parse( SubStr ).ToString( "X2" );
+
+		string ReqRef = Xp.ValueAtDefRefTo( "RequestLength" );
+		string ReqStr = Exists( ReqRef ) ? ValueOf( ReqRef ) : "65535";
+		string Req = Int32.Parse( ReqStr ).ToString( "X4" );
+
+		string RespRef = Xp.ValueAtDefRefTo( "ResponseLength" );
+		string RespStr = Exists( RespRef ) ? ValueOf( RespRef ) : "65535";
+		string Resp = Int32.Parse( RespStr ).ToString( "X4" );
+
+		string NxtrRef = Xp.ValueAtDefRefTo( "AccessControls/NexteerSession" );
+		string NxtrStr = Exists( NxtrRef ) ? ValueOf( NxtrRef ) : "true";
+		string Nxtr = NxtrStr == "true" ? "1" : "0";
+
+		string SecuRef = Xp.ValueAtDefRefTo( "AccessControls/SecurityAccess" );
+		string SecuStr = Exists( SecuRef ) ? ValueOf( SecuRef ) : "false";
+		string Secu = SecuStr == "true" ? "1" : "0";
+
+		string ApplRef = Xp.ValueRefAtDefRefTo( "Application" );
+		string ApplStr = Exists( ApplRef ) ? LastValueSegmentOf( ApplRef ) : "";
+		string ApplNr = ApplStr.Length > 0 ? trailNr.Match(ApplStr).Value : "255";
+		string Appl = Int32.Parse( ApplNr ).ToString( "X2" );
+
+		string Srv = "";
+		if ( Type != "3E")
+		{
+			Srv = "CmnMfgSrv_" + ValueOf( "ar:SHORT-NAME" );
+		}
+		else
+		{
+			Srv = "(MfgSrvFuncRef)NULL_PTR";
+		}
+#>
+	{0x<#= Type #>u, 0x<#= Id #>u, 0x<#= Sub #>u, 0x<#= Req #>u, 0x<#= Resp #>u, {<#= Nxtr #>u, <#= Secu #>u}, 0x<#= Appl #>u, <#= Srv #>},
+<#
+	}
+#>
+<# !ENDLOOP #>
+<# !LOOP(Xp.ContainerAtDefRefTo("ProgramSpecificService")) #><#
+	if ( ValueOf( Xp.ValueAtDefRefTo( "Enabled" ) ) )
+	{
+		string TypeRef = Xp.ValueAtDefRefTo( "ServiceType" );
+		string TypeStr = ValueOf( TypeRef );
+		string Type = TypeStr.Substring(TypeStr.Length - 2);
+
+		string IdRef = Xp.ValueAtDefRefTo( "ServiceId" );
+		string IdStr = Exists( IdRef ) ? ValueOf( IdRef ) : "65535";
+		string Id = Int32.Parse( IdStr ).ToString( "X4" );
+
+		string SubRef = Xp.ValueAtDefRefTo( "SubFunction" );
+		string SubStr = Exists( SubRef ) ? ValueOf( SubRef ) : "255";
+		string Sub = Int32.Parse( SubStr ).ToString( "X2" );
+
+		string ReqRef = Xp.ValueAtDefRefTo( "RequestLength" );
+		string ReqStr = Exists( ReqRef ) ? ValueOf( ReqRef ) : "65535";
+		string Req = Int32.Parse( ReqStr ).ToString( "X4" );
+
+		string RespRef = Xp.ValueAtDefRefTo( "ResponseLength" );
+		string RespStr = Exists( RespRef ) ? ValueOf( RespRef ) : "65535";
+		string Resp = Int32.Parse( RespStr ).ToString( "X4" );
+
+		string NxtrRef = Xp.ValueAtDefRefTo( "AccessControls/NexteerSession" );
+		string NxtrStr = Exists( NxtrRef ) ? ValueOf( NxtrRef ) : "true";
+		string Nxtr = NxtrStr == "true" ? "1" : "0";
+
+		string SecuRef = Xp.ValueAtDefRefTo( "AccessControls/SecurityAccess" );
+		string SecuStr = Exists( SecuRef ) ? ValueOf( SecuRef ) : "false";
+		string Secu = SecuStr == "true" ? "1" : "0";
+
+		string ApplRef = Xp.ValueRefAtDefRefTo( "Application" );
+		string ApplStr = Exists( ApplRef ) ? LastValueSegmentOf( ApplRef ) : "";
+		string ApplNr = ApplStr.Length > 0 ? trailNr.Match(ApplStr).Value : "255";
+		string Appl = Int32.Parse( ApplNr ).ToString( "X2" );
+
+		string Srv = "";
+		if ( Type != "3E")
+		{
+			Srv = "ProgMfgSrv_" + ValueOf( "ar:SHORT-NAME" );
+		}
+		else
+		{
+			Srv = "(MfgSrvFuncRef)NULL_PTR";
+		}
+#>
+	{0x<#= Type #>u, 0x<#= Id #>u, 0x<#= Sub #>u, 0x<#= Req #>u, 0x<#= Resp #>u, {<#= Nxtr #>u, <#= Secu #>u}, 0x<#= Appl #>u, <#= Srv #>},
+<#
+	}
+#>
+<# !ENDLOOP #>
+};
+
+<#
+	int MaxAppl = 0;
+
+	foreach (string Appl in ApplicationsList)
+	{
+		int ApplInt = Int32.Parse( Appl );
+		if (ApplInt > MaxAppl)
+		{
+			MaxAppl = ApplInt;
+		}
+	}
+#>
+CONST(NonTrustdFctApplIdxRec, AUTOMATIC) CmnMfgSrvCfg_NonTrustdFctPtrTbl[<#= MaxAppl + 1 #>U] = {
+<#
+	for (int ApplIdx = 0; ApplIdx <= MaxAppl; ApplIdx += 1)
+	{
+		if (ApplicationsList.Contains(ApplIdx.ToString()))
+		{
+#>
+	{(uint16)NtWrapS_CmnMfgSrv_CallSvc<#= ApplIdx #>, (uint8)Appl<#= ApplIdx #>},
+<#
+		}
+		else
+		{
+#>
+	{0xFFFFU, 0U}, /* Appl<#= ApplIdx #> non-trusted function not used */
+<#
+		}
+	}
+#>
+};
+
+
+/******************************************** Module Specific Variables **********************************************/
+
+/******************************************** Local Function Prototypes **********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+<#
+	ApplicationsList.Sort();
+
+	foreach (string Appl in ApplicationsList)
+	{
+#>
+/**********************************************************************************************************************
+*        Name:  NONTRUSTED_NtWrapS_CmnMfgSrv_CallSvc<#= Appl #>
+* Description:  Non-trusted function call for Application <#= Appl #> write services
+*      Inputs:  FunctionIndex - Non-trusted function index
+*               FunctionParams - Pointer to parameter structure
+*     Outputs:  None
+* Usage Notes:  None
+**********************************************************************************************************************/
+FUNC(void, CDD_NxtrMfgSrv_CODE) NONTRUSTED_NtWrapS_CmnMfgSrv_CallSvc<#= Appl #>(
+		NonTrustedFunctionIndexType FunctionIndex,
+		NonTrustedFunctionParameterRefType FunctionParams)
+{
+	/* Call the service function that was passed as a parameter in FunctionParams and pass it that data buffer that
+	 * was passed as another parameter */
+	CmnMfgSrvRetBuf_G = ((MfgSrvFuncRef)((NtMfgSrvRec*)FunctionParams)->SrvFct)(((NtMfgSrvRec*)FunctionParams)->DataBuf);
+}
+
+
+<#
+	}
+#>
+
+/* End of File: MfgSrvCfg.c */

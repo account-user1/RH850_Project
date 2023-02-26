@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+	<AR-PACKAGES>
+		<AR-PACKAGE UUID="1a558d5f-22b4-45518-b46b-79a97233bf1d">
+			<SHORT-NAME>Nexteer</SHORT-NAME>
+			<ELEMENTS>
+				<ECUC-MODULE-DEF UUID="e844ce6b-b9e6-407b-925f-8fadc04bd789">
+					<SHORT-NAME>FlsMem</SHORT-NAME>
+					<DESC>
+						<L-2 L="EN">Configuration of the Flash CRC Blocks.</L-2>
+					</DESC>
+					<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+					<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+					<SUPPORTED-CONFIG-VARIANTS>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+					</SUPPORTED-CONFIG-VARIANTS>
+					<CONTAINERS>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-4bc3-a0b7-9b75d12bc950">
+							<SHORT-NAME>FlashCRCRegnConfig</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This is the container for the Flash Block Configuration</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>255</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<!-- PARAMETER DEFINITION: CRC Region: Starting Address -->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>StartingAddress</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Starting Address of the CRC region.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>4294967295</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Ending Address -->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>Length</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Length of the CRC region.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>4294967295</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Predefined CRC address -->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>PredefinedCrcAddress</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Predefined CRC address.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>4294967295</DEFAULT-VALUE>
+									<MAX>4294967295</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Use Symbol Name -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="">
+									<SHORT-NAME>UseSymbolName</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">If TRUE, symbol names for start and end address will be used. If FALSE, raw addresses will be used.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Starting Address Symbol-->
+								<ECUC-STRING-PARAM-DEF UUID="">
+									<SHORT-NAME>StartingAddressSymbol</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Symbol name for the starting address of CRC Region</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<ECUC-STRING-PARAM-DEF-VARIANTS>
+										<ECUC-STRING-PARAM-DEF-CONDITIONAL>
+											<DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+										</ECUC-STRING-PARAM-DEF-CONDITIONAL>
+									</ECUC-STRING-PARAM-DEF-VARIANTS>
+								</ECUC-STRING-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Ending Address Symbol-->
+								<ECUC-STRING-PARAM-DEF UUID="">
+									<SHORT-NAME>LengthSymbol</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Symbol name for the length of CRC Region</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<ECUC-STRING-PARAM-DEF-VARIANTS>
+										<ECUC-STRING-PARAM-DEF-CONDITIONAL>
+											<DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+										</ECUC-STRING-PARAM-DEF-CONDITIONAL>
+									</ECUC-STRING-PARAM-DEF-VARIANTS>
+								</ECUC-STRING-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: CRC Region: Predefined CRC Address Symbol-->
+								<ECUC-STRING-PARAM-DEF UUID="">
+									<SHORT-NAME>PredefinedCrcAddressSymbol</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Symbol name for the Predefined CRC address</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES />
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<ECUC-STRING-PARAM-DEF-VARIANTS>
+										<ECUC-STRING-PARAM-DEF-CONDITIONAL>
+											<DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+										</ECUC-STRING-PARAM-DEF-CONDITIONAL>
+									</ECUC-STRING-PARAM-DEF-VARIANTS>
+								</ECUC-STRING-PARAM-DEF>
+							</PARAMETERS>
+							<SUB-CONTAINERS>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="09524623-b6ce-4bcd-a0b7-9b75d12bc950">
+							<SHORT-NAME>ApplCRCRegnIdx</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This is the container for the Application CRC Region Index Number</L-2>
+							</DESC>
+							<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<!-- PARAMETER DEFINITION: Application CRC Region Index Number -->
+								<ECUC-INTEGER-PARAM-DEF UUID="">
+									<SHORT-NAME>ApplCrcRegnNr</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Application CRC Region Index Number.</L-2>
+									</DESC>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES/>
+									<ORIGIN>NEXTEER</ORIGIN>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>255</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+							</PARAMETERS>
+							<SUB-CONTAINERS>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+					</CONTAINERS>
+				</ECUC-MODULE-DEF>
+			</ELEMENTS>
+		</AR-PACKAGE>
+	</AR-PACKAGES>
+</AUTOSAR>

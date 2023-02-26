@@ -1,0 +1,26 @@
+/* Turn off breakpoint setting output. */
+Q 1;
+D
+
+bA main##AboutToDoFork {
+  clear;
+  echo " ";
+  echo "  The process is about to do a fork system call. When the system call completes";
+  echo "the MULTI Debugger will automatically attach to the child process. The child";
+  echo "will be halted in the same location as the parent, right after the call to fork.";
+  echo " ";
+  echo "  Click 'Go on Selected Items (F5)' to continue.";
+}
+
+
+clear;
+echo " ";
+echo "  This program uses the fork system call to spawn a new process. The MULTI Debugger"
+echo "can automatically detect when this happens. It will then attach to the child process and"
+echo "halt it immediately after the call to fork. Fork debugging is disabled by default."
+echo "To enable it select the Debug Settings->Attach on Fork/Thread option, or use the \"P c\" command.";
+echo " ";
+echo "  Enabling fork debugging with the \"P c\" command.";
+P c;
+echo " ";
+echo "  Click 'Go on Selected Items (F5)' to begin.";

@@ -1,0 +1,2272 @@
+###############################################################################
+# ghs_legacy_options.bod
+# 
+# These options are supported for backwards compatibility only.
+# They are disabled by default and do not normally show up in the GUI.
+###############################################################################
+
+CommandOptions {
+
+    GhsCompilerOptions {
+
+    #### CCOM Options
+    
+	    PragmaAsmInline {
+	    #### CCOM Only
+		    {
+			    name="-pragma_asm_inline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xpragma_asm_inline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_pragma_asm_inline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zpragma_asm_inline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Support inline and asm #pragmas"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    CcomGnuC {
+		    # ccom only
+		    {
+			    name="-gnu_c"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nognu_c"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_gnu_c"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="C GNU Extensions"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    AnsiOpEq {
+		    # ccom only
+		    {
+			    name="-ansiopeq"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xansiopeq"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noansiopeq"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zansiopeq"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="ANSI Rules for K+R Operators"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    Redefine {
+		    # ccom only
+		    {
+			    name="-redefine"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xredefine"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noredefine"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zredefine"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Permit Multiple #defines"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    OutputColumns {
+		    # ccom only
+		    {
+			    name="-column"
+		    }
+		    delimiter="equal"
+		    merge="Replace"
+		    optionType="string"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Error and Message Report Width"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    ConcatComments {
+		    # ccom only
+		    {
+			    name="-concatcomments"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xconcatcomments"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noconcatcomments"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zconcatcomments"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Use /* */ as Concatenation in K+R C"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    Initextern {
+		    # ccom only
+		    {
+			    name="-initextern"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xinitextern"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noinitextern"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zinitextern"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Permit Externs with Initial Values"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    NoAlias {
+		    # ccom only
+		    {
+			    name="-noalias"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xnoalias"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nonoalias"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Znoalias"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Support for 'noalias' Keyword"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    OldFashioned {
+		    # ccom only
+		    {
+			    name="-nooldfashioned"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xnooldfashioned"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nonooldfashioned"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Znooldfashioned"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Accept Old Initialization Syntax"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    WarningsInFalsePreprocessorConditionals {
+		    # Compatibility Mode Only
+		    {
+			    name="-cpperror"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="-Znocpperror"
+			    value=0
+			    enumLabel="Display"
+		    }
+		    {
+			    name="-nocpperror"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    {
+			    name="-Xnocpperror"
+			    value=1
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Additional Compatibility Mode Diagnostics"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+	    MessagePrefixes {
+		    #### ccom only ####
+		    {
+			    name="-prefixed_msgs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_prefixed_msgs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Prefix Warning and Error Messages"
+		    guiCategory="Legacy;Compatibility Mode Compiler"
+	    }
+
+#### Other legacy options ####
+
+	    LCStrictCompErr {
+		    # deprecated per keenan/jy/gdavis - 1/20/04
+		    {
+			    name="-STRICT=COMPERR"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="-strict=comperr"
+			    value=1
+			    enumLabel="General"
+		    }
+		    {
+			    name="-strict=nocomperr"
+			    value=2
+			    enumLabel="None"
+		    }
+		    {
+			    name="-STRICT=NOCOMPERR"
+			    value=2
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Common C Compile-Time Errors"
+		    guiCategory="Legacy"
+	    }	
+	    LCStrictCompWarn {
+		    # deprecated per keenan/jy/gdavis - 1/20/04
+		    {
+			    name="-STRICT=COMPWARN"
+			    value=0
+			    enumLabel="Full"
+		    }
+		    {
+			    name="-strict=compwarn"
+			    value=1
+			    enumLabel="General"
+		    }
+		    {
+			    name="-strict=nocompwarn"
+			    value=2
+			    enumLabel="None"
+		    }
+		    {
+			    name="-STRICT=NOCOMPWARN"
+			    value=2
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Common C Compile-Time Warnings"
+		    guiCategory="Legacy"
+	    }	
+	    AsmSym {
+		    # deprecated
+		    {
+			    name="-asmsym"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noasmsym"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Asmsym"
+		    guiCategory="Legacy"
+	    }
+	    AsmSymC {
+		    # deprecated
+		    {
+			    name="-asmsymc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noasmsymc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Asmsymc"
+		    guiCategory="Legacy"
+	    }
+	    WorkDirectory {
+		    # deprecated: affects sourcedirs only, should be removed
+		    hidden=true
+		    {
+			    name="--work_directory"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    pass={"All"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Work Directory"
+		    guiCategory="Legacy"
+	    }
+	    MvcDirectory {
+		    # deprecated: no effect, should be removed
+		    hidden=true
+		    {
+			    name="--mvc_directory"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    pass={"All"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="MVC Directory"
+		    guiCategory="Legacy"
+	    }
+	    68k_UseDS {
+	    #68K - Deprecated
+		    {
+			    name="-useDS"
+			    value=0
+			    enumLabel="Use DS Directive"
+		    }
+		    {
+			    name="-nouseDS"
+			    value=1
+			    enumLabel="Use DCB Directive"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Data Space Reservation Directive"
+		    guiCategory="Legacy"
+	    }
+	    TemporaryLabels{
+	    # ARM - Deprecated
+		    {
+			    name="-temporary_labels"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Temporary Labels - Assembler"
+		    guiCategory="Legacy"
+	    }
+	    FReturnD0 {
+	    # 68k - Deprecated
+		    {
+			    name="-freturnd0"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fnoreturnd0"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nofreturnd0"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Put Return Values in D0 Rather than Stack"
+		    guiCategory="Legacy"
+	    }
+	    LynxOsDir{
+	    #### Lynx - Deprecated
+		    {
+			    name="-lynxos_dir"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="LynxOS Dir"
+		    guiCategory="Legacy"
+	    }
+	    Lynxos_Mthreads{
+	    #### Lynx - Deprecated
+		    {
+			    name="-mthreads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="M Threads"
+		    guiCategory="Legacy"
+	    }
+	    Chorus_Classix {
+	    #### Chorus - Deprecated
+		    {
+			    name="-classix"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noclassix"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Classix"
+		    guiCategory="Legacy"
+	    }
+	    DboOutput {
+	    #### Deprecated
+		    {
+			    name="-dbo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nodbo"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Generate Debug Information (.dbo) Files"
+		    guiCategory="Legacy"
+	    }
+	    Dwarf {
+		    {
+			    name="-dwarf"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nodwarf"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_dwarf2"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Generate DWARF Debugging Information"
+		    guiCategory="Legacy"
+		    disabled=true
+	    }
+	    Noshared{
+	    #### Deprecated
+		    {
+			    name="-noshared"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="MTrans"
+		    guiCategory="Legacy"
+	    }
+	    DblFiles {
+	    #### Deprecated
+		    {
+			    name="--dblfiles"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_dblfiles"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Debugging Dbl Files"
+		    guiCategory="Legacy"
+	    }
+	    Mips_MultipleNearRegions {
+	    #### MIPS - Deprecated
+		    {
+			    name="--multiple_near_regions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_multiple_near_regions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Multiple Near Regions"
+		    guiCategory="Legacy"
+	    }
+	    Mips_AsmCompat {
+	    #### MIPS - Deprecated
+		    {
+			    name="--mips_asm_compat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_mips_asm_compat"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MIPS Asm Compatibility"
+		    guiCategory="Legacy"
+	    }
+	    68k_StructureAlignment {
+	    #### 68K - Deprecated - has no effect
+		    {
+			    name="-structalign=1"
+			    value=0
+			    enumLabel="1-Byte Boundary"
+		    }
+		    {
+			    name="-structalign=2"
+			    value=1
+			    enumLabel="2-Byte Boundary"
+		    }
+		    {
+			    name="-structalign=4"
+			    value=2
+			    enumLabel="4-Byte Boundary"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Data Structure Alignment"
+		    guiCategory="Legacy"
+	    }
+	    68k_Preassemble {
+	    #### 68K - Deprecated
+		    {
+			    name="-preassemble"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nopreassemble"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Portable Assembly Code"
+		    guiCategory="Legacy"
+	    }
+	    68k_ExtraFpnop {
+	    #### 68K - Deprecated
+		    {
+			    name="-ffpnop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fpnop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noffpnop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nofpnop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fnofpnop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Insert Extra fpnop Instruction"
+		    guiCategory="Legacy"
+	}
+	    Elxr_SkipLayout {
+	    #### elxr - deprecated - chorus only
+		    {
+			    name="-skip_layout"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_skip_layout"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Skip Layout"
+		    guiCategory="Legacy"
+	    }
+	    ForcedZeroInit {
+		    {
+			    name="--forced_zero_initialization"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_forced_zero_initialization"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Forced Zero Initialization"
+		    guiCategory="Legacy"
+	    }
+	    CommonImplicitInit {
+		    {
+			    name="--common_implicit_initialization"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_common_implicit_initialization"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Treat .bss as Commons"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }	    
+	    ObjectFileFormat {
+		    {
+			    name="-elf"
+			    value=0
+			    enumLabel="ELF File Format"
+		    }
+		    {
+			    name="-coff"
+			    value=1
+			    enumLabel="COFF File Format"
+		    }
+		    {
+			    name="-bsd"
+			    value=2
+			    enumLabel="BSD File Format"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    disabled=true
+		    guiLabel="Object File Format"
+		    guiCategory="Legacy"
+	    }
+	    NoAsm {
+		    {
+			    name="-noasm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xnoasm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nonoasm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Znoasm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Ignore asm Inline Directive"
+		    guiCategory="Legacy"
+	    }
+	    ExternalAsmSymbol {
+		    {
+			    name="--external_asm_symbol"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_external_asm_symbol"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: external_asm_symbol"
+		    guiCategory="Legacy"
+	    }
+	    A30ExpandMacro {
+		    {
+			    name="--a30_expand_macro"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--a30_no_expand_macro"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: a30_expand_macro"
+		    guiCategory="Legacy"
+	    }
+	    A30ListMacroCall {
+		    {
+			    name="--a30_list_macro_call"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--a30_no_list_macro_call"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: a30_list_macro_call"
+		    guiCategory="Legacy"
+	    }
+	    A30ListMacroDefn {
+		    {
+			    name="--a30_list_macro_defn"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--a30_no_list_macro_defn"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: a30_list_macro_defn"
+		    guiCategory="Legacy"
+	    }
+	    A30ExpandControl {
+		    {
+			    name="--a30_expand_control"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--a30_no_expand_control"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: a30_expand_control"
+		    guiCategory="Legacy"
+	    }
+	    AsmListCrossReferences {
+		    {
+			    name="--asm_list_cross_references"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_asm_list_cross_references"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: asm_list_cross_references"
+		    guiCategory="Legacy"
+	    }
+	    ExtractCommonLibVars {
+		    {
+			    name="--extract_common_lib_vars"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_extract_common_lib_vars"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="L68 Option: extract_common_lib_vars"
+		    guiCategory="Legacy"
+	    }
+	    NoGhSymbols {
+		    {
+			    name="--no_gh_symbols"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_no_gh_symbols"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="L68 Option: no_gh_symbols"
+		    guiCategory="Legacy"
+	    }
+	    Cref{
+	    #### l68
+		    {
+			    name="-cref"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_cref"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="L68 xrefs"
+		    guiCategory="Legacy"
+	    }
+	    NumericSort{
+	    #### l68
+		    {
+			    name="-numeric_sort"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_numeric_sort"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="L68 numeric sort"
+		    guiCategory="Legacy"
+	    }
+	    CStyleNumericConstants {
+		    {
+			    name="--c_style_numeric_constants"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_c_style_numeric_constants"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: c_style_numeric_constants"
+		    guiCategory="Legacy"
+	    }
+	    ReserveUppercaseRegNames {
+		    {
+			    name="--reserve_uppercase_reg_names"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_reserve_uppercase_reg_names"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: reserve_uppercase_reg_names"
+		    guiCategory="Legacy"
+	    }
+	    ReserveLowercaseRegNames {
+		    {
+			    name="--reserve_lowercase_reg_names"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_reserve_lowercase_reg_names"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: reserve_lowercase_reg_names"
+		    guiCategory="Legacy"
+	    }
+	    ReserveSafeRegNames {
+		    {
+			    name="--reserve_safe_reg_names"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_reserve_safe_reg_names"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: reserve_safe_reg_names"
+		    guiCategory="Legacy"
+	    }
+	    ReserveCpuRegNames {
+		    {
+			    name="--reserve_cpu_reg_names"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_reserve_cpu_reg_names"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: reserve_cpu_reg_names"
+		    guiCategory="Legacy"
+	    }
+	    PadSection4Bytes {
+		    {
+			    name="--pad_section_4_bytes"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_pad_section_4_bytes"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: pad_section_4_bytes"
+		    guiCategory="Legacy"
+	    }
+	    AbsoluteShortForward {
+		    {
+			    name="--absolute_short_forward"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_absolute_short_forward"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: absolute_short_forward"
+		    guiCategory="Legacy"
+	    }
+	    DotLBranches16Bits {
+		    {
+			    name="--dot_l_branches_16_bits"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_dot_l_branches_16_bits"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: dot_l_branches_16_bits"
+		    guiCategory="Legacy"
+	    }
+	    AvoidOrlD7Bug {
+		    {
+			    name="--avoid_orl_d7_bug"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_avoid_orl_d7_bug"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: avoid_orl_d7_bug"
+		    guiCategory="Legacy"
+	    }
+	    A308BitBr {
+		    {
+			    name="--a30_8_bit_br"
+			    value=0
+			    enumLabel="8-Bit"
+		    }
+		    {
+			    name="--a30_16_bit_br"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--a30_32_bit_br"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="a30 Option: a30 8/16/32-bit br"
+		    guiCategory="Legacy"
+	    }
+	    CFront {
+		    {
+			    name="--cfront_2.1"
+			    value=0
+			    enumLabel="CFront 2.1"
+		    }
+		    {
+			    name="--cfront_3.0"
+			    value=1
+			    enumLabel="CFront 3.0"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="CFront Version"
+		    guiCategory="Legacy"
+	    }
+	    CFrontLibraries {
+		    {
+			    name="--cfront_library"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="CFront Libraries"
+		    guiCategory="Legacy"
+	    }
+	    V800CPUsandRegisters {
+		    {
+			    name="-cpu=800_22"
+			    value=0
+			    enumLabel="800 Processor with 22 Registers"
+		    }
+		    {
+			    name="-cpu=800_26"
+			    value=1
+			    enumLabel="800 Processor with 26 Registers"
+		    }
+		    {
+			    name="-cpu=800_32"
+			    value=2
+			    enumLabel="800 Processor with 32 Registers"
+		    }
+		    {
+			    name="-cpu=805_22"
+			    value=3
+			    enumLabel="805 Processor with 22 Registers"
+		    }
+		    {
+			    name="-cpu=805_26"
+			    value=4
+			    enumLabel="805 Processor with 26 Registers"
+		    }
+		    {
+			    name="-cpu=805_32"
+			    value=5
+			    enumLabel="805 Processor with 32 Registers"
+		    }
+		    {
+			    name="-cpu=810_22"
+			    value=6
+			    enumLabel="810 Processor with 22 Registers"
+		    }
+		    {
+			    name="-cpu=810_26"
+			    value=7
+			    enumLabel="810 Processor with 26 Registers"
+		    }
+		    {
+			    name="-cpu=810_32"
+			    value=8
+			    enumLabel="810 Processor with 32 Registers"
+		    }
+		    {
+			    name="-cpu=820_22"
+			    value=9
+			    enumLabel="820 Processor with 22 Registers"
+		    }
+		    {
+			    name="-cpu=820_26"
+			    value=10
+			    enumLabel="820 Processor with 26 Registers"
+		    }
+		    {
+			    name="-cpu=820_32"
+			    value=11
+			    enumLabel="820 Processor with 32 Registers"
+		    }
+		    #{
+		    #        name="-cpu=830_22"
+		    #        value=12
+		    #        enumLabel="830 Processor with 22 Registers"
+		    #}
+		    #{
+		    #        name="-cpu=830_26"
+		    #        value=13
+		    #        enumLabel="830 Processor with 26 Registers"
+		    #}
+		    #{
+		    #        name="-cpu=830_32"
+		    #        value=14
+		    #        enumLabel="830 Processor with 32 Registers"
+		    #}
+		    {
+			    name="-cpu=850_22"
+			    value=15
+			    enumLabel="850 Processor with 22 Registers"
+		    }
+		    {
+			    name="-cpu=850_26"
+			    value=16
+			    enumLabel="850 Processor with 26 Registers"
+		    }
+		    {
+			    name="-cpu=850_32"
+			    value=17
+			    enumLabel="850 Processor with 32 Registers"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="V800 Combined CPU and Register Mode"
+		    guiCategory="Legacy"
+	    }
+	    SpecialSubscriptCost {
+		    {
+			    name="--special_subscript_cost"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_special_subscript_cost"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Special Subscript Cost - cfront related (Nikola)"
+		    guiCategory="Legacy"
+	    }
+	    RemoveUnneededEntities {
+		    {
+			    name="--remove_unneeded_entities"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_remove_unneeded_entities"
+			    value=1
+			    enumLabel="Of"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Remove Things not Referenced - no apparent effect (Nikola)"
+		    guiCategory="Legacy"
+	    }
+	    NonconstRefAnachronism {
+		    {
+			    name="--nonconst_ref_anachronism"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_nonconst_ref_anachronism"
+			    value=1
+			    enumLabel="Of"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Nonconst Ref Anachronism (Nikola)"
+		    guiCategory="Legacy"
+	    }
+	    ClearHi6 {
+		    {
+			    name="-clearhi6"
+			    value=0
+			    enumLabel="Clear Hi6"
+		    }
+		    {
+			    name="-clearhi8"
+			    value=1
+			    enumLabel="Clear Hi8"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Quantum/LX Only - Assists Overlays"
+		    guiCategory="Legacy"
+	    }
+	    Dbg {
+		    {
+			    name="-nodbg"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-dbg"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-gsym"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Dbg"
+		    guiCategory="Legacy"
+	    }
+	    ECoff {
+		    {
+			    name="-ecoff"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noecoff"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="ECoff"
+		    guiCategory="Legacy"
+	    }
+	    FullFilename {
+		    {
+			    name="-fullfilename"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="never implemented"
+		    guiCategory="Legacy"
+	    }
+	    IgnoreLine {
+		    {
+			    name="-ignore_line"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ignore_line"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="never implemented"
+		    guiCategory="Legacy"
+	    }
+	    UseCpp{
+		    {
+			    name="-use_cpp"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-usecpp"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_cpp"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nousecpp"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Use Native UNIX Preprocessor"
+		    guiCategory="Legacy"
+	    }
+	    T{
+		    {
+			    name="--truncate8"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_truncate8"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="outdated"
+		    guiCategory="Legacy"
+	    }
+	    ScEnterpriseCompat{
+		    {
+			    name="-sc_enterprise_compat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="StarCore Enterprise Compatibility"
+		    guiCategory="Legacy"
+	    }
+	    DbgRoot {
+		    name="-dbgroot"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Dbg Root"
+		    guiCategory="Legacy"
+	    }
+	    68k_Pic {
+	    #### 68k COFF - now deprecated
+		    {
+			    name="-pic16"
+			    value=0
+			    enumLabel="pic16"
+		    }
+		    {
+			    name="-pic16=pc"
+			    value=1
+			    enumLabel="pic16=PC"
+		    }
+		    {
+			    name="-pic16=PC"
+			    value=1
+			    enumLabel="pic16=PC"
+		    }
+		    {
+			    name="-pic16=a5"
+			    value=2
+			    enumLabel="pic16=A5"
+		    }
+		    {
+			    name="-pic16=A5"
+			    value=2
+			    enumLabel="pic16=A5"
+		    }
+		    {
+			    name="-pic32"
+			    value=3
+			    enumLabel="pic32"
+		    }
+		    {
+			    name="-pic32=pc"
+			    value=4
+			    enumLabel="pic32=PC"
+		    }
+		    {
+			    name="-pic32=PC"
+			    value=4
+			    enumLabel="pic32=PC"
+		    }
+		    {
+			    name="-pic32=a5"
+			    value=5
+			    enumLabel="pic32=A5"
+		    }
+		    {
+			    name="-pic32=A5"
+			    value=5
+			    enumLabel="pic32=A5"
+		    }
+		    {
+			    name="-nopic16"
+			    value=6
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nopic32"
+			    value=6
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="16- and 32-Bit Position Independent Code"
+		    guiCategory="Legacy"
+	    }
+	    UseVPAsDbgSourceRoot {
+		    {
+			    name="-use_vp_as_dbg_source_root"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_vp_as_dbg_source_root"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    guiLabel="Use ViewPath as Source Root"
+		    guiCategory="Legacy;Debugging"
+		    disabled=true
+	    }
+    ################### Precompiled Header Files #####################
+    
+
+	    PchFile {
+		    {
+			    name="--pch"
+			    delimiter="NoArg"
+			    enumLabel="Automatically Use and/or Create a PCH"
+			    value=0
+		    }
+		    {
+			    name="--create_pch"
+			    delimiter="space"
+			    enumLabel="Create and Use a New PCH"
+			    value=1
+		    }
+		    {
+			    name="--create_pch"
+			    delimiter="Equal"
+			    enumLabel="Create and Use a New PCH"
+			    value=1
+		    }
+		    {
+			    name="--use_pch"
+			    delimiter="space"
+			    enumLabel="Use a Pre-existing PCH"
+			    value=2
+		    }
+		    {
+			    name="--use_pch"
+			    delimiter="equal"
+			    enumLabel="Use a Pre-existing PCH"
+			    value=2
+		    }
+		    {
+			    name="--no_pch"
+			    delimiter="NoArg"
+			    enumLabel="Do Not Use a PCH"
+			    value=3
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    guiLabel="Precompiled Header File"
+		    guiCategory="Legacy"
+		    disabled=true
+		    hidden=true
+	    }
+	    PchDir {
+		    {
+			    name="--pch_dir"
+			    delimiter="space"
+		    }
+		    {
+			    name="--pch_dir"
+			    delimiter="equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    guiLabel="PCH Search Directory"
+		    guiCategory="Legacy"
+		    disabled=true
+		    hidden=true
+	    }	
+	    PchMessages {
+		    {
+			    name="--pch_messages"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_pch_silent"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_pch_messages"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--pch_silent"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="PCH Messages"
+		    guiCategory="Legacy"
+		    disabled=true
+		    hidden=true
+	    }	    
+	    68k_Pid {
+	    #### 68k COFF - now deprecated
+		    {
+			    name="-pid16"
+			    value=0
+			    enumLabel="pid16"
+		    }
+		    {
+			    name="-pid16=pc"
+			    value=1
+			    enumLabel="pid16=PC"
+		    }
+		    {
+			    name="-pid16=PC"
+			    value=1
+			    enumLabel="pid16=PC"
+		    }
+		    {
+			    name="-pid16=a5"
+			    value=2
+			    enumLabel="pid16=A5"
+		    }
+		    {
+			    name="-pid16=A5"
+			    value=2
+			    enumLabel="pid16=A5"
+		    }
+		    {
+			    name="-pid32"
+			    value=3
+			    enumLabel="pid32"
+		    }
+		    {
+			    name="-pid32=pc"
+			    value=4
+			    enumLabel="pid32=PC"
+		    }
+		    {
+			    name="-pid32=PC"
+			    value=4
+			    enumLabel="pid32=PC"
+		    }
+		    {
+			    name="-pid32=a5"
+			    value=5
+			    enumLabel="pid32=A5"
+		    }
+		    {
+			    name="-pid32=A5"
+			    value=5
+			    enumLabel="pid32=A5"
+		    }
+		    {
+			    name="-nopid16"
+			    value=6
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nopid32"
+			    value=6
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="16- and 32-Bit Position Independent Data"
+		    guiCategory="Legacy"
+	    }
+    ############### Pascal Options ###################
+    
+	    Pascal_BigSet {
+		    {
+			    name="-bigset"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nobigset"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Big Set"
+		    guiCategory="Legacy;Pascal"
+	    }
+	    Pascal_Mode {
+		    {
+			    name="--pascal_iso0"
+			    value=0
+			    enumLabel="ISO 0 Mode"
+		    }
+		    {
+			    name="-s"
+			    value=1
+			    enumLabel="ISO 1 Mode"
+		    }
+		    {
+			    name="--pascal_iso1"
+			    value=0
+			    enumLabel="ISO 1 Mode"
+		    }
+		    {
+			    name="--pascal_extended"
+			    value=0
+			    enumLabel="Extended Mode"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="'s'"
+		    guiCategory="Legacy;Pascal"
+	    }
+	    Pascal_CaseSensistivity {
+		    {
+			    name="--pascal_case_sensitive"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_pascal_case_sensitive"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Pascal Case Sensitivity"
+		    guiCategory="Legacy;Pascal"
+	    }
+	    Pascal_AppendScore {
+		    {
+			    name="--append_score"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_append_score"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Append Score"
+		    guiCategory="Legacy;Pascal"
+	    }
+
+    ################# Never-Implemented Compiler Checks ########################
+    
+    	    CompilerChecks_Bounds {
+		    {
+	    		    name="-compcheck=bounds"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=nobounds"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Out of Bounds Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_AssignBound {
+		    {
+	    		    name="-compcheck=assignbound"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=noassignbound"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Assignment Bounds Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_AssignTrunc {
+		    {
+	    		    name="-compcheck=assigntrunc"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=noassigntrunc"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Assignment Truncation Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_OverflowError {
+		    {
+	    		    name="-compcheck=overflowerr"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=nooverflowerr"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Overflow Error"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_OverflowWarning {
+		    {
+	    		    name="-compcheck=overflowwarn"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=nooverflowwarn"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Overflow Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_ZeroDivide {
+		    {
+	    		    name="-compcheck=zerodivide"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=nozerodivide"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Divide by Zero Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_UseVariable {
+		    {
+	    		    name="-compcheck=usevariable"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=nousevariable"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Variable Usage Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_ConstantIf {
+		    {
+	    		    name="-compcheck=constantif"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-compcheck=noconstantif"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Constant If Expression Warning"
+		    guiCategory="Legacy"
+    	    }
+    	    CompilerChecks_UndefCpp {
+		    {
+	    		    name="-compcheck=undef_cpp"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-warn_undefined_cpp_symbol"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-no_warn_undefined_cpp_symbol"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+		    {
+	    		    name="-compcheck=noundef_cpp"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+    		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Compile"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Undefined C++ Symbol Warning"
+		    guiCategory="Legacy"
+    	    }
+	    GlobalVal {
+	    #### 68k, arm, max, mips, ppc, sc, v800 - Deprecated
+		    {
+			    name="-globalval"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    guiLabel="Global Values"
+		    guiCategory="Legacy"
+	    }
+	    MultiByteChars {
+		    # use -kanji= instead of --multibyte
+		    {
+			    name="--multibyte_chars"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_multibyte_chars"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Multi-Byte Characters"
+		    guiCategory="C/C++ Compiler;Special Tokens"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    Anachronisms {
+		    {
+			    name="--anachronisms"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_anachronisms"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Anachronism Support"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    EnumOverloading {
+		    {
+			    name="--enum_overloading"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_enum_overloading"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Overloading of enums"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }	
+	    FriendInjection {
+		    {
+			    name="--friend_injection"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_friend_injection"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Friend Injection"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }	
+	    LifetimeTemps {
+		    {
+			    name="--long_lifetime_temps"
+			    value=0
+			    enumLabel="Long"
+		    }
+		    {
+			    name="--short_lifetime_temps"
+			    value=1
+			    enumLabel="Short"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Temporaries' Lifetime"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }	
+	    Tiebreaker {
+		    {
+			    name="--early_tiebreaker"
+			    value=0
+			    enumLabel="Early"
+		    }
+		    {
+			    name="--late_tiebreaker"
+			    value=1
+			    enumLabel="Late"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Tiebreaker Processing Time"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+		    hidden=true
+	    }
+	    ForInit {
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"None"}
+		    {
+			    name="--new_for_init"
+			    value=1
+			    enumLabel="New"
+		    }
+		    {
+			    name="--old_for_init"
+			    value=0
+			    enumLabel="Old"
+		    }
+		    guiLabel="For-loop Initialization Scope"
+		    hidden=true
+	    }
+	}
+}

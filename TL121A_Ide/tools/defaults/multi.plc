@@ -1,0 +1,211 @@
+Placer 1.6
+State
+"srcChangeDir" = "src_body = $dirs;\
+cli( \"source -\" );\
+src_off = index(src_body,\"\\012\");\
+while ( src_off!=-1 ) {\
+    cli( \"source \\\"\" | substr(src_body,0,src_off) | \"\\\"\");\
+    src_body = substr(src_body,src_off+1,strlen(src_body)-src_off-1);\
+    src_off = index(src_body,\"\\012\");\
+}\
+src_body = 0;\011\011/* Free it */\
+dismiss(1);"
+
+"playbackDlgFileName" = ""
+
+"PlaybackDlgInit" = "$tfFileName = playbackDlgFileName"
+
+"TextInputWithChoices_Setup" = "cli(\"__fillGuiWithObjs -Widget text -ObjectList \" | %2);"
+
+Items=Searcher
+ ColWind(,,,388,86,"dialogsearch","Search","SrchInit",NULL,0,0,0,"MULTIPIC") 0xffffffff =Searcher > -1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Find:",0,1,0,0,"SrchFind")0xffffffff =find >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,NULL)0xffffffff =FindTxt >-1
+ ButtonSet(0,0,0,172,15,NULL,NULL,NULL,
+    (2,"Forward","Backward"),
+    (0),
+    -1,2,2,0,0,1,0,
+    (2,NULL,NULL),
+    (0),
+    (2,NULL,NULL),
+    (2,NULL,NULL),0,0)0xffffffff =Dir >-1
+ Text(0,0,0,NULL,"Search Type:",PNone)0xffffffff >-1
+ ButtonSet(0,0,0,218,15,NULL,NULL,NULL,
+    (2,"Normal","Regular Expression"),
+    (0),
+    -1,2,2,0,0,1,0,
+    (2,NULL,NULL),
+    (0),
+    (2,NULL,NULL),
+    (2,NULL,NULL),0,0)0xffffffff =Type >-1
+ Text(0,0,0,NULL,"Case:",PNone)0xffffffff >-1
+ ButtonSet(0,0,0,134,15,NULL,NULL,NULL,
+    (2,"Exact","Either"),
+    (2,"SrchCase0","SrchCase1"),
+    -1,2,2,0,0,1,0,
+    (2,NULL,NULL),
+    (0),
+    (2,NULL,NULL),
+    (2,NULL,NULL),0,0)0xffffffff =Case >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy3 >-1
+MinSizes
+ 0,(10,9,8),(),30,0,0,0,0,1,1,Vertical
+ 0,(7,6,3),(),50,0,0,0,0,1,1,Horizontal
+Sizes
+ 0,(7,6,3),(),50,0,0,0,0,1,1,Horizontal
+ 10,(9),(),0,0,0,0,0,1,1,Vertical
+ 9,(6),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,)Vertical
+ 8,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 0,(10,9,8),(),35,0,0,0,0,1,1,Vertical
+ 2,(0),(1),-12,0,0,0,0,1,1,Horizontal
+ 1,(),(),0,10,0,0,0,1,1,Horizontal
+Positions
+ (10,9,8),0,-100,0,0,0,0,Left,Left,Left
+ (6),3,20,0,0,0,0,Left,Left,Right
+ (7),6,10,0,0,0,0,Left,Left,Right
+ (4,3,1),0,7,0,0,0,0,Left,Left,Left
+ (5),4,10,0,0,0,0,Left,Left,Right
+ (10,4,5),9,10,0,0,0,0,TBCenter,Top,Bottom
+ (9,3,6,7),8,10,0,0,0,0,Baseline,Top,Bottom
+ (8,1,2),0,5,0,0,0,0,TBCenter,Top,Top
+ (2),1,4,0,0,0,0,Left,Left,Right
+
+Items=sourceDlg
+ Dialogue(,,,283,184,"source","Source Path","$dirs=clitext(\"source --\");",NULL,0,0,0,"MULTIPIC") 0xffffffff =sourceDlg > -1
+ Text(0,0,0,NULL,"Directory search path",PNone)0xffffffff >-1
+ Button(0,0,0,56,21,NULL,NULL,NULL,"Cancel",0,0,0,0,"dismiss(0);")0xffffffff =bt_cancel >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"OK",0,1,0,0,"srcChangeDir")0xffffffff =bt_ok >-1
+ Edit(0,0,0,1,1,NULL,"source",NULL,1,0,0)0xffffffff =dirs >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy1 >-1
+MinSizes
+ 0,(6),(),14,0,0,3,1,1,1,Vertical
+ 0,(3,2,1),(),50,0,0,0,0,1,1,Horizontal
+Sizes
+ 0,(3,2,1),(),50,0,0,0,0,1,1,Horizontal
+ 6,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 3,(2),(),0,0,0,0,0,1,1,Horizontal
+ 5,(0),(),0,0,0,0,0,1,1,Horizontal
+ 4,(0),(6),-14,0,0,0,0,1,1,Vertical
+ 0,(6),(),14,0,0,10,1,1,1,Vertical
+ 4,(0),(),-2,0,0,0,0,1,1,Horizontal
+Positions
+ (6),0,-200,0,0,0,0,Left,Left,Left
+ (2),0,-10,0,0,0,0,Right,Right,Right
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (5),4,-1,0,0,0,0,Top,Top,Top
+ (4),6,10,0,0,0,0,Top,Top,Bottom
+ (6,3,2,1),0,5,0,0,0,0,TBCenter,Top,Top
+ (3),2,-10,0,0,0,0,Right,Right,Left
+
+Items=expressionDlg
+ Dialogue(,,,258,89,"print","Expressions","ex_format=\"/n\";",NULL,0,0,0,"MULTIPIC") 0xffffffff =expressionDlg > -1
+ Text(0,0,0,NULL,"Enter expression:",PNone)0xffffffff >-1
+ Button(0,0,0,56,21,NULL,NULL,NULL,"Cancel",0,0,0,0,"dismiss(0);")0xffffffff =bt_cancel >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"OK",0,1,0,0,"cli( \"print\" | ex_format | \" \" | $text ); dismiss(1);")0xffffffff =bt_ok >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,NULL)0xffffffff =text >-1
+ Text(0,0,0,NULL,"Format:",PNone)0xffffffff >-1
+ PullDown(0,0,0,132,19,NULL,NULL,NULL,NULL,NULL,"Normal",1,(14,NULL,("Normal",NULL,,"ex_format=\"/n\"",())("Decimal",NULL,,"ex_format=\"/d\"",())("Octal",NULL,,"ex_format=\"/o\"",())("Hex",NULL,,"ex_format=\"/x\"",())("Character",NULL,,"ex_format=\"/c\"",())("Floating",NULL,,"ex_format=\"/g\"",())("ScientificNotation",NULL,,"ex_format=\"/e\"",())("ArrayOfChars",NULL,,"ex_format=\"/a\"",())("StringOfChars",NULL,,"ex_format=\"/s\"",())("ProcContainingAdr",NULL,,"ex_format=\"/p\"",())("Instruction",NULL,,"ex_format=\"/i\"",())("Instruction&Source",NULL,,"ex_format=\"/I\"",())("Address",NULL,,"ex_format=\"@x\"",())("Type",NULL,,"ex_format=\"/t\"",()),0))0xffffffff >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,0,0,0,1,NULL,PNone)0xffffffff =dummy2 >-1
+MinSizes
+ 0,(8,7,4),(),30,0,0,0,0,1,1,Vertical
+ 0,(1,2,3),(),50,0,0,0,0,1,1,((6,5),(),30,0,0,0,0,1,1,)Horizontal
+Sizes
+ 8,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 7,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 3,(2),(),0,0,0,0,0,1,1,Horizontal
+ 0,(8,7,4),(),30,0,0,0,0,1,1,Vertical
+ 0,(1,3,2),(),50,0,0,0,0,1,1,((6,5),(),30,0,0,0,0,1,1,)Horizontal
+ 4,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8,7),0,-200,0,0,0,0,Left,Left,Left
+ (6),5,10,0,0,0,0,Left,Left,Right
+ (2),0,-10,0,0,0,0,Right,Right,Right
+ (8,6,5),4,10,0,0,0,0,TBCenter,Top,Bottom
+ (7,2,3,1),0,5,0,0,0,0,TBCenter,Top,Top
+ (3),2,-10,0,0,0,0,Right,Right,Left
+ (4),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (4),7,10,0,0,0,0,Top,Top,Bottom
+ (5,1),0,10,0,0,0,0,Left,Left,Left
+
+Items=textinput
+ Dialogue(,,,300,60,NULL,"Input Text",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =textinput > -1
+ Text(0,0,0,NULL,"%1",PNone)0xffffffff >-1
+ Button(0,0,0,56,21,NULL,NULL,NULL,"Cancel",0,0,0,0,"dismiss(0);")0xffffffff >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"OK",0,1,0,0,"cli(%2 | \"  \" | $text ); dismiss(1);")0xffffffff >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,NULL)0xffffffff =text >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy1 >-1
+MinSizes
+Sizes
+ 3,(2),(),0,0,0,0,0,1,1,Horizontal
+ 5,(4),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 0,(),(),300,0,0,0,0,1,1,((1,3,2),(),50,0,0,0,0,1,1,)Horizontal
+ 0,(5,4),(),20,0,0,0,0,1,1,Vertical
+ 4,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (5),0,-100,0,0,0,0,Left,Left,Left
+ (2),0,-10,0,0,0,0,Left,Right,Right
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (4),5,10,0,0,0,0,Top,Top,Bottom
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (3),2,-10,0,0,0,0,Left,Right,Left
+ (2,3,1,5),0,5,0,0,0,0,TBCenter,Top,Top
+
+Items=TextInputWithChoices
+ Dialogue(,,,300,60,"%4","Input Text","TextInputWithChoices_Setup",NULL,0,0,0,"MULTIPIC") 0xffffffff =TextInputWithChoices > -1
+ Text(0,0,0,NULL,"%1",PNone)0xffffffff =Prompt_T >-1
+ Button(0,0,0,56,21,NULL,NULL,NULL,"Cancel",0,0,0,0,"dismiss(0);")0xffffffff =Cancel_BT >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"OK",0,1,0,0,"cli(%3 | \"  \" | $text ); dismiss(1);")0xffffffff =OK_BT >-1
+ PullDown(0,0,0,1,19,NULL,NULL,NULL,NULL,NULL,"",0,)0xffffffff =text >-1
+ Line(0,0,0,-1,1,NULL,PNone)0xffffffff =dummy1 >-1
+MinSizes
+Sizes
+ 3,(2),(),0,0,0,0,0,1,1,Horizontal
+ 5,(4),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,)Vertical
+ 0,(),(),300,0,0,0,0,1,1,((1,3,2),(),50,0,0,0,0,1,1,)Horizontal
+ 0,(5,4),(),20,0,0,0,0,1,1,Vertical
+ 4,(0),(),-20,0,0,0,0,1,1,Horizontal
+Positions
+ (5),0,-100,0,0,0,0,Left,Left,Left
+ (2),0,-10,0,0,0,0,Left,Right,Right
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (4),5,10,0,0,0,0,Top,Top,Bottom
+ (4),0,10,0,0,0,0,Left,Left,Left
+ (3),2,-10,0,0,0,0,Left,Right,Left
+ (2,3,1,5),0,5,0,0,0,0,TBCenter,Top,Top
+
+Items=PlaybackDlg
+ Dialogue(,,,300,105,"<","Playback Commands","PlaybackDlgInit",NULL,0,0,0,"MULTIPIC") 0xffffffff =PlaybackDlg > -1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"File:",0,0,0,0,"playbackDlgFileName = clitext(\"filedialogue Exec \\042Playback commands from file?\\042\"); if ( length (playbackDlgFileName ) > 0)\012    $tfFileName = playbackDlgFileName;")0xffffffff =File >-1
+ TextField(0,0,0,1,19,NULL,NULL,NULL,0xc1acc10,1,NULL)0xffffffff =tfFileName >-1
+ Line(0,-50,0,100,1,NULL,PNone)0xffffffff =dummy1 >-1
+ Text(0,63,0,NULL,"Playback commands from what file?",PNone)0xffffffff >-1
+ Button(0,0,0,56,21,NULL,NULL,NULL,"Cancel",0,0,0,0,"dismiss(0);")0xffffffff =btCancel >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"Help",0,0,0,0,"cli(\"help <\");")0xffffffff =btHelp >-1
+ Button(0,0,0,1,21,NULL,NULL,NULL,"OK",0,1,0,0,"cli(\"< \" | $tfFileName); playbackDlgFileName = $tfFileName; dismiss(1);")0xffffffff =btOK >-1
+ Line(0,-50,0,100,1,NULL,PNone)0xffffffff =dummy4 >-1
+MinSizes
+Sizes
+ 1,(),(),0,10,0,0,0,1,1,Horizontal
+ 7,(5),(),0,0,0,0,0,1,1,Horizontal
+ 6,(5),(),0,0,0,0,0,1,1,Horizontal
+ 8,(3),(),0,0,0,0,0,1,1,Vertical
+ 3,(1),(),12,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+ 0,(4,3,8),(),25,0,0,0,0,1,1,Vertical
+ 0,(),(),0,50,0,0,0,1,1,Horizontal
+ 2,(0),(1),-18,0,0,0,0,1,1,Horizontal
+Positions
+ (8),3,0,0,0,0,0,Top,Top,Bottom
+ (1),2,-4,0,0,0,0,Right,Right,Left
+ (6),8,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (6),7,-8,0,0,0,0,Right,Right,Left
+ (5),6,-8,0,0,0,0,Right,Right,Left
+ (7),0,0,-3,0,0,0,Right,Right,Right
+ (7,5),8,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (4),0,10,0,0,0,0,Top,Top,Top
+ (2,1),3,0,0,0,0,0,TBCenter,TBCenter,TBCenter
+ (3),4,10,0,0,0,0,Top,Top,Bottom

@@ -1,0 +1,26 @@
+<!-- Entities -->
+
+<!ENTITY ti.Unit       "Unit">
+<!ENTITY ti.Package    "Package">
+
+<!-- Elements -->
+
+<!ELEMENT Unit  (%C.DefAttr;, ATTRLink*, GenAttrList?)>
+
+<!ATTLIST Unit %A.ConfigItem; 
+          DisplayName              CDATA ""
+          FactorSI2Unit            CDATA "1.0"
+          OffsetSI2Unit            CDATA "0.0"
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!-- Links -->
+
+<!ELEMENT UnitLink EMPTY>
+
+<!ATTLIST UnitLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.Unit;"
+>

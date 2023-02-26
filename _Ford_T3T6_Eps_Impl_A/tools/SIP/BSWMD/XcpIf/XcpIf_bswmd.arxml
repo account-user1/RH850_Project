@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+    <AR-PACKAGES>
+        <AR-PACKAGE UUID="9c5cf824-7831-4a06-877a-49e2b3d79a3b">
+            <SHORT-NAME>Nexteer</SHORT-NAME>
+            <AR-PACKAGES>
+                <AR-PACKAGE UUID="">
+                    <SHORT-NAME>EcucDefs_XcpIf</SHORT-NAME>
+                    <ELEMENTS>
+                        <ECUC-DEFINITION-COLLECTION UUID="ECUS:627c9111-ec39-446b-a5a8-48bdb7d3bcc8">
+                            <SHORT-NAME>NexteerParameterDefinition_XcpIf</SHORT-NAME>
+                            <MODULE-REFS>
+                                <MODULE-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_XcpIf/XcpIf</MODULE-REF>
+                            </MODULE-REFS>
+                        </ECUC-DEFINITION-COLLECTION>
+                        <ECUC-MODULE-DEF UUID="">
+                            <SHORT-NAME>XcpIf</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">Settings for the XCP Interface component</L-2>
+                            </DESC>
+                            <CATEGORY>VENDOR_SPECIFIC_MODULE_DEFINITION</CATEGORY>
+                            <ADMIN-DATA>
+                                <DOC-REVISIONS>
+                                    <DOC-REVISION>
+                                        <REVISION-LABEL>1.0.0</REVISION-LABEL>
+                                        <STATE>released</STATE>
+                                        <ISSUED-BY>Nexteer</ISSUED-BY>
+                                        <DATE>2017-06-14</DATE>
+                                        <MODIFICATIONS>
+                                            <MODIFICATION>
+                                                <CHANGE>
+                                                    <L-2 L="EN">Initial Release</L-2>
+                                                </CHANGE>
+                                                <REASON>
+                                                    <L-2 L="EN"></L-2>
+                                                </REASON>
+                                            </MODIFICATION>
+                                        </MODIFICATIONS>
+                                    </DOC-REVISION>
+                                </DOC-REVISIONS>
+                            </ADMIN-DATA>
+                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_XcpIf/XcpIf</REFINED-MODULE-DEF-REF>
+                            <SUPPORTED-CONFIG-VARIANTS>
+                                <SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+                            </SUPPORTED-CONFIG-VARIANTS>
+                            <CONTAINERS>
+                                <!-- CONTAINER DEFINITION: XcpIfCommon -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>XcpIfCommon</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the common settings for XcpIf.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: XcpIf Common: XCP Driver Selection -->
+                                        <ECUC-ENUMERATION-PARAM-DEF UUID="">
+                                            <SHORT-NAME>XcpDriverSelection</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Selects the version of the XCP driver. 
+												Auto Select: Lets the generation script chose the version.
+												AUTOSAR: Forces the generation script to generate support for the AUTOSAR XCP driver.
+												CANembedded: Forces the generation script to generate support for the CANbedded XCP driver.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES />
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>Auto Select</DEFAULT-VALUE>
+                                            <LITERALS>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>Auto Select</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>AUTOSAR</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+												<ECUC-ENUMERATION-LITERAL-DEF UUID="">
+													<SHORT-NAME>CANbedded</SHORT-NAME>
+												</ECUC-ENUMERATION-LITERAL-DEF>
+                                            </LITERALS>
+                                        </ECUC-ENUMERATION-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                        <!-- REFERENCE DEFINITION: TunSelnMngtOsApplicationRef -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>TunSelnMngtOsApplicationRef</SHORT-NAME>
+                                            <LONG-NAME>Tuning Selection Management Os Application</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">This defines the application in which the tuning selection management (ES400A) component is integrated.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                            </CONTAINERS>
+                        </ECUC-MODULE-DEF>
+                        <BSW-IMPLEMENTATION UUID="">
+                            <SHORT-NAME>XcpIf_Impl</SHORT-NAME>
+                            <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                            <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+                        </BSW-IMPLEMENTATION>
+                    </ELEMENTS>
+                </AR-PACKAGE>
+            </AR-PACKAGES>
+        </AR-PACKAGE>
+    </AR-PACKAGES>
+</AUTOSAR>

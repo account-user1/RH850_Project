@@ -1,0 +1,119 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+component.libstartup.disabled = false
+component.libsys.disabled = false
+component.stdlib_startup.disabled = false
+component.stdlib_sys.disabled = false
+
+component_template.ProgramT {
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+# For targets using the Green Hills toolchain, add linkmaps and customizable
+# startup, system, and initialization libraries.
+	dlg_info {
+	    add {
+	        dlg_cmdlist = {"SetProgramProperties","AddLinkMap"}
+	    }
+	    edit {
+		cmd_str = "EditProgram"
+		dlg_cmdlist = {"ChangeLinkMap"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectName {
+	        dlg_info.add.same_object_dialogs = {"AddLinkMap"}
+	        dlg_info.edit.same_object_dialogs = {"AddLinkMap"}
+		actions.add.standard {
+		    # Add the linkmap to the program.
+#		    101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap" }
+		}
+	    }
+	
+	    linkMap {
+		display_name = "Program Layout"
+%if 0
+		type = "string"
+		default = "standalone_ram.ld"
+		defaults = { "standalone_ram.ld", "standalone_romrun.ld", "standalone_romcopy.ld" }
+		pre_populate_action = "python ${__SHARED_PY_DIR__}/projects.py populate_linkmap_list"
+
+		documentation_files += { "${__DIR__}/standalone_docs.gpd" }
+		doc_anchor_ids += { "multi.mpm.attribute.program_layout" }
+
+		actions {
+		    add.standard {
+			100 += { "defineLocal LINKMAP $linkMap" }
+		    }
+		    edit.standard {
+			100 += { "defineLocal LINKMAP $linkMap" }
+   	 	        101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+		    }
+		}
+%else
+		type="childlist_selectone"
+		tags = "LINKER_DIRECTIVES"
+%endif
+	        refreshNode = false
+	    	dlg_info {
+		    add {
+		    	cmd_str = "AddLinkMap"
+		    	dlg_filelist =  "${__SHARED_PY_DIR__}/programs.plc" 
+		        dlg_namelist = "ProjectWizardLinkMapLibraries"
+			documentation_files += { "${__DIR__}/standalone_docs.gpd" }
+			doc_intro_anchor_ids += { "multi.mpm.standalone_program_cfg" }
+
+			# This is needed to deal with the fact that the custom
+			# linker directives file requires an additional dialog
+			# and clicking "Finish" will always skip it.
+			allow_dim_next = false
+		    }
+		    edit {
+		    	cmd_str = "ChangeLinkMap"
+		    	dlg_filelist =  "${__SHARED_PY_DIR__}/programs.plc" 
+		        dlg_namelist = "ProjectWizardLinkMapLibraries"
+			documentation_files += { "${__DIR__}/standalone_docs.gpd" }
+			doc_intro_anchor_ids += { "multi.mpm.standalone_program_cfg" }
+			allow_dim_next = false
+		    }
+	        }
+	    }
+	    std_libraries {
+	        display_name = "Libraries"
+	        type = "childlist"
+		tags = "STD_LIBRARY"
+		documentation_files += { "${__DIR__}/standalone_docs.gpd" }
+		doc_anchor_ids += { "multi.mpm.attribute.custom_libraries" }
+		build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:stdlib_"		
+	    }
+	    std_libraries_stubs {
+	        display_name = "Libraries"
+	        type = "childlist"
+		tags = "STD_LIBRARY_STUB"
+		build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:stdlib_stub_"		
+	    }
+	}
+%endif
+}
+
+
+%if defined(__GHS_GPJ_SUPPORTS_CONFIGURATIONS) && defined(__GHS_CREATE_PROJECTS_WITH_CONFIGURATIONS)
+component.top_level_project {
+    actions {
+        add.standard {
+            # Create configurations for this project.
+	    100 += { "defineLocal CONFIG_NAME Debug" }
+	    100 += { "defineLocal CONFIG_SHORT DBG" }
+	    100 += { "defineLocal CONFIG_FILE debug.gpc" }
+	    101 += { "python ${__SHARED_PY_DIR__}/common.py create_configuration" }
+
+	    110 += { "defineLocal CONFIG_NAME Release" }
+	    110 += { "defineLocal CONFIG_SHORT REL" }
+	    110 += { "defineLocal CONFIG_FILE release.gpc" }
+	    111 += { "python ${__SHARED_PY_DIR__}/common.py create_configuration" }
+	}
+    }
+}
+%endif
+
+
+%endif

@@ -1,0 +1,12 @@
+        .weak ___ghs_rombootcodestart
+	
+	.file	"boardinit.800"
+
+// Reset vector jumps to _start (or the ROM version of _start)
+	.text
+	.section ".reset", "ax"
+
+___ghsautoimport_ghs_board_devices_resetvector::
+___ghs_board_devices_resetvector:
+
+	jr ___ghs_rombootcodestart

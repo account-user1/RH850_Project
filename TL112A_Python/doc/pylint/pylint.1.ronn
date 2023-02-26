@@ -1,0 +1,376 @@
+pylint(1) -- Python Script Verification Utility
+========================================================================================================================
+
+## SYNOPSIS ##
+`pylint` [ OPTIONS ] [ <arguments> ]
+
+
+
+## DESCRIPTION ##
+`pylint` is a Python source code analyzer which looks for programming errors, helps enforcing a coding standard and
+sniffs for some code smells (as defined in Martin Fowler's Refactoring book).
+
+Nexteer did not create nor does it maintain `pylint`.  This page was copied from
+[the Linux manpage](https://linux.die.net/man/1/pylint) for `pylint`.  Nexteer did, however, add
+[a section below][#INSTALLATION] regarding configuration of the tool for use on Nexteer tools/scripts.
+
+
+
+## OPTIONS ##
+* `--version`:
+    Show program's version number and exit.
+
+* `--help`, `-h`:
+    Show this help message and exit.
+
+* `--long-help`:
+    Print a more verbose help.
+
+
+## MASTER ##
+* `--rcfile=<file>`:
+    Specify a configuration file.
+
+* `--init-hook=<code>`:
+    Python code to execute, usually for sys.path manipulation such as pygtk.require().
+
+* `--errors-only`, `-E`:
+    In error mode, checkers without error messages are disabled and for others, only the ERROR messages are displayed,
+    and no reports are done by default.
+
+* `--ignore=<file>`:
+    Add <file or directory> to the black list.  It should be a base name, not a path.  You may set this option multiple
+    times.
+    [default: CVS]
+
+* `--persistent=<y_or_n>`:
+    Pickle collected data for later comparisons.
+    [default: yes]
+
+* `--load-plugins=<modules>`:
+    List of plugins (as comma separated values of python modules names) to load, usually to register additional
+    checkers.
+    [default: none]
+
+
+
+## COMMANDS ##
+* `--help-msg=<msg-id>`:
+    Display a help message for the given message id and exit.  The value may be a comma separated list of message ids.
+
+* `--list-msgs`:
+    Generate pylint's messages.
+
+* `--full-documentation`:
+    Generate pylint's full documentation.
+
+* `--generate-rcfile`:
+    Generate a sample configuration file according to the default configuration.  You can put other options before this
+    one to get them in the generated configuration.
+
+
+## MESSAGES CONTROL ##
+* `--enable=<msg ids>`, `-e <msg ids>`:
+    Enable the message, report, category or checker with the given id(s).  You can either give multiple identifier
+    separated by comma (,) or put this option multiple time.
+
+* `--disable=<msg ids>`, `-d <msg ids>`:
+    Disable the message, report, category or checker with the given id(s).  You can either give multiple identifier
+    separated by comma (,) or put this option multiple time.
+
+
+## REPORTS ##
+* `--output-format=<format>`, `-f <format>`:
+    Set the output format.  Available formats are text, parseable, colorized, msvs (visual studio) and html.
+    [default: text]
+
+* `--include-ids=<y_or_n>`, `-i <y_or_n>`:
+    Include message's id in output.
+    [default: no]
+
+* `--files-output=<y_or_n>`:
+    Put messages in a separate file for each module / package specified on the command line instead of printing them on
+    stdout.  Reports (if any) will be written in a file name "pylint_global.[txt|html]".
+    [default: no]
+
+* `--reports=<y_or_n>`, `-r <y_or_n>`:
+    Tells whether to display a full report or only the messages.
+    [default: yes]
+
+* `--evaluation=<python_expression>`:
+    Python expression which should return a note less than 10 (10 is the highest note).  You have access to the
+    variables errors warning, statement which respectively contain the number of errors / warnings messages and the
+    total number of statements analyzed.  This is used by the global evaluation report (R0004).
+    [default: 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)]
+
+* `--comment=<y_or_n>`:
+    Add a comment according to your evaluation note.  This is used by the global evaluation report (R0004).
+    [default: no]
+
+
+## BASIC ##
+* `--required-attributes=<attributes>`:
+    Required attributes for module, separated by a comma [default: none]
+
+* `--bad-functions=<builtin function names>`:
+    List of builtins function names that should not be used, separated by a comma.
+    [default: map, filter, apply, input]
+
+* `--module-rgx=<regexp>`:
+    Regular expression which should only match correct module names.
+    [default: (([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$]
+
+* `--const-rgx=<regexp>`:
+    Regular expression which should only match correct module level names.
+    [default: (([a-zA-Z_][A-Z0-9_]*)|(__.*__))$]
+
+* `--class-rgx=<regexp>`:
+    Regular expression which should only match correct class names.
+    [default: [A-Z_][a-zA-Z0-9]+$]
+
+* `--function-rgx=<regexp>`:
+    Regular expression which should only match correct function names.
+    [default: [a-z_][a-z0-9_]{2,30}$]
+
+* `--method-rgx=<regexp>`:
+    Regular expression which should only match correct method names.
+    [default: [a-z_][a-z0-9_]{2,30}$]
+
+* `--attr-rgx=<regexp>`:
+    Regular expression which should only match correct instance attribute names.
+    [default: [a-z_][a-z0-9_]{2,30}$]
+
+* `--argument-rgx=<regexp>`:
+    Regular expression which should only match correct argument names.
+    [default: [a-z_][a-zA-Z0-9_]{2,30}$]
+
+* `--variable-rgx=<regexp>`:
+    Regular expression which should only match correct variable names.
+    [default: [a-z_][a-zA-Z0-9_]{2,30}$]
+
+* `--inlinevar-rgx=<regexp>`:
+    Regular expression which should only match correct list comprehension / generator expression variable names.
+    [default: [A-Za-z_][A-Za-z0-9_]*$]
+
+* `--good-names=<names>`:
+    Good variable names which should always be accepted, separated by a comma.
+    [default: i,j,k,ex,Run,_]
+
+* `--bad-names=<names>`:
+    Bad variable names which should always be refused, separated by a comma.
+    [default: foo, bar, baz, toto, tutu, tata]
+
+* `--no-docstring-rgx=<regexp>`:
+    Regular expression which should only match functions or classes name which do not require a docstring.
+    [default: __.*__]
+
+
+## MISCELLANEOUS ##
+* `--notes=<comma separated values>`:
+    List of note tags to take in consideration, separated by a comma.
+    [default: FIXME,XXX,TODO]
+
+
+## SIMILARITIES ##
+* `--min-similarity-lines=<int>`:
+    Minimum lines number of a similarity.
+    [default: 4]
+
+* `--ignore-comments=<y or n>`:
+    Ignore comments when computing similarities.
+    [default: yes]
+
+* `--ignore-docstrings=<y or n>`:
+    Ignore docstrings when computing similarities.
+    [default: yes]
+
+
+## IMPORTS ##
+* `--deprecated-modules=<modules>`:
+    Deprecated modules which should not be used, separated by a comma.
+    [default: regsub, string, TERMIOS, Bastion, rexec]
+
+* `--import-graph=<file.dot>`:
+    Create a graph of every (i.e. internal and external) dependencies in the given file (report RP0402 must not be
+    disabled).
+    [default: none]
+
+* `--ext-import-graph=<file.dot>`:
+    Create a graph of external dependencies in the given file (report RP0402 must not be disabled).
+    [default: none]
+
+* `--int-import-graph=<file.dot>`:
+    Create a graph of internal dependencies in the given file (report RP0402 must not be disabled).
+    [default: none]
+
+
+## TYPECHECK ##
+* `--ignore-mixin-members=<y_or_n>`:
+    Tells whether missing members accessed in mixin class should be ignored.  A mixin class is detected if its name
+    ends with "mixin" (case insensitive).
+    [default: yes]
+
+* `--ignored-classes=<members names>`:
+    List of classes names for which member attributes should not be checked (useful for classes with attributes
+    dynamically set).
+    [default: SQLObject]
+
+* `--zope=<y_or_n>`:
+    When zope mode is activated, add a predefined set of Zope acquired attributes to generated-members.
+    [default: no]
+
+* `--generated-members=<members names>`:
+    List of members which are set dynamically and missed by pylint inference system, and so shouldn't trigger E0201
+    when accessed.
+    [default: REQUEST, acl_users, aq_parent]
+
+
+## CLASSES ##
+* `--ignore-iface-methods=<method names>`:
+    List of interface methods to ignore, separated by a comma.  This is used for instance to not check methods defines
+    in Zope's Interface base class.
+    [default: isImplementedBy, deferred, extends, names, namesAndDescriptions, queryDescriptionFor, getBases,
+    getDescriptionFor, getDoc, getName, getTaggedValue, getTaggedValueTags, isEqualOrExtendedBy, setTaggedValue,
+    isImplementedByInstancesOf, adaptWith, is_implemented_by]
+
+* `--defining-attr-methods=<method names>`:
+    List of method names used to declare (i.e. assign) instance attributes.
+    [default: __init__,__new__,setUp]
+
+
+## DESIGN ##
+* `--max-args=<int>`:
+    Maximum number of arguments for function / method.
+    [default: 5]
+
+* `--ignored-argument-names=<regexp>`:
+    Argument names that match this expression will be ignored.  Default to name with leading underscore.
+    [default: _.*]
+
+* `--max-locals=<int>`:
+    Maximum number of locals for function / method body.
+    [default: 15]
+
+* `--max-returns=<int>`:
+    Maximum number of return / yield for function / method body.
+    [default: 6]
+
+* `--max-branchs=<int>`:
+    Maximum number of branch for function / method body.
+    [default: 12]
+
+* `--max-statements=<int>`:
+    Maximum number of statements in function / method body.
+    [default: 50]
+
+* `--max-parents=<num>`:
+    Maximum number of parents for a class (see R0901).
+    [default: 7]
+
+* `--max-attributes=<num>`:
+    Maximum number of attributes for a class (see R0902).
+    [default: 7]
+
+* `--min-public-methods=<num>`:
+    Minimum number of public methods for a class (see R0903).
+    [default: 2]
+
+* `--max-public-methods=<num>`:
+    Maximum number of public methods for a class (see R0904).
+    [default: 20]
+
+
+## VARIABLES ##
+* `--init-import=<y_or_n>`:
+    Tells whether we should check for unused import in __init__ files.
+    [default: no]
+
+* `--dummy-variables-rgx=<regexp>`:
+    A regular expression matching names used for dummy variables (i.e. not used).
+    [default: _|dummy]
+
+* `--additional-builtins=<comma separated list>`:
+    List of additional names supposed to be defined in builtins.  Remember that you should avoid to define new builtins
+    when possible.
+    [default: none]
+
+
+## FORMAT ##
+* `--max-line-length=<int>`:
+    Maximum number of characters on a single line.
+    [default: 120]
+
+* `--max-module-lines=<int>`:
+    Maximum number of lines in a module.
+    [default: 1000]
+
+* `--indent-string=<string>`:
+    String used as indentation unit.  This is usually " " (4 spaces) or "t" (1 tab).
+    [default: ' ']
+
+
+
+## ENVIRONMENT VARIABLES ##
+The following environment variables are used:
+
+* PYLINTHOME:
+    Path to the directory where data of persistent run will be stored.  If not found, it defaults to ~/.pylint.d/ or
+    .pylint.d (in the default working directory).
+
+* PYLINTRC:
+    Path to the configuration file.  If not found, it will use the first existent file in ~/.pylintrc, /etc/pylintrc.
+
+
+
+## OUTPUT ##
+Using the default text output, the message format is:
+
+    MESSAGE_TYPE: LINE_NUM:[OBJECT:] MESSAGE
+
+There are 5 kind of message types:
+
+* `(C)` convention, for programming standard violation.
+* `(R)` refactor, for bad code smell.
+* `(W)` warning, for python specific problems.
+* `(E)` error, for probable bugs in the code.
+* `(F)` fatal, if an error occurred which prevented pylint from doing further processing.
+
+
+
+## RETURN CODE ##
+Pylint should leave with following status code:
+
+* `0` if everything went fine.
+* `1` if a fatal message was issued.
+* `2` if an error message was issued.
+* `4` if a warning message was issued.
+* `8` if a refactor message was issued.
+* `16` if a convention message was issued.
+* `32` on usage error
+
+Status 1 to 16 will be bit-OR'd so you can know which different categories has been issued by analyzing `pylint` output
+status code.
+
+
+
+## INSTALLATION ##
+To setup `pylint`, copy the configuration file (.pylintrc) from the TL112A_Python\doc folder and place a copy in your
+user folder (C:\User\<username>).  Pylint will automatically determine this path when invoked and use the settings from
+the file located there.  Alternatively, you can manually specify the path to the config file when invoking `pylint` by
+using the `--rcfile=<rcfile>` switch.
+
+
+
+
+## DOCUMENTATION ##
+This documentation was generated using [ronn](http://rtomayko.github.io/ronn).  `ronn` converts a text file with a
+format similar to Markdown into an HTML file with a format typical of a standard manpage.  For more information about
+`ronn` see it's manpage: [ronn(1)](http://rtomayko.github.io/ronn/ronn.1.html).  For more information on the syntax see
+that manpage: [ronn-format(7)](http://rtomayko.github.io/ronn/ronn-format.7.html).
+
+
+
+
+
+## COPYRIGHT ##
+(c) 2017 Nexteer Automotive

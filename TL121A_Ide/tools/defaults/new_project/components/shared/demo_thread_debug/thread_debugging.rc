@@ -1,0 +1,54 @@
+D
+
+Q 1
+bA thread_func2 {
+    echo " "
+    echo " "
+    echo "There are now two threads running in the program.  To view each"
+    echo "thread's context, you must halt the program.  Once the program is"
+    echo "halted, you can launch the OSA Explorer using the \"osaexplorer\""
+    echo "or from the View menu to examine each thread.  We will do this"
+    echo "automatically at the next step."
+    echo " "
+    echo "Press F5 or Go to continue the demonstration."
+    +
+    Q 1
+    bA {
+	osaexplorer
+	echo " "
+	echo " "
+	echo " "
+	echo "We've launched the OSA Explorer.  The current thread is displayed"
+	echo "as Executing.  You can now select the executing thread in the"
+	echo "target list at the top of the Debugger window to display its"
+	echo "current context."
+	echo " "
+	echo "Press F5 or Go to continue the demonstration."
+	e thread_func1
+	+
+	Q 1
+	bA {
+	    echo " "
+	    echo " "
+	    echo " "
+	    echo "We've now hit a breakpoint in thread_func1.  If you were"
+	    echo "viewing thread in thread_func2, then the view automatically"
+	    echo "switched to viewing the current thread."
+	    echo " "
+	    echo "This concludes the thread debugging demonstration.  Note that"
+	    echo "disconnecting from the native target connection without killing"
+	    echo "the main process will cause the program to run detached."
+	}
+	Q 0
+    }
+    Q 0
+}
+
+Q 0
+
+configure cwindlines 12
+
+echo "This demonstration will show how to debug a program with multiple"
+echo "threads of execution."
+echo " "
+echo "Press F5 or the Go button to begin the demonstration."

@@ -1,0 +1,740 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/int_osmodules.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.integrity_pick_os_modules {
+    display_type_name = "OS Module Selection"
+    display_object_name = "OS Module Selection"
+
+    parent_context_types = { "integrity_dynamic_download", "integrity_monolith" }
+    parent_context_filetypes = { "INTEGRITY Application" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add INTEGRITY &OS Module"
+	    cmd_str = "AddINTOSMod"
+	    dlg_filelist = "${__DIR__}/int_osmodules.plc" 
+	    dlg_namelist = "int_osmodules"
+	    auto_import = false
+	    allow_dim_next = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.pick_os_modules_dlg" }
+	
+	}
+	edit {
+	    menu_str = "Add INTEGRITY &OS Module"
+	    cmd_str = "EditINTOSMod"
+	    dlg_filelist = "${__DIR__}/int_osmodules.plc" 
+	    dlg_namelist = "int_osmodules"
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.pick_os_modules_dlg" }
+	}
+    }
+
+    is_parent = false
+    attributes {
+	msl_opts {
+	    type = "childlist"
+	    tags = "INTEGRITY_OS_MODULE"
+	    actions {
+		add {
+		    intermediate {
+			1 += { "runGuiOnNiece $dlg_info_cmd_str" }
+		    }
+		}
+		edit {
+		    intermediate {
+			1 += { "runGuiOnNiece $dlg_info_cmd_str" }
+		    }
+		}
+		back {
+		    intermediate {
+			1 += { "removeNieceGuiList $dlg_info_cmd_str" }
+		    }
+		}
+	    }
+	}
+    }
+}
+
+component_template.integrity_os_module_base { 
+    tags = { "INTEGRITY_OS_MODULE" }    
+    display_type_name = "OS Module"
+    top_file_type = "Program"
+    bg_color="#ecffce"
+#    fg_color="#000000"
+    icon_name = "os_module"
+    dlg_info {
+    	add {
+	    auto_import = false
+	}
+    }
+}
+component_template.integrity_os_module {
+    use_template = "integrity_os_module_base"
+    parent_context_types = { "integrity_dynamic_download", "integrity_monolith" }
+    parent_context_filetypes = { "INTEGRITY Application" }
+}
+component_template.integrity_os_module_dd_only {
+    use_template = "integrity_os_module_base"
+    parent_context_types = { "integrity_dynamic_download" }
+    parent_context_filetypes = { "INTEGRITY Application" }
+}
+component_template.integrity_os_module_mono_only {
+    use_template = "integrity_os_module_base"
+    parent_context_types = { "integrity_monolith" }
+    parent_context_filetypes = { "INTEGRITY Application" }
+}
+component_template.integrity_os_module_dist {
+    use_template = "integrity_os_module"
+    actions {
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_dist_paste_parent_local_std" }
+	    }
+	}
+    }
+}
+component.integrity_os_modules_file_system_dist {
+    use_template = "integrity_os_module_dist"
+
+    display_object_name = "File System (From Distribution)"
+    
+    default = false
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_dist" }
+    default_module_filename = "ivfsserver_module.gpj"
+    sort_key = "aaa_FS1"
+    
+    isparent = true
+    provides = { "FileSystemServer" , "CantUseDistFilesystemWithPosix"}
+    mutually_exclusives = {"File System (User Configured)", "POSIX System Server (Virtual)", "POSIX System Server (Kernel)", "Kernel Provided File System"}
+    dlg_info {
+	edit {
+	    right_click_list = { "EditINTFSClients" }
+	}
+    }
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "ivfsserver_module"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_dist_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_dist_remove_std" }
+	    }
+	}
+	readin {
+	    standard {
+		10 += { "defineProject HAS_FILE_SYSTEM TRUE" }
+	    }
+	}
+    }
+}
+
+component_template.integrity_os_modules_file_system_diy {
+    use_template = "integrity_os_module"
+    isparent = true
+    
+    dlg_info {
+    	add {
+	    menu_str = "Configure INTEGRITY &File System"
+	    cmd_str = "AddINTFS"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+
+	}
+	edit {
+	    menu_str = "Configure INTEGRITY &File System"
+	    cmd_str = "EditINTFS"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+	    right_click_list = { "EditINTFSClients" }
+	}
+    }
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "my_ivfsserver_module"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	    actions {
+		add {
+		    standard {
+			10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_tf_name_add_std" }                    
+                        10000000 += { "defineLocal LAST_FS_COPY_TF_NAME $tf_name"}
+		    }
+		}
+		edit {
+		    standard {
+                        10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_tf_name_edit_std" }                    
+                        10000000 += { "defineLocal LAST_FS_COPY_TF_NAME $tf_name"}
+		    }
+		}
+                readin {
+                    standard {                    
+                        10000000 += { "defineLocal LAST_FS_COPY_TF_NAME $tf_name"}
+                    }
+                }
+	    }
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "filename $build_file_diskname"
+	}
+	tf_mnttable {
+	    type = "childlist"
+	    tags = "FS_Mounttable"
+	    copy_define_to_instance = "tf_diskname"
+	    unique_names=true
+	    one_filename = true
+	    default = "$(PROJ_DIR)/mounttable.c"
+	    build_file_setting = "python ${__DIR__}/int_fs.py fs_find_mounttable $all_c_files"
+	}
+	msl_libs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_library_"
+	}
+        msl_extralibs {
+                type = "childlist"
+                tags = "FILE_SYSTEM_EXTRA_LIBRARY"
+                build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_extra_library_"
+        }
+	msl_devlibs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_DEVICE_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_device_library_"
+	}
+	parent_tf_name {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_parent_tf_name_edit_std" }
+		    }
+		}
+	    }
+	}
+    }
+    actions {
+    	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_remove_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_delete_std" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_FS $tf_diskname" }
+		10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		11 += { "undefineLocal MY_GPJ_COOKIE"}
+		11 += { "undefineLocal MY_ITEM_COOKIE"}
+	    }
+	}		
+	paste_link {
+	    standard {
+		10 += { "python ${__SHARED_PY_DIR__}/source.py source_paste_link_std" }
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_paste_link_std" }
+	    }
+	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_BASE_PROJ_NAME $BASE_PROJ_NAME" }
+		10 += { "defineLocal COPY_FS $tf_diskname" }
+	    }
+	}		
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_paste_local_std" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_paste_parent_local_std" }
+	    }
+	}	
+	readin {
+	    standard {
+		10 += { "defineProject HAS_FILE_SYSTEM TRUE" }
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_copy_readin_std" }
+	    }
+	}
+    }
+}
+
+component.integrity_os_modules_file_system_copy {
+    use_template = "integrity_os_modules_file_system_diy"
+    display_object_name = "File System (User Configured)"
+    default = false
+ 
+    sort_key = "aaa_FS2"
+    top_file_type = "Program"
+    provides = { "FileSystemServer", "UserFileSystemServer" }
+    
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_copy" }
+
+    mutually_exclusives = {"File System (From Distribution)","Kernel Provided File System" }
+}
+
+component.integrity_os_modules_kernel_ivfsserver {
+    display_object_name = "File System (Kernel, User Configured)"    
+    display_type_name = "Kernel OS Module"
+    default = false
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_kernel_file_system_copy" }
+    sort_key = "aaa_FS2"
+
+    parent_context_types = { "integrity_kernel" }
+    tags = { "KERNEL_OS_MODULES" }
+    provides = { "FileSystemServer", "UserFileSystemServer" }    
+    mutually_exclusives = {"File System (User Configured)", "File System (From Distribution)" }
+        isparent = true
+    dlg_info {
+    	add {
+	    menu_str = "Configure INTEGRITY &File System"
+	    cmd_str = "AddINTKFS"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    auto_import = false
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+	}
+	edit {
+	    menu_str = "Configure INTEGRITY &File System"
+	    cmd_str = "EditINTKFS"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs"
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_copy", "multi.mpm.int_file_system_libs", "multi.mpm.int_file_system_devlibs" }
+	    
+	    right_click_list = { "EditINTFSClients"}
+	}
+    }
+    attributes {
+	tf_mnttable {
+	    type = "childlist"
+	    tags = "FS_Mounttable"
+	    copy_define_to_instance = "tf_diskname"
+	    unique_names=true
+	    one_filename = true
+	    default = "$(PROJ_DIR)/mounttable.c"
+	    build_file_setting = "python ${__DIR__}/int_fs.py fs_find_mounttable $all_c_files"
+	}
+	msl_libs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_KERNEL_LIBRARY"
+            # This requires a copy of every fs_server_library since one (NFS) is different
+            build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_kernel_library_"
+	}
+#  All these should have kernel versions
+#        msl_extralibs {
+#                type = "childlist"
+#                tags = "FILE_SYSTEM_EXTRA_LIBRARY"
+#                build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_extra_library_"
+#        }
+	msl_devlibs {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_SERVER_KERNEL_DEVICE_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_server_kernel_device_library_"
+	}
+	msl_posixauthclient {
+	    type = "childlist"
+	    tags = "FILE_SYSTEM_EXTRA_LIBRARY"
+	    build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:fs_kernel_library_"
+	}
+	tf_name {
+	    type = "string"
+	    default = "$INT_KERNEL_PROJ_NAME"
+	    read_only = true
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_kernel_add_std" }
+	    }
+	}
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_fs_kernel_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		10 += { "defineProject HAS_FILE_SYSTEM TRUE" }
+	    }
+	}	
+    }
+}
+
+component.integrity_os_modules_fs_dd_only {
+    use_template = "integrity_os_module_dd_only"
+    default = false
+    provides = { "FileSystemServer", "UserFileSystemServer" }    
+    mutually_exclusives = {"File System (User Configured)", "File System (From Distribution)" }
+    
+    sort_key = "aaa_FS3"
+    default_provides = true
+
+    display_object_name = "Kernel Provided File System"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_fs_dd_only" }
+}
+
+
+component.integrity_os_modules_file_system_add_clients {
+    display_type_name = "Add File System Clients"
+    
+    description = "Pick clients for INTEGRITY File System"
+    
+    #parent_context_types  = { "integrity_os_modules_file_system_copy", "integrity_os_modules_kernel_ivfsserver", "integrity_os_modules_file_system_dist"}
+    #parent_context_types = { "INTEGRITY Application" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add File System &Clients"
+	    cmd_str = "AddINTFSClients"
+	    dlg_filelist = "${__DIR__}/int_fs.plc" 
+	    dlg_namelist = "int_fs_add_clients"
+	    
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_clients" }
+	}
+	edit {
+	    menu_str = "Configure File System &Clients"
+	    cmd_str = "EditINTFSClients"
+	    dlg_filelist = "${__DIR__}/int_fs.plc" 
+	    dlg_namelist = "int_fs_add_clients"
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_file_system_clients" }
+	}
+    }
+
+    is_parent = false
+    attributes {
+	msl_opts {
+	    type = "childlist"
+	    fill_with_instances = true
+	    tags_list = { "INTEGRITY_VirtualAddressSpace", "INTEGRITY_Kernel" }
+	    attribute_name_list =  { "msl_opts", "msl_opts" }
+	    attribute_type_list = { "virtual_library_ivfs" , "kernel_library_ivfs" }
+	}
+    }
+}
+
+component_template.integrity_os_modules_generic_ip_stack {
+    use_template = "integrity_os_module_dist"
+    default = false
+    provides = { "TCPIPStack" }
+    requires = { "KERNEL_LIBRARY_RES" }
+    
+    attributes {
+	tf_name {
+	    type = "string"
+	    refreshNode = true
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_generic_ip_stack_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_generic_ip_stack_remove_std" }
+	    }
+	}
+    }
+}
+%if file_exists("${__INTEGRITY_DIST__}/INTEGRITY-include/ghnet2/ghnet2.h")
+
+component.integrity_os_modules_ip4_stack {
+    use_template = "integrity_os_modules_generic_ip_stack"
+
+    display_object_name = "GHnet IPv4 Stack (Virtual)"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_ghnet_ip4" }
+    default_module_filename = "ip4server_module.gpj"
+    sort_key = "bbb_STACK1"
+
+    variable_defs {
+	STACKNAME = "ip4server_module"
+    }
+    mutually_exclusives = {"Legacy GHnet Stack (Virtual)","GHnet IPv4/v6 Stack (Virtual)","Kernel Provided Stack","GHnet IPv4/v6 Routing Stack (Virtual)" }
+}
+
+component.integrity_os_modules_ip46_stack {
+    use_template = "integrity_os_modules_generic_ip_stack"
+
+    display_object_name = "GHnet IPv4/v6 Stack (Virtual)"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_ghnet_ip46" }
+    default_module_filename = "ip46server_module.gpj"
+    sort_key = "bbb_STACK2"
+
+    variable_defs {
+	STACKNAME = "ip46server_module"
+    }
+    mutually_exclusives = {"Legacy GHnet Stack (Virtual)","GHnet IPv4 Stack (Virtual)" ,"Kernel Provided Stack", "GHnet IPv4/v6 Routing Stack (Virtual)"}
+}
+
+component.integrity_os_modules_ip46router_stack {
+    use_template = "integrity_os_modules_generic_ip_stack"
+
+    display_object_name = "GHnet IPv4/v6 Routing Stack (Virtual)"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_ghnet_ip46router" }
+    default_module_filename = "ip46router_module.gpj"
+    sort_key = "bbb_STACK3"
+
+    variable_defs {
+	STACKNAME = "ip46router_module"
+    }
+    mutually_exclusives = {"Legacy GHnet Stack (Virtual)","GHnet IPv4 Stack (Virtual)" ,"Kernel Provided Stack", "GHnet IPv4/v6 Stack (Virtual)"}
+}
+
+%endif
+
+component.integrity_os_modules_tcpip_stack {
+    use_template = "integrity_os_modules_generic_ip_stack"
+
+%if file_exists("${__INTEGRITY_DIST__}/INTEGRITY-include/ghnet2/ghnet2.h")
+    display_object_name = "Legacy GHnet Stack (Virtual)"    
+    mutually_exclusives = {"GHnet IPv4 Stack (Virtual)","GHnet IPv4/v6 Stack (Virtual)","Kernel Provided Stack", "GHnet IPv4/v6 Routing Stack (Virtual)"}    
+    doc_anchor_ids = { "multi.mpm.int_osmod_legacy_tcpip" }
+%else
+    display_object_name = "TCP/IP Stack (Virtual)"
+    mutually_exclusives = {"Kernel Provided Stack"}    
+    doc_anchor_ids = { "multi.mpm.int_osmod_tcpip" }
+%endif
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    default_module_filename = "itcpip_module.gpj"
+    sort_key = "bbb_STACK4"
+
+    variable_defs {
+	STACKNAME = "itcpip_module"
+    }
+
+}
+
+component.integrity_os_modules_tcpip_stack_dd_only {
+    use_template = "integrity_os_module_dd_only"
+    default = false
+    provides = { "TCPIPStack" }
+
+    display_object_name = "Kernel Provided Stack"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_tcpip_dd_only" }
+
+%if file_exists("${__INTEGRITY_DIST__}/INTEGRITY-include/ghnet2/ghnet2.h")
+    mutually_exclusives = {"GHnet IPv4 Stack (Virtual)","GHnet IPv4/v6 Stack (Virtual)","Legacy GHnet Stack (Virtual)", "GHnet IPv4/v6 Routing Stack (Virtual)"}
+%else
+    mutually_exclusives = {"TCP/IP Stack (Virtual)"}
+%endif
+    sort_key = "bbb_STACK5"
+    default_provides = true
+}
+
+component.integrity_os_modules_fake_resource_manager_dd_only {
+    use_template = "integrity_os_module_dd_only"
+    default = false
+    provides = { "KERNEL_LIBRARY_RES" }
+
+    display_object_name = "Kernel Provided Resource Manager"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_fake_resource_manager_dd_only" }
+
+    sort_key = "zzz_RM"
+    default_provides = true
+}
+
+component.integrity_os_modules_ftp_server {
+    use_template = "integrity_os_module_dist"
+
+    display_object_name = "FTP Server"
+    default = false
+    
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_ftp_server" }
+    default_module_filename = "iftpserver_module.gpj"
+    sort_key = "ccc_FTP1"
+
+    requires = { "TCPIPStack" , "FileSystemServer"}
+    provides = { "FTPServer" }
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "iftpserver_module"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_ftp_server_tf_name_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_ftp_server_remove_std" }
+	    }
+	}
+    }
+}
+
+%if file_exists("${__INTEGRITY_DIST__}/modules/ghs/ghnet2-services/webserver/webserver2_module.gpj")
+component.integrity_os_modules_web_server {
+    use_template = "integrity_os_module_dist"
+
+    display_object_name = "Web Server"
+    default = false
+    
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_web_server" }
+    default_module_filename = "webserver2_module.gpj"
+    sort_key = "ccc_Web1"
+
+    requires = { "TCPIPStack" , "FileSystemServer"}
+    provides = { "WebServer" }
+    attributes {
+        tf_name {
+            type = "string"
+            default = "webserver2_module"
+            refreshNode = true
+
+            build_file_setting = "filename $build_file_basename"
+        }
+    }
+    actions {
+        add {
+            standard {
+                10 += { "python ${__DIR__}/int_osmodules.py os_web_server_tf_name_add_std" }
+            }
+        }
+        remove {
+            standard {
+                10 += { "python ${__DIR__}/int_osmodules.py os_web_server_remove_std" }
+            }
+        }
+    }
+}
+%endif
+
+component.integrity_os_modules_net_server_module {
+    use_template = "integrity_os_module_dist"
+
+    display_object_name = "INTEGRITY Shell"
+    default = false
+    
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_net_server_module" }
+    default_module_filename = "net_server_module.gpj"
+    sort_key = "ddd_Shell1"
+
+    provides = { "NetworkServer" }
+    requires = {"TCPIPStack" , "FileSystemServer", "FTPServer"}
+    mutually_exclusives = {"POSIX Network Server" }
+
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "net_server_module"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_net_server_module_tf_name_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_net_server_module_remove_std" }
+	    }
+	}
+    }
+}
+
+
+%if file_exists("${__INTEGRITY_DIST__}/examples/NetworkServer/posixnetworkserver.gpj")
+%if file_exists("${__INTEGRITY_DIST__}/modules/ghs/net_server/filter_system.h")
+component.integrity_os_modules_posix_net_server_example {
+    use_template = "integrity_os_module_dist"
+
+    display_object_name = "POSIX Network Server"
+    default = false
+    
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_osmod_posix_net_server_example" }
+    default_module_filename = "posix_net_server_example.gpj"
+    sort_key = "eee_POSIX1"
+
+    provides = { "PosixNetworkServer" }
+    requires = {  "PosixSystemServer", "UserFileSystemServer", "FTPServer"}
+    mutually_exclusives = {"INTEGRITY Shell" }
+
+    attributes {
+	tf_name {
+	    type = "string"
+	    default = "posix_net_server_example"
+	    refreshNode = true
+
+	    build_file_setting = "filename $build_file_basename"
+	}
+    }
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_posix_net_server_example_tf_name_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_osmodules.py os_posix_net_server_example_remove_std" }
+	    }
+	}
+    }
+}
+%endif
+%endif
+
+%endif
+
+%endif

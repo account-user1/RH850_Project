@@ -1,0 +1,41 @@
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#+
+uint ConvertSizeEnumToInt(string SignalSize)
+{
+   uint SignalSizeInInteger = 0;
+   
+   if(SignalSize == "DATA_SIZE_0BYTE")
+   {
+		SignalSizeInInteger = 0;
+   }
+   else if(SignalSize == "DATA_SIZE_1BYTE")
+    {
+        SignalSizeInInteger = 1;
+    }
+    else if (SignalSize == "DATA_SIZE_2BYTES")
+    {
+        SignalSizeInInteger = 2;
+    }
+    else
+    {
+        SignalSizeInInteger = 4;
+    }
+    return SignalSizeInInteger;
+}
+
+
+
+bool CheckInString(string SourceString, string CheckString)
+{
+    if(SourceString.Contains(CheckString))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+#>

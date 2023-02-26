@@ -1,0 +1,786 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_velosity/vel_kernel.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component_template.velosity_kernel {
+	top_file_type = "Program"
+	bg_color="#ccffff"
+#	fg_color="#000000"
+	context_types = "velosity_kernel"
+	tags = { "velOSity_Kernel" }
+	isparent = true
+
+	documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	doc_anchor_ids = { "multi.mpm.kernel_project" }
+	
+	icon_name = "integrity_kernel"
+	bg_color = "#9efdff"
+	dlg_info {
+	    add {
+		menu_str = "Add velOSity &Kernel"
+	    	cmd_str = "AddVELK"
+	    	dlg_filelist =  "${__DIR__}/vel_kernel.plc" 
+	    	dlg_namelist =  "vel_kernel3"
+		documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		doc_anchor_ids = { "multi.mpm.kernel_project",  "multi.mpm.program_layout",  "multi.mpm.kernel_libraries",  "multi.mpm.kernel_modules" }
+	    }
+	    edit {
+		menu_str = "Edit velOSity &Kernel"
+	    	cmd_str = "EditVELK"
+	    	dlg_filelist =  "${__DIR__}/vel_kernel.plc" 
+	    	dlg_namelist =  "vel_kernel3"
+		documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		doc_anchor_ids = { "multi.mpm.kernel_project",  "multi.mpm.program_layout",  "multi.mpm.kernel_libraries",  "multi.mpm.kernel_modules" }
+	    }
+	}
+	attributes {
+	    msl_opts {
+		type = "childlist"
+		tags = "KERNEL_LIBRARY"
+		build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:kernel_library_"
+	    }
+	    msl_modules {
+		type = "childlist"
+		tags = "KERNEL_OS_MODULES"
+		build_file_setting = "option id:Libraries strip_prefix:-l component_prefix:velosity_os_modules_kernel_"
+	    }
+	    tf_name {
+		type = "string"
+		default = "$(BASE_PROJ_NAME)_kernel"
+		display_name = true
+
+		build_file_setting = "filename $build_file_basename"
+		
+		refreshNode = true
+		actions {
+		    add {
+		    	intermediate {
+			    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+			}
+			standard {
+			    15 += { "python ${__DIR__}/vel_kernel.py common_kernel_tf_name_add_std" }
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+			    # Set the object directory to be a subdirectory
+			    # of the global object directory based on the name
+			    # of the subproject's directory to avoid conflicts
+			    # between subprojects.
+			    # This is only done for GHS toolchains here since
+			    # the exact option syntax is different for each
+			    # toolchain.
+		    	    100 += { "defineLocal OPTION_STRING -object_dir=objs/$REL_PROJ_DIR" }#/$BASE_PROJ_NAME" }
+		    	    101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif 
+			}
+		    }
+		    edit {
+			intermediate {
+			    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+			}
+		    }
+		    readin {
+			standard {   
+			    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+			    2 += { "defineProject VEL_KERNEL_GPJ_COOKIE $MY_GPJ_COOKIE" }
+			    1000000 += { "defineLocal LAST_INT_KERNEL_PROJ_NAME $tf_name" }
+			}
+		    }
+	       }
+	    }
+	    tf_diskname {
+		type = "string"
+		host_filename = true
+		build_file_setting = "filename $build_file_diskname"
+	    }   
+	    pd_layout {
+		type = "choice"
+		display_name="Program Layout:"
+		    
+		build_file_setting = "filename id:'Linker Directives'"
+		choices {
+		    ramrun {
+		    	default = true
+			display_name = "Link to and execute out of RAM"
+			build_file_setting_suffix = "default.ld"
+			actions {			    
+			    add {
+				intermediate {
+				    1 += { "defineProject LD_SUFFIX _default.ld" }
+				}
+				standard {
+				    11 += { "python ${__DIR__}/vel_kernel.py common_kernel_pd_layout_add_std" } 
+				}
+			    }
+			    edit {
+				intermediate {
+				    1 += { "defineProject LD_SUFFIX _default.ld" }
+				}
+			    	standard {
+				    11 += { "python ${__DIR__}/vel_kernel.py common_kernel_pd_layout_edit_std" } 
+				}
+			    }
+			    readin {
+				standard {
+				    1 += { "defineProject LD_SUFFIX _default.ld" }
+				    100000000 += { "defineProject LAST_LD_SUFFIX _default.ld" }
+				}
+			    }
+			}
+		    }
+%if defined(NO_FLASH_LD)
+%else
+		    romcopy {
+			display_name="Link to ROM and execute out of RAM"
+			build_file_setting_suffix = "flash.ld"
+			actions {
+
+			    add {
+				intermediate {
+				    1 += { "defineProject LD_SUFFIX _flash.ld" }
+				}
+				standard {
+				    11 += { "python ${__DIR__}/vel_kernel.py common_kernel_pd_layout_add_std" } 
+				}
+			    }
+			    edit {
+				intermediate {
+				    1 += { "defineProject LD_SUFFIX _flash.ld" }
+				}
+			    	standard {
+				    11 += { "python ${__DIR__}/vel_kernel.py common_kernel_pd_layout_edit_std" } 
+				}
+			    }
+			    readin {
+				standard {
+				    1 += { "defineProject LD_SUFFIX _flash.ld" }
+				    100000000 += { "defineProject LAST_LD_SUFFIX _flash.ld" }
+				}
+			    }
+			}
+		    }
+%endif
+		}
+	    }
+	    parent_target {
+		type = "string"
+		actions {
+		    edit {
+			standard {
+			    1 += { "python ${__DIR__}/vel_kernel.py common_kernel_parent_target_edit_std" } 
+			}
+		    }
+		}
+	    }
+	}
+
+	actions {
+	    remove {
+		standard {
+		    1000000 += { "python ${__DIR__}/vel_kernel.py common_kernel_remove_std" } 
+		}
+	    }	
+	    delete {
+		standard {
+		    1000000 += { "python ${__DIR__}/vel_kernel.py common_kernel_delete_std" } 
+		}
+	    }
+	    copy_local {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		}
+	    }	    
+	}
+}
+
+#until we have multiple inheritance of template, have to hardcode the INTProjectT-ness
+# of a standalone kernel
+component.velosity_kernel_standalone {
+	display_type_name = "Kernel"
+
+	top_file_type = "Program"
+%if defined(NO_BSP)
+	disabled=true
+%endif
+	
+	description = "velOSity Kernel"
+	description_html ="${__DIR__}/docs/desc_vel_kernel.html"
+	documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	doc_anchor_ids = { "multi.mpm.kernel_project" }
+
+	parent_context_types = { "top_level_project", "project" }
+	#parent_context_filetypes = { "Project" }
+
+	parent_name = "standalone"
+
+	use_template = "velosity_kernel"
+
+	
+	tags = { "velOSity_Kernel_Standalone" }
+
+	mid_pass = true
+	show_box = false
+	newnode = false
+
+	dlg_info {
+	    add {
+		cmd_str = "AddVELKStandalone"
+		dlg_cmdlist = { "SetProjInfo_VELKStandalone", "EditVELKStandalone" }
+	    }
+	    edit {
+		cmd_str = "EditVELKStandalone"
+		right_click_list = { "EditVELKS2M" }
+	    }
+	    paste_local {
+		cmd_str = "PasteVELKStandalone"
+		dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+	        dlg_namelist =  "ProjectWizardDirName"
+
+	    }
+	}
+	attributes {
+	    standalone_2_monolith {
+		type = "string"
+
+		dlg_info {
+		    edit {
+			menu_str = "&Create Monolith From Standalone Kernel"
+			cmd_str = "EditVELKS2M"
+			dlg_filelist = "${__DIR__}/vel_kernel.plc" 
+			dlg_namelist = "vel_kernel_s2m"
+			dlg_doc_included_childlists = false
+			documentation_file =   "${__DIR__}/docs/mpm_all.gpd"
+			doc_anchor_ids = { "multi.mpm.monolith_from_standalone_kernel" }
+		    }
+		}
+	    
+		actions {
+		    edit {
+			standard {
+			    10 += { "python ${__DIR__}/vel_kernel.py promote_standalone_2_monolith_edit_std" }
+			}
+		    }	    
+		}
+	    }
+	}
+	actions {
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_remove_std" }
+		}
+	    }
+	    delete {
+		standard {
+		    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_delete_std" }
+		}
+	    }
+	    copy_link {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "undefineLocal MY_GPJ_COOKIE"}
+		    11 += { "undefineLocal MY_ITEM_COOKIE"}
+		}
+	    }
+	    paste_link {
+		standard {
+		    10 += { "python ${__SHARED_PY_DIR__}/source.py source_paste_link_std" }
+		}
+	    }	    
+	    copy_local {
+		standard {
+		    10 += { "defineLocal COPY_REL_PROJ_DIR $(REL_PROJ_DIR)" }
+		    10 += { "defineLocal COPY_PROJ_DIR $(PROJ_DIR)" }
+		    12 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_copy_local_std" }
+		}
+	    }
+	    paste_local {
+		standard {
+		    1 += { "defineLocal PROJ_DIR $(tf_ProjectDir)" }
+		    1 += { "defineLocal BASE_PROJ_NAME $LAST_BASE_PROJ_NAME" }
+
+		    1 += { "overrideAttribute tf_name $(tf_ProjectName)"}
+		    2 += { "defineLocal INT_KERNEL_PROJ_NAME $LAST_INT_KERNEL_PROJ_NAME" }
+		    2 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+		    3 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+		    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_paste_local_std" }
+		}
+	    }
+	    reload {
+		intermediate {
+		    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_reload_int" }
+    
+		}
+		standard {
+		    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+		    1 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+		    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_tf_name_edit_std" } 
+		    10000000 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_tf_name_edit_std_lastdefines" } 
+		}
+	    }
+
+	}
+	attributes {
+	    tf_name {
+		actions {
+		    add {
+			intermediate {
+			    #1 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+			}
+			standard {
+			    1 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+			    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_tf_name_add_std" }
+			}
+		    }
+		    edit {
+			intermediate {
+			    1 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+			}
+			standard {
+			    10 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_tf_name_edit_std" }
+			    
+			    1000000 += { "python ${__DIR__}/vel_kernel.py standalone_kernel_tf_name_edit_std_lastdefines" }
+			}
+		    }
+		    readin {
+			standard {
+			    5 += { "defineLocal BASE_PROJ_NAME $tf_name" }
+			    1000000 += { "defineLocal LAST_BASE_PROJ_NAME $tf_name" }
+			}    
+		    }
+		}
+	    }
+	    tf_ProjectDir {
+		type = "string"
+		host_filename = true;
+		default = "$ABS_BASE_PROJ_DIR/src"
+
+		build_file_setting = "filedir $build_file_directory"
+		pre_populate_action = "python ${__SHARED_PY_DIR__}/common.py newproj_find_next_dir" 
+		sanity_check_action = "python ${__SHARED_PY_DIR__}/common.py newproj_sanity_check" 
+		actions {
+		    add {
+			intermediate {
+			    1 += { "defineProject PROJ_DIR $tf_ProjectDir" }
+			    2 += { "calculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+			    2 += { "calculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+			    3 += { "calculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+			}
+			standard {
+			    #2 += { "system mkdir $ABS_PROJ_DIR" }
+			    # use python for makedirs
+			    2 += { "python ${__SHARED_PY_DIR__}/common.py make_project_dir"}
+			}
+		    }
+		    readin {
+			standard {			
+			    1 += { "defineProject PROJ_DIR $tf_ProjectDir" }
+			    2 += { "calculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+			    2 += { "calculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+			    3 += { "calculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+			}
+		    }
+		}
+	    }	    
+
+	    tf_ProjectName {
+		type = "string"
+		default="myproject"
+		dlg_info {
+		    add {
+			cmd_str = "SetProjInfo_VELKStandalone"
+			same_object_dialogs = { "EditVELKStandalone" }
+
+		    	dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+		    	dlg_namelist =  "ProjectWizardDirNameWithLang"
+		    }
+		}
+		actions {
+		    add {
+			intermediate {
+			    1 += { "defineGlobal BASE_PROJ_NAME $tf_ProjectName" }
+			    2 += { "overrideAttribute tf_name $(tf_ProjectName)_kernel" }
+			}
+		    }
+		    readin {
+			standard {
+			    1 += { "defineLocal BASE_PROJ_NAME $tf_ProjectName" } 
+			}
+		    }
+		}
+	    }
+	    tx_lang {
+		type = "string"
+		show_gui_item = true
+	    }
+	    pd_lang {
+		type = "choice"
+		display_name="Language:"
+		show_gui_item = true
+		
+		choices {
+		    c {
+		    	default = true
+			display_name = "C"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_C C" }
+				}
+			    }
+			}
+		    }
+
+		    cxx {
+			display_name="C++"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_CXX C++" }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	actions {
+	    add {
+		standard {
+		    1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		    1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+		}
+	    }
+	    readin {
+		standard {
+		    1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		    1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+		}
+	    }
+	}	
+}
+
+component.velosity_kernel_monolith {
+	display_type_name = "Kernel"
+
+	top_file_type = "Program"
+	
+	description = "velOSity Kernel"
+%if defined(NO_BSP)
+	disabled=true
+%endif
+
+	parent_context_types = { "velosity_monolith", "velosity_reloc_collection" }
+	#parent_context_filetypes = {  "INTEGRITY Application", "Project" }
+	
+	use_template = "velosity_kernel"
+
+	tags = { "VELOSITY_Kernel_Monolith" }
+
+	dlg_info {
+	    add {
+		cmd_str = "AddVELKMonolith"
+		auto_import = false
+	    }
+	    edit {
+		cmd_str = "EditVELKMonolith"
+	    }
+	}
+	attributes {
+	    tf_name {
+		read_only = true
+	    }
+	    parent_tf_name {
+		type = "string"
+		actions {
+		    edit {
+			standard {
+			    10 += { "python ${__DIR__}/vel_kernel.py mono_kernel_parent_tf_name_edit_std" }
+			}
+		    }
+		}
+	    }
+	}
+	actions {
+	    # have to do all the read_only kernel tf_name actions here so they happen
+	    add {
+		intermediate {
+		    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+		}
+		standard {
+		    10 += { "python ${__DIR__}/vel_kernel.py monolith_kernel_tf_name_add_std" }
+		    15 += { "python ${__DIR__}/vel_kernel.py common_kernel_tf_name_add_std" }
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+		    # Set the object directory to be a subdirectory
+		    # of the global object directory based on the name
+		    # of the subproject's directory to avoid conflicts
+		    # between subprojects.
+		    # This is only done for GHS toolchains here since
+		    # the exact option syntax is different for each
+		    # toolchain.
+		    100 += { "defineLocal OPTION_STRING -object_dir=objs/$REL_PROJ_DIR" }#/$BASE_PROJ_NAME" }
+		    101 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif 
+		}
+	    }		    
+	    readin {
+		standard {   
+		    1 += { "defineProject INT_KERNEL_PROJ_NAME $tf_name" }
+		    2 += { "defineProject VEL_KERNEL_GPJ_COOKIE $MY_GPJ_COOKIE" }
+		    1000000 += { "defineLocal LAST_INT_KERNEL_PROJ_NAME $tf_name" }
+		}
+	    }
+
+	
+	    remove {
+		standard {
+		    10 += { "python ${__DIR__}/vel_kernel.py monolith_kernel_remove_std" }
+		}
+	    }	
+	    delete {
+		standard {
+		    10 += { "python ${__DIR__}/vel_kernel.py monolith_kernel_delete_std" }
+		}
+	    }
+	    copy_local {
+		standard {
+			10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+			11 += { "defineLocal COPY_FILENAME $tf_name" }
+			12 += { "defineLocal COPY_LAST_K_LINKFILE $(BASE_PROJ_NAME)$(LD_SUFFIX)" }
+		}
+	    }
+	    paste_parent_local {
+		standard {
+			10 += { "python ${__DIR__}/vel_kernel.py monolith_kernel_paste_parent_local_std" }
+		}
+	    }
+	}
+}
+
+component_template.kernel_library {
+    use_template = "IntLibraryT"
+
+    parent_context_types = { "velosity_kernel" }
+
+    display_type_name = "Kernel Library"
+    
+    top_file_type = "Library"
+
+    documentation_files = { "${__DIR__}/docs/mpm_all.gpd" }
+
+    actions {
+	comment {
+	    standard {
+		1 += { "nop"}
+	    }
+	}
+	uncomment {
+	    standard {
+		1 += { "nop"}
+	    }
+	}
+    }
+}
+
+component_template.kernel_library_defined {
+    use_template = "kernel_library"
+    tags = { "KERNEL_LIBRARY" }
+}
+
+component_template.kernel_library_defined_reloc_too {
+    use_template = "kernel_library_defined"
+    tags += { "KERNEL_LIBRARY_RELOC_TOO" }
+    parent_context_types += { "velosity_relocatable" }
+}
+
+component.kernel_library_debug {
+    use_template = "kernel_library_defined"
+    display_object_name = "Debugging"
+    value = "libdebug.a"
+    default_select = true
+    doc_anchor_ids += { "multi.mpm.kernel_library_debug" }
+    variable_defs {
+	    LIBNAME = "debug"
+    }
+}
+component.kernel_library_load {
+    use_template = "kernel_library_defined"
+    display_object_name = "Dynamic Load"
+    value = "libload.a"
+    default_select = true
+    doc_anchor_ids += { "multi.mpm.kernel_library_load" }
+    variable_defs {
+	    LIBNAME = "load"
+    }
+}
+component.kernel_library_res {
+    use_template = "kernel_library_defined"
+    display_object_name = "Resource Manager"
+    value = "libres.a"
+    default_select = true
+    doc_anchor_ids += { "multi.mpm.kernel_library_res" }
+    variable_defs {
+	    LIBNAME = "res"
+    }
+}
+component.kernel_library_log {		
+    use_template = "kernel_library_defined"
+    display_object_name = "Event Analyzer"
+    value = "liblog.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_log" }
+    variable_defs {
+	    LIBNAME = "log"
+    }
+    requires = { "TCPIPStack", "KERNEL_LIBRARY_SOCKET" }
+}
+
+%if file_exists("${__INTEGRITY_DIST__}/INTEGRITY-include/ghnet2/ghnet2.h")
+component.kernel_library_ip4 {		
+    use_template = "kernel_library_defined"
+    display_object_name = "GHnet IPv4 Stack (Kernel)"
+    value = "libip4.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_ghnet_ipv4" }
+    variable_defs {
+	    LIBNAME = "ip4"
+    }
+    provides = { "GHnetIP4", "GHnet", "TCPIPStack" }
+    mutually_exclusives = {"GHnet IPv4/v6 Stack (Kernel)","Legacy GHnet Stack (Kernel)" }
+}
+
+component.kernel_library_ip46 {		
+    use_template = "kernel_library_defined"
+    display_object_name = "GHnet IPv4/v6 Stack (Kernel)"
+    value = "libip46.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_ghnet_ipv46" }
+    variable_defs {
+	    LIBNAME = "ip46"
+    }
+    provides = { "GHnetIP46", "GHnet", "TCPIPStack" }
+    
+    mutually_exclusives = {"GHnet IPv4 Stack (Kernel)","Legacy GHnet Stack (Kernel)" }
+}
+component.kernel_library_itcpip {		
+    use_template = "kernel_library_defined"
+    display_object_name = "Legacy GHnet Stack (Kernel)"
+    value = "libitcpip.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_itcpip" }
+    variable_defs {
+	    LIBNAME = "itcpip"
+    }
+    provides = { "TCPIPStack" }
+    mutually_exclusives = {"GHnet IPv4 Stack (Kernel)","GHnet IPv4/v6 Stack (Kernel)" }
+}
+%else
+# 5.0.7 and earlier only have this stack, don't call it legacy
+component.kernel_library_itcpip {		
+    use_template = "kernel_library_defined"
+    display_object_name = "TCP/IP Stack (Kernel)"
+    value = "libitcpip.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_itcpip" }
+    variable_defs {
+	    LIBNAME = "itcpip"
+    }
+    provides = { "TCPIPStack" }
+}
+%endif
+
+component.kernel_library_ivfs {
+    use_template = "kernel_library_defined_reloc_too"
+    display_object_name = "File System Client"
+    value = "libivfs.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_ivfs" }
+    variable_defs {
+	    LIBNAME = "ivfs"
+    }
+    requires = { "FileSystemServer" }
+}
+
+
+component.kernel_library_socket {
+    use_template = "kernel_library_defined"
+    display_object_name = "Socket"
+    value = "libsocket.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_socket" }
+
+    provides = {"KERNEL_LIBRARY_SOCKET"}
+    conditional_requires {
+	{
+	    condition = "!defined(_INTEGRITY_SIMULATOR_TARGET)"
+	    requirement = "TCPIPStack"
+	}
+    }
+
+    variable_defs {
+            LIBNAME = "socket"
+    }
+}
+component.kernel_library_net {
+    use_template = "kernel_library_defined"
+    display_object_name = "Net"
+    value = "libnet.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_net" }
+    requires = {"TCPIPStack"}
+    provides = {"KERNEL_LIBRARY_NET"}
+    variable_defs {
+            LIBNAME = "net"
+    }
+}
+component.kernel_library_rpc {
+    use_template = "kernel_library_defined"
+    display_object_name = "RPC"
+    value = "librpc.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.kernel_library_rpc" }    
+    requires = {"KERNEL_LIBRARY_SOCKET"}
+    provides = {"KERNEL_LIBRARY_RPC"}
+    variable_defs {
+            LIBNAME = "rpc"
+    }
+}
+
+component.kernel_library_generic {
+    use_template = "kernel_library"
+    display_object_name = "Other..."
+    default_select = false
+    default_for_filetypes = { "kernel_library_" }
+    # use different icon to indicate that it isn't same as other klibs
+    icon_name = "system_library"
+    bg_color="#99ffcc"
+    bg_color="#ecffce"
+    
+    filters =  { "velOSity Generic Libraries" }
+
+    variable_defs {
+            LIBNAME = "other"
+    }
+
+    attributes {
+	tf_name {
+	    type = "string"
+	    display_name = true
+	    actions {
+		add {
+		    standard {
+			10 += { "defineLocal LIBNAME $tf_name" }
+		    } 
+		}
+	    }
+	}
+    }
+    actions {
+	readin {
+	    standard {
+		10 += { "defineLocal LIBNAME $tf_name" }
+	    } 
+	}
+    }
+}
+
+%endif
+
+%endif

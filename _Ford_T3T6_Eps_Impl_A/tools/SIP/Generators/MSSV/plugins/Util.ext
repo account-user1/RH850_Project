@@ -1,0 +1,903 @@
+/*********************************************************************************************************************
+ Assertions
+*********************************************************************************************************************/
+
+def AssertStructMemberNotNull(str, name)
+{
+  if(IsStructMemberNull(str, name))
+  {
+    AssertionFail(str.GetName() +"."+name+" is NULL");
+  }
+}
+
+def AssertStructMemberNull(str, name)
+{
+  if(!IsStructMemberNull(str, name))
+  {
+    AssertionFail(str.GetName() +"."+name+" is not NULL");
+  }
+}
+
+def AssertStringStructMemberEqualsValue(str, name, expectedMemberValue)
+{
+  var memberValue = str.GetMemberAsString(name);
+  if(memberValue != expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue+". Expected: "+expectedMemberValue);
+  }
+}
+
+def AssertNumericStructMemberLessThanValue(str, name, expectedMemberValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  if(memberValue >= expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue.to_string()+". Expected: less than "+expectedMemberValue.to_string());
+  }
+}
+
+def AssertNumericStructMemberLessThanOrEqualToValue(str, name, expectedMemberValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  if(memberValue > expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue.to_string()+". Expected: less than or equal to "+expectedMemberValue.to_string());
+  }
+}
+
+def AssertNumericStructMemberEqualsValue(str, name, expectedMemberValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  if(memberValue != expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue.to_string()+". Expected: "+expectedMemberValue.to_string());
+  }
+}
+
+def AssertNumericStructMemberEqualsValueFromDefine(str, name, defineNameWithExpectedValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  var expectedMemberValue = Define(defineNameWithExpectedValue).GetValueAsNumber();
+  
+  if(memberValue != expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue.to_string()+". Expected: "+defineNameWithExpectedValue);
+  }
+}
+
+def AssertNumericStructMemberLessThanValueFromDefine(str, name, defineNameWithExpectedValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  var expectedMemberValue = Define(defineNameWithExpectedValue).GetValueAsNumber();
+  
+  if(memberValue >= expectedMemberValue)
+  {
+    AssertionFail(str.GetName()+"."+name+" = "+memberValue+". Expected: less than "+defineNameWithExpectedValue);
+  }
+}
+
+def AssertNumericStructMemberLessThanValueFromEnumValue(str, name, enumName, elementNameWithExpectedValue)
+{
+  var memberValue = str.GetMemberAsNumber(name);
+  var expectedMemberValue = GetEnumValue(enumName, elementNameWithExpectedValue);
+  
+  if(memberValue >= expectedMemberValue)
+  {
+   AssertionFail(str.GetName()+"."+name+" = "+memberValue.to_string()+". Expected: less than "+elementNameWithExpectedValue);
+  }
+}
+
+
+def IsDefineStdOn(defineName)
+{
+  var val = Define(defineName).GetValueAsString();
+    
+  if(val == "(STD_ON)")
+  {
+    return true;
+  }
+  else if(val == "(STD_OFF)")
+  {
+    return false;
+  }
+  else
+  {
+    AssertionFail("Define "+defineName+" is not of type STD_ON/OFF");
+  }
+}
+
+def AssertStructMemberValidIfConfigured(str, name, defineName)
+{ 
+  if (IsDefineStdOn(defineName))
+  {
+    AssertStructMemberNotNull(str, name);
+  }
+  else
+  {
+    AssertStructMemberNull(str, name);
+  } 
+}
+
+/**********************************************************************************************************************
+* Name         : CheckPointerArray
+* Parameter    : arr: the array to be checked. expectedSize: the expected array size
+* Description  : Checks if:
+*                 1. the array has the expected size
+*                 2. each element except the last is a non NULL_PTR
+*                 3. the last element is a NULL_PTR
+**********************************************************************************************************************/
+def CheckPointerArray(arr, expectedSize)
+{
+  var arrayName = arr.GetName();
+  var size := arr.GetSize();
+  
+  Begin("Checking pointer array "+arrayName+" (size: "+size.to_string()+")");
+
+  /* Check if array size equals expected size*/
+  if(size != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+size.to_string()+". Expected: "+expectedSize.to_string());
+  }
+  
+  for(var i = 0; i < size-1; ++i)
+  {
+    var elemStr := arr.GetElemAsString(i)
+  
+    /* Check if element is not null */
+    if(IsNull(elemStr))
+    {
+      AssertionFail(arrayName+"["+i.to_string()+"] is NULL");    
+    }
+  }
+  
+  /* Check if last element is null */
+  var lastElemStr = arr.GetElemAsString(size-1)
+  if(!IsNull(lastElemStr))
+  {
+    AssertionFail("Last element of "+arrayName+" is not NULL");
+  }
+  
+  End();
+}
+
+
+def CheckPointerArrayStructMember(str, arrayRefMemberName, arraySizeMemberName)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arraySize = str.GetMemberAsNumber(arraySizeMemberName);
+  CheckPointerArray(array, arraySize + 1);
+}
+
+/**********************************************************************************************************************
+* Name         : CheckPointerArray2
+* Parameter    : arr: the array to be checked. expectedSize: the expected array size
+* Description  : Checks if:
+*                 1. the array has the expected size
+*                 2. each element is a non NULL_PTR
+**********************************************************************************************************************/
+def CheckPointerArray2(arr, expectedSize)
+{
+  var arrayName = arr.GetName()
+  Begin("Checking pointer array "+arrayName);
+  
+  var size := arr.GetSize()
+  
+  /* Check the array size */
+    
+  if(size != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+size.to_string()+". Expected: "+expectedSize.to_string());
+  }
+  
+  for(var i = 0; i < size; ++i)
+  {
+    var elemStr := arr.GetElemAsString(i)
+  
+    /* Check if element is not null */
+    if(IsNull(elemStr))
+    {
+      Debug("NULL- ELEMENT: "+elemStr);
+      AssertionFail(arrayName+"["+i.to_string()+"] is NULL");
+    }
+  }
+  
+  End();
+}
+
+def CheckPointerArrayStructMember2(str, arrayRefMemberName, arraySizeMemberName)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arraySize = str.GetMemberAsNumber(arraySizeMemberName);
+  CheckPointerArray2(array, arraySize);
+}
+
+def CheckPointerArrayStructMemberSize(str, arrayRefMemberName, arraySizeMemberName)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arrayName = array.GetName();
+  var arraySize  = array.GetSize();
+  var expectedSize = str.GetMemberAsNumber(arraySizeMemberName) + 1;
+  
+  if(arraySize != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+arraySize.to_string()+". Expected: "+expectedSize.to_string());
+    return;
+  }
+}
+
+
+def CheckArrayStructMemberSize(str, arrayRefMemberName, arraySizeMemberName)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arrayName = array.GetName();
+  var arraySize  = array.GetSize();
+  var expectedSize = str.GetMemberAsNumber(arraySizeMemberName);
+  
+  if(arraySize != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+arraySize.to_string()+". Expected: "+expectedSize.to_string());
+    return;
+  }
+}
+
+def CheckArrayStructMemberSize2(str, arrayRefMemberName, expectedSize)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arrayName = array.GetName();
+  var arraySize  = array.GetSize();
+
+  if(arraySize != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+arraySize.to_string()+". Expected: "+expectedSize.to_string());
+    return;
+  }
+}
+
+
+def CheckArrayStructMemberSizeFromDefine(str, arrayRefMemberName, defineName)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arrayName = array.GetName();
+  var arraySize  = array.GetSize();
+  var expectedSize = Define(defineName).GetValueAsNumber();
+  
+  if(arraySize != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+arraySize.to_string()+". Expected: "+defineName);
+    return;
+  }
+}
+
+def CheckArrayStructMemberSizeFromEnum(str, arrayRefMemberName, enumName, elementNameWithExpectedValue, additionalSize)
+{
+  AssertStructMemberNotNull(str, arrayRefMemberName);
+  var array = str.GetMemberAsArray(arrayRefMemberName);
+  var arrayName = array.GetName();
+  var arraySize  = array.GetSize();
+  var expectedSize = GetEnumValue(enumName, elementNameWithExpectedValue) + additionalSize;
+  
+  if(arraySize != expectedSize)
+  {
+    AssertionFail("Size of "+arrayName+" = "+arraySize.to_string()+". Expected: "+elementNameWithExpectedValue+" + "+additionalSize.to_string());
+    return;
+  }
+}
+
+
+
+
+/**********************************************************************************************************************
+* Name         : CheckEnumValues
+* Parameter    : enumName: the name of the enum to be checked. maxElementName: the name of the maximum element
+* Description  : Checks if all enum values are less than the maximum elements value
+**********************************************************************************************************************/
+def CheckEnumValues(enumName, maxElementName, additionalMaxElements)
+{
+  var en = Enum(enumName)
+  var map = en.GetEnumValues()
+  var maxValue = map[maxElementName]
+  var range = map.range()
+  
+  for(var i = 0; i < map.size(); ++i)
+  {
+    var enumerator = range.front().first 
+    var value = range.front().second
+   
+    if((value >= maxValue) && (enumerator != maxElementName))
+    {
+      if((value != maxValue) || (!ArrayContains(additionalMaxElements, enumerator)))
+      {
+        AssertionFail(enumName+" contains an illegal enumerator: "+enumerator);
+      }
+    }
+    
+    range.pop_front()
+  }
+}
+
+def CheckEnumValues(enumName, maxElementName)
+{
+  CheckEnumValues(enumName, maxElementName, []);
+}
+
+/**********************************************************************************************************************
+* Name         : GetEnumValue
+* Parameter    : enumName: the enum name. elementName: the element name
+* Return value : the value of the enum element
+* Description  : returns the value of an enum element
+**********************************************************************************************************************/
+def GetEnumValue(enumName, elementName)
+{
+  var en = Enum(enumName)
+  var value = en.GetEnumeratorValue(elementName)
+  return value
+}
+
+
+
+def CheckTypeOfStructMember(str, memberName, expectedTypeName)
+{
+  AssertStructMemberNotNull(str, memberName);
+  
+  var memberStr = str.GetMemberAsString(memberName);
+  var typeName = GetSymbolType(memberStr);
+
+  if(typeName != expectedTypeName)
+  {
+    AssertionFail("Struct "+str.GetName()+"."+memberName+" has a wrong type: "+typeName+". Expected: "+expectedTypeName);
+  }
+}
+
+/*********************************************************************************************************************
+ Helper Functions
+*********************************************************************************************************************/
+
+def IsNull(ptr)
+{
+  if((ptr[0]!='{') && (ptr.find("((void *)0)") >= 0))
+  {
+    return true;
+  }
+  else
+  {
+     return false;
+  }
+}
+
+def IsStructMemberNull(str, name)
+{
+  var elem = str.GetMemberAsString(name);
+  return IsNull(elem);
+}
+
+def GetBooleanFromString(s)
+{
+    if(s == "((boolean)1)")
+    {
+      return true;
+    }
+    else if(s == "((boolean)0)")
+    {
+      return false;
+    }
+    else
+    {
+        AssertionFail("Internal Error: Unrecognized boolean value: "+s);
+    }
+}
+
+def KeyExists(map, key)
+{
+    return (map.count(key) > 0);
+}
+
+def CheckKeyExists(map, key)
+{
+    if(!KeyExists(map,key))
+    {
+      AssertionFail("Internal Error: key "+key+" not found in map");
+    }
+}
+
+def GetMapEntry(map, key)
+{
+  CheckKeyExists(map, key);
+  return map[key];
+}
+
+/**********************************************************************************************************************
+* Name         : ForEachStructElementInArray
+* Parameter    : array:  array containing pointers to structs
+* Parameter    : func:   function that is called for each element
+* Return value : None
+* Description  : Calls the function func for each array element
+**********************************************************************************************************************/
+def ForEachStructElementInArray(arr, func)
+{
+  var size := arr.GetSize();
+  
+  for(var i = 0; i < size; ++i)
+  {  
+      var elem := arr.GetElemAsStruct(i);
+      func(elem);
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : ForEachStructElementInArray2
+* Parameter    : array:  array containing pointers to structs
+* Parameter    : func:   function that is called for each element
+* Return value : None
+* Description  : Same as ForEachStructElementInArray but also passes the index to func
+**********************************************************************************************************************/
+def ForEachStructElementInArray2(arr, func)
+{
+  var size := arr.GetSize();
+  
+  for(var i = 0; i < size; ++i)
+  {  
+      var elem := arr.GetElemAsStruct(i);
+      func(elem, i);
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : ForEachStructElementInArrayWithNullElements
+* Parameter    : array:  array containing pointers to structs
+* Parameter    : func:   function that is called for each element
+* Return value : None
+* Description  : Same as ForEachStructElementInArray but omits NULL elements
+**********************************************************************************************************************/
+def ForEachStructElementInArrayWithNullElements(arr, func)
+{
+  var size := arr.GetSize();
+  
+  for(var i = 0; i < size; ++i)
+  {
+    if(!IsNull(arr.GetElemAsString(i)))
+    {
+        var elem := arr.GetElemAsStruct(i);
+        func(elem);
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : ForEachStructElementInArrayWithNullElements
+* Parameter    : array:  array containing pointers to structs
+* Parameter    : func:   function that is called for each element
+* Parameter    : param:  parameter that is passed to func
+* Return value : None
+* Description  : Same as ForEachStructElementInArrayWithNullElements but allows passing a parameter to func
+**********************************************************************************************************************/
+def ForEachStructElementInArrayWithNullElements2(arr, func, param)
+{
+  var size := arr.GetSize();
+  
+  for(var i = 0; i < size; ++i)
+  {
+    if(!IsNull(arr.GetElemAsString(i)))
+    {
+        var elem := arr.GetElemAsStruct(i);
+        func(elem, param);
+    }
+  }
+}
+
+
+/**********************************************************************************************************************
+* Name         : ForEachStructElementInArray
+* Parameter    : arr:  array containing pointers to structs
+* Parameter    : func:   function that is called for each element
+* Return value : None
+* Description  : Same as ForEachStructElementInArray but omits the last element
+**********************************************************************************************************************/
+def ForEachStructElementInNullTerminatedArray(arr, func)
+{
+
+  var size := arr.GetSize();
+  if(size < 1)
+  {
+    AssertionFail("Array size must be >= 1");
+    return;
+  }
+  
+  for(var i = 0; i < size-1; ++i)
+  {
+    //var elem := arr.GetElemAsStruct(i);
+    var elem := GetArrayElementAsStruct(arr, i);
+    
+    func(elem);
+  }
+}
+
+def ForEachStructElementInNullTerminatedArray2(arr, func)
+{
+
+  var size := arr.GetSize();
+  if(size < 1)
+  {
+    AssertionFail("Array size must be >= 1");
+    return;
+  }
+  
+  for(var i = 0; i < size-1; ++i)
+  {
+    var p := arr.GetElemAsString(i);
+    var elem := GetStructFromPath(p);
+    var typeName = GetSymbolType(p);
+    func(elem, typeName);
+  }
+}
+
+def GetStructFromPath(path)
+{
+    var p = SplitPath(path);
+
+    // get root struct
+    var elem = Struct(p[0]);
+    
+     // getting further sub elements
+    for(var j = 1; j < p.size(); ++j)
+    {
+      elem = elem.GetMemberAsStruct(p[j]);
+    }
+    return elem;
+}
+
+def GetArrayElementAsStruct(arr, index)
+{
+  var size := arr.GetSize();
+  if(size < 1)
+  {
+    AssertionFail("Array size must be >= 1");
+    return;
+  }
+  
+  var elem := arr.GetElemAsString(index);
+  if(IsNull(elem))
+  {
+    AssertionFail(arr.GetName+"["+index.to_string()+"] is NULL");    
+  }
+  else if(elem.find(".") >= 0)        /* Example: xx.yy */
+  {
+      return GetStructFromPath(elem);
+  }
+  else
+  {
+      return arr.GetElemAsStruct(index);
+  }
+}
+
+
+def GetStructMemberAsStruct(str, name)
+{
+  AssertStructMemberNotNull(str, name);
+  var member := str.GetMemberAsString(name);
+  
+  if(member.find(".") >= 0)        /* Example: xx.yy */
+  {
+    return GetStructFromPath(member);
+  }
+  else
+  {
+    return str.GetMemberAsStruct(name);
+  } 
+}
+
+/* a.x.y --> a.x */
+
+def GetParentStruct(str)
+{
+   var path = str.GetName();
+   var p = path.rfind(".");
+   if(p < 1)
+   {
+      AssertionFail("Internal Error: GetParentStruct()");
+   }
+   
+   path = path.substr(0,p);
+   return GetStructFromPath(path);
+}
+
+
+def ForEachStructInLinkedList(str, headMemberName, nextMemberName, func, param)
+{
+  var cnt = 0;
+  if(!IsNull(str.GetMemberAsString(headMemberName)))
+  {    
+    //var elem = str.GetMemberAsStruct(headMemberName);
+    var elem = GetStructMemberAsStruct(str, headMemberName);
+    cnt += func(elem, param);
+    var maxLen = 1000;
+   
+    while(!IsNull(elem.GetMemberAsString(nextMemberName)))
+    {
+      if((--maxLen) <= 0)
+      {
+        AssertionFail("Internal Error: Too many entries");
+      }
+      elem = GetStructMemberAsStruct(elem, nextMemberName);
+      cnt += func(elem, param);
+    } 
+  }
+  return cnt;
+}
+
+
+
+def ForEachConstStructVariableOfType(typeNames, func)
+{ 
+  var constSymbols := FindConstSymbol(".*");
+  for(var i = 0; i < constSymbols.size(); ++i)
+  {    
+    for(var j = 0; j < typeNames.size(); ++j)
+    {
+      var type = constSymbols[i].GetTypeName();
+      if(type == "const " + typeNames[j])
+      {
+        var str = Struct(constSymbols[i].GetSymbolName());
+        func(str, type);
+        break;
+      }
+    }
+  }
+}
+
+
+def ReplaceAll(str, oldStr, newStr)
+{
+  var pos;
+  var result = str;
+  while(true)
+  {
+    pos = result.find(oldStr);
+    if(pos < 0)
+    {
+      break;
+    }
+     result = result.replace(oldStr, newStr);
+  }
+  
+  return result;
+}
+
+def Trim(str)
+{
+  var p1 = str.find_first_not_of(" ");
+  var p2 = str.find_last_not_of(" ");
+  return str.substr(p1,p2-p1+1);
+}
+
+def EndsWith(str, cmp)
+{
+   var cmpSize = cmp.size();
+   var strSize = str.size();
+   if(strSize < cmpSize)
+   {
+      return false;
+   }
+   var temp = str.substr(strSize-cmpSize, strSize-(strSize-cmpSize));
+   return(temp == cmp);
+}
+
+def StartsWith(str, cmp)
+{
+   var cmpSize = cmp.size();
+   var strSize = str.size();
+   if(strSize < cmpSize)
+   {
+      return false;
+   }
+   var temp = str.substr(0, cmpSize);
+   return(temp == cmp);
+}
+
+def SplitPath(x)
+{  
+  var temp = x;
+  temp = ReplaceAll(temp, ")", "");
+  temp = ReplaceAll(temp, "(", "");
+  temp = ReplaceAll(temp, "&", "");
+  var sep = ".";
+  var tok := split(temp, sep);
+  if(tok.size() == 0)
+  {
+    return [temp];
+  }
+  return tok;
+}
+
+def IsPowerOfTwoMinus1(x)
+{
+    var powerOfTwo = uint64_t(1);
+    for(var i = 0; i < 64; ++i)
+    {
+      if(x == powerOfTwo-1)
+      {
+        return true;
+      }
+      powerOfTwo = powerOfTwo * 2;
+    }
+    
+    return false;
+}
+
+def AssertStructMemberIsPowerOfTwoMinus1(str, name)
+{
+  var val = str.GetMemberAsNumber(name);
+  if(!IsPowerOfTwoMinus1(val))
+  {
+    AssertionFail("The value of "+str.GetName()+"."+name+" is not a power of two minus 1. Value: "+val.to_string());
+  }
+}
+
+def Abs(x)
+{
+  if(x < 0)
+  {
+    return -x;
+  }
+  else
+  {
+    return x;
+  }
+}
+
+/**********************************************************************************************************************
+*  (uint32)&TestObject   --> TestObject
+**********************************************************************************************************************/
+def RemovePtrCast(ptrStr)
+{
+  var pos = ptrStr.find_first_of("&)");
+  var temp = ptrStr;
+  if(pos >= 0)
+  {
+      temp = temp.substr(pos+1, temp.size()-pos-1);
+      temp = ReplaceAll(temp, ")", "");
+      temp = ReplaceAll(temp, "(", "");
+      temp = ReplaceAll(temp, "&", "");
+  }
+  return temp;
+}
+
+def AssertFunctionPointerStructMemberStartsWith(str, name, expectedTarget)
+{
+  AssertStructMemberNotNull(str, name);
+  var target = RemovePtrCast(str.GetMemberAsString(name));
+  if(expectedTarget == "InitHook")
+  {
+    if(target != "Os_CoreInitHook")
+    {
+      AssertionFail(str.GetName()+"."+name+" points to function "+target+". Expected: Os_CoreInitHook");
+    }
+  }
+  else
+  {
+    if(!StartsWith(target, expectedTarget))
+    {
+      AssertionFail(str.GetName()+"."+name+" points to function "+target+". Expected: "+expectedTarget+"<...>");
+    }
+  }
+}
+
+def AssertFunctionPointerStructMemberNotSpecial(str, name)
+{
+  AssertStructMemberNotNull(str, name);
+  var target = RemovePtrCast(str.GetMemberAsString(name));
+  if(KeyExists(specFunctions, target))
+  {
+     AssertionFail(str.GetName()+"."+name+" points to function "+target+". This is not allowed.");
+  }
+ 
+}
+
+def RemoveConst(name)
+{
+  var temp = name;
+  temp = ReplaceAll(temp, "const", "");
+  temp = Trim(temp);
+  return temp;
+}
+
+
+def GetSymbolType(symbolName)
+{
+  var temp = symbolName;
+  var tok := SplitPath(temp);
+  var name = tok[0];
+  if(!KeyExists(symbolTable, name))
+  {
+    AssertionFail(name+" not found in symbol table");
+  }
+
+  return symbolTable[name];
+
+}
+
+def ArrayContains(arr, value)
+{
+  for(var i = 0; i < arr.size(); ++i)
+  {
+    if(arr[i] == value)
+    {
+      return true;
+    }
+  } 
+  return false;
+}
+
+def PrintAllSymbols()
+{
+  ReportNote("--------------------------------------------------------");
+  var constSymbols := FindConstSymbol(".*");
+  var variableSymbols := FindVariablesSymbol(".*");
+  
+  for(var i = 0; i < constSymbols.size(); ++i)
+  {
+    ReportNote("const Symbol: "+constSymbols[i].GetSymbolName()+"  ["+constSymbols[i].GetTypeName()+"]");
+  }
+
+  for(var i = 0; i < variableSymbols.size(); ++i)
+  {
+    ReportNote("var Symbol  : "+variableSymbols[i].GetSymbolName()+"  ["+constSymbols[i].GetTypeName()+"]");
+  }
+
+  ReportNote("--------------------------------------------------------");
+}
+
+def Begin(name)
+{
+  if(!debug){return;}
+
+  ReportNote(indent+""+name);
+  indent = indent + "   ";
+}
+
+def Debug(msg)
+{
+  if(!debug){return;}
+  ReportNote(indent+""+msg);
+}
+
+def End()
+{
+  if(!debug){return;}
+  
+  if(indent.size() >= 3)
+  {
+    indent = indent.substr(0,indent.size()-3);
+  }
+  #ReportNote(indent+"End");
+}
+
+def Stop()
+{
+  throw("STOP");
+}
+
+
+def AssertionFail(message)
+{
+  if(stackTraceOnAssertionFail)
+  {
+     ReportError("Assertion failed: "+message);
+     dummy
+  }
+  
+  if(stopOnAssertionFail)
+  {
+    throw("Assertion failed: " + message);
+  }
+  else
+  {
+     ReportError("Assertion failed: "+message);
+  }
+}
+

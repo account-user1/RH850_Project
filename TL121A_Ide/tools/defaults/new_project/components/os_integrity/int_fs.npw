@@ -1,0 +1,1006 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/int_fs.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.integrity_os_modules_file_system_mnttable {
+    tags = { "FS_Mounttable" }
+
+    parent_context_types = { "integrity_os_modules_file_system_copy", "integrity_os_modules_kernel_ivfsserver"}
+    display_type_name = "FS MountTable"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_fs_mnttable" }
+    icon_name = "source_file"
+    #bg_color="#e6f4ff"
+    bg_color = "#9ECEFF"
+    binary_component = true
+
+    dlg_info {
+    	add {
+	    menu_str = "Add INTEGRITY &File System Mounttable"
+	    cmd_str = "AddINTFSMnttable"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs_mnttable"
+	    
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_fs_mnttable" }
+	}
+	edit {
+	    menu_str = "Configure INTEGRITY &File System Mounttable"
+	    cmd_str = "EditINTFSMnttable"
+	    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+	    dlg_namelist =  "edit_fs_mnttable"
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.int_fs_mnttable" }
+	    right_click_list = { "AddINTFSMntPoint" }
+	}
+    }
+    attributes {
+	tf_mntfile_name {
+	    type = "string"
+	    default = "mounttable.c"
+	    refreshNode = true
+	    build_file_setting = "basename tf_diskname"
+	    actions {
+		add {
+		    standard {
+			1 += { "addguinodes $tf_mntfile_name" }
+			10 += { "python ${__DIR__}/int_fs.py os_fsmnt_tf_mntfile_name_add_std" }			
+			10000000 += { "defineLocal LAST_TF_MNTFILE_NAME $tf_mntfile_name"}
+		    }
+		}
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/int_fs.py os_fsmnt_tf_mntfile_name_edit_std" }
+			10000000 += { "defineLocal LAST_TF_MNTFILE_NAME $tf_mntfile_name"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_MNTFILE_NAME $tf_mntfile_name"}
+		    }
+		}
+		delete {
+		    standard {
+			10 += { "python ${__DIR__}/int_fs.py os_fsmnt_tf_mntfile_name_delete_std" }			
+		    }
+		}
+	    }
+	}
+	tf_nmps {
+	    type = "childlist"	    
+	    tags = "INTEGRITY_fs_mountpoint"
+	    
+	    build_file_setting = "python ${__DIR__}/int_fs.py fs_find_mountpoints tf_diskname"
+	    name="Number of Mount Points"			
+	    default="0"		
+	    basename="/dir"			
+	    copy_define_to_instance = "tf_dir"
+	}
+	tf_diskname {
+	    default = "$(PROJ_DIR)/mounttable.c"
+	    type = "string"
+	    host_filename = true
+	}
+    }
+    actions {
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $tf_mntfile_name" }
+		11 += { "defineLocal filename $tf_mntfile_name" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__MULTI_DEFAULTS_DIR__}/new_project/components/shared/source.py source_paste_parent_local_std" }
+	    }
+	}
+    }
+}
+
+component.integrity_os_modules_file_system_mntpoint {
+    tags = { "INTEGRITY_fs_mountpoint" }
+ 
+    parent_context_types = { "integrity_os_modules_file_system_mnttable" }
+    display_type_name = "FS MountPoint"
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint" }
+    icon_name = "filesystem_mountpoint"
+    #bg_color = "#9ECEFF"
+    bg_color="#e6f4ff"
+
+
+    dlg_info {
+    	add {
+	    menu_str = "Add INTEGRITY &File System Mount Point"
+	    cmd_str = "AddINTFSMntPoint"
+	    dlg_cmdlist =  { "AddINTFSMntPointDir",  "AddINTFSMntType", "AddINTFSMntDev", "AddINTFSMntOpts", "AddINTFSMntTopts"}
+	    
+	}
+	edit {
+	    menu_str = "Edit INTEGRITY &File System Mount Point"
+	    cmd_str = "EditINTFSMntPoint"
+	    dlg_cmdlist =  { "EditINTFSMntPointDir", "EditINTFSMntType", "EditINTFSMntDev", "EditINTFSMntOpts", "EditINTFSMntTopts" }
+
+	    right_click_list =  { "EditINTFSMntPointDir",  "EditINTFSMntDev", "EditINTFSMntOpts", "EditINTFSMntTopts" }
+	}
+    }
+    attributes {
+	tf_dir {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+            sanity_check_action = "python ${__DIR__}/int_fs.py fs_tf_dir_sanity_check"
+	    actions {
+		add {
+		    standard {
+			2 += { "addguinodes $tf_dir" }
+			10000000 += { "defineLocalNoHostFix LAST_TF_DIR $tf_dir"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocalNoHostFix LAST_TF_DIR $tf_dir"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocalNoHostFix LAST_TF_DIR $tf_dir"}
+		    }
+		}
+	    }
+	    dlg_info {
+		add {
+		    menu_str = "Add INTEGRITY &File System Mount Point Directory"
+		    cmd_str = "AddINTFSMntPointDir"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_dir"
+
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint", "multi.mpm.int_fs_mntpoint_dir" }
+		    same_object_dialogs =  { "AddINTFSMntDev", "AddINTFSMntType",  "AddINTFSMntOpts", "AddINTFSMntTopts" }
+		}
+		edit {
+		    menu_str = "Edit INTEGRITY &File System Mount Point Directory"
+		    cmd_str = "EditINTFSMntPointDir"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_dir"	
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint", "multi.mpm.int_fs_mntpoint_dir" }
+		    
+		    same_object_dialogs =  { "EditINTFSMntDev", "EditINTFSMntType",  "EditINTFSMntOpts", "EditINTFSMntTopts" }
+		}
+	    }
+	}
+	
+	bt_phys {
+	    type = "bool"
+	    name="Use Physical Device"
+            dimmed="!equal($pd_type,FFS)"
+	    choices {
+		off {
+		    display_name="off"
+		}
+		on {
+		    display_name="on"
+		    default=true
+		}
+	    }
+	}
+	pd_dev {
+	    type = "string"
+	    default = "WLFSDev0"
+	    defaults = { "WLFSDev0", "IDEController0Master", "IDEController0Slave","IDEController1Master", "IDEController1Slave","WLFSDev","PrimaryMasterIDEDev", "PrimarySlaveIDEDev", "SecondaryMasterIDEDev", "SecondarySlaveIDEDev" }
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_PD_DEV $pd_dev"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_PD_DEV $pd_dev"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_PD_DEV $pd_dev"}
+		    }
+		}		
+	    }
+	    dlg_info {
+		add {
+		    menu_str = "Configure INTEGRITY &File System Mount Point Device"
+		    cmd_str = "AddINTFSMntDev"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc"
+		    dlg_namelist =  "edit_fs_mnttable_dev"
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint", "multi.mpm.int_fs_mntpoint_dev", "multi.mpm.int_fs_mntpoint_physdev", "multi.mpm.int_fs_mntpoint_slice", "multi.mpm.int_fs_mntpoint_ramdiskname", "multi.mpm.int_fs_mntpoint_ramdisksize", "multi.mpm.int_fs_mntpoint_nfsservname", "multi.mpm.int_fs_mntpoint_nfssharename"}
+		    
+		}
+		edit {
+		    menu_str = "Configure INTEGRITY &File System Mount Point Device"
+		    cmd_str = "EditINTFSMntDev"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_dev"
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint", "multi.mpm.int_fs_mntpoint_dev", "multi.mpm.int_fs_mntpoint_physdev", "multi.mpm.int_fs_mntpoint_slice", "multi.mpm.int_fs_mntpoint_ramdiskname", "multi.mpm.int_fs_mntpoint_ramdisksize", "multi.mpm.int_fs_mntpoint_nfsservname", "multi.mpm.int_fs_mntpoint_nfssharename"}
+		    
+		}
+	    }	    
+	}
+	tf_slice {
+	    type = "string"
+	    default = "a"
+	   
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SLICE $tf_slice"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SLICE $tf_slice"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_SLICE $tf_slice"}
+		    }
+		}			
+	    }	    
+	}
+	bt_rd {
+	    type = "bool"
+	    name="Use Ram Disk"
+	    dimmed="!equal($pd_type,FFS)"
+	    choices {
+		off {
+		    display_name="off"
+                    default=true
+		}
+		on {
+		    display_name="on"
+	         requires = { "FS_DEVICE_LIBRARY_RAMDISK" }
+		}
+	    }
+	}
+	tf_rdname {
+	    type = "string"
+            default = "ramdisk"
+            sanity_check_action = "python ${__DIR__}/int_fs.py fs_tf_rdname_sanity_check" 
+#	    conditional_requires {
+#		{
+#		    condition = "$copyResources"
+#		    requirement = "FS_DEVICE_LIBRARY_RAMDISK"
+#		}
+#	    }
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDNAME $tf_rdname"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDNAME $tf_rdname"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDNAME $tf_rdname"}
+		    }
+		}			
+	    }	    
+	}
+	tf_rdsize {
+	    type = "string"
+            default = "128k"
+            sanity_check_action = "python ${__DIR__}/int_fs.py fs_tf_rdsize_sanity_check"
+	    actions {
+		add {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDSIZE $tf_rdsize"}
+		    }
+		}
+		edit {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDSIZE $tf_rdsize"}
+		    }
+		}
+		readin {
+		    standard {
+			10000000 += { "defineLocal LAST_TF_RDSIZE $tf_rdsize"}
+		    }
+		}			
+	    }	    
+	}
+        bt_nfs {
+            type = "bool"
+            name="Use NFS"
+            dimmed="on"
+            choices {
+                off {
+                    display_name="off"
+                    default=true
+                }
+                on {
+                    display_name="on"
+                }
+            }
+        }
+        tf_sharename {
+            type = "string"
+            default = "/export"
+            sanity_check_action = "python ${__DIR__}/int_fs.py fs_tf_sharename_sanity_check"    
+        }
+        tf_servname {
+            type = "string"
+            default = "hostname"
+            sanity_check_action = "python ${__DIR__}/int_fs.py fs_tf_servname_sanity_check"    
+        }
+	pd_type {
+	    type = "choice"
+	    choices {
+		ffs {
+		    default = true
+		    display_name = "FFS"
+		    requires = { "FS_LIBRARY_FFS" }                            
+		}
+		cd9660 {
+		    display_name = "ISO9660"
+		    requires = { "FS_LIBRARY_CD9660" } 
+		}
+                nfs {
+                    display_name = "NFS Client"
+                    requires = { "FS_LIBRARY_NFS" }
+                }
+                msdosfs {
+                    display_name = "MSDOS FAT"
+                    requires = { "FS_LIBRARY_MSDOS" } 
+                }
+            }
+
+            dlg_info {
+		add {
+		    menu_str = "Configure INTEGRITY &File System Mount Point Type"
+		    cmd_str = "AddINTFSMntType"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_type"
+
+		    dlg_doc_included_childlists = true
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mnttype"}
+	
+		}
+		edit {
+		    menu_str = "Configure INTEGRITY &File System Mount Point Type"
+		    cmd_str = "EditINTFSMntType"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_type"
+		    dlg_doc_included_childlists = true
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mnttype"}
+		    
+		}
+	    }	    
+	}
+	fsck_opts_available {
+	    type = "bool"
+	    name="Allow FSCK options"
+            hidden = true
+	    choices {
+		off {
+		    display_name="off"
+		}
+		on {
+		    display_name="on"
+		    default=true
+		}
+	    }
+	}	
+        bs_ffsopts {
+            type = "bool"
+            name="ShowFFS"
+            choices {
+                off {
+                    display_name="off"
+                    default=true
+                }
+                on {
+                    display_name="on"
+                }
+            }
+            dlg_info {
+                add {
+                    menu_str = "Configure INTEGRITY &File System Mount Point Options"
+                    cmd_str = "AddINTFSMntOpts"
+                    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+                    dlg_namelist =  "edit_fs_mnttable_opts"
+		    dlg_doc_included_childlists = true
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts"}
+		    
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_rdonly", "multi.mpm.int_fs_mntpoint_opts_sync", "multi.mpm.int_fs_mntpoint_opts_async", "multi.mpm.int_fs_mntpoint_opts_noatime"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_nfsv2", "multi.mpm.int_fs_mntpoint_opts_nfsv3", "multi.mpm.int_fs_mntpoint_opts_mntudp", "multi.mpm.int_fs_mntpoint_opts_tcp"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_shortnames", "multi.mpm.int_fs_mntpoint_opts_longnames", "multi.mpm.int_fs_mntpoint_opts_ignorelongalways"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_joliet", "multi.mpm.int_fs_mntpoint_opts_rrip", "multi.mpm.int_fs_mntpoint_opts_rcaseins"}	
+		    
+                }
+                edit {
+                    menu_str = "Configure INTEGRITY &File System Mount Point Options"
+                    cmd_str = "EditINTFSMntOpts"
+                    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+                    dlg_namelist =  "edit_fs_mnttable_opts"
+		    dlg_doc_included_childlists = true
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts"}
+		    
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_rdonly", "multi.mpm.int_fs_mntpoint_opts_sync", "multi.mpm.int_fs_mntpoint_opts_async", "multi.mpm.int_fs_mntpoint_opts_noatime"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_nfsv2", "multi.mpm.int_fs_mntpoint_opts_nfsv3", "multi.mpm.int_fs_mntpoint_opts_mntudp", "multi.mpm.int_fs_mntpoint_opts_tcp"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_shortnames", "multi.mpm.int_fs_mntpoint_opts_longnames", "multi.mpm.int_fs_mntpoint_opts_ignorelongalways"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_opts_joliet", "multi.mpm.int_fs_mntpoint_opts_rrip", "multi.mpm.int_fs_mntpoint_opts_rcaseins"}	
+		 
+                }
+            }  	    
+        }
+        bs_nfsopts {
+            type = "bool"
+            name="ShowNFS"
+            choices {
+                off {
+                    display_name="off"
+                    default=true
+                }
+                on {
+                    display_name="on"
+                }
+            }
+        }
+        bs_msdosfsopts {
+            type = "bool"
+            name="ShowMSDOSFS"
+            choices {
+                off {
+                    display_name="off"
+                    default=true
+                }
+                on {
+                    display_name="on"
+                }
+            }
+        }
+        bs_cd9660opts {
+            type = "bool"
+            name="ShowCD9660"
+            choices {
+                off {
+                    display_name="off"
+                    default=true
+                }
+                on {
+                    display_name="on"
+                }
+            }
+        }
+        msl_opts {
+            type = "multiple_choice"
+            default = "Use Defaults"
+            #defaults = { "rdonly", "nordonly", "force", "update", "reload", "sync", "async" }
+            separator = ","
+
+#	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+#	    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts_rdonly", "multi.mpm.int_fs_mntpoint_opts_sync", "multi.mpm.int_fs_mntpoint_opts_async", "multi.mpm.int_fs_mntpoint_opts_noatime"}	
+            choices {
+		usedef {
+		    display_name = "Use Defaults"
+                    mutually_exclusives = { "rdonly", "async" , "sync", "noatime" }
+		}
+                rdonly {
+                    display_name = "rdonly"
+                    mutually_exclusives = { "usedef" }
+                }
+                sync {
+                    display_name = "sync"
+                    mutually_exclusives = { "async","usedef" }
+                }
+                async {
+                    display_name = "async"
+                    mutually_exclusives = { "sync","usedef" }
+                }
+                noatime {
+                    display_name = "noatime"
+                    mutually_exclusives = { "usedef" }
+                }
+            }       
+        }
+        msl_nfsopts {
+            type = "multiple_choice"
+            default = "Use Defaults"
+            separator = ","
+#	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+#	    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts_rdonly", "multi.mpm.int_fs_mntpoint_opts_nfsv2", "multi.mpm.int_fs_mntpoint_opts_nfsv3", "multi.mpm.int_fs_mntpoint_opts_mntudp", "multi.mpm.int_fs_mntpoint_opts_tcp"}	
+ 
+            choices {
+		usedef {
+		    display_name = "Use Defaults"
+                    mutually_exclusives = { "rdonly", "nfsv2" , "nfsv3", "mntudp","tcp" }
+		}	    
+                rdonly {
+                    display_name = "rdonly"
+                    mutually_exclusives = { "usedef" }
+                }
+                nfsv2 {
+                    display_name = "nfsv2"
+                    mutually_exclusives = { "usedef" }
+                }
+                nfsv3 {
+                    display_name = "nfsv3"
+                    mutually_exclusives = { "usedef" }
+                }
+                mntudp {
+                    display_name = "mntudp"
+                    mutually_exclusives = { "usedef" }
+                }
+                tcp {
+                    display_name = "tcp"
+                    mutually_exclusives = { "usedef" }
+                }
+            }      
+        }
+        msl_msdosfsopts {
+            type = "multiple_choice"
+            default = "Use Defaults"
+            separator = ","
+#	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+#	    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts_rdonly", "multi.mpm.int_fs_mntpoint_opts_shortnames", "multi.mpm.int_fs_mntpoint_opts_longnames", "multi.mpm.int_fs_mntpoint_opts_ignorelongalways"}	
+ 	    
+            choices {
+		usedef {
+		    display_name = "Use Defaults"
+                    mutually_exclusives = { "rdonly","shortnames","longnames","ignorelongalways" }
+		}	    
+                rdonly {
+                    display_name = "rdonly"
+                    mutually_exclusives = { "usedef" }
+                }
+                shortnames {
+                    display_name = "-s"
+                    mutually_exclusives = { "longnames","usedef" }
+                }
+                longnames {
+                    display_name = "-l"
+                    mutually_exclusives = { "shortnames", "ignorelongalways" ,"usedef"}
+                }
+                ignorelongalways {
+                    display_name = "-9"
+                    requires_choices = { "shortnames" }
+                    mutually_exclusives = { "longnames","usedef" }
+                }
+            }      
+        }
+        msl_cd9660opts {
+            type = "multiple_choice"
+            default = "Use Defaults"
+            #defaults = { "rdonly", "nordonly", "force", "update", "reload", "sync", "async" }
+            separator = ","
+#	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+#	    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_opts_joliet", "multi.mpm.int_fs_mntpoint_opts_rrip", "multi.mpm.int_fs_mntpoint_opts_rcaseins"}	
+ 		    
+            choices {
+		usedef {
+		    display_name = "Use Defaults"
+                    mutually_exclusives = { "joliet","rrip","rcaseins" }
+		}	    
+                joliet {
+                    display_name = "joliet"
+                    dimmed = "!equal($pd_type,ISO9660)"
+                    mutually_exclusives = { "usedef" }
+                }
+                rrip {
+                    display_name = "rrip"
+                    dimmed = "!equal($pd_type,ISO9660)"
+                    mutually_exclusives = { "usedef" }
+                }
+                rcaseins {
+                    display_name = "rcaseins"
+                    dimmed = "!equal($pd_type,ISO9660)"
+                    mutually_exclusives = { "usedef" }
+                }
+            }      
+        }
+
+	msl_topts {
+	    type = "multiple_choice"
+	    default = "0"
+	    separator = "|"
+	    choices {
+		mnttab_makemp {
+		    display_name = "MNTTAB_MAKEMP"
+		}
+		mnttab_fsck {
+		    display_name = "MNTTAB_FSCK"
+                    dimmed = "equal($fsck_opts_available,off)"
+		}
+		mnttab_req_fsck {
+		    display_name = "MNTTAB_REQ_FSCK"
+                    dimmed = "equal($fsck_opts_available,off)"
+		    requires_choices = { "mnttab_fsck" }
+		}
+	    }
+	    dlg_info {
+		add {
+		    menu_str = "Configure INTEGRITY &File System Mount Table Options"
+		    cmd_str = "AddINTFSMntTopts"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_topts"
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_topts"}	
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_topts_mnttab_makemp","multi.mpm.int_fs_mntpoint_topts_mnttab_fsck","multi.mpm.int_fs_mntpoint_topts_mnttab_req_fsck"}	
+		}
+		edit {
+		    menu_str = "Configure INTEGRITY &File System Mount Table Options"
+		    cmd_str = "EditINTFSMntTopts"
+		    dlg_filelist =  "${__DIR__}/int_fs.plc" 
+		    dlg_namelist =  "edit_fs_mnttable_topts"
+		    dlg_doc_included_childlists = false
+		    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+		    doc_anchor_ids = { "multi.mpm.int_fs_mntpoint_topts"}			    
+		    doc_anchor_ids += { "multi.mpm.int_fs_mntpoint_topts_mnttab_makemp","multi.mpm.int_fs_mntpoint_topts_mnttab_fsck","multi.mpm.int_fs_mntpoint_topts_mnttab_req_fsck"}	
+		}
+	    }	    
+	}
+    }
+    actions {
+	add {
+            intermediate {
+                1 += { "python ${__DIR__}/int_fs.py os_fsmnt_int" }
+            }
+	    standard {
+		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_add_std" }
+	    }
+	}
+	edit {
+            intermediate {
+                1 += { "python ${__DIR__}/int_fs.py os_fsmnt_int" }
+            }
+	    standard {
+		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_edit_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_delete_std" }
+	    }
+	}	
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_delete_std" }
+	    }
+	}
+#	comment {
+#	    standard {
+#		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_comment_std" }
+#	    }
+#	}
+#	uncomment {
+#	    standard {
+#		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_uncomment_std" }
+#	    }
+#	}
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_MNTFILE $(tf_diskname)" }
+	    }
+	}	
+	paste_local {
+	     standard {
+		10 += { "python ${__DIR__}/int_fs.py os_fsmnt_paste_local_std" }
+	    }
+	}
+    }
+}
+
+
+
+component_template.base_fs_server_library {
+    use_template = "IntLibraryT"
+
+    display_type_name = "File System Server Library"
+    top_file_type = "System Library"    
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_libs"}
+    actions {
+	add {
+	    standard {
+		1 += { "python ${__DIR__}/int_fs.py fslib_check_licensing_std" }
+	    }
+	}
+	readin {
+	    standard {
+		1 += { "python ${__DIR__}/int_fs.py fslib_check_licensing_std" }
+	    }
+	}
+    }
+}
+
+component_template.fs_server_library {
+    use_template = "base_fs_server_library"
+    tags = { "FILE_SYSTEM_SERVER_LIBRARY"}
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+}
+component_template.fs_server_kernel_library {
+    use_template = "base_fs_server_library"
+    tags = { "FILE_SYSTEM_SERVER_KERNEL_LIBRARY" }
+    parent_context_types = { "integrity_os_modules_kernel_ivfsserver" }
+}
+component.fs_server_library_msdosfs {
+    use_template = "fs_server_library"
+    display_object_name = "MSDOS FAT"
+    value = "libmsdosfs.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_msdosfs"}
+    provides = {"FS_LIBRARY_MSDOS"}
+    variable_defs {
+            LIBNAME = "msdosfs"
+    } 
+}
+component.fs_server_kernel_library_msdosfs {
+    use_template = "fs_server_kernel_library"
+    display_object_name = "MSDOS FAT"
+    value = "libmsdosfs.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_msdosfs"}
+    provides = {"FS_LIBRARY_MSDOS"}
+    variable_defs {
+            LIBNAME = "msdosfs"
+    } 
+}
+
+component.fs_server_library_nfs {
+    use_template = "fs_server_library"
+
+    display_object_name = "NFS Client"
+    value = "libnfs.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.int_fslib_nfs"}
+    requires = {"FS_EXTRA_LIBRARY_SOCKET","FS_EXTRA_LIBRARY_NET","FS_EXTRA_LIBRARY_RPC"}
+    provides = {"FS_LIBRARY_NFS"}
+    variable_defs {
+            LIBNAME = "nfs"
+    }   
+}
+
+component.fs_server_kernel_library_nfs {
+    use_template = "fs_server_kernel_library"
+
+    display_object_name = "NFS Client"
+    value = "libnfs.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.int_fslib_nfs"}
+    requires = {"KERNEL_LIBRARY_SOCKET","KERNEL_LIBRARY_NET","KERNEL_LIBRARY_RPC"}
+    provides = {"FS_LIBRARY_NFS"}
+    variable_defs {
+            LIBNAME = "nfs"
+    }   
+}
+
+component.fs_server_library_infs {
+    use_template = "fs_server_library"
+    display_object_name = "GHFile"
+    value = "libinfs.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_infs"}
+    provides = {"FS_LIBRARY_GHFILE"}
+    variable_defs {
+            LIBNAME = "infs"
+    }    
+}
+component.fs_server_kernel_library_infs {
+    use_template = "fs_server_kernel_library"
+    display_object_name = "GHFile"
+    value = "libinfs.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_infs"}
+    provides = {"FS_LIBRARY_GHFILE"}
+    variable_defs {
+            LIBNAME = "infs"
+    }    
+}
+component.fs_server_kernel_library_iso9660 {
+    use_template = "fs_server_kernel_library"
+    display_object_name = "CD9660"
+    value = "libiso9660.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_iso9660"}
+    provides = {"FS_LIBRARY_CD9660"}
+    variable_defs {
+            LIBNAME = "iso9660"
+    }
+}
+component.fs_server_library_iso9660 {
+    use_template = "fs_server_library"
+    display_object_name = "CD9660"
+    value = "libiso9660.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fslib_iso9660"}
+    provides = {"FS_LIBRARY_CD9660"}
+    variable_defs {
+	    LIBNAME = "iso9660"
+    }
+}
+component.fs_server_library_ffs {
+    use_template = "fs_server_library"
+    display_object_name = "FFS"
+    value = "libffs.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.int_fslib_ffs"}
+
+    provides = {"FS_LIBRARY_FFS"}
+    variable_defs {
+	    LIBNAME = "ffs"
+    }
+}
+component.fs_server_kernel_library_ffs {
+    use_template = "fs_server_kernel_library"
+    display_object_name = "FFS"
+    value = "libffs.a"
+    default_select = false
+    doc_anchor_ids += { "multi.mpm.int_fslib_ffs"}
+
+    provides = {"FS_LIBRARY_FFS"}
+    variable_defs {
+            LIBNAME = "ffs"
+    }
+}
+
+component_template.base_fs_server_device_library {
+    use_template = "IntLibraryT"
+
+    display_type_name = "File System Device Library"
+    top_file_type = "System Library"    
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_devlibs"}
+}
+
+component_template.fs_server_device_library {
+    use_template = "base_fs_server_device_library"
+    tags = { "FILE_SYSTEM_SERVER_DEVICE_LIBRARY" }
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+}
+component_template.fs_server_kernel_device_library {
+    use_template = "base_fs_server_device_library"
+    tags = { "FILE_SYSTEM_SERVER_KERNEL_DEVICE_LIBRARY" }
+    parent_context_types = { "integrity_os_modules_kernel_ivfsserver" }
+}
+
+ 
+component.fs_server_device_library_ramdisk {
+    use_template = "fs_server_device_library"
+    display_object_name = "RamDisk"
+    value = "libramdisk.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fsdevlib_ramdisk"}
+    provides = {"FS_DEVICE_LIBRARY_RAMDISK"}
+    requires = {"FS_LIBRARY_FFS"}
+    variable_defs {
+	    LIBNAME = "ramdisk"
+    }
+}
+component.fs_server_kernel_device_library_ramdisk {
+    use_template = "fs_server_kernel_device_library"
+    display_object_name = "RamDisk"
+    value = "libramdisk.a"
+    default_select = false
+    
+    doc_anchor_ids += { "multi.mpm.int_fsdevlib_ramdisk"}
+    provides = {"FS_DEVICE_LIBRARY_RAMDISK"}
+    variable_defs {
+	    LIBNAME = "ramdisk"
+    }
+}
+
+
+component_template.fs_server_extra_library {
+    use_template = "IntLibraryT"
+
+    tags = { "FILE_SYSTEM_EXTRA_LIBRARY" }
+
+    display_type_name = "File System Extra Library"
+    top_file_type = "System Library"    
+
+    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+    doc_anchor_ids = { "multi.mpm.int_file_system_extralibs"}
+
+}
+
+ 
+component.fs_server_extra_library_socket {
+    use_template = "fs_server_extra_library"
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+    display_object_name = "Socket"
+    value = "libsocket.a"
+    default_select = false
+    requires = {"TCPIPStack"}
+    provides = {"FS_EXTRA_LIBRARY_SOCKET"}
+    variable_defs {
+            LIBNAME = "socket"
+    }
+}
+
+component.fs_server_extra_library_net {
+    use_template = "fs_server_extra_library"
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+    display_object_name = "Net"
+    value = "libnet.a"
+    default_select = false
+    requires = {"TCPIPStack"}
+    provides = {"FS_EXTRA_LIBRARY_NET"}
+    variable_defs {
+            LIBNAME = "net"
+    }
+}
+
+component.fs_server_extra_library_rpc {
+    use_template = "fs_server_extra_library"
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+    display_object_name = "RPC"
+    value = "librpc.a"
+    default_select = false
+    requires = {"FS_EXTRA_LIBRARY_SOCKET"}
+    provides = {"FS_EXTRA_LIBRARY_RPC"}
+    variable_defs {
+            LIBNAME = "rpc"
+    }
+}
+
+component.fs_server_extra_library_posix_authclient {
+    use_template = "fs_server_extra_library"
+
+    parent_context_types  = { "integrity_os_modules_file_system_copy" }
+    display_object_name = "POSIX Authentication"
+    value = "libposix_authclient.a"
+    default_select = false
+    requires = {"PosixSystemServer"}
+    provides = {"POSIXFileSystemServer"}
+    variable_defs {
+            LIBNAME = "posix_authclient"
+    }
+}
+
+component.fs_kernel_library_posix_authclient {
+    use_template = "fs_server_extra_library"
+
+    parent_context_types = { "integrity_os_modules_kernel_ivfsserver" }
+
+    display_object_name = "POSIX Authentication"
+    value = "libposix_authclient.a"
+    default_select = false
+    requires = {"PosixSystemServer"}
+    provides = {"POSIXFileSystemServer"}
+    variable_defs {
+            LIBNAME = "posix_authclient"
+    }
+}
+
+%endif
+
+%endif

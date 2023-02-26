@@ -1,0 +1,2569 @@
+# threadx.odb
+#
+# This file contains information about register layouts for ThreadX
+# targets.
+#
+# To add support for a new processor, you need to provide a register table
+# and a listing in the CPU table (threadx_osa_cpu).
+#
+# Register Table
+#================
+# The register table includes the size and offset of each register for
+# the solicited and interrupt stack frames. See threadx_arm_regs for
+# comments regarding the stack pointer and program counter registers.
+#
+# Each register/stack format pair has two values associated with it:
+#
+# regnum - MULTI's internal register number for the architected register.
+#          These values can be observed by referring to the "Tfc" pane
+#          while connected to a target and causing MULTI to read
+#          the register at issue.
+#
+# offset - offset of saved register value from the tx_stack_ptr field of
+#          TX_THREAD.
+#
+# size   - size of the register value; including the following special cases:
+#          0x1000 - Use the global (non thread-specific) value for this register.
+#          0x2000 - Indicates a stack pointer value. The value of the SP register
+#                   is taken to be the tx_stack_ptr field of the TX_THREAD
+#                   data structure, plus the value of offset. The idea is
+#                   to return to the debugger the stack pointer value after
+#                   the saved regsters have been popped from the stack.
+#          0      - Indicates that this register is not saved for this type
+#                   of stack frame. Usually used for temporary registers not
+#                   saved and restored in a solicited stack frame.
+#
+#
+# CPU Table
+#===========
+#
+# The CPU table (threadx_osa_cpu) contains processor-specific information
+# The regtbl attribute in the CPU table is the name of the Register
+# Table for that processor.
+#
+# cpumajor - MULTI's CPU number for this processor or family of similiar
+#            processors. This value must be obtained from Green Hills.
+#
+# cpuminor - MULTI's minor CPU number within the major CPU family.
+#            This value must be obtained from Green Hills. You can omit
+#            this value if all minor processors are treated the same.
+#
+# interrupt_flag - size and offset of the flag indicating whether this is
+#           an interrupt stack frame (nonzero flag value) or a solicited
+#           stack frame (zero flag value).
+#
+# register_save_format - size and offset (from the tx_stack_ptr value) of
+#           the range of target memory that contains the saved register
+#           values.
+#
+# regtbl -  The register table (described above) for this CPU target.
+#
+# buildopt - The value of _tx_build_options corresponding to this
+#           register table.
+#
+# buildoptmask - A value and'ed with _tx_build_options before comparing
+#           to the buildopt setting.
+#
+# rcfile -  A command that is executed when first performing ThreadX-aware
+#           debugging for this target. This command typically executes a
+#           script from defaults/os_aware that in turn loads a plc file
+#           from defaults/os_aware. Examine existing implementations for
+#           examples.
+#
+
+# Register table for ARM processors.
+threadx_arm_regs {
+    # Individual register locations for this processor.
+    #
+    # The stack pointer offset indicates the amount by which to adjust the
+    # saved SP value when reporting it to the debugger. This special use
+    # of the offset attribute is indicated by the special 0x2000 regsize
+    # attribute.
+    {
+        regnum = 13; # R13, Stack pointer
+        solicited {offset = 44; regsize = 0x2000;}
+        interrupt {offset = 68; regsize = 0x2000;}
+    }
+    # The PC register is typically not saved for solicited stack
+    # frames. So simply return the same value as the link register
+    # to simulate the state of the system as of the instant the
+    # system returns to this thread.
+    {
+        regnum = 15; # R15, PC register
+        solicited {offset = 40; regsize = 4;}
+        interrupt {offset = 64; regsize = 4;}
+    }
+    {
+        regnum = 0; # R0
+        solicited {offset =  0; regsize = 0;}
+        interrupt {offset =  8; regsize = 4;}
+    }
+    {
+        regnum = 1; # R1
+        solicited {offset =  0; regsize = 0;}
+        interrupt {offset = 12; regsize = 4;}
+    }
+    {
+        regnum = 2; # R2
+        solicited {offset =  0; regsize = 0;}
+        interrupt {offset = 16; regsize = 4;}
+    }
+    {
+        regnum = 3; # R3
+        solicited {offset =  0; regsize = 0;}
+        interrupt {offset = 20; regsize = 4;}
+    }
+    {
+        regnum = 4; # R4
+        solicited {offset =  8; regsize = 4;}
+        interrupt {offset = 24; regsize = 4;}
+    }
+    {
+        regnum = 5; # R5
+        solicited {offset = 12; regsize = 4;}
+        interrupt {offset = 28; regsize = 4;}
+    }
+    {
+        regnum = 6; # R6
+        solicited {offset = 16; regsize = 4;}
+        interrupt {offset = 32; regsize = 4;}
+    }
+    {
+        regnum = 7; # R7
+        solicited {offset = 20; regsize = 4;}
+        interrupt {offset = 36; regsize = 4;}
+    }
+    {
+        regnum = 8; # R8
+        solicited {offset = 24; regsize = 4;}
+        interrupt {offset = 40; regsize = 4;}
+    }
+    {
+        regnum = 9; # R9
+        solicited {offset = 28; regsize = 4;}
+        interrupt {offset = 44; regsize = 4;}
+    }
+    {
+        regnum = 10; # R10
+        solicited {offset = 32; regsize = 4;}
+        interrupt {offset = 48; regsize = 4;}
+    }
+    {
+        regnum = 11; # R11
+        solicited {offset = 36; regsize = 4;}
+        interrupt {offset = 52; regsize = 4;}
+    }
+    {
+        regnum = 12; # R12
+        solicited {offset =  0; regsize = 0;}
+        interrupt {offset = 56; regsize = 4;}
+    }
+    {
+        regnum = 14; # R14, Link register
+        solicited {offset = 40; regsize = 0;}
+        interrupt {offset = 60; regsize = 4;}
+    }
+    {
+        regnum = 40; # CPSR
+        solicited {offset =  4; regsize = 0;}
+        interrupt {offset =  4; regsize = 4;}
+    }
+}
+
+# Register table for PowerPC processors with AltiVec support.
+threadx_ppc_altivec_regs {
+    # Individual register locations for this processor.
+    #
+    # The stack pointer offset indicates the amount by which to adjust the
+    # saved SP value when reporting it to the debugger. This special use
+    # of the offset attribute is indicated by the special 0x2000 regsize
+    # attribute.
+    {
+        regnum = 1; # R13, Stack pointer
+        solicited {offset = 784; regsize = 0x2000;}
+        interrupt {offset = 956; regsize = 0x2000;}
+    }
+    # The PC register is typically not saved for solicited stack
+    # frames. So simply return the same value as the link register
+    # to simulate the state of the system as of the instant the
+    # system returns to this thread.
+    {
+        regnum = 96; # PC
+        solicited {offset = 8; regsize = 4;}
+        interrupt {offset = 4; regsize = 4;}
+    }
+    {
+        regnum = 0; # R0
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+        regnum = 3; # R3
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x20; regsize = 4;}
+    }
+    {
+        regnum = 4; # R4
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+        regnum = 5; # R5
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x28; regsize = 4;}
+    }
+    {
+        regnum = 6; # R6
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x2c; regsize = 4;}
+    }
+    {
+        regnum = 7; # R7
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+        regnum = 8; # R8
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+        regnum = 9; # R9
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+        regnum = 10; # R10
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+        regnum = 11; # R11
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x40; regsize = 4;}
+    }
+    {
+        regnum = 12; # R12
+        solicited {offset =    0; regsize = 0;}
+        interrupt {offset = 0x44; regsize = 4;}
+    }
+    {
+        regnum = 14; # R14
+        solicited {offset = 0x0c; regsize = 4;}
+        interrupt {offset = 0x48; regsize = 4;}
+    }
+    {
+        regnum = 15; # R15
+        solicited {offset = 0x10; regsize = 4;}
+        interrupt {offset = 0x4c; regsize = 4;}
+    }
+    {
+        regnum = 16; # R16
+        solicited {offset = 0x14; regsize = 4;}
+        interrupt {offset = 0x50; regsize = 4;}
+    }
+    {
+        regnum = 17; # R17
+        solicited {offset = 0x18; regsize = 4;}
+        interrupt {offset = 0x54; regsize = 4;}
+    }
+    {
+        regnum = 18; # R18
+        solicited {offset = 0x1c; regsize = 4;}
+        interrupt {offset = 0x58; regsize = 4;}
+    }
+    {
+        regnum = 19; # R19
+        solicited {offset = 0x20; regsize = 4;}
+        interrupt {offset = 0x5c; regsize = 4;}
+    }
+    {
+        regnum = 20; # R20
+        solicited {offset = 0x24; regsize = 4;}
+        interrupt {offset = 0x60; regsize = 4;}
+    }
+    {
+        regnum = 21; # R21
+        solicited {offset = 0x28; regsize = 4;}
+        interrupt {offset = 0x64; regsize = 4;}
+    }
+    {
+        regnum = 22; # R22
+        solicited {offset = 0x2c; regsize = 4;}
+        interrupt {offset = 0x68; regsize = 4;}
+    }
+    {
+        regnum = 23; # R23
+        solicited {offset = 0x30; regsize = 4;}
+        interrupt {offset = 0x6c; regsize = 4;}
+    }
+    {
+        regnum = 24; # R24
+        solicited {offset = 0x34; regsize = 4;}
+        interrupt {offset = 0x70; regsize = 4;}
+    }
+    {
+        regnum = 25; # R25
+        solicited {offset = 0x38; regsize = 4;}
+        interrupt {offset = 0x74; regsize = 4;}
+    }
+    {
+        regnum = 26; # R26
+        solicited {offset = 0x3c; regsize = 4;}
+        interrupt {offset = 0x78; regsize = 4;}
+    }
+    {
+        regnum = 27; # R27
+        solicited {offset = 0x40; regsize = 4;}
+        interrupt {offset = 0x7c; regsize = 4;}
+    }
+    {
+        regnum = 28; # R28
+        solicited {offset = 0x44; regsize = 4;}
+        interrupt {offset = 0x80; regsize = 4;}
+    }
+    {
+        regnum = 29; # R29
+        solicited {offset = 0x48; regsize = 4;}
+        interrupt {offset = 0x84; regsize = 4;}
+    }
+    {
+        regnum = 30; # R30
+        solicited {offset = 0x4c; regsize = 4;}
+        interrupt {offset = 0x88; regsize = 4;}
+    }
+    {
+        regnum = 31; # R31
+        solicited {offset = 0x50; regsize = 4;}
+        interrupt {offset = 0x8c; regsize = 4;}
+    }
+    {
+        regnum = 32; # f0
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x90; regsize = 4;}
+    }
+    {
+        regnum = 33; # f0x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x94; regsize = 4;}
+    }
+    {
+        regnum = 34; # f1
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x98; regsize = 4;}
+    }
+    {
+        regnum = 35; # f1x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x9c; regsize = 4;}
+    }
+    {
+        regnum = 36; # f2
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xa0; regsize = 4;}
+    }
+    {
+        regnum = 37; # f2x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xa4; regsize = 4;}
+    }
+    {
+        regnum = 38; # f3
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xa8; regsize = 4;}
+    }
+    {
+        regnum = 39; # f3x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xac; regsize = 4;}
+    }
+    {
+        regnum = 40; # f4
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xb0; regsize = 4;}
+    }
+    {
+        regnum = 41; # f4x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xb4; regsize = 4;}
+    }
+    {
+        regnum = 42; # f5
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xb8; regsize = 4;}
+    }
+    {
+        regnum = 43; # f5x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xbc; regsize = 4;}
+    }
+    {
+        regnum = 44; # f6
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xc0; regsize = 4;}
+    }
+    {
+        regnum = 45; # f6x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xc4; regsize = 4;}
+    }
+    {
+        regnum = 46; # f7
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xc8; regsize = 4;}
+    }
+    {
+        regnum = 47; # f7x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xcc; regsize = 4;}
+    }
+    {
+        regnum = 48; # f8
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xd0; regsize = 4;}
+    }
+    {
+        regnum = 49; # f8x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xd4; regsize = 4;}
+    }
+    {
+        regnum = 50; # f9
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xd8; regsize = 4;}
+    }
+    {
+        regnum = 51; # f9x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xdc; regsize = 4;}
+    }
+    {
+        regnum = 52; # f10
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xe0; regsize = 4;}
+    }
+    {
+        regnum = 53; # f10x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xe4; regsize = 4;}
+    }
+    {
+        regnum = 54; # f11
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xe8; regsize = 4;}
+    }
+    {
+        regnum = 55; # f11x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xec; regsize = 4;}
+    }
+    {
+        regnum = 56; # f12
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xf0; regsize = 4;}
+    }
+    {
+        regnum = 57; # f12x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xf4; regsize = 4;}
+    }
+    {
+        regnum = 58; # f13
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xf8; regsize = 4;}
+    }
+    {
+        regnum = 59; # f13x
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0xfc; regsize = 4;}
+    }
+    {
+        regnum = 60; # f14
+        solicited {offset =  0x54; regsize = 4;}
+        interrupt {offset = 0x100; regsize = 4;}
+    }
+    {
+        regnum = 61; # f14x
+        solicited {offset =  0x58; regsize = 4;}
+        interrupt {offset = 0x104; regsize = 4;}
+    }
+    {
+        regnum = 62; # f15
+        solicited {offset =  0x5c; regsize = 4;}
+        interrupt {offset = 0x108; regsize = 4;}
+    }
+    {
+        regnum = 63; # f15x
+        solicited {offset =  0x60; regsize = 4;}
+        interrupt {offset = 0x10c; regsize = 4;}
+    }
+    {
+        regnum = 64; # f16
+        solicited {offset =  0x64; regsize = 4;}
+        interrupt {offset = 0x110; regsize = 4;}
+    }
+    {
+        regnum = 65; # f16x
+        solicited {offset =  0x68; regsize = 4;}
+        interrupt {offset = 0x114; regsize = 4;}
+    }
+    {
+        regnum = 66; # f17
+        solicited {offset =  0x6c; regsize = 4;}
+        interrupt {offset = 0x118; regsize = 4;}
+    }
+    {
+        regnum = 67; # f17x
+        solicited {offset =  0x70; regsize = 4;}
+        interrupt {offset = 0x11c; regsize = 4;}
+    }
+    {
+        regnum = 68; # f18
+        solicited {offset =  0x74; regsize = 4;}
+        interrupt {offset = 0x120; regsize = 4;}
+    }
+    {
+        regnum = 69; # f18x
+        solicited {offset =  0x78; regsize = 4;}
+        interrupt {offset = 0x124; regsize = 4;}
+    }
+    {
+        regnum = 70; # f19
+        solicited {offset =  0x7c; regsize = 4;}
+        interrupt {offset = 0x128; regsize = 4;}
+    }
+    {
+        regnum = 71; # f19x
+        solicited {offset =  0x80; regsize = 4;}
+        interrupt {offset = 0x12c; regsize = 4;}
+    }
+    {
+        regnum = 72; # f20
+        solicited {offset =  0x84; regsize = 4;}
+        interrupt {offset = 0x130; regsize = 4;}
+    }
+    {
+        regnum = 73; # f20x
+        solicited {offset =  0x88; regsize = 4;}
+        interrupt {offset = 0x134; regsize = 4;}
+    }
+    {
+        regnum = 74; # f21
+        solicited {offset =  0x8c; regsize = 4;}
+        interrupt {offset = 0x138; regsize = 4;}
+    }
+    {
+        regnum = 75; # f21x
+        solicited {offset =  0x90; regsize = 4;}
+        interrupt {offset = 0x13c; regsize = 4;}
+    }
+    {
+        regnum = 76; # f22
+        solicited {offset =  0x94; regsize = 4;}
+        interrupt {offset = 0x140; regsize = 4;}
+    }
+    {
+        regnum = 77; # f22x
+        solicited {offset =  0x98; regsize = 4;}
+        interrupt {offset = 0x144; regsize = 4;}
+    }
+    {
+        regnum = 78; # f23
+        solicited {offset =  0x9c; regsize = 4;}
+        interrupt {offset = 0x148; regsize = 4;}
+    }
+    {
+        regnum = 79; # f23x
+        solicited {offset =  0xa0; regsize = 4;}
+        interrupt {offset = 0x14c; regsize = 4;}
+    }
+    {
+        regnum = 80; # f24
+        solicited {offset =  0xa4; regsize = 4;}
+        interrupt {offset = 0x150; regsize = 4;}
+    }
+    {
+        regnum = 81; # f24x
+        solicited {offset =  0xa8; regsize = 4;}
+        interrupt {offset = 0x154; regsize = 4;}
+    }
+    {
+        regnum = 82; # f25
+        solicited {offset =  0xac; regsize = 4;}
+        interrupt {offset = 0x158; regsize = 4;}
+    }
+    {
+        regnum = 83; # f25x
+        solicited {offset =  0xb0; regsize = 4;}
+        interrupt {offset = 0x15c; regsize = 4;}
+    }
+    {
+        regnum = 84; # f26
+        solicited {offset =  0xb4; regsize = 4;}
+        interrupt {offset = 0x160; regsize = 4;}
+    }
+    {
+        regnum = 85; # f26x
+        solicited {offset =  0xb8; regsize = 4;}
+        interrupt {offset = 0x164; regsize = 4;}
+    }
+    {
+        regnum = 86; # f27
+        solicited {offset =  0xbc; regsize = 4;}
+        interrupt {offset = 0x168; regsize = 4;}
+    }
+    {
+        regnum = 87; # f27x
+        solicited {offset =  0xc0; regsize = 4;}
+        interrupt {offset = 0x16c; regsize = 4;}
+    }
+    {
+        regnum = 88; # f28
+        solicited {offset =  0xc4; regsize = 4;}
+        interrupt {offset = 0x170; regsize = 4;}
+    }
+    {
+        regnum = 89; # f28x
+        solicited {offset =  0xc8; regsize = 4;}
+        interrupt {offset = 0x174; regsize = 4;}
+    }
+    {
+        regnum = 90; # f29
+        solicited {offset =  0xcc; regsize = 4;}
+        interrupt {offset = 0x178; regsize = 4;}
+    }
+    {
+        regnum = 91; # f29x
+        solicited {offset =  0xd0; regsize = 4;}
+        interrupt {offset = 0x17c; regsize = 4;}
+    }
+    {
+        regnum = 92; # f30
+        solicited {offset =  0xd4; regsize = 4;}
+        interrupt {offset = 0x180; regsize = 4;}
+    }
+    {
+        regnum = 93; # f30x
+        solicited {offset =  0xd8; regsize = 4;}
+        interrupt {offset = 0x184; regsize = 4;}
+    }
+    {
+        regnum = 94; # f31
+        solicited {offset =  0xdc; regsize = 4;}
+        interrupt {offset = 0x188; regsize = 4;}
+    }
+    {
+        regnum = 95; # f31x
+        solicited {offset =  0xe0; regsize = 4;}
+        interrupt {offset = 0x18c; regsize = 4;}
+    }
+    {
+        regnum = 97; # cr
+        solicited {offset = 0x00; regsize = 0;}
+        interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+        regnum = 98; # lr
+        solicited {offset = 0x08; regsize = 4;}
+        interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+        regnum = 99; # ctr
+        solicited {offset = 0x00; regsize = 0;}
+        interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+        regnum = 100; # xer
+        solicited {offset = 0x00; regsize = 0;}
+        interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+        regnum = 101; # fpscr
+        solicited {offset =  0xe4; regsize = 4;}
+        interrupt {offset = 0x190; regsize = 4;}
+    }
+    {
+        regnum = 167; # msr
+        solicited {offset = 0x04; regsize = 4;}
+        interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+        regnum = 398; # vrsave
+        solicited {offset =  0xec; regsize = 4;}
+        interrupt {offset = 0x198; regsize = 4;}
+    }
+    # AltiVec registers.
+    {
+        regnum = 399 # v0 (0)
+        solicited {offset = 0x100; regsize = 4;}
+        interrupt {offset = 0x1a0; regsize = 4;}
+    }
+    {
+        regnum = 400 # v0 (1)
+        solicited {offset = 0x104; regsize = 4;}
+        interrupt {offset = 0x1a4; regsize = 4;}
+    }
+    {
+        regnum = 401 # v0 (2)
+        solicited {offset = 0x108; regsize = 4;}
+        interrupt {offset = 0x1a8; regsize = 4;}
+    }
+    {
+        regnum = 402 # v0 (3)
+        solicited {offset = 0x10c; regsize = 4;}
+        interrupt {offset = 0x1ac; regsize = 4;}
+    }
+    {
+        regnum = 403 # v1 (0)
+        solicited {offset = 0x110; regsize = 4;}
+        interrupt {offset = 0x1b0; regsize = 4;}
+    }
+    {
+        regnum = 404 # v1 (1)
+        solicited {offset = 0x114; regsize = 4;}
+        interrupt {offset = 0x1b4; regsize = 4;}
+    }
+    {
+        regnum = 405 # v1 (2)
+        solicited {offset = 0x118; regsize = 4;}
+        interrupt {offset = 0x1b8; regsize = 4;}
+    }
+    {
+        regnum = 406 # v1 (3)
+        solicited {offset = 0x11c; regsize = 4;}
+        interrupt {offset = 0x1bc; regsize = 4;}
+    }
+    {
+        regnum = 407 # v2 (0)
+        solicited {offset = 0x120; regsize = 4;}
+        interrupt {offset = 0x1c0; regsize = 4;}
+    }
+    {
+        regnum = 408 # v2 (1)
+        solicited {offset = 0x124; regsize = 4;}
+        interrupt {offset = 0x1c4; regsize = 4;}
+    }
+    {
+        regnum = 409 # v2 (2)
+        solicited {offset = 0x128; regsize = 4;}
+        interrupt {offset = 0x1c8; regsize = 4;}
+    }
+    {
+        regnum = 410 # v2 (3)
+        solicited {offset = 0x12c; regsize = 4;}
+        interrupt {offset = 0x1cc; regsize = 4;}
+    }
+    {
+        regnum = 411 # v3 (0)
+        solicited {offset = 0x130; regsize = 4;}
+        interrupt {offset = 0x1d0; regsize = 4;}
+    }
+    {
+        regnum = 412 # v3 (1)
+        solicited {offset = 0x134; regsize = 4;}
+        interrupt {offset = 0x1d4; regsize = 4;}
+    }
+    {
+        regnum = 413 # v3 (2)
+        solicited {offset = 0x138; regsize = 4;}
+        interrupt {offset = 0x1d8; regsize = 4;}
+    }
+    {
+        regnum = 414 # v3 (3)
+        solicited {offset = 0x13c; regsize = 4;}
+        interrupt {offset = 0x1dc; regsize = 4;}
+    }
+    {
+        regnum = 415 # v4 (0)
+        solicited {offset = 0x140; regsize = 4;}
+        interrupt {offset = 0x1e0; regsize = 4;}
+    }
+    {
+        regnum = 416 # v4 (1)
+        solicited {offset = 0x144; regsize = 4;}
+        interrupt {offset = 0x1e4; regsize = 4;}
+    }
+    {
+        regnum = 417 # v4 (2)
+        solicited {offset = 0x148; regsize = 4;}
+        interrupt {offset = 0x1e8; regsize = 4;}
+    }
+    {
+        regnum = 418 # v4 (3)
+        solicited {offset = 0x14c; regsize = 4;}
+        interrupt {offset = 0x1ec; regsize = 4;}
+    }
+    {
+        regnum = 419 # v5 (0)
+        solicited {offset = 0x150; regsize = 4;}
+        interrupt {offset = 0x1f0; regsize = 4;}
+    }
+    {
+        regnum = 420 # v5 (1)
+        solicited {offset = 0x154; regsize = 4;}
+        interrupt {offset = 0x1f4; regsize = 4;}
+    }
+    {
+        regnum = 421 # v5 (2)
+        solicited {offset = 0x158; regsize = 4;}
+        interrupt {offset = 0x1f8; regsize = 4;}
+    }
+    {
+        regnum = 422 # v5 (3)
+        solicited {offset = 0x15c; regsize = 4;}
+        interrupt {offset = 0x1fc; regsize = 4;}
+    }
+    {
+        regnum = 423 # v6 (0)
+        solicited {offset = 0x160; regsize = 4;}
+        interrupt {offset = 0x200; regsize = 4;}
+    }
+    {
+        regnum = 424 # v6 (1)
+        solicited {offset = 0x164; regsize = 4;}
+        interrupt {offset = 0x204; regsize = 4;}
+    }
+    {
+        regnum = 425 # v6 (2)
+        solicited {offset = 0x168; regsize = 4;}
+        interrupt {offset = 0x208; regsize = 4;}
+    }
+    {
+        regnum = 426 # v6 (3)
+        solicited {offset = 0x16c; regsize = 4;}
+        interrupt {offset = 0x20c; regsize = 4;}
+    }
+    {
+        regnum = 427 # v7 (0)
+        solicited {offset = 0x170; regsize = 4;}
+        interrupt {offset = 0x210; regsize = 4;}
+    }
+    {
+        regnum = 428 # v7 (1)
+        solicited {offset = 0x174; regsize = 4;}
+        interrupt {offset = 0x214; regsize = 4;}
+    }
+    {
+        regnum = 429 # v7 (2)
+        solicited {offset = 0x178; regsize = 4;}
+        interrupt {offset = 0x218; regsize = 4;}
+    }
+    {
+        regnum = 430 # v7 (3)
+        solicited {offset = 0x17c; regsize = 4;}
+        interrupt {offset = 0x21c; regsize = 4;}
+    }
+    {
+        regnum = 431 # v8 (0)
+        solicited {offset = 0x180; regsize = 4;}
+        interrupt {offset = 0x220; regsize = 4;}
+    }
+    {
+        regnum = 432 # v8 (1)
+        solicited {offset = 0x184; regsize = 4;}
+        interrupt {offset = 0x224; regsize = 4;}
+    }
+    {
+        regnum = 433 # v8 (2)
+        solicited {offset = 0x188; regsize = 4;}
+        interrupt {offset = 0x228; regsize = 4;}
+    }
+    {
+        regnum = 434 # v8 (3)
+        solicited {offset = 0x18c; regsize = 4;}
+        interrupt {offset = 0x22c; regsize = 4;}
+    }
+    {
+        regnum = 435 # v9 (0)
+        solicited {offset = 0x190; regsize = 4;}
+        interrupt {offset = 0x230; regsize = 4;}
+    }
+    {
+        regnum = 436 # v9 (1)
+        solicited {offset = 0x194; regsize = 4;}
+        interrupt {offset = 0x234; regsize = 4;}
+    }
+    {
+        regnum = 437 # v9 (2)
+        solicited {offset = 0x198; regsize = 4;}
+        interrupt {offset = 0x238; regsize = 4;}
+    }
+    {
+        regnum = 438 # v9 (3)
+        solicited {offset = 0x19c; regsize = 4;}
+        interrupt {offset = 0x23c; regsize = 4;}
+    }
+    {
+        regnum = 439 # v10 (0)
+        solicited {offset = 0x1a0; regsize = 4;}
+        interrupt {offset = 0x240; regsize = 4;}
+    }
+    {
+        regnum = 440 # v10 (1)
+        solicited {offset = 0x1a4; regsize = 4;}
+        interrupt {offset = 0x244; regsize = 4;}
+    }
+    {
+        regnum = 441 # v10 (2)
+        solicited {offset = 0x1a8; regsize = 4;}
+        interrupt {offset = 0x248; regsize = 4;}
+    }
+    {
+        regnum = 442 # v10 (3)
+        solicited {offset = 0x1ac; regsize = 4;}
+        interrupt {offset = 0x24c; regsize = 4;}
+    }
+    {
+        regnum = 443 # v11 (0)
+        solicited {offset = 0x1b0; regsize = 4;}
+        interrupt {offset = 0x250; regsize = 4;}
+    }
+    {
+        regnum = 444 # v11 (1)
+        solicited {offset = 0x1b4; regsize = 4;}
+        interrupt {offset = 0x254; regsize = 4;}
+    }
+    {
+        regnum = 445 # v11 (2)
+        solicited {offset = 0x1b8; regsize = 4;}
+        interrupt {offset = 0x258; regsize = 4;}
+    }
+    {
+        regnum = 446 # v11 (3)
+        solicited {offset = 0x1bc; regsize = 4;}
+        interrupt {offset = 0x25c; regsize = 4;}
+    }
+    {
+        regnum = 447 # v12 (0)
+        solicited {offset = 0x1c0; regsize = 4;}
+        interrupt {offset = 0x260; regsize = 4;}
+    }
+    {
+        regnum = 448 # v12 (1)
+        solicited {offset = 0x1c4; regsize = 4;}
+        interrupt {offset = 0x264; regsize = 4;}
+    }
+    {
+        regnum = 449 # v12 (2)
+        solicited {offset = 0x1c8; regsize = 4;}
+        interrupt {offset = 0x268; regsize = 4;}
+    }
+    {
+        regnum = 450 # v12 (3)
+        solicited {offset = 0x1cc; regsize = 4;}
+        interrupt {offset = 0x26c; regsize = 4;}
+    }
+    {
+        regnum = 451 # v13 (0)
+        solicited {offset = 0x1d0; regsize = 4;}
+        interrupt {offset = 0x270; regsize = 4;}
+    }
+    {
+        regnum = 452 # v13 (1)
+        solicited {offset = 0x1d4; regsize = 4;}
+        interrupt {offset = 0x274; regsize = 4;}
+    }
+    {
+        regnum = 453 # v13 (2)
+        solicited {offset = 0x1d8; regsize = 4;}
+        interrupt {offset = 0x278; regsize = 4;}
+    }
+    {
+        regnum = 454 # v13 (3)
+        solicited {offset = 0x1dc; regsize = 4;}
+        interrupt {offset = 0x27c; regsize = 4;}
+    }
+    {
+        regnum = 455 # v14 (0)
+        solicited {offset = 0x1e0; regsize = 4;}
+        interrupt {offset = 0x280; regsize = 4;}
+    }
+    {
+        regnum = 456 # v14 (1)
+        solicited {offset = 0x1e4; regsize = 4;}
+        interrupt {offset = 0x284; regsize = 4;}
+    }
+    {
+        regnum = 457 # v14 (2)
+        solicited {offset = 0x1e8; regsize = 4;}
+        interrupt {offset = 0x288; regsize = 4;}
+    }
+    {
+        regnum = 458 # v14 (3)
+        solicited {offset = 0x1ec; regsize = 4;}
+        interrupt {offset = 0x28c; regsize = 4;}
+    }
+    {
+        regnum = 459 # v15 (0)
+        solicited {offset = 0x1f0; regsize = 4;}
+        interrupt {offset = 0x290; regsize = 4;}
+    }
+    {
+        regnum = 460 # v15 (1)
+        solicited {offset = 0x1f4; regsize = 4;}
+        interrupt {offset = 0x294; regsize = 4;}
+    }
+    {
+        regnum = 461 # v15 (2)
+        solicited {offset = 0x1f8; regsize = 4;}
+        interrupt {offset = 0x298; regsize = 4;}
+    }
+    {
+        regnum = 462 # v15 (3)
+        solicited {offset = 0x1fc; regsize = 4;}
+        interrupt {offset = 0x29c; regsize = 4;}
+    }
+    {
+        regnum = 463 # v16 (0)
+        solicited {offset = 0x200; regsize = 4;}
+        interrupt {offset = 0x2a0; regsize = 4;}
+    }
+    {
+        regnum = 464 # v16 (1)
+        solicited {offset = 0x204; regsize = 4;}
+        interrupt {offset = 0x2a4; regsize = 4;}
+    }
+    {
+        regnum = 465 # v16 (2)
+        solicited {offset = 0x208; regsize = 4;}
+        interrupt {offset = 0x2a8; regsize = 4;}
+    }
+    {
+        regnum = 466 # v16 (3)
+        solicited {offset = 0x20c; regsize = 4;}
+        interrupt {offset = 0x2ac; regsize = 4;}
+    }
+    {
+        regnum = 467 # v17 (0)
+        solicited {offset = 0x210; regsize = 4;}
+        interrupt {offset = 0x2b0; regsize = 4;}
+    }
+    {
+        regnum = 468 # v17 (1)
+        solicited {offset = 0x214; regsize = 4;}
+        interrupt {offset = 0x2b4; regsize = 4;}
+    }
+    {
+        regnum = 469 # v17 (2)
+        solicited {offset = 0x218; regsize = 4;}
+        interrupt {offset = 0x2b8; regsize = 4;}
+    }
+    {
+        regnum = 470 # v17 (3)
+        solicited {offset = 0x21c; regsize = 4;}
+        interrupt {offset = 0x2bc; regsize = 4;}
+    }
+    {
+        regnum = 471 # v18 (0)
+        solicited {offset = 0x220; regsize = 4;}
+        interrupt {offset = 0x2c0; regsize = 4;}
+    }
+    {
+        regnum = 472 # v18 (1)
+        solicited {offset = 0x224; regsize = 4;}
+        interrupt {offset = 0x2c4; regsize = 4;}
+    }
+    {
+        regnum = 473 # v18 (2)
+        solicited {offset = 0x228; regsize = 4;}
+        interrupt {offset = 0x2c8; regsize = 4;}
+    }
+    {
+        regnum = 474 # v18 (3)
+        solicited {offset = 0x22c; regsize = 4;}
+        interrupt {offset = 0x2cc; regsize = 4;}
+    }
+    {
+        regnum = 475 # v19 (0)
+        solicited {offset = 0x230; regsize = 4;}
+        interrupt {offset = 0x2d0; regsize = 4;}
+    }
+    {
+        regnum = 476 # v19 (1)
+        solicited {offset = 0x234; regsize = 4;}
+        interrupt {offset = 0x2d4; regsize = 4;}
+    }
+    {
+        regnum = 477 # v19 (2)
+        solicited {offset = 0x238; regsize = 4;}
+        interrupt {offset = 0x2d8; regsize = 4;}
+    }
+    {
+        regnum = 478 # v19 (3)
+        solicited {offset = 0x23c; regsize = 4;}
+        interrupt {offset = 0x2dc; regsize = 4;}
+    }
+    {
+        regnum = 479 # v20 (0)
+        solicited {offset = 0x240; regsize = 4;}
+        interrupt {offset = 0x2e0; regsize = 4;}
+    }
+    {
+        regnum = 480 # v20 (1)
+        solicited {offset = 0x244; regsize = 4;}
+        interrupt {offset = 0x2e4; regsize = 4;}
+    }
+    {
+        regnum = 481 # v20 (2)
+        solicited {offset = 0x248; regsize = 4;}
+        interrupt {offset = 0x2e8; regsize = 4;}
+    }
+    {
+        regnum = 482 # v20 (3)
+        solicited {offset = 0x24c; regsize = 4;}
+        interrupt {offset = 0x2ec; regsize = 4;}
+    }
+    {
+        regnum = 483 # v21 (0)
+        solicited {offset = 0x250; regsize = 4;}
+        interrupt {offset = 0x2f0; regsize = 4;}
+    }
+    {
+        regnum = 484 # v21 (1)
+        solicited {offset = 0x254; regsize = 4;}
+        interrupt {offset = 0x2f4; regsize = 4;}
+    }
+    {
+        regnum = 485 # v21 (2)
+        solicited {offset = 0x258; regsize = 4;}
+        interrupt {offset = 0x2f8; regsize = 4;}
+    }
+    {
+        regnum = 486 # v21 (3)
+        solicited {offset = 0x25c; regsize = 4;}
+        interrupt {offset = 0x2fc; regsize = 4;}
+    }
+    {
+        regnum = 487 # v22 (0)
+        solicited {offset = 0x260; regsize = 4;}
+        interrupt {offset = 0x300; regsize = 4;}
+    }
+    {
+        regnum = 488 # v22 (1)
+        solicited {offset = 0x264; regsize = 4;}
+        interrupt {offset = 0x304; regsize = 4;}
+    }
+    {
+        regnum = 489 # v22 (2)
+        solicited {offset = 0x268; regsize = 4;}
+        interrupt {offset = 0x308; regsize = 4;}
+    }
+    {
+        regnum = 490 # v22 (3)
+        solicited {offset = 0x26c; regsize = 4;}
+        interrupt {offset = 0x30c; regsize = 4;}
+    }
+    {
+        regnum = 491 # v23 (0)
+        solicited {offset = 0x270; regsize = 4;}
+        interrupt {offset = 0x310; regsize = 4;}
+    }
+    {
+        regnum = 492 # v23 (1)
+        solicited {offset = 0x274; regsize = 4;}
+        interrupt {offset = 0x314; regsize = 4;}
+    }
+    {
+        regnum = 493 # v23 (2)
+        solicited {offset = 0x278; regsize = 4;}
+        interrupt {offset = 0x318; regsize = 4;}
+    }
+    {
+        regnum = 494 # v23 (3)
+        solicited {offset = 0x27c; regsize = 4;}
+        interrupt {offset = 0x31c; regsize = 4;}
+    }
+    {
+        regnum = 495 # v24 (0)
+        solicited {offset = 0x280; regsize = 4;}
+        interrupt {offset = 0x320; regsize = 4;}
+    }
+    {
+        regnum = 496 # v24 (1)
+        solicited {offset = 0x284; regsize = 4;}
+        interrupt {offset = 0x324; regsize = 4;}
+    }
+    {
+        regnum = 497 # v24 (2)
+        solicited {offset = 0x288; regsize = 4;}
+        interrupt {offset = 0x328; regsize = 4;}
+    }
+    {
+        regnum = 498 # v24 (3)
+        solicited {offset = 0x28c; regsize = 4;}
+        interrupt {offset = 0x32c; regsize = 4;}
+    }
+    {
+        regnum = 499 # v25 (0)
+        solicited {offset = 0x290; regsize = 4;}
+        interrupt {offset = 0x330; regsize = 4;}
+    }
+    {
+        regnum = 500 # v25 (1)
+        solicited {offset = 0x294; regsize = 4;}
+        interrupt {offset = 0x334; regsize = 4;}
+    }
+    {
+        regnum = 501 # v25 (2)
+        solicited {offset = 0x298; regsize = 4;}
+        interrupt {offset = 0x338; regsize = 4;}
+    }
+    {
+        regnum = 502 # v25 (3)
+        solicited {offset = 0x29c; regsize = 4;}
+        interrupt {offset = 0x33c; regsize = 4;}
+    }
+    {
+        regnum = 503 # v26 (0)
+        solicited {offset = 0x2a0; regsize = 4;}
+        interrupt {offset = 0x340; regsize = 4;}
+    }
+    {
+        regnum = 504 # v26 (1)
+        solicited {offset = 0x2a4; regsize = 4;}
+        interrupt {offset = 0x344; regsize = 4;}
+    }
+    {
+        regnum = 505 # v26 (2)
+        solicited {offset = 0x2a8; regsize = 4;}
+        interrupt {offset = 0x348; regsize = 4;}
+    }
+    {
+        regnum = 506 # v26 (3)
+        solicited {offset = 0x2ac; regsize = 4;}
+        interrupt {offset = 0x34c; regsize = 4;}
+    }
+    {
+        regnum = 507 # v27 (0)
+        solicited {offset = 0x2b0; regsize = 4;}
+        interrupt {offset = 0x350; regsize = 4;}
+    }
+    {
+        regnum = 508 # v27 (1)
+        solicited {offset = 0x2b4; regsize = 4;}
+        interrupt {offset = 0x354; regsize = 4;}
+    }
+    {
+        regnum = 509 # v27 (2)
+        solicited {offset = 0x2b8; regsize = 4;}
+        interrupt {offset = 0x358; regsize = 4;}
+    }
+    {
+        regnum = 510 # v27 (3)
+        solicited {offset = 0x2bc; regsize = 4;}
+        interrupt {offset = 0x35c; regsize = 4;}
+    }
+    {
+        regnum = 511 # v28 (0)
+        solicited {offset = 0x2c0; regsize = 4;}
+        interrupt {offset = 0x360; regsize = 4;}
+    }
+    {
+        regnum = 512 # v28 (1)
+        solicited {offset = 0x2c4; regsize = 4;}
+        interrupt {offset = 0x364; regsize = 4;}
+    }
+    {
+        regnum = 513 # v28 (2)
+        solicited {offset = 0x2c8; regsize = 4;}
+        interrupt {offset = 0x368; regsize = 4;}
+    }
+    {
+        regnum = 514 # v28 (3)
+        solicited {offset = 0x2cc; regsize = 4;}
+        interrupt {offset = 0x36c; regsize = 4;}
+    }
+    {
+        regnum = 515 # v29 (0)
+        solicited {offset = 0x2d0; regsize = 4;}
+        interrupt {offset = 0x370; regsize = 4;}
+    }
+    {
+        regnum = 516 # v29 (1)
+        solicited {offset = 0x2d4; regsize = 4;}
+        interrupt {offset = 0x374; regsize = 4;}
+    }
+    {
+        regnum = 517 # v29 (2)
+        solicited {offset = 0x2d8; regsize = 4;}
+        interrupt {offset = 0x378; regsize = 4;}
+    }
+    {
+        regnum = 518 # v29 (3)
+        solicited {offset = 0x2dc; regsize = 4;}
+        interrupt {offset = 0x37c; regsize = 4;}
+    }
+    {
+        regnum = 519 # v30 (0)
+        solicited {offset = 0x2e0; regsize = 4;}
+        interrupt {offset = 0x380; regsize = 4;}
+    }
+    {
+        regnum = 520 # v30 (1)
+        solicited {offset = 0x2e4; regsize = 4;}
+        interrupt {offset = 0x384; regsize = 4;}
+    }
+    {
+        regnum = 521 # v30 (2)
+        solicited {offset = 0x2e8; regsize = 4;}
+        interrupt {offset = 0x388; regsize = 4;}
+    }
+    {
+        regnum = 522 # v30 (3)
+        solicited {offset = 0x2ec; regsize = 4;}
+        interrupt {offset = 0x38c; regsize = 4;}
+    }
+    {
+        regnum = 523 # v31 (0)
+        solicited {offset = 0x2f0; regsize = 4;}
+        interrupt {offset = 0x390; regsize = 4;}
+    }
+    {
+        regnum = 524 # v31 (1)
+        solicited {offset = 0x2f4; regsize = 4;}
+        interrupt {offset = 0x394; regsize = 4;}
+    }
+    {
+        regnum = 525 # v31 (2)
+        solicited {offset = 0x2f8; regsize = 4;}
+        interrupt {offset = 0x398; regsize = 4;}
+    }
+    {
+        regnum = 526 # v31 (3)
+        solicited {offset = 0x2fc; regsize = 4;}
+        interrupt {offset = 0x39c; regsize = 4;}
+    }
+}
+
+# Register table for 68k processors.
+threadx_68k_regs {
+    {
+    	regnum = 0; # d0
+	solicited {offset =  0x0; regsize = 0;}
+	interrupt {offset = 0x02; regsize = 4;}
+    }
+    {
+	regnum = 1; # d1
+	solicited {offset =  0x0; regsize = 0;}
+	interrupt {offset = 0x06; regsize = 4;}
+    }
+    {
+      	regnum = 2; # d2
+	solicited {offset =  0x2; regsize = 4;}
+	interrupt {offset = 0x0a; regsize = 4;}
+    }
+    {
+ 	regnum = 3; # d3
+	solicited {offset =  0x6; regsize = 4;}
+	interrupt {offset = 0x0e; regsize = 4;}
+    }
+    {
+	regnum = 4; # d4
+	solicited {offset =  0xa; regsize = 4;}
+	interrupt {offset = 0x12; regsize = 4;}
+    }
+    {
+    	regnum = 5; # d5
+	solicited {offset =  0xe; regsize = 4;}
+	interrupt {offset = 0x16; regsize = 4;}
+    }
+    {
+    	regnum = 6; # d6
+	solicited {offset = 0x12; regsize = 4;}
+	interrupt {offset = 0x1a; regsize = 4;}
+    }
+    {
+    	regnum = 7; # d7
+	solicited {offset = 0x16; regsize = 4;}
+	interrupt {offset = 0x1e; regsize = 4;}
+    }
+    {
+    	regnum = 8; # a0
+	solicited {offset =    0; regsize = 0;}
+	interrupt {offset = 0x22; regsize = 4;}
+    }
+    {
+    	regnum = 9; # a1
+	solicited {offset =    0; regsize = 0;}
+	interrupt {offset = 0x26; regsize = 4;}
+    }
+    {
+    	regnum = 10; # a2
+	solicited {offset = 0x1a; regsize = 4;}
+	interrupt {offset = 0x2a; regsize = 4;}
+    }
+    {
+    	regnum = 11; # a3
+	solicited {offset = 0x1e; regsize = 4;}
+	interrupt {offset = 0x2e; regsize = 4;}
+    }
+    {
+    	regnum = 12; # a4
+	solicited {offset = 0x22; regsize = 4;}
+	interrupt {offset = 0x32; regsize = 4;}
+    }
+    {
+    	regnum = 13; # a5
+	solicited {offset = 0x26; regsize = 4;}
+	interrupt {offset = 0x36; regsize = 4;}
+    }
+    {
+    	regnum = 14; # a6
+	solicited {offset = 0x2a; regsize = 4;}
+	interrupt {offset = 0x3a; regsize = 4;}
+    }
+    {
+    	regnum = 15; # a7, stack pointer
+	solicited {offset = 0x36; regsize = 0x2000;}
+	interrupt {offset = 0x4a; regsize = 0x2000;}
+    }
+    {
+    	regnum = 17; # pc
+	solicited {offset = 0x32; regsize = 4;}
+	interrupt {offset = 0x46; regsize = 4;}
+    }
+    {
+    	regnum = 20; # sr
+	solicited {offset = 0x2e; regsize = 2;}
+	interrupt {offset = 0x44; regsize = 2;}
+    }
+}
+
+# Register table for ColdFire processors.
+# Neither TX_EMAC_ENABLED nor TX_FPU_ENABLED
+threadx_coldfire_regs {
+    {
+    	regnum = 0; # d0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 4; regsize = 4;}
+    }
+    {
+    	regnum = 1; # d1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+    	regnum = 2; # d2
+	solicited {offset = 4; regsize = 4;}
+	interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+    	regnum = 3; # d3
+	solicited {offset = 0x8; regsize = 4;}
+	interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+    	regnum = 4; # d4
+	solicited {offset = 0xc; regsize = 4;}
+	interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+    	regnum = 5; # d5
+	solicited {offset = 0x10; regsize = 4;}
+	interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+    	regnum =  6; # d6
+	solicited {offset = 0x14; regsize = 4;}
+	interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+    	regnum =  7; # d7
+	solicited {offset = 0x18; regsize = 4;}
+	interrupt {offset = 0x20; regsize = 4;}
+    }
+    {
+    	regnum =  8; # a0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+    	regnum =  9; # a1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x28; regsize = 4;}
+    }
+    {
+    	regnum = 10; # a2
+	solicited {offset = 0x1c; regsize = 4;}
+	interrupt {offset = 0x2c; regsize = 4;}
+    }
+    {
+    	regnum = 11; # a3
+	solicited {offset = 0x20; regsize = 4;}
+	interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+    	regnum = 12; # a4
+	solicited {offset = 0x24; regsize = 4;}
+	interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+    	regnum = 13; # a5
+	solicited {offset = 0x28; regsize = 4;}
+	interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+    	regnum = 14; # a6
+	solicited {offset = 0x2c; regsize = 4;}
+	interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+    	regnum = 15; # a7
+	solicited {offset = 0x38; regsize = 0x2000;}
+	interrupt {offset = 0x54; regsize = 0x2000;}
+    }
+    {
+    	regnum = 17; # pc
+	solicited {offset = 0x34; regsize = 4;}
+	interrupt {offset = 0x50; regsize = 4;}
+    }
+    {
+    	regnum = 20; # sr
+	solicited {offset = 0x30; regsize = 4;}
+	interrupt {offset = 0x4c; regsize = 4;}
+    }
+}
+
+# Register table for ColdFire processors.
+# TX_FPU_ENABLED
+threadx_coldfire_fp_regs {
+    {
+    	regnum =  0; # d0
+   	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x58; regsize = 4;}
+    }
+    {
+    	regnum =  1; # d1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x5c; regsize = 4;}
+    }
+    {
+    	regnum =  2; # d2
+	solicited {offset = 0x48; regsize = 4;}
+	interrupt {offset = 0x60; regsize = 4;}
+    }
+    {
+    	regnum =  3; # d3
+	solicited {offset = 0x4c; regsize = 4;}
+	interrupt {offset = 0x64; regsize = 4;}
+    }
+    {
+    	regnum =  4; # d4
+	solicited {offset = 0x50; regsize = 4;}
+	interrupt {offset = 0x68; regsize = 4;}
+    }
+    {
+    	regnum =  5; # d5
+	solicited {offset = 0x54; regsize = 4;}
+	interrupt {offset = 0x6c; regsize = 4;}
+    }
+    {
+    	regnum =  6; # d6
+	solicited {offset = 0x58; regsize = 4;}
+	interrupt {offset = 0x70; regsize = 4;}
+    }
+    {
+    	regnum =  7; # d7
+	solicited {offset = 0x5c; regsize = 4;}
+	interrupt {offset = 0x74; regsize = 4;}
+    }
+    {
+    	regnum =  8; # a0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x78; regsize = 4;}
+    }
+    {
+    	regnum =  9; # a1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x7c; regsize = 4;}
+    }
+    {
+    	regnum = 10; # a2
+	solicited {offset = 0x60; regsize = 4;}
+	interrupt {offset = 0x80; regsize = 4;}
+    }
+    {
+    	regnum = 11; # a3
+	solicited {offset = 0x64; regsize = 4;}
+	interrupt {offset = 0x84; regsize = 4;}
+    }
+    {
+    	regnum = 12; # a4
+	solicited {offset = 0x68; regsize = 4;}
+	interrupt {offset = 0x88; regsize = 4;}
+    }
+    {
+    	regnum = 13; # a5
+	solicited {offset = 0x6c; regsize = 4;}
+	interrupt {offset = 0x8c; regsize = 4;}
+    }
+    {
+    	regnum = 14; # a6
+	solicited {offset = 0x70; regsize = 4;}
+	interrupt {offset = 0x90; regsize = 4;}
+    }
+    {
+    	regnum = 15; # a7
+	solicited {offset = 0x7c; regsize = 0x2000;}
+	interrupt {offset = 0xa8; regsize = 0x2000;}
+    }
+    {
+    	regnum = 17; # pc
+	solicited {offset = 0x78; regsize = 4;}
+	interrupt {offset = 0xa4; regsize = 4;}
+    }
+    {
+    	regnum = 20; # sr
+	solicited {offset = 0x74; regsize = 4;}
+	interrupt {offset = 0xa0; regsize = 4;}
+    }
+
+    {
+    	regnum = 100; # fp0_hi
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+    	regnum = 101; # fp0_lo
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+    	regnum = 103; # fp1_hi
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+    	regnum = 104; # fp1_lo
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+    	regnum = 106; # fp2_hi
+	solicited {offset = 0xc; regsize = 4;}
+	interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+    	regnum = 107; # fp2_lo
+	solicited {offset = 0x8; regsize = 4;}
+	interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+    	regnum = 109; # fp3_hi
+	solicited {offset = 0x14; regsize = 4;}
+	interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+    	regnum = 110; # fp3_lo
+	solicited {offset = 0x10; regsize = 4;}
+	interrupt {offset = 0x20; regsize = 4;}
+    }
+    {
+    	regnum = 112; # fp4_hi
+	solicited {offset = 0x1c; regsize = 4;}
+	interrupt {offset = 0x2c; regsize = 4;}
+    }
+    {
+    	regnum = 113; # fp4_lo
+	solicited {offset = 0x18; regsize = 4;}
+	interrupt {offset = 0x28; regsize = 4;}
+    }
+    {
+    	regnum = 115; # fp5_hi
+	solicited {offset = 0x24; regsize = 4;}
+	interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+    	regnum = 116; # fp5_lo
+	solicited {offset = 0x20; regsize = 4;}
+	interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+    	regnum = 118; # fp6_hi
+	solicited {offset = 0x2c; regsize = 4;}
+	interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+    	regnum = 119; # fp6_lo
+	solicited {offset = 0x28; regsize = 4;}
+	interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+    	regnum = 121; # fp7_hi
+	solicited {offset = 0x34; regsize = 4;}
+	interrupt {offset = 0x44; regsize = 4;}
+    }
+    {
+    	regnum = 122; # fp7_lo
+	solicited {offset = 0x30; regsize = 4;}
+	interrupt {offset = 0x40; regsize = 4;}
+    }
+    {
+    	regnum = 124; # fpcr
+	solicited {offset = 0x46; regsize = 2;}
+	interrupt {offset = 0x56; regsize = 2;}
+    }
+    {
+    	regnum = 125; # fpsr
+	solicited {offset = 0x38; regsize = 4;}
+	interrupt {offset = 0x48; regsize = 4;}
+    }
+    {
+    	regnum = 126; # fpiar
+	solicited {offset = 4; regsize = 4;}
+	interrupt {offset =  4; regsize = 4;}
+    }
+}
+
+# Register table for ColdFire processors.
+# TX_EMAC_ENABLED
+threadx_coldfire_emac_regs {
+    {
+    	regnum =  0; # d0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+    	regnum =  1; # d1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x28; regsize = 4;}
+    }
+    {
+    	regnum =  2; # d2
+	solicited {offset = 0x24; regsize = 4;}
+	interrupt {offset = 0x2c; regsize = 4;}
+    }
+    {
+    	regnum =  3; # d3
+	solicited {offset = 0x28; regsize = 4;}
+	interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+    	regnum =  4; # d4
+	solicited {offset = 0x2c; regsize = 4;}
+	interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+    	regnum =  5; # d5
+	solicited {offset = 0x30; regsize = 4;}
+	interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+    	regnum =  6; # d6
+	solicited {offset = 0x34; regsize = 4;}
+	interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+    	regnum =  7; # d7
+	solicited {offset = 0x38; regsize = 4;}
+	interrupt {offset = 0x40; regsize = 4;}
+    }
+    {
+    	regnum =  8; # a0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x44; regsize = 4;}
+    }
+    {
+    	regnum =  9; # a1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x48; regsize = 4;}
+    }
+    {
+    	regnum = 10; # a2
+	solicited {offset = 0x3c; regsize = 4;}
+	interrupt {offset = 0x4c; regsize = 4;}
+    }
+    {
+    	regnum = 11; # a3
+	solicited {offset = 0x40; regsize = 4;}
+	interrupt {offset = 0x50; regsize = 4;}
+    }
+    {
+    	regnum = 12; # a4
+	solicited {offset = 0x44; regsize = 4;}
+	interrupt {offset = 0x54; regsize = 4;}
+    }
+    {
+    	regnum = 13; # a5
+	solicited {offset = 0x48; regsize = 4;}
+	interrupt {offset = 0x58; regsize = 4;}
+    }
+    {
+    	regnum = 14; # a6
+	solicited {offset = 0x4c; regsize = 4;}
+	interrupt {offset = 0x5c; regsize = 4;}
+    }
+    {
+    	regnum = 15; # a7
+	solicited {offset = 0x58; regsize = 0x2000;}
+	interrupt {offset = 0x74; regsize = 0x2000;}
+    }
+    {
+    	regnum = 17; # pc
+	solicited {offset = 0x54; regsize = 4;}
+	interrupt {offset = 0x70; regsize = 4;}
+    }
+    {
+    	regnum = 20; # sr
+	solicited {offset = 0x50; regsize = 4;}
+	interrupt {offset = 0x6c; regsize = 4;}
+    }
+
+    {
+    	regnum = 32; # mask
+	solicited {offset = 0x08; regsize = 4;}
+	interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+    	regnum = 33; # macsr
+	solicited {offset = 4; regsize = 4;}
+	interrupt {offset = 4; regsize = 4;}
+    }
+    {
+    	regnum = 37; # acc0
+	solicited {offset = 0x0c; regsize = 4;}
+	interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+    	regnum = 38; # acc1
+	solicited {offset = 0x10; regsize = 4;}
+	interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+    	regnum = 39; # acc2
+	solicited {offset = 0x14; regsize = 4;}
+	interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+    	regnum = 40; # acc3
+	solicited {offset = 0x18; regsize = 4;}
+	interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+    	regnum = 41; # accext01
+	solicited {offset = 0x1c; regsize = 4;}
+	interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+    	regnum = 42; # accext23
+	solicited {offset = 0x20; regsize = 4;}
+	interrupt {offset = 0x20; regsize = 4;}
+    }
+}
+
+# Register table for ColdFire processors.
+# TX_FPU_ENABLED and TX_EMAC_ENABLED
+threadx_coldfire_fpemac_regs {
+    {
+    	regnum =  0; # d0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x78; regsize = 4;}
+    }
+    {
+    	regnum =  1; # d1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x7c; regsize = 4;}
+    }
+    {
+    	regnum =  2; # d2
+	solicited {offset = 0x68; regsize = 4;}
+	interrupt {offset = 0x80; regsize = 4;}
+    }
+    {
+    	regnum =  3; # d3
+	solicited {offset = 0x6c; regsize = 4;}
+	interrupt {offset = 0x84; regsize = 4;}
+    }
+    {
+    	regnum =  4; # d4
+	solicited {offset = 0x70; regsize = 4;}
+	interrupt {offset = 0x88; regsize = 4;}
+    }
+    {
+    	regnum =  5; # d5
+	solicited {offset = 0x74; regsize = 4;}
+	interrupt {offset = 0x8c; regsize = 4;}
+    }
+    {
+    	regnum =  6; # d6
+	solicited {offset = 0x78; regsize = 4;}
+	interrupt {offset = 0x90; regsize = 4;}
+    }
+    {
+    	regnum =  7; # d7
+	solicited {offset = 0x7c; regsize = 4;}
+	interrupt {offset = 0x94; regsize = 4;}
+    }
+    {
+    	regnum =  8; # a0
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x98; regsize = 4;}
+    }
+    {
+    	regnum =  9; # a1
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x9c; regsize = 4;}
+    }
+    {
+    	regnum = 10; # a2
+	solicited {offset = 0x80; regsize = 4;}
+	interrupt {offset = 0xa0; regsize = 4;}
+    }
+    {
+    	regnum = 11; # a3
+	solicited {offset = 0x84; regsize = 4;}
+	interrupt {offset = 0xa4; regsize = 4;}
+    }
+    {
+    	regnum = 12; # a4
+	solicited {offset = 0x88; regsize = 4;}
+	interrupt {offset = 0xa8; regsize = 4;}
+    }
+    {
+    	regnum = 13; # a5
+	solicited {offset = 0x8c; regsize = 4;}
+	interrupt {offset = 0xac; regsize = 4;}
+    }
+    {
+    	regnum = 14; # a6
+	solicited {offset = 0x90; regsize = 4;}
+	interrupt {offset = 0xb0; regsize = 4;}
+    }
+    {
+    	regnum = 15; # a7
+	solicited {offset = 0x9c; regsize = 0x2000;}
+	interrupt {offset = 0xc8; regsize = 0x2000;}
+    }
+    {
+    	regnum = 17; # pc
+	solicited {offset = 0x98; regsize = 4;}
+	interrupt {offset = 0xc4; regsize = 4;}
+    }
+    {
+    	regnum = 20; # sr
+	solicited {offset = 0x94; regsize = 4;}
+	interrupt {offset = 0xc0; regsize = 4;}
+    }
+
+    {
+    	regnum = 32; # mask
+	solicited {offset = 0x4c; regsize = 4;}
+	interrupt {offset = 0x5c; regsize = 4;}
+    }
+    {
+    	regnum = 33; # macsr
+	solicited {offset = 0x48; regsize = 4;}
+	interrupt {offset = 0x58; regsize = 4;}
+    }
+    {
+    	regnum = 37; # acc0
+	solicited {offset = 0x50; regsize = 4;}
+	interrupt {offset = 0x60; regsize = 4;}
+    }
+    {
+    	regnum = 38; # acc1
+	solicited {offset = 0x54; regsize = 4;}
+	interrupt {offset = 0x64; regsize = 4;}
+    }
+    {
+    	regnum = 39; # acc2
+	solicited {offset = 0x58; regsize = 4;}
+	interrupt {offset = 0x68; regsize = 4;}
+    }
+    {
+    	regnum = 40; # acc3
+	solicited {offset = 0x5c; regsize = 4;}
+	interrupt {offset = 0x6c; regsize = 4;}
+    }
+    {
+    	regnum = 41; # accext01
+	solicited {offset = 0x60; regsize = 4;}
+	interrupt {offset = 0x70; regsize = 4;}
+    }
+    {
+    	regnum = 42; # accext23
+	solicited {offset = 0x64; regsize = 4;}
+	interrupt {offset = 0x74; regsize = 4;}
+    }
+
+    {
+    	regnum = 100; # fp0_hi
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+    	regnum = 101; # fp0_lo
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+    	regnum = 103; # fp1_hi
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+    	regnum = 104; # fp1_lo
+	solicited {offset = 0; regsize = 0;}
+	interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+    	regnum = 106; # fp2_hi
+	solicited {offset = 0xc; regsize = 4;}
+	interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+    	regnum = 107; # fp2_lo
+	solicited {offset = 0x8; regsize = 4;}
+	interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+    	regnum = 109; # fp3_hi
+	solicited {offset = 0x14; regsize = 4;}
+	interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+    	regnum = 110; # fp3_lo
+	solicited {offset = 0x10; regsize = 4;}
+	interrupt {offset = 0x20; regsize = 4;}
+    }
+    {
+    	regnum = 112; # fp4_hi
+	solicited {offset = 0x1c; regsize = 4;}
+	interrupt {offset = 0x2c; regsize = 4;}
+    }
+    {
+    	regnum = 113; # fp4_lo
+	solicited {offset = 0x18; regsize = 4;}
+	interrupt {offset = 0x28; regsize = 4;}
+    }
+    {
+    	regnum = 115; # fp5_hi
+	solicited {offset = 0x24; regsize = 4;}
+	interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+    	regnum = 116; # fp5_lo
+	solicited {offset = 0x20; regsize = 4;}
+	interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+    	regnum = 118; # fp6_hi
+	solicited {offset = 0x2c; regsize = 4;}
+	interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+    	regnum = 119; # fp6_lo
+	solicited {offset = 0x28; regsize = 4;}
+	interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+    	regnum = 121; # fp7_hi
+	solicited {offset = 0x34; regsize = 4;}
+	interrupt {offset = 0x44; regsize = 4;}
+    }
+    {
+    	regnum = 122; # fp7_lo
+	solicited {offset = 0x30; regsize = 4;}
+	interrupt {offset = 0x40; regsize = 4;}
+    }
+    {
+    	regnum = 124; # fpcr
+	solicited {offset = 0x46; regsize = 2;}
+	interrupt {offset = 0x56; regsize = 2;}
+    }
+    {
+    	regnum = 125; # fpsr
+	solicited {offset = 0x38; regsize = 4;}
+	interrupt {offset = 0x48; regsize = 4;}
+    }
+    {
+    	regnum = 126; # fpiar
+	solicited {offset = 4; regsize = 4;}
+	interrupt {offset =  4; regsize = 4;}
+    }
+}
+
+# Register table for MIPS32 (34k, ...) except for 4k
+threadx_mips32_regs {
+    {
+        regnum = 1; # r1
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x70; regsize = 4;}
+    }
+    {
+        regnum = 2; # r2
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x6c; regsize = 4;}
+    }
+    {
+        regnum = 3; # r3
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x68; regsize = 4;}
+    }
+    {
+        regnum = 4; # r4
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x64; regsize = 4;}
+    }
+    {
+        regnum = 5; # r5
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x60; regsize = 4;}
+    }
+    {
+        regnum = 6; # r6
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x5c; regsize = 4;}
+    }
+    {
+        regnum = 7; # r7
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x58; regsize = 4;}
+    }
+    {
+        regnum = 8; # r8
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x54; regsize = 4;}
+    }
+    {
+        regnum = 9; # r9
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x50; regsize = 4;}
+    }
+    {
+        regnum = 10; # r10
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x4c; regsize = 4;}
+    }
+    {
+        regnum = 11; # r11
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x48; regsize = 4;}
+    }    
+    {
+        regnum = 12; # r12
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x44; regsize = 4;}
+    }
+    {
+        regnum = 13; # r13
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x40; regsize = 4;}
+    }
+    {
+        regnum = 14; # r14
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x3c; regsize = 4;}
+    }
+    {
+        regnum = 15; # r15
+        solicited {offset = 0; regsize = 0;}
+        interrupt {offset = 0x38; regsize = 4;}
+    }
+    {
+        regnum = 16; # r16
+        solicited {offset = 0x24; regsize = 4;}
+        interrupt {offset = 0x24; regsize = 4;}
+    }
+    {
+        regnum = 17; # r17
+        solicited {offset = 0x20; regsize = 4;}
+        interrupt {offset = 0x20; regsize = 4;}
+    }
+    {
+        regnum = 18; # r18
+        solicited {offset = 0x1c; regsize = 4;}
+        interrupt {offset = 0x1c; regsize = 4;}
+    }
+    {
+        regnum = 19; # r19
+        solicited {offset = 0x18; regsize = 4;}
+        interrupt {offset = 0x18; regsize = 4;}
+    }
+    {
+        regnum = 20; # r20
+        solicited {offset = 0x14; regsize = 4;}
+        interrupt {offset = 0x14; regsize = 4;}
+    }
+    {
+        regnum = 21; # r21
+        solicited {offset = 0x10; regsize = 4;}
+        interrupt {offset = 0x10; regsize = 4;}
+    }
+    {
+        regnum = 22; # r22
+        solicited {offset = 0x0c; regsize = 4;}
+        interrupt {offset = 0x0c; regsize = 4;}
+    }
+    {
+        regnum = 23; # r23
+        solicited {offset = 0x08; regsize = 4;}
+        interrupt {offset = 0x08; regsize = 4;}
+    }
+    {
+        regnum = 24; # r24
+        solicited {offset = 0x00; regsize = 0;}
+        interrupt {offset = 0x34; regsize = 4;}
+    }
+    {
+        regnum = 25; # r25
+        solicited {offset = 0x00; regsize = 0;}
+        interrupt {offset = 0x30; regsize = 4;}
+    }
+    {
+        regnum = 26; # r26
+        solicited {offset = 0x00; regsize = 0x1000;}
+        interrupt {offset = 0x00; regsize = 0x1000;}
+    }    
+    {
+        regnum = 27; # r27
+        solicited {offset = 0x00; regsize = 0x1000;}
+        interrupt {offset = 0x00; regsize = 0x1000;}
+    }    
+    {
+        regnum = 28; # r28
+        solicited {offset = 0x00; regsize = 0x1000;}
+        interrupt {offset = 0x00; regsize = 0x1000;}
+    }
+    {
+        regnum = 28; # r28
+        solicited {offset = 0x00; regsize = 0x1000;}
+        interrupt {offset = 0x00; regsize = 0x1000;}
+    }
+    {
+        regnum = 29; # SP
+        solicited {offset = 0xa0; regsize = 0x2000;}
+        interrupt {offset = 0x188; regsize = 0x2000;}
+    }
+    {
+        regnum = 30; # r30
+        solicited {offset = 0x04; regsize = 0x4;}
+        interrupt {offset = 0x04; regsize = 0x4;}
+    }
+    {
+        regnum = 31; # r31
+        solicited {offset = 0x30; regsize = 0x4;}
+        interrupt {offset = 0x74; regsize = 0x4;}
+    }
+    {
+        regnum = 96; # pc
+        solicited {offset = 0x30; regsize = 0x4;}
+        interrupt {offset = 0x7c; regsize = 0x4;}
+    }
+    {
+        regnum = 98; # hi
+        solicited {offset = 0x28; regsize = 0x4;}
+        interrupt {offset = 0x28; regsize = 0x4;}
+    }
+    {
+        regnum = 98; # lo
+        solicited {offset = 0x2c; regsize = 0x4;}
+        interrupt {offset = 0x2c; regsize = 0x4;}
+    }
+    {
+        regnum = 32; # f0
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x178; regsize = 0x4;}
+    }
+    {
+        regnum = 33; # f1
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x170; regsize = 0x4;}
+    }
+    {
+        regnum = 34; # f2
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x168; regsize = 0x4;}
+    }
+    {
+        regnum = 35; # f3
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x160; regsize = 0x4;}
+    }
+    {
+        regnum = 36; # f4
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x158; regsize = 0x4;}
+    }
+    {
+        regnum = 37; # f5
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x150; regsize = 0x4;}
+    }
+    {
+        regnum = 38; # f6
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x148; regsize = 0x4;}
+    }
+    {
+        regnum = 39; # f7
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x140; regsize = 0x4;}
+    }
+    {
+        regnum = 40; # f8
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x138; regsize = 0x4;}
+    }
+    {
+        regnum = 41; # f9
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x130; regsize = 0x4;}
+    }
+    {
+        regnum = 42; # f10
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x128; regsize = 0x4;}
+    }
+    {
+        regnum = 43; # f11
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x120; regsize = 0x4;}
+    }
+    {
+        regnum = 44; # f12
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x118; regsize = 0x4;}
+    }
+    {
+        regnum = 45; # f13
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x110; regsize = 0x4;}
+    }
+    {
+        regnum = 46; # f14
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x108; regsize = 0x4;}
+    }
+    {
+        regnum = 47; # f15
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0x100; regsize = 0x4;}
+    }
+    {
+        regnum = 48; # f16
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0xf8; regsize = 0x4;}
+    }
+    {
+        regnum = 49; # f17
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0xf0; regsize = 0x4;}
+    }
+    {
+        regnum = 50; # f18
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0xe8; regsize = 0x4;}
+    }
+    {
+        regnum = 51; # f19
+        solicited {offset = 0x0; regsize = 0x0;}
+        interrupt {offset = 0xe0; regsize = 0x4;}
+    }
+    {
+        regnum = 52; # f20
+        solicited {offset = 0x90; regsize = 0x4;}
+        interrupt {offset = 0xd8; regsize = 0x4;}
+    }
+    {
+        regnum = 53; # f21
+        solicited {offset = 0x88; regsize = 0x4;}
+        interrupt {offset = 0xd0; regsize = 0x4;}
+    }
+    {
+        regnum = 54; # f22
+        solicited {offset = 0x80; regsize = 0x4;}
+        interrupt {offset = 0xc8; regsize = 0x4;}
+    }
+    {
+        regnum = 55; # f23
+        solicited {offset = 0x78; regsize = 0x4;}
+        interrupt {offset = 0xc0; regsize = 0x4;}
+    }
+    {
+        regnum = 56; # f24
+        solicited {offset = 0x70; regsize = 0x4;}
+        interrupt {offset = 0xb8; regsize = 0x4;}
+    }
+    {
+        regnum = 57; # f25
+        solicited {offset = 0x68; regsize = 0x4;}
+        interrupt {offset = 0xb0; regsize = 0x4;}
+    }
+    {
+        regnum = 58; # f26
+        solicited {offset = 0x60; regsize = 0x4;}
+        interrupt {offset = 0xa8; regsize = 0x4;}
+    }
+    {
+        regnum = 59; # f27
+        solicited {offset = 0x58; regsize = 0x4;}
+        interrupt {offset = 0xa0; regsize = 0x4;}
+    }
+    {
+        regnum = 60; # f28
+        solicited {offset = 0x50; regsize = 0x4;}
+        interrupt {offset = 0x98; regsize = 0x4;}
+    }
+    {
+        regnum = 61; # f29
+        solicited {offset = 0x48; regsize = 0x4;}
+        interrupt {offset = 0x90; regsize = 0x4;}
+    }
+    {
+        regnum = 62; # f30
+        solicited {offset = 0x40; regsize = 0x4;}
+        interrupt {offset = 0x88; regsize = 0x4;}
+    }
+    {
+        regnum = 63; # f31
+        solicited {offset = 0x38; regsize = 0x4;}
+        interrupt {offset = 0x80; regsize = 0x4;}
+    }
+    {
+        regnum =207; # fpa_c31 (alias fcsr)
+        solicited {offset = 0x98; regsize = 0x4;}
+        interrupt {offset = 0x180; regsize = 0x4;}
+    }    
+}
+
+
+
+# CPU table
+threadx_osa_cpu {
+    {
+        cpumajor = 24; #ARM
+        # cpuminor = -1; # Any minor ARM cpu valid.
+        rcfile = "<os_aware/txarm.rc";
+        regtbl = "threadx_arm_regs";
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 44;}
+            interrupt {offset = 0; size = 68;}
+        }
+    }
+    {
+        cpumajor = 16; # PowerPC
+	cpuminor = { 18, 27, 28, 43 }; # 7400, 7410, 7450, 7455
+        rcfile = "<os_aware/txppc.rc";
+        regtbl = "threadx_ppc_altivec_regs";
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 784;}
+            interrupt {offset = 0; size = 956;}
+        }
+    }
+#    {
+#        cpumajor = 16; # PowerPC
+#        cpuminor = 27; # 7410
+#        rcfile = "<os_aware/txppc.rc";
+#        regtbl = "threadx_ppc_altivec_regs";
+#        interrupt_flag {offset = 0; size = 4}
+#        register_save_format {
+#            solicited {offset = 0; size = 784;}
+#            interrupt {offset = 0; size = 956;}
+#        }
+#    }
+#    {
+#        cpumajor = 16; # PowerPC
+#        cpuminor = 28; # 7450
+#        rcfile = "<os_aware/txppc.rc";
+#        regtbl = "threadx_ppc_altivec_regs";
+#        interrupt_flag {offset = 0; size = 4}
+#        register_save_format {
+#            solicited {offset = 0; size = 784;}
+#            interrupt {offset = 0; size = 956;}
+#        }
+#    }
+#    {
+#        cpumajor = 16; # PowerPC
+#        cpuminor = 43; # 7455
+#        rcfile = "<os_aware/txppc.rc";
+#        regtbl = "threadx_ppc_altivec_regs";
+#        interrupt_flag {offset = 0; size = 4}
+#        register_save_format {
+#            solicited {offset = 0; size = 784;}
+#            interrupt {offset = 0; size = 956;}
+#        }
+#    }
+    {
+        cpumajor = 3; # 68k
+        cpuminor = { 0, 1, 2, 3, 4, 5, 6, 7 }; # Minor cpu < 8 valid.
+        rcfile = "<os_aware/tx68k.rc";
+        regtbl = "threadx_68k_regs";
+        # These two should be optional:
+        buildopt = 0;
+        buildoptmask = 0;
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 54;}
+            interrupt {offset = 0; size = 74;}
+        }
+    }
+    {
+        cpumajor = 3; # ColdFire
+        # cpuminor = -1; # Any minor cpu >= 8 valid.
+        rcfile = "<os_aware/txcf.rc";
+        regtbl = "threadx_coldfire_regs";
+        buildopt = 0;
+        buildoptmask = 6;
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 56;}
+            interrupt {offset = 0; size = 84;}
+        }
+    }
+    {
+        cpumajor = 3; # ColdFire
+        # cpuminor = -1; # Any minor cpu >= 8 valid.
+        rcfile = "<os_aware/txcf_emac.rc";
+        regtbl = "threadx_coldfire_emac_regs";
+        buildopt = 2;
+        buildoptmask = 6;
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 88;}
+            interrupt {offset = 0; size = 116;}
+        }
+    }
+    {
+        cpumajor = 3; # ColdFire
+        # cpuminor = -1; # Any minor cpu >= 8 valid.
+        rcfile = "<os_aware/txcf_fp.rc";
+        regtbl = "threadx_coldfire_fp_regs";
+        buildopt = 4;
+        buildoptmask = 6;
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 124;}
+            interrupt {offset = 0; size = 168;}
+        }
+    }
+    {
+        cpumajor = 3; # ColdFire
+        # cpuminor = -1; # Any minor cpu >= 8 valid.
+        rcfile = "<os_aware/txcf_fpemac.rc";
+        regtbl = "threadx_coldfire_fpemac_regs";
+        buildopt = 6;
+        buildoptmask = 6;
+        interrupt_flag {offset = 0; size = 4}
+        register_save_format {
+            solicited {offset = 0; size = 156;}
+            interrupt {offset = 0; size = 200;}
+        }
+    }
+#    This should be used for MIPS32 chips such as 34K, but is not valid
+#    for 4K.
+#    {
+#        cpumajor = 10; # MIPS R3000
+#        cpuminor = 40; # IDMIPS32
+#        rcfile = "<os_aware/txmips.rc";
+#        regtbl = "threadx_mips32_regs";
+#
+#        interrupt_flag {offset = 0; size = 4}
+#        register_save_format {
+#            solicited {offset = 0; size = 160;}
+#            interrupt {offset = 0; size = 392;}
+#        }        
+#    }    
+}

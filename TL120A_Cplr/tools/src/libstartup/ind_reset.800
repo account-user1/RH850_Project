@@ -1,0 +1,52 @@
+--
+--	V800 (V810,V850,V830,V850E) Language Independent Library
+--
+--	Copyright (C) 1983-2000 by Green Hills Software Inc.
+--
+--	This program is the property of Green Hills Software, Inc,
+--	its contents are proprietary information and no part of it
+--	is to be disclosed to anyone except employees of Green Hills
+--	Software, Inc., or as agreed in writing signed by the President
+--	of Green Hills Software, Inc.
+--
+-- reset handler for V800
+
+#ifdef EMBEDDED
+
+#include "ind_800.h"
+
+	.file	"ind_reset.800"
+
+#if defined(__ELF)
+	.section ".reset", "ax"
+#else
+	.section ".reset", .text
+#endif
+	
+	.weak __ghs_rambootcodestart
+	.weak __ghs_rombootcodestart
+	.weak __ghs_rombootcodeend
+
+	.globl __ghs_reset_handler
+__ghs_reset_handler:
+	-- assumes ROM always lower address than RAM
+	-- therefore must check if ROM exists.
+	movhi	HI(__ghs_rambootcodestart),zero,r12
+	movea	lo(__ghs_rambootcodestart),r12,r12
+	movhi	HI(__ghs_rombootcodestart),zero,r13
+	movea	lo(__ghs_rombootcodestart),r13,r13
+	movhi	HI(__ghs_rombootcodeend),zero,r15
+	movea	lo(__ghs_rombootcodeend),r15,r15
+	cmp 	r15, r13
+	be	done			-- if no ROM, then done
+	movhi	HI(_start),zero,r14
+	movea	lo(_start),r14,r14
+	cmp	r12, r14		
+	bc 	done			-- if _start < rambootcodestart then done
+	-- load ROM address of _start
+	sub	r12, r14		-- _start -= rambootcodestart
+	add	r13, r14		-- _start += rombootcodestart
+done:
+	jmp 	r14	
+
+#endif	/* EMBEDDED */

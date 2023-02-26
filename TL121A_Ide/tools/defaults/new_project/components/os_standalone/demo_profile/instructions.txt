@@ -1,0 +1,247 @@
+DEMO:
+
+    Profiling
+
+DESCRIPTION:
+
+    Where is your embedded application spending its CPU time?  The answer can
+    be the key to identifying bottlenecks in code and tuning them for the best
+    performance under tight constraints.  The Green Hills MULTI Profiler is a
+    versatile means of efficiently capturing and visualizing this information.
+
+    The MULTI Profiler uses various means to gather profiling data, depending
+    on the target.  These methods include:
+      * Target driven timing or monitors, in which a target periodically
+        interrupts to sample its own PC.
+      * Trace Probes such as the Green Hills SuperTrace Probe, which can use
+        trace data as profiling data.
+      * Code instrumented to generate profiling information by Green Hills
+        compilers.
+      * Simulators, which can track each instruction but may inaccurately
+        estimate total execution time.
+    This demonstration will use the simulator for consistency across multiple
+    targets and to quickly generate large amounts of profiling data, but the
+    Profiler interface is consistent for all profiling methods.  If you would
+    like to run the demo on hardware using target driven timing, please see
+    the documentation for the -timer_profile compiler option and the Board
+    Initialization library.
+    
+    Note: This demo is most effective using a simulator that estimates cycle
+    counts (such as simarm_compat), cycle accurate or timestamped trace data,
+    or with a target driven timing method or monitor, which may take
+    additional time to configure.  When using a simulator that ignores
+    execution time or trace data which is not cycle accurate or timestamped,
+    profiling data will be reported as instruction counts rather than cycle
+    counts, which obscures improvements caused by using faster instructions
+    rather than fewer.
+
+    This demo will illustrate how to collect and view profiling information
+    to show how much time is being spent in each function, source line, and
+    instruction.  This will be used to quickly track down and improve
+    inefficiencies in the most heavily used regions of the example program.
+
+    This sample application initializes a predefined graph of coordinates
+    selected from the command line, then runs two alternative algorithms
+    for finding a minimum spanning tree for that graph.  A minimum spanning
+    tree is the shortest collection of edges needed to connect all vertices on
+    a graph. The first algorithm, Kruskal's, is more efficient on sparse graphs
+    (where the number of edges is much less than the number of vertices
+    squared), while the second, Prim's, is more efficient on denser graphs.
+    The demo will use profiling to compare performance of the two algorithms
+    on different data.  The first dataset is fairly sparse, while the second
+    is very dense.  Profiling will also be used to find possible areas of
+    improvement in the example code by focusing on where time is spent.
+
+DEMO SCRIPT:
+
+1. See options that were set by the New Project Wizard
+
+    The new project wizard has already turned on size optimizations for
+    this project, and has explicitly turned off some optimizations that
+    may degrade debuggability.  Extended Embedded C++ was selected to allow
+    basic STL components without large libraries.  The following options have
+    already been set through the Set Build Options menu, and may be browsed
+    under the Modified Options tab:
+    	C/C++ Compiler
+		C++ Language Dialect: Extended Embedded C++
+    	Optimization
+		Optimization Strategy: Optimize for Size
+		Intermodule Inlining: Off
+	Optimization -> Optimization Scope
+		Pipeline & Peephole Scope: peephole,pipeline
+	Advanced Optimization Options
+		Optimize All Appropriate Loops: Off
+		Conditional Instructions: Off
+
+2. Build the project
+
+    Build the project by pressing the wrench and hammer icon button in the 
+    tool bar or press the (F7) key.
+
+3. Connect to simulator
+
+    Select "Connect->Connect..." from menu.
+    Select an appropriate simulator for your target from the drop down menu.
+    Click Connect. 
+
+4. Debug demo application
+
+    Open a MULTI debugger for the application by selecting:
+	Debug->Debug profile_cc
+
+5. Running the application
+
+    - In the debugger window, activate profiling by using:
+    	View -> Profile
+      You should open profiling before downloading, running, or stepping your
+      program.
+	
+    - Return to the debugger window and start the application by pressing F5
+      or selecting the "Go" icon.  When the application terminates, a
+      percentage representing the proportion of run time spent will appear
+      before each source line.
+      
+    - Return to profiling window and observe that it now displays total
+      execution time for the program on the status tab, and there are now
+      Standard Calls and Source tabs available.
+     o Select Standard Calls tab to view a list of functions executed,
+       sorted by the percentage of time spent in each.
+     o The minSpanningTreePrims and minSpanningTreeKruskals functions together
+       should be taking up most of the cpu time for this application, and
+       the Kruskals function should take less time on the default graph
+       which is relatively sparse.  Many other functions are listed below
+       these, which include library functions and functions called during the
+       initialization of the graph.
+     o Note the approximate total execution time and total execution time
+       of the two minSpanningTree functions for later comparison.
+     o In the profiling window Standard Calls tab, single click on the entry
+       for minSpanningTreeKruskals, and observe that the debugger takes you
+       to that function.
+     o Select the Source tab to view a list of the most time consuming source
+       lines profiled.  Click on one of these frequently executed source
+       lines and observe that the debugger goes to this source line and
+       indicates it with a blue arrow.
+       
+    - In the debugger window, browse profiling information broken down to
+      the level of individual instructions by selecting:
+	View -> Display Mode -> Interlaced Assembly
+     o Each instruction should have a percentage associated with it, and the
+       percentages of each instruction in a source line should total the
+       overall percentage of that source line.
+     o Return to source line only view with:
+	View -> Display Mode -> Source Only
+
+    - Scan through minSpanningTreeKruskals and minSpanningTreePrims to
+      see that the most time is being spent in inner loops.
+     o In both functions, much of this time is being spent iterating
+       through the list of edges with the code:
+        edgeiter++;
+     o Note the approximate percentage of time being spent on this line.
+     o In either function, right click on "g.edges" in the line of code:
+        edgeiter = g.edges.begin();
+       and select "Go To Definition" in the drop down menu.
+     o Note that the Graph.edges is defined as an STL list of edges.
+       The code where we are spending most of our time is not making use
+       of the fast insert and deletion benefits of a list, and a vector
+       may be slightly more efficient to iterate through.  Under the
+       define USE_EDGE_VECTOR, the Graph.edges member is represented with
+       a vector data structure instead of a linked list.
+
+    - In the builder window, Set Build Options for the profiling_cc Program,
+      and select the following option:
+        Preprocessor -> Define Preprocessor Symbol
+     o Type in the symbol USE_EDGE_VECTOR and select ok.
+     o Rebuild the project by pressing the wrench and hammer icon button
+       in the tool bar or press the (F7) key.
+     o Hit the Reload icon in the debugger window when the application has
+       been recompiled with the new define.
+
+    - In the debugger window, activate profiling by using:
+    	View -> Profile
+     o Restart the application by pressing F5.
+     o Review the profiling window to see that with this code modification,
+       the total execution time of the application and of the minSpanningTree
+       functions is now reduced.  Other functions involved with the
+       graph initialization now take a larger proportion of time due to the
+       cost of insertion and deletion in a vector.
+     o In the debugger window, observe that the "edgeiter++" lines of code
+       take a smaller proportion of execution time.
+     o Note: Benefits of USE_EDGE_VECTOR transformation may be masked by
+       a profiling solution based on instruction count rather than execution
+       time, since a major benefit is to replace slow list load instructions
+       with faster add instructions.
+
+    - Click on the clear profiling data icon in the profiling window.
+     o Run the program with the commandline argument "2" by typing
+        r 2
+       in the debugger window.  The program will run using graph 2, which
+       contains far more edges than the default graph.
+     o In the profiler Standard Calls tab, Prims should perform relatively
+       better compared to Kruskals than it did in the previous dataset,
+       though it still may not be faster, depending on the architecture.
+     o Single click on minSpanningTreePrims in the Standard Calls list to
+       take the debugger to that function.
+     o In the inner loop of minSpanningTreePrims, you can see that much of
+       the time is spent testing the conditions of if statements.  The
+       cheapestCost condition is tested fairly frequently, but the
+       innermost block is not executed frequently at all.  If the
+       cheapestCost condition is rarely true, it may be faster to test that
+       first and avoid the other tests.  The order of these conditions is
+       reversed under the define PRIMS_SPEEDUP.
+     o Note the approximate total percentage of time taken by the inner
+       loop if statements for later comparison.
+
+    - In the builder window, Set Build Options for the profiling_cc Program,
+      and select the following option:
+        Preprocessor -> Define Preprocessor Symbol
+     o Type in the symbol PRIMS_SPEEDUP and select ok.
+
+    - To test the call count and call graphing features of the profiler,
+      the application must be built with those features enabled.  Until now,
+      the demo has profiled uninstrumented code with no special profiling
+      options.
+     o Set the option:
+        Debugging -> Profiling - Call Count
+       to the value:
+        On with Call Graph
+     o Rebuild the project by pressing the wrench and hammer icon button
+       in the tool bar or press the (F7) key.
+     o Hit the Reload icon in the debugger window when the application has
+       been recompiled with the new define.
+
+    - In the debugger window, activate profiling by using:
+    	View -> Profile
+     o Restart the application by pressing F5.
+     o Review the profiling window to see that with PRIMS_SPEEDUP defined,
+       minSpanningTreePrims execution time should be reduced and show a
+       clear advantage over minSpanningTreeKruskals for this graph.
+     o Single click on minSpanningTreePrims in the Standard Calls list to
+       take the debugger to that function.
+     o In the debugger window, observe that the if statements in the
+       inner loop of minSpanningTreePrims function now take a relatively
+       smaller percentage of time overall.
+
+    - This time, the profiling window has an additional tab labelled
+      Call Graph.  There is also more information available in the
+      Standard Calls tab.
+     o Click on the Call Graph tab.  Each function executed is listed
+       along with all the functions that called or were called by that
+       function, with corresponding percentages based on the proportion
+       of calls made.  The Call Graph lists not only the amount of time
+       spent in each function, but the total time spent in all functions
+       called by that function.  Thus the main() function has a very
+       small "Self %", but the "Self + Child %" field represents virtually
+       the entire execution time of the program.  The same is true of the
+       runtest() function.
+     o Note the breakdown of the runtest() function's calls by and calls to
+       fields.  Single click on the runtest function to take the debugger
+       window to that function, and note that it makes 2 calls to resetcolors,
+       and one call to both minSpanningTree functions.  This is represented
+       in the call graph by the fact that it was called 30 times and made
+       120 calls, 50% of them to resetcolors, and 25% to each minSpanningTree
+       function.
+     o Click on the Standard Calls tab of the profiling window.  Note that
+       in addition to the total time and percentage of time fields, there are
+       now a total number of calls and time/call field listed.
+       
+       

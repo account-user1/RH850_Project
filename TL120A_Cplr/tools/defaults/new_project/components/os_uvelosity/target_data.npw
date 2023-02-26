@@ -1,0 +1,211 @@
+%if !file_exists("${__OS_DIR__}/multi/new_project/components/os_uvelosity/target_data.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+%define ARCH_DIR ${__OS_DIR__}/multi/target/${__ARCH_NAME__}
+%define BSP_DIR  ${ARCH_DIR}/${__BSP_NAME__}
+
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+
+board_attributes {
+    target_resources {
+	# For all GHS stand-alone targets, always create the standalone_ram.ld,
+	# standalone_romcopy.ld, and standalone_romrun.ld files.
+
+        concat_files {
+
+%if !defined(NO_RAM_LAYOUT)
+#
+# RAM
+#
+%if file_exists("${ARCH_DIR}/standalone_ram.ld")
+	    {
+	        output = "standalone_ram.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_ram.ld")
+		inputs += {"${BSP_DIR}/standalone_ram.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_ram.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_RAM_LAYOUT
+
+
+
+%if !defined(NO_ROMCOPY_LAYOUT)
+#
+# ROM Copy
+#
+%if file_exists("${ARCH_DIR}/standalone_romcopy.ld")
+	    {
+	        output = "standalone_romcopy.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_romcopy.ld")
+		inputs += {"${BSP_DIR}/standalone_romcopy.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_romcopy.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_ROMCOPY_LAYOUT
+
+
+%if !defined(NO_ROM_LAYOUT)
+#
+# ROM Run
+#
+%if file_exists("${ARCH_DIR}/standalone_romrun.ld")
+	    {
+	        output = "standalone_romrun.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_romrun.ld")
+		inputs += {"${BSP_DIR}/standalone_romrun.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_romrun.ld"}
+%endif
+	    }
+%endif
+%endif  # NO_ROM_LAYOUT
+
+
+%if defined(__SupportsPic)
+#
+# PIC
+#
+%if file_exists("${ARCH_DIR}/standalone_pic.ld")
+	    {
+	        output = "standalone_pic.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_pic.ld")
+		inputs += {"${BSP_DIR}/standalone_pic.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_pic.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPic
+
+
+%if defined(__SupportsPid)
+#
+# PID
+#
+%if file_exists("${ARCH_DIR}/standalone_pid.ld")
+	    {
+	        output = "standalone_pid.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_pid.ld")
+		inputs += {"${BSP_DIR}/standalone_pid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_pid.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPid
+
+
+%if defined(__SupportsPic) && defined(__SupportsPid)
+#
+# PIC/PID
+#
+%if file_exists("${ARCH_DIR}/standalone_picpid.ld")
+	    {
+	        output = "standalone_picpid.ld"
+
+%if file_exists("${BSP_DIR}/memory_${__BSP_VARIANT__}.ld")
+		inputs += {"${BSP_DIR}/memory_${__BSP_VARIANT__}.ld"}
+%elif file_exists("${BSP_DIR}/elxr_memory.ld")
+		inputs += {"${BSP_DIR}/elxr_memory.ld"}
+%elif file_exists("${BSP_DIR}/memory.ld")
+		inputs += {"${BSP_DIR}/memory.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_config.ld")
+		inputs += {"${BSP_DIR}/standalone_config.ld"}
+%elseif file_exists("${ARCH_DIR}/standalone_config.ld")
+		inputs += {"${ARCH_DIR}/standalone_config.ld"}
+%endif
+%if file_exists("${BSP_DIR}/standalone_picpid.ld")
+		inputs += {"${BSP_DIR}/standalone_picpid.ld"}
+%else
+		inputs += {"${ARCH_DIR}/standalone_picpid.ld"}
+%endif
+	    }
+%endif
+%endif  # __SupportsPic && __SupportsPid
+
+	}
+    }
+}	# board_attributes
+
+component.linker_directives_file {
+    use_template = "linker_directives"
+    default_for_filetypes = { "Linker Directives" }
+
+}
+%endif	# TOOLCHAIN == GREEN_HILLS
+
+%endif # __DISTRIBUTION_TYPE__
+
+%endif # file_exists

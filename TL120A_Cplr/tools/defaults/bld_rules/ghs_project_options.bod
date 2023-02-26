@@ -1,0 +1,321 @@
+###############################################################################
+# ghs_project_options.bod
+#
+#
+#
+###############################################################################
+
+CommandOptions {
+    GhsCompilerOptions {
+
+	    OutputDir {
+		    {
+			    name="-object_dir"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    flags={"OUTPUTDIR","OBJECTDIR"}
+		    valueIsDirname=true
+		    guiLabel="Object File Output Directory"
+		    guiCategory="Project"
+		    commonLevel=101
+	    }
+	    ActLike {
+		    {
+			    name="-act_like=5.0"
+			    value=0
+			    enumLabel="5.0"
+		    }
+		    {
+			    name="-act_like=5.2"
+			    value=1
+			    enumLabel="5.2"
+		    }
+		    {
+			    name="-act_like=2012.1"
+			    value=2
+			    enumLabel="2012.1"
+		    }		    
+		    {
+			    name="-act_like=2012"
+			    value=2
+			    enumLabel="2012.1"
+		    }
+		    {
+			    name="-act_like=2012.0"
+			    value=2
+			    enumLabel="2012.1"
+		    }
+		    {
+		    	    name="-act_like=2012.5"
+			    value=3
+			    enumLabel="2012.5"
+		    }
+		    {
+		    	    name="-act_like=2013.1"
+			    value=4
+			    enumLabel="2013.1"
+		    }			    
+		    {
+		    	    name="-act_like=2013"
+			    value=4
+			    enumLabel="2013.1"
+		    }		    
+                    {
+                            name="-act_like=2013.5"
+                            value=5
+                            enumLabel="2013.5"
+                    }
+                    {
+                            name="-act_like=2014.1"
+                            value=6
+                            enumLabel="2014.1"
+                    }
+                    {
+                            name="-act_like=2014"
+                            value=6
+                            enumLabel="2014.1"
+                    }
+                    {
+                            name="-act_like=2014.5"
+                            value=7
+                            enumLabel="2014.5"
+                    }
+                    {
+                            name="-act_like=2015.1"
+                            value=8
+                            enumLabel="2015.1"
+                    }
+                    {
+                            name="-act_like=2015"
+                            value=8
+                            enumLabel="2015.1"
+                    }
+		    {
+			    name="-act_like=latest"
+			    value=9
+			    enumLabel="Latest"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Emulate Behaviors of a Specific Compiler Version"
+		    guiCategory="Project"
+		    commonLevel=101
+	    }
+
+    ################ Advanced #######################
+
+	    DbgSourceRoot {
+		    {
+			    name="-dbg_source_root"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-dbg_source_root"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Source Root"
+		    guiCategory="Project"
+		    commonLevel=101
+	    }
+	    # ARM, PowerPC, V800
+    	    CompilationMode {
+		    {
+	    	    	    name="-obj"
+	    		    value=0
+	    		    enumLabel="On"
+		    }
+		    {
+	    		    name="-noobj"
+	    		    value=1
+	    		    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+	    	    delimiter="NoArg"
+		    pass={"Compile"}
+		    guiLabel="Binary Code Generation"
+		    guiCategory="Project"
+		    helpDivID = "bod.CompilationMode"
+    	    }
+	    TempDirectory {
+	    # Relative to Current Working Directory
+		    name="-tmp"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Temporary Output Directory"
+		    guiCategory="Project"
+		    enumLabel="On"
+	    }
+	    KeepTempFiles {
+		    {
+			    name="-keeptempfiles"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {	
+			    name="-keeptmpfiles"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="-nokeeptempfiles"
+			    value=1
+			    enumLabel="Delete"
+		    }
+		    {
+			    name="-nokeeptmpfiles"
+			    value=1
+			    enumLabel="Delete"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Temporary Output"
+		    guiCategory="Project"
+	    }
+	    KeepAsmFiles {
+		    {	
+			    name="-keepasmfiles"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="-nokeepasmfiles"
+			    value=1
+			    enumLabel="Delete"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Temporary Assembly Output"
+		    guiCategory="Project"
+	    }
+	    KeepCppFiles {
+		    {	
+			    name="-keepcppfiles"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="-nokeepcppfiles"
+			    value=1
+			    enumLabel="Delete"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Temporary Preprocessor Output"
+		    guiCategory="Project"
+	    }
+	    InputLanguage {
+		    name="-language"
+		    delimiter="Equal"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    guiLabel="Input Languages"
+		    guiCategory="Project"
+	    }
+	    AnyOutputSuffix {
+		    {
+			    name="--any_output_suffix"
+			    value=0
+			    enumLabel="Accepted"
+		    }
+		    {
+			    name="-alternate_suffixes"
+			    value=0
+			    enumLabel="Accepted"
+		    }
+		    {
+			    name="--no_any_output_suffix"
+			    value=1
+			    enumLabel="Not Accepted"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Non-Standard Output Suffix"
+		    guiCategory="Project"
+	    }
+
+    ################# Toolchain Component Locations ########################
+    
+	    CompilerDirectory {
+		    valueIsDirname=true
+		    {
+			    name="-Y0,"
+		    }
+		    delimiter="Touching"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Alternate Compiler Directory"
+		    guiCategory="Project;Toolchain Component Locations"
+	    }
+	    LibrarySearchDirectory {
+		    valueIsDirname=true
+		    {
+			    name="-YL,"
+		    }
+		    {
+			    name="-YU,"
+		    }
+		    delimiter="Touching"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Alternate Library Directory"
+		    guiCategory="Project;Toolchain Component Locations"
+	    }
+	    AssemblerDirectory {
+		    valueIsDirname=true
+		    {
+			    name="-Ya,"
+		    }
+		    delimiter="Touching"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Alternate Assembler Directory"
+		    guiCategory="Project;Toolchain Component Locations"
+	    }
+	    LinkerDirectory {
+		    valueIsDirname=true
+		    {
+			    name="-Yl,"
+		    }
+		    delimiter="Touching"
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Alternate Linker Directory"
+		    guiCategory="Project;Toolchain Component Locations"
+	    }
+	    Host64 {
+		    {
+			    name="-host64"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_host64"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Use 64-bit Toolchain Components"
+		    guiCategory="Project;Toolchain Component Locations"
+		    disabled=true
+	    }
+    }
+}

@@ -1,0 +1,47 @@
+#!gbuild
+macro DO_FSPLIT=true
+macro MATH_OGENERAL=true
+macro SUPPORT_INIT_RAM=true
+macro USE_LARGE_VTBL_OFFSETS=true
+[Project]
+	--single_tda
+#wbuild autoconvert:silent
+	:outputDir=objs
+	-object_dir=objs
+	-ansi
+	-pic
+	-Zstructinreg32
+	-X1102
+	-Zuseshortload
+	-Zuseshortload2
+	-Zuse1bit
+	-Xdata_spans_32k
+	-dbg_source_root ../..
+	-DEMBEDDED
+	-DRODATA_IS_INDEPENDENT
+	-DSUPPORTS_PACKED_STRUCTURES
+	-codefactor
+	-gs
+	-gtws
+	-I../../src/libsys
+	:sourceDir=../../src/libsys
+	-noobj
+	-Ospace
+	-pid
+	-reserve_r2
+	:noSelfDepend
+	:select=850
+	:select=800
+	:select=cxx
+	:select=c
+	:debug_option=ghs_library
+	-registermode=22
+	-startfile_dir=$TRGLIBDIR
+	:deflibdirs=$TRGLIBDIR
+libstartup.gpj		[Library]
+	:sourceDir=../../src/libstartup
+crt0.gpj		[Select One]
+	:sourceDir=../../src/libstartup
+	:sourceDir=../../src/libstartup
+libsys.gpj		[Library]
+	:sourceDir=../../src/libsys

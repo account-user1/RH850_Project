@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************
+** Project      = AUTOSAR Renesas R4.0.3 P1x-C MCAL Components               **
+** Module       = FLS Driver                                                 **
+*******************************************************************************
+**                                  COPYRIGHT                                **
+*******************************************************************************
+** Copyright(c) 2015 - 2017 Renesas Electronics Corporation                  **
+*******************************************************************************
+** Purpose:                                                                  **
+** Provides the BSW module description of FLS Driver Component for AUTOSAR   **
+** release 4.0.3                                                             **
+**                                                                           **
+*******************************************************************************
+**                                                                           **
+** Unless otherwise agreed upon in writing between your company and          **
+** Renesas Electronics Corporation the following shall apply!                **
+**                                                                           **
+** Warranty Disclaimer                                                       **
+**                                                                           **
+** There is no warranty of any kind whatsoever granted by Renesas. Any       **
+** warranty is expressly disclaimed and excluded by Renesas, either expressed**
+** or implied, including but not limited to those for non-infringement of    **
+** intellectual property, merchantability and/or fitness for the particular  **
+** purpose.                                                                  **
+**                                                                           **
+** Renesas shall not have any obligation to maintain, service or provide bug **
+** fixes for the supplied Product(s) and/or the Application.                 **
+**                                                                           **
+** Each User is solely responsible for determining the appropriateness of    **
+** using the Product(s) and assumes all risks associated with its exercise   **
+** of rights under this Agreement, including, but not limited to the risks   **
+** and costs of program errors, compliance with applicable laws, damage to   **
+** or loss of data, programs or equipment, and unavailability or             **
+** interruption of operations.                                               **
+**                                                                           **
+** Limitation of Liability                                                   **
+**                                                                           **
+** In no event shall Renesas be liable to the User for any incidental,       **
+** consequential, indirect, or punitive damage (including but not limited    **
+** to lost profits) regardless of whether such liability is based on breach  **
+** of contract, tort, strict liability, breach of warranties, failure of     **
+** essential purpose or otherwise and even if advised of the possibility of  **
+** such damages. Renesas shall not be liable for any services or products    **
+** provided by third party vendors, developers or consultants identified or  **
+** referred to the User by Renesas in connection with the Product(s) and/or  **
+** the Application.                                                          **
+**                                                                           **
+*******************************************************************************
+** Environment:                                                              **
+**              Devices:        RH850/P1x-c: R7F701370A, R7F701371,R7F701372 **
+**                                           R7F701373,R7F701374.            **
+**                                                                           **
+*******************************************************************************
+**                      Revision Control History                             **
+*******************************************************************************
+** V1.0.0:  06-August-2015   Initial Version                                 **
+**                                                                           **
+** V1.0.1:  14-Apr-2016 : As part of P1x-C V4.01.00 release the following    **
+**                        changes are made:                                  **
+**                        1) W.r.t JIRA ARDAAAF-309 fix, file is updated     **
+**                        with CAN-ENTER-EXCLUSIVE-AREA-REFS tag.            **
+**                                                                           **
+** V1.0.2:  27-Jan-2017 : The following changes are made:                    **
+**                        1)Patch version is updated.                        **
+**                        2)As per ticket ARDAAAE-1231, added critical       **
+**                        section FLS_CODE_FLASH_DISABLED                    **
+**                        3)As per ticket ARDAAAF-1353, Warranty Disclaimer  **
+**                        updated                                            **
+**                        4)As part of ARDAAAF-977, following changes are    **
+**                          done:                                            **
+**                         a)'EXCLUSIVE-AREA' tag is removed from Fls_Read(),**
+**                            Fls_Suspend(),Fls_Resume() APIs.               **
+**                         b)'IS-SYNCHRONOUS tag' is updated for             **
+**                            Fls_ReadImmediate() and Fls_MainFunction()APIs.**
+**                         c)'CAN-ENTER-EXCLUSIVE-AREA-REFS' tag is added for**
+**                             Under 'BSW-SCHEDULABLE-ENTITY' tag.           **
+**                         d)'EVENTS' class for the scheduled function is    **
+**                            added.                                         **
+**                        5)As part of ARDAAAF-1503 <IMPLEMENTED-ENTRY-REF>  **
+**                          tag is added Under 'BSW-SCHEDULABLE-ENTITY' tag. **
+**                        6)As per JIRA ARDAAAF-665, the device support for  **
+**                           R7F701371 is added.                             **
+**                                                                           **
+*******************************************************************************
+-->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="ECUS:b541cf24-f141-43f2-ba80-4bf8325daabe">
+      <SHORT-NAME>Renesas</SHORT-NAME>
+        <AR-PACKAGES>
+          <AR-PACKAGE UUID="ECUS:30a4c5c2-7a36-4e64-9f44-f1b9937ab75a">
+            <SHORT-NAME>EcucDefs_Fls</SHORT-NAME>
+             <ELEMENTS>
+              <BSW-IMPLEMENTATION UUID="ECUS:c3a72067-914a-4d12-8ab1-d196e95d890f">
+                <SHORT-NAME>Fls_Impl</SHORT-NAME>
+                <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                <SW-VERSION>1.0.2</SW-VERSION>
+                <VENDOR-ID>59</VENDOR-ID>
+                <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+                <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0</BEHAVIOR-REF>
+                <VENDOR-API-INFIX>Renesas</VENDOR-API-INFIX>
+                <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                  <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Renesas/EcucDefs_Fls/Fls</VENDOR-SPECIFIC-MODULE-DEF-REF>
+                </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+              </BSW-IMPLEMENTATION>
+              <BSW-MODULE-DESCRIPTION UUID="ECUS:8c4e50d1-2841-40af-a76d-8d61494e93e9">
+                <SHORT-NAME>Fls</SHORT-NAME>
+                <MODULE-ID>92</MODULE-ID>
+                <INTERNAL-BEHAVIORS>
+                  <BSW-INTERNAL-BEHAVIOR UUID="ECUS:e26ca104-bd79-4dfb-9c02-43519ec6047c">
+                    <SHORT-NAME>BswInternalBehavior_0</SHORT-NAME>
+                    <EXCLUSIVE-AREAS>
+                      <EXCLUSIVE-AREA UUID="ECUS:4ab2ff58-fa3a-4051-a2b9-5b43695c8ba7">
+                        <SHORT-NAME>FLS_DRIVERSTATE_DATA_PROTECTION</SHORT-NAME>
+                      </EXCLUSIVE-AREA>
+                    </EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREAS>
+                      <EXCLUSIVE-AREA UUID="ECUS:4ab2ff58-fa3a-4052-a2b9-5b43695c8ba7">
+                        <SHORT-NAME>FLS_REGISTER_PROTECTION</SHORT-NAME>
+                      </EXCLUSIVE-AREA>
+                    </EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREAS>
+                      <EXCLUSIVE-AREA UUID="ECUS:4ab2ff58-fa3a-4d32-a2b9-5b43695c8ba7">
+                        <SHORT-NAME>FLS_CODE_FLASH_DISABLED</SHORT-NAME>
+                      </EXCLUSIVE-AREA>
+                    </EXCLUSIVE-AREAS>
+                    <ENTITYS>
+                      <BSW-SCHEDULABLE-ENTITY UUID="ECUS:9b5b6502-060f-4e60-995c-985b644857de">
+                        <SHORT-NAME>Fls_MainFunction</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                           <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                           <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_MainFunction</IMPLEMENTED-ENTRY-REF>
+                        <MINIMUM-START-INTERVAL>0.00000085</MINIMUM-START-INTERVAL>
+                      </BSW-SCHEDULABLE-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:9b933fde-9d34-4dd0-863b-3c6c057abcfc">
+                        <SHORT-NAME>BswCalledEntity_0</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_CODE_FLASH_DISABLED</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Init</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:96b8b0c9-f31a-4b91-918d-00e25a73677e">
+                        <SHORT-NAME>BswCalledEntity_1</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Erase</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:aadb48e6-d136-40c8-8afa-17b80860b86e">
+                        <SHORT-NAME>BswCalledEntity_2</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Write</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:244ccedf-9c91-4f7b-b355-60d2ce9343b5">
+                        <SHORT-NAME>BswCalledEntity_3</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Cancel</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:416f64a0-6452-4b66-b119-64791af50088">
+                        <SHORT-NAME>BswCalledEntity_4</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_GetStatus</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:ebc9f933-0647-44aa-bc25-71b9771911ba">
+                        <SHORT-NAME>BswCalledEntity_5</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_GetJobResult</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:5530f2f9-b06a-42d4-8b50-80555c14a0c6">
+                        <SHORT-NAME>BswCalledEntity_6</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Read</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:140a3c57-ae7b-46af-969e-84421824335b">
+                        <SHORT-NAME>BswCalledEntity_7</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Compare</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:c92de2e9-4adc-4876-8375-9f8d5788c45a">
+                        <SHORT-NAME>BswCalledEntity_8</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_SetMode</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:31311939-6078-48d7-a48b-410dcaa00a07">
+                        <SHORT-NAME>BswCalledEntity_9</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_ReadImmediate</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:d987a2e2-2370-4933-9b4f-c8bd3c2e8f72">
+                        <SHORT-NAME>BswCalledEntity_10</SHORT-NAME>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                          <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/FLS_DRIVERSTATE_DATA_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_BlankCheck</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:1af3ba32-5ae2-43b6-aebc-430a1c2f2440">
+                        <SHORT-NAME>BswCalledEntity_11</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Suspend</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:c8de28c4-f98b-4b80-8d92-2a7b618276ee">
+                        <SHORT-NAME>BswCalledEntity_12</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_Resume</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                      <BSW-CALLED-ENTITY UUID="ECUS:4a4bc1d1-a0f4-468d-b107-bc78ccfab9d4">
+                        <SHORT-NAME>BswCalledEntity_13</SHORT-NAME>
+                        <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Fls/Fls_GetVersionInfo</IMPLEMENTED-ENTRY-REF>
+                      </BSW-CALLED-ENTITY>
+                    </ENTITYS>
+                  <EVENTS>
+                   <BSW-TIMING-EVENT UUID="07dec734-8905-4a25-9b1d-06ebe0ae6efb">
+                     <SHORT-NAME>Evt_Fls_MainFunction</SHORT-NAME>
+                     <LONG-NAME>
+                       <L-4 L="FOR-ALL">Evt_Fls_MainFunction</L-4>
+                     </LONG-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/Renesas/EcucDefs_Fls/Fls/BswInternalBehavior_0/Fls_MainFunction</STARTS-ON-EVENT-REF>
+                     <PERIOD>0.01</PERIOD>
+                   </BSW-TIMING-EVENT>
+                  </EVENTS>
+                  </BSW-INTERNAL-BEHAVIOR>
+                </INTERNAL-BEHAVIORS>
+              </BSW-MODULE-DESCRIPTION>
+              <BSW-MODULE-ENTRY UUID="ECUS:c3a61532-4daf-4f80-bcb5-2af931659383">
+                <SHORT-NAME>Fls_MainFunction</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>SCHEDULED</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x6</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:53394175-e3e3-491b-ac3a-78c057c9ee21">
+                <SHORT-NAME>Fls_Init</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x0</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:f8d2dd9c-da08-47cb-bc08-1ecd7de854e2">
+                <SHORT-NAME>Fls_Erase</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x1</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:5299325d-6e63-4dd0-90f3-5e496e2c44ab">
+                <SHORT-NAME>Fls_Write</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x2</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:0f4879c5-d2d7-43b7-b917-5dcbecda14e9">
+                <SHORT-NAME>Fls_Cancel</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x3</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:de41b3d4-d2a5-40b0-808c-2e1d7605949b">
+                <SHORT-NAME>Fls_GetStatus</SHORT-NAME>
+                <IS-REENTRANT>true</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x4</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:ce6ce730-9dd2-4a26-b9eb-967a17e905ff">
+                <SHORT-NAME>Fls_GetJobResult</SHORT-NAME>
+                <IS-REENTRANT>true</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x5</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:e009340d-0393-4373-bcf8-d390493b1710">
+                <SHORT-NAME>Fls_Read</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x7</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:53bf0b73-4e2f-4bdf-abdd-4b3e7617587b">
+                <SHORT-NAME>Fls_Compare</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x8</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:d368a740-da88-4c88-9567-d8995044326e">
+                <SHORT-NAME>Fls_SetMode</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x9</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:70c88e8f-ad36-46ce-8125-9022b8cc87a2">
+                <SHORT-NAME>Fls_ReadImmediate</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x11</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:00cdb058-cd07-46d7-a6ff-e78136154a93">
+                <SHORT-NAME>Fls_BlankCheck</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x12</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:bbc6aa56-e6e9-44af-8bd1-23c354a630e1">
+                <SHORT-NAME>Fls_Suspend</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x13</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:76891c95-88c3-4c2b-a406-fa1118269093">
+                <SHORT-NAME>Fls_Resume</SHORT-NAME>
+                <IS-REENTRANT>false</IS-REENTRANT>
+                <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x14</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+              <BSW-MODULE-ENTRY UUID="ECUS:8814ccc2-7091-49a6-863c-0d30a4dc6683">
+                <SHORT-NAME>Fls_GetVersionInfo</SHORT-NAME>
+                <IS-REENTRANT>true</IS-REENTRANT>
+                <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                <CALL-TYPE>REGULAR</CALL-TYPE>
+                <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+                <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+                <SERVICE-ID>0x10</SERVICE-ID>
+              </BSW-MODULE-ENTRY>
+           </ELEMENTS>
+         </AR-PACKAGE>
+        </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

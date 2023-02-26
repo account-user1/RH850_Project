@@ -1,0 +1,787 @@
+Placer 1.6
+State
+CommonTasks_Search = "                                                        \
+    cli (\"SearchOptions\");                                                  \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+CommonTasks_SetDebugging = "                                                  \
+    optionname = \"DebugLevel\";                                              \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+CommonTasks_SetDirs = "                                                       \
+    cli (\"ShowDialog dialog:\\\"SetDirsDialog\\\"\");                        \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+CommonTasks_SetOptimizations = "                                              \
+    optionname = \"OptimizationStrategy\";                                    \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+CommonTasks_SetProfiling = "                                                  \
+    cli (\"ShowDialog dialog:\\\"SetProfilingDialog\\\"\");                   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+CommonTasks_SetRTEC = "                                                       \
+    optionname = \"RuntimeErrorChecks\";                                      \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+EditOption = "                                                                \
+                                                                              \
+    EditOption_result =                                                       \
+        clitext (\"EditOptionByID optionID:\" | text(optionid) |              \
+                 \" allowGoto:\" | text(allowgoto));                          \
+                                                                              \
+    EditOption_lf = index (EditOption_result, \"changed:\");                  \
+    EditOption_ln = strlen (EditOption_result);                               \
+    trimtext = substr (EditOption_result, EditOption_lf+8,                    \
+                       EditOption_ln - EditOption_lf - 8);                    \
+                                                                              \
+/* trim the front of the changed number */                                    \
+    TrimString ();                                                            \
+                                                                              \
+/* strip off the back of the number */                                        \
+    EditOption_lf = index (trimtext, \" \");                                  \
+    optionchanged = number (substr (trimtext, 0, EditOption_lf));             \
+                                                                              \
+/* now let's get the \"didgoto\" part */                                      \
+    EditOption_lf = index (EditOption_result, \"didgoto:\");                  \
+    EditOption_rt = rindex (EditOption_result, \" \");                        \
+    trimtext = substr (EditOption_result, EditOption_lf+8,                    \
+                       EditOption_rt - EditOption_lf - 8);                    \
+    TrimString ();                                                            \
+    usergoto = number (trimtext);                                             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+EditOptionByName = "                                                          \
+    GetOptionID ();                                                           \
+    EditOption ();                                                            \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+FillPulldownWithOptionChoices = "                                             \
+    FPDWOC_result =                                                           \
+        clitext (\"GetOptionChoices optionID:\" | text(optionid));            \
+                                                                              \
+/* rebuild the response string so that it looks like what */                  \
+/* PopulatePulldown is going to want.  Add in the \"default\" choice */       \
+/* since we want that to always be available */                               \
+                                                                              \
+    FPDWOC_lf = index (FPDWOC_result, \"data: (\");                           \
+    FPDWOC_rt = strlen (FPDWOC_result);                                       \
+    FPDWOC_datastr = \"\\\"<default>\\\" \" | substr (FPDWOC_result, FPDWOC_lf+7, \
+                                                FPDWOC_rt-FPDWOC_lf-7);       \
+                                                                              \
+    FPDWOC_lf = index (FPDWOC_result, \"count: \");                           \
+    FPDWOC_countstr = substr (FPDWOC_result, FPDWOC_lf+7,                     \
+                              FPDWOC_rt - FPDWOC_lf - 7);                     \
+    FPDWOC_rt = index (FPDWOC_countstr, \" \");                               \
+    trimtext = substr (FPDWOC_countstr, 0, FPDWOC_rt);                        \
+    TrimString ();                                                            \
+    FPDWOC_count = number (trimtext) + 1;                                     \
+                                                                              \
+    FPDWOC_result = substr (FPDWOC_result, 0, FPDWOC_lf) | \"count: \" |      \
+        text(FPDWOC_count) | \" data: (\" | FPDWOC_datastr;                   \
+                                                                              \
+    FPDWOC_lf = index (FPDWOC_result, \"- {\");                               \
+    FPDWOC_rt = strlen (FPDWOC_result);                                       \
+    FPDWOC_choices = substr (FPDWOC_result, FPDWOC_lf+3,                      \
+                             FPDWOC_rt-FPDWOC_lf-3);                          \
+    cli (\"PopulatePulldown { pdname:\\\"\" | pulldownname | \"\\\" \" |      \
+         FPDWOC_choices);                                                     \
+                                                                              \
+                                                                              \
+/* Now decide what is supposed to be selected. */                             \
+    GetOptionText ();                                                         \
+    if (thisvalue == \"\") {                                                  \
+        thisvalue = \"<default>\";                                            \
+    }                                                                         \
+                                                                              \
+    cli (\"SetPulldown { pdname:\\\"\" | pulldownname |                       \
+         \"\\\" choice: \\\"\" | thisvalue | \"\\\"\");                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetAllOptionText = "                                                          \
+                                                                              \
+    mergedvalue =                                                             \
+        clitext (\"GetAllOptionText optionID:\" | text(optionid));            \
+                                                                              \
+    GetAllOptionText_lf = index (mergedvalue, \"\\\"\");                      \
+    GetAllOptionText_rt = rindex (mergedvalue, \"\\\"\");                     \
+    mergedvalue = substr (mergedvalue, GetAllOptionText_lf+1,                 \
+                          GetAllOptionText_rt - GetAllOptionText_lf - 1);     \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetAllOptionTextByName = "                                                    \
+    GetOptionID ();                                                           \
+    GetAllOptionText ();                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetEnumListItem = "                                                           \
+                                                                              \
+/* Requests the value for an enum list */                                     \
+    result = clitext (\"IsEnumListOptionSet optionID:\" | text(optionid) |    \
+                      \" choice:\\\"\" | choice | \"\\\"\");                  \
+                                                                              \
+    if (strlen (antonym) > 0) {                                               \
+        aresult = clitext (\"IsEnumListOptionSet optionID:\" | text(optionid) | \
+                           \" choice:\\\"\" | antonym | \"\\\"\");            \
+    } else {                                                                  \
+        aresult = \"- { isset: 0 isinherited: 0 } \";                         \
+    }                                                                         \
+                                                                              \
+/* is it set? */                                                              \
+    setval = 0;                                                               \
+    message = result;                                                         \
+    numbername = \"isset\";                                                   \
+    GetNumber ();                                                             \
+    if (value > 0) {                                                          \
+        setval = 1;                                                           \
+    }                                                                         \
+                                                                              \
+/* is it inherited? */                                                        \
+    ival = 0;                                                                 \
+    message = result;                                                         \
+    numbername = \"isinherited\";                                             \
+    GetNumber ();                                                             \
+    if (value > 0) {                                                          \
+        ival = 1;                                                             \
+    }                                                                         \
+                                                                              \
+/* What about the antonym? */                                                 \
+    message = aresult;                                                        \
+    numbername = \"isset\";                                                   \
+    GetNumber ();                                                             \
+    if (value > 0) {                                                          \
+        setval = -1;                                                          \
+    }                                                                         \
+                                                                              \
+    message = aresult;                                                        \
+    numbername = \"isinherited\";                                             \
+    GetNumber ();                                                             \
+    if (value > 0) {                                                          \
+        ival = -1;                                                            \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetInheritedOptionText = "                                                    \
+                                                                              \
+    mergedvalue =                                                             \
+        clitext (\"GetInheritedOptionText optionID:\" | text(optionid));      \
+                                                                              \
+    GetInheritedOptionText_lf = index (mergedvalue, \"\\\"\");                \
+    GetInheritedOptionText_rt = rindex (mergedvalue, \"\\\"\");               \
+    mergedvalue =                                                             \
+        substr (mergedvalue, GetInheritedOptionText_lf+1,                     \
+                GetInheritedOptionText_rt - GetInheritedOptionText_lf - 1);   \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetNumber = "                                                                 \
+    GetNumber_lf = index (message, numbername | \": \");                      \
+    GetNumber_rt = strlen (message);                                          \
+    GetNumber_ln = strlen (numbername);                                       \
+    GetNumber_tx = substr (message, GetNumber_lf + GetNumber_ln + 2,          \
+                           GetNumber_rt - GetNumber_lf - GetNumber_ln - 2);   \
+    GetNumber_rt = index (GetNumber_tx, \" \");                               \
+    trimtext = substr (GetNumber_tx, 0, GetNumber_rt);                        \
+    TrimString ();                                                            \
+    value = number (trimtext);                                                \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetOptionID = "                                                               \
+                                                                              \
+    GetOptionID_result =                                                      \
+        clitext (\"GetOptionID option:\\\"\" | optionname | \"\\\"\");        \
+                                                                              \
+    GetOptionID_lf = index (GetOptionID_result, \"id:\");                     \
+    GetOptionID_rt = rindex (GetOptionID_result, \" \");                      \
+                                                                              \
+    trimtext = substr (GetOptionID_result, GetOptionID_lf+3,                  \
+                       GetOptionID_rt - GetOptionID_lf - 3);                  \
+    TrimString ();                                                            \
+    optionid = number (trimtext);                                             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+GetOptionText = "                                                             \
+                                                                              \
+    thisvalue =                                                               \
+        clitext (\"GetOptionText optionID:\" | text(optionid));               \
+                                                                              \
+    GetOptionText_lf = index (thisvalue, \"\\\"\");                           \
+    GetOptionText_rt = rindex (thisvalue, \"\\\"\");                          \
+    thisvalue = substr (thisvalue, GetOptionText_lf+1,                        \
+                        GetOptionText_rt - GetOptionText_lf - 1);             \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_EditDefines = "                                                 \
+                                                                              \
+    optionname = \"Defines\";                                                 \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetDirsDialog_Populate ();                                            \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_EditIncludeDirs = "                                             \
+                                                                              \
+    optionname = \"IncludeDirectories\";                                      \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetDirsDialog_Populate ();                                            \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_EditLibDirs = "                                                 \
+                                                                              \
+    optionname = \"LibDirs\";                                                 \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetDirsDialog_Populate ();                                            \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_EditLibraries = "                                               \
+                                                                              \
+    optionname = \"Libraries\";                                               \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetDirsDialog_Populate ();                                            \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_EditSourceDirs = "                                              \
+                                                                              \
+    optionname = \"SpecialSourceDir\";                                        \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetDirsDialog_Populate ();                                            \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_Populate = "                                                    \
+/* Fill in the options */                                                     \
+    optionname = \"SpecialSourceDir\";                                        \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfSourceDirs.dim = 0;                                                    \
+    $tfSourceDirs     = mergedvalue;                                          \
+    $tfSourceDirs.dim = 1;                                                    \
+                                                                              \
+    optionname = \"LibDirs\";                                                 \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfLibDirs.dim = 0;                                                       \
+    $tfLibDirs     = mergedvalue;                                             \
+    $tfLibDirs.dim = 1;                                                       \
+                                                                              \
+    optionname = \"IncludeDirectories\";                                      \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfIncludeDirs.dim = 0;                                                   \
+    $tfIncludeDirs     = mergedvalue;                                         \
+    $tfIncludeDirs.dim = 1;                                                   \
+                                                                              \
+    optionname = \"Libraries\";                                               \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfLibraries.dim = 0;                                                     \
+    $tfLibraries     = mergedvalue;                                           \
+    $tfLibraries.dim = 1;                                                     \
+                                                                              \
+    optionname = \"Defines\";                                                 \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfDefines.dim = 0;                                                       \
+    $tfDefines     = mergedvalue;                                             \
+    $tfDefines.dim = 1;                                                       \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_handle_btnOK = "                                                \
+    dismiss (0);                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetDirsDialog_onSetup = "                                                     \
+    SetDirsDialog_Populate ();                                                \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetProfilingDialog_EditCoverage = "                                           \
+                                                                              \
+    optionname = \"CoverageAnalysis\";                                        \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetProfilingDialog_Populate ();                                       \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetProfilingDialog_EditProfilingLevel = "                                     \
+                                                                              \
+    optionname = \"ProfileLevel\";                                            \
+    allowgoto = 1;                                                            \
+    EditOptionByName ();                                                      \
+    if (optionchanged) {                                                      \
+        SetProfilingDialog_Populate ();                                       \
+    }                                                                         \
+    if (usergoto) {                                                           \
+        dismiss (0);                                                          \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetProfilingDialog_Populate = "                                               \
+/* Fill in the options */                                                     \
+    optionname = \"ProfileLevel\";                                            \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfProfilingLevel.dim = 0;                                                \
+    $tfProfilingLevel     = mergedvalue;                                      \
+    $tfProfilingLevel.dim = 1;                                                \
+                                                                              \
+    optionname = \"CoverageAnalysis\";                                        \
+    GetAllOptionTextByName ();                                                \
+    if (strlen (mergedvalue) == 0) {                                          \
+        mergedvalue = \"<not set>\";                                          \
+    }                                                                         \
+    $tfCoverage.dim = 0;                                                      \
+    $tfCoverage     = mergedvalue;                                            \
+    $tfCoverage.dim = 1;                                                      \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetProfilingDialog_handle_btnOK = "                                           \
+    dismiss (0);                                                              \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+SetProfilingDialog_onSetup = "                                                \
+    SetProfilingDialog_Populate ();                                           \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+TrimString = "                                                                \
+                                                                              \
+    while (strlen (trimtext) > 0 &&                                           \
+           substr (trimtext, 0, 1) == \" \") {                                \
+        trimtext = substr (trimtext, 1, strlen (trimtext) - 1);               \
+    }                                                                         \
+                                                                              \
+    while (strlen (trimtext) > 0 &&                                           \
+           substr (trimtext, strlen(trimtext), 1) == \" \") {                 \
+        trimtext = substr (trimtext, 0, strlen (trimtext) - 1);               \
+    }                                                                         \
+                                                                              \
+                                                                              \
+                                                                              \
+"
+Items=BldOptionsWindow
+ ColWind(,,,720,487,NULL,"BldOptionsWindow","","",0,0,1,"MULTIPIC") 0xffffffff =BldOptionsWindow > -1
+ TabControl(0,0,0,1,1,NULL,NULL,NULL,NULL,NULL,(5,"Basic Options","All Options","Modified Options","Deactivated","Multiple Selections"),0,0,())0xffffffff =tab >-1
+ MScrollList(1.0,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0x1 =mslCommonOptions >-1
+ ColumnHeader(1.0,0,0,1,18,NULL,NULL,NULL,0,(2,("Name",77)("Value",68)),("mslCommonOptions"))0x1 =chCommonOptions >-1
+ MScrollList(1.2,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0xffffffff =mslOptions >-1
+ ColumnHeader(1.2,0,0,1,18,NULL,NULL,NULL,0,(2,("Name",150)("Value",400)),("mslOptions"))0xffffffff =chOptions >-1
+ ButtonSet(0,0,0,23,22,NULL,NULL,NULL,    (1,"edit"),    (1,NULL),    -1,5,7,0,0,61,0,    (1,NULL),    (1,"edit"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsCommands >-1
+ MScrollList(1.1,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,1),NULL,NULL,(0),0)0xffffffff =mslCategories >-1
+ MScrollList(1.3,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0xffffffff =mslOffOptions >-1
+ ColumnHeader(1.3,0,0,1,18,NULL,NULL,NULL,0,(2,("Name",50)("Value",50)),("mslOffOptions"))0xffffffff =chOffOptions >-1
+ Splitter(0,0,0,1,7,NULL,NULL,NULL)0xffffffff =vsplitter >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeparator2 >-1
+ TextView(0,0,0,1,1,NULL,NULL,NULL)0xffffffff =tvFinalOptions >-1
+ WScrollBar(0,0,0,1,1,NULL,NULL,NULL,1,)0xffffffff =vsbTV >-1
+ WScrollBar(0,0,0,1,1,NULL,NULL,NULL,0,)0xffffffff =hsbTV >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeperator >-1
+ Status(0,0,0,319,NULL,"",PNone)0xffffffff =status >-1
+ Line(0,1,0,-2,1,NULL,PNone)0x0 =lnTopVMax >-1
+ Line(0,1,0,-2,120,NULL,PNone)0x0 =lnBotVMax >-1
+ Line(0,1,387,-2,-1154,NULL,PNone)0x0 =vsplitter_spare >-1
+ Line(0,1,389,-2,1,NULL,PNone)0x0 =vsplitter_ispare >-1
+ Line(0,664,0,-1328,1,NULL,PNone)0x0 =lnStatusVMax >-1
+ Splitter(1.1,0,0,7,1,NULL,NULL,NULL)0xffffffff =osplitter >-1
+ Line(1.1,0,32,235,-32,NULL,PNone)0x0 =lnAllLeftHMax >-1
+ Line(1.1,0,33,1,-33,NULL,PNone)0x0 =lnAllRightHMax >-1
+ Line(1.1,93,-10,15,10,NULL,PNone)0x0 =osplitter_spare >-1
+ Line(1.1,0,-151,1,151,NULL,PNone)0x0 =osplitter_ispare >-1
+ MScrollList(1.1,0,0,1,1,NULL,NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0x1 =mslOptionsInCategory >-1
+ ColumnHeader(1.1,0,0,1,18,NULL,NULL,NULL,0,(2,("Name",70)("Value",68)),("mslOptionsInCategory"))0x1 =chOptionsInCategory >-1
+ Rectangle(1.0,0,0,1,1,"",2,NULL,PNone)0x0 =rctCommonOptions >-1
+ Button(0,0,0,1,1,NULL,NULL,NULL,"Command Line  Documentation",0,0,0,0,"")0x0 =btFakeTabButtons >-1
+ Text(1.0,0,0,NULL,"Build Options:",PNone)0xffffffff =txtBuildOptions1 >-1
+ Text(1.1,0,0,NULL,"Option Categories:",PNone)0xffffffff =txtCategories >-1
+ Text(1.1,0,0,NULL,"Build Options in Category:",PNone)0x1 =txtBuildOptions2 >-1
+ Text(1.2,0,0,NULL,"Build Options with values:",PNone)0xffffffff =txtBuildOptions3 >-1
+ Text(1.3,0,0,NULL,"Disabled Build Options:",PNone)0xffffffff =txtBuildOptions4 >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeparator3 >-1
+ ButtonSet(0,0,0,1,19,NULL,NULL,NULL,    (1,"  Done  "),    (1,"dismiss(0)"),    -1,1,1,0,0,0,0,    (1,NULL),    (0),    (1,NULL),    (1,NULL),0,0)0xffffffff =doneButton >-1
+ OmniView(0,0,0,1,1,NULL,NULL,NULL)0xffffffff =ovFinalOptions >-1
+MinSizes
+ 0,(6,30),(),47,0,0,10,0,1,1,Vertical
+ 0,(30,37),(),40,0,0,0,0,1,1,Horizontal
+Sizes
+ 23,(1),(22,24),-13,0,0,0,0,1,1,Horizontal
+ 38,(12),(),0,0,0,0,0,1,1,Horizontal
+ 38,(12),(),0,0,0,0,0,1,1,Vertical
+ 4,(5),(),0,0,0,0,0,1,1,Horizontal
+ 36,(0),(),0,0,0,0,0,1,1,Horizontal
+ 30,(),(),20,30,0,0,0,1,1,Horizontal
+ 30,(),(),4,0,0,1,0,1,1,Vertical
+ 29,(1),(),-18,0,0,-2,0,1,1,Vertical
+ 29,(1),(),-16,0,0,0,0,1,1,Horizontal
+ 22,(7),(),0,0,0,0,0,1,1,Vertical
+ 27,(1),(33,28),-17,0,0,-2,0,1,1,Vertical
+ 28,(24),(),0,0,0,0,0,1,1,Horizontal
+ 27,(28),(),0,0,0,0,0,1,1,Horizontal
+ 26,(1),(23,22),-13,0,0,0,0,1,1,Horizontal
+ 8,(1),(35,9),-17,0,0,-2,0,1,1,Vertical
+ 9,(1),(),-8,0,0,0,0,1,1,Horizontal
+ 8,(9),(),0,0,0,0,0,1,1,Horizontal
+ 3,(1),(),-8,0,0,0,0,1,1,Horizontal
+ 2,(1),(3,31),-17,0,0,-2,0,1,1,Vertical
+ 2,(3),(),0,0,0,0,0,1,1,Horizontal
+ 7,(1),(32),-17,0,0,-2,0,1,1,Vertical
+ 7,(23),(),0,0,0,0,0,1,1,Horizontal
+ 1,(0),(),-8,0,0,0,0,1,1,Horizontal
+ 1,(17),(6,36),-8,0,0,0,0,1,1,Vertical
+ 11,(0),(),0,0,0,0,0,1,1,Horizontal
+ 21,(30),(),0,0,0,0,0,1,1,((16),(),0,0,0,0,0,1,1,((37),(),2,0,0,0,0,1,1,))Vertical
+ 20,(0),(17),-8,0,0,0,0,1,1,Vertical
+ 4,(1),(34,5),-17,0,0,-2,0,1,1,Vertical
+ 17,(0),(18),-8,0,0,0,0,1,1,Vertical
+ 5,(1),(),-8,0,0,0,0,1,1,Horizontal
+ 12,(18),(21,14,15,11),-8,0,0,0,0,1,1,Vertical
+ 10,(0),(),0,0,0,0,0,1,1,Horizontal
+ 10,(6),(),3,0,0,0,0,1,1,Vertical
+ 12,(0),(13),-8,0,0,0,0,1,1,Horizontal
+ 13,(12),(),0,0,0,0,0,1,1,Vertical
+ 14,(12),(),0,0,0,0,0,1,1,Horizontal
+ 16,(30),(),0,0,0,0,0,1,1,Vertical
+ 16,(0),(37,30),-22,0,0,0,0,1,1,Horizontal
+ 15,(0),(30),-8,0,0,0,0,1,1,Horizontal
+Positions
+ (38),12,0,0,0,0,0,Top,Top,Top
+ (38),12,0,0,0,0,0,Left,Left,Left
+ (37),16,0,0,0,0,0,Top,Top,Top
+ (37),0,-5,0,0,0,0,Right,Right,Right
+ (36),0,10,0,0,0,0,Top,Top,Bottom
+ (36),0,0,0,0,0,0,Left,Left,Left
+ (35),1,4,0,0,0,0,Left,Left,Left
+ (34),1,4,0,0,0,0,Left,Left,Left
+ (33),24,0,0,0,0,0,Left,Left,Left
+ (32),1,4,0,0,0,0,Left,Left,Left
+ (35),1,5,0,0,2,0,Top,Top,Top
+ (32),1,5,0,0,2,0,Top,Top,Top
+ (34),1,5,0,0,2,0,Top,Top,Top
+ (33),1,5,0,0,2,0,Top,Top,Top
+ (31),1,4,0,0,0,0,Left,Left,Left
+ (31),1,5,0,0,2,0,Top,Top,Top
+ (30),12,0,0,0,0,0,Left,Left,Left
+ (30),15,1,0,0,0,0,Top,Top,Bottom
+ (29),1,8,0,0,0,0,Left,Left,Left
+ (29),1,10,0,0,2,0,Top,Top,Top
+ (22),7,0,0,0,0,0,Top,Top,Top
+ (28),24,0,0,0,0,0,Left,Left,Left
+ (28),33,4,0,0,0,0,Top,Top,Bottom
+ (27),28,0,0,0,0,0,Top,Top,Bottom
+ (27),28,0,0,0,0,0,Left,Left,Left
+ (22),23,0,0,0,0,0,Left,Left,Right
+ (24),22,0,0,0,0,0,Left,Left,Right
+ (23),1,4,0,0,0,0,Left,Left,Left
+ (9),1,4,0,0,0,0,Left,Left,Left
+ (9),35,4,0,0,0,0,Top,Top,Bottom
+ (8),9,0,0,0,0,0,Top,Top,Bottom
+ (8),9,0,0,0,0,0,Left,Left,Left
+ (3),31,4,0,0,0,0,Top,Top,Bottom
+ (3),1,4,0,0,0,0,Left,Left,Left
+ (2),3,0,0,0,0,0,Top,Top,Bottom
+ (2),3,0,0,0,0,0,Left,Left,Left
+ (7),32,4,0,0,0,0,Top,Top,Bottom
+ (7),1,4,0,0,0,0,Left,Left,Left
+ (1),0,4,0,0,0,0,Left,Left,Left
+ (1),17,0,0,0,0,0,Top,Top,Top
+ (11),0,0,0,0,0,0,Left,Left,Left
+ (11),18,0,0,0,0,0,Top,Top,Top
+ (16,21),18,0,0,0,0,0,TBCenter,Bottom,Bottom
+ (18),10,0,0,0,0,0,Top,Top,Bottom
+ (17),0,4,0,0,0,0,Top,Top,Top
+ (10),6,0,0,0,0,0,Top,Top,Top
+ (10),0,0,0,0,0,0,Left,Left,Left
+ (13),12,0,0,0,0,0,Top,Top,Top
+ (13),12,0,0,0,0,0,Left,Left,Right
+ (14),12,0,0,0,0,0,Top,Top,Bottom
+ (14),12,0,0,0,0,0,Left,Left,Left
+ (12),11,5,0,0,0,0,Top,Top,Bottom
+ (12),0,4,0,0,0,0,Left,Left,Left
+ (6),17,-3,0,0,0,0,Bottom,Bottom,Bottom
+ (6),4,0,0,0,0,0,Left,Left,Left
+ (16),30,4,0,0,0,0,Left,Left,Right
+ (15),14,2,0,0,0,0,Top,Top,Bottom
+ (15),0,-4,0,0,0,0,Right,Right,Right
+ (5),34,4,0,0,0,0,Top,Top,Bottom
+ (5),1,4,0,0,0,0,Left,Left,Left
+ (4),5,0,0,0,0,0,Top,Top,Bottom
+ (4),5,0,0,0,0,0,Left,Left,Left
+
+Items=CommonTasks
+ ColWind(,,,653,202,NULL,"CommonTasks","","",0,0,1,"MULTIPIC") 0xffffffff =CommonTasks > -1
+ Text(0,0,0,NULL,"What do you want to do?",PNone)0xffffffff =txtWhat >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeparator >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctDirs >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Set Directories and Paths"),    (1,"CommonTasks_SetDirs"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"makedir"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsDirs >-1
+ Text(0,0,0,NULL,"Set Paths, Libraries, and Defines...",PNone)0xffffffff =txtDirs >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Set Optimization Options..."),    (1,"CommonTasks_SetOptimizations"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"clamp"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsOptimizations >-1
+ Text(0,0,0,NULL,"Set Optimization Options...",PNone)0xffffffff =txtOptimizations >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctOptimizations >-1
+ Text(0,0,0,NULL,"Set Debugging Level Options...",PNone)0xffffffff =txtDebugging >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Set Debugging Build Options"),    (1,"CommonTasks_SetDebugging"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"debugger"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsDebugging >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctDebugging >-1
+ Text(0,0,0,NULL,"Set Profiling Options...",PNone)0xffffffff =txtProfiling >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Set Profiling Options"),    (1,"CommonTasks_SetProfiling"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"clock"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsProfiling >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctProfiling >-1
+ Text(0,0,0,NULL,"Search for Build Options...",PNone)0xffffffff =txtSearch >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctSearch >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Search Build Options"),    (1,"CommonTasks_Search"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"search2"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsSearch >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Set Runtime Checking Options"),    (1,"CommonTasks_SetRTEC"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"red_check"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsRTEC >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rctRTEC >-1
+ Text(0,0,0,NULL,"Set Runtime Checking Options...",PNone)0xffffffff =txtRTEC >-1
+ Line(0,0,0,1,0,NULL,PNone)0x0 =lnHalf >-1
+ Line(0,0,0,1,0,NULL,PNone)0x0 =lnLeftHMax >-1
+ Line(0,0,0,0,1,NULL,PNone)0x0 =lnVMax >-1
+MinSizes
+Sizes
+ 8,(6),(),5,0,0,0,0,1,1,Vertical
+ 8,(6),(),4,0,0,0,0,1,1,Horizontal
+ 23,(3,11,16),(),40,0,0,0,0,1,1,Vertical
+ 22,(5),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((15),(),0,0,0,0,0,1,1,))Horizontal
+ 21,(22,16),(),60,0,0,0,0,1,1,Horizontal
+ 11,(10),(),5,0,0,0,0,1,1,Vertical
+ 11,(10),(),4,0,0,0,0,1,1,Horizontal
+ 3,(4),(),5,0,0,0,0,1,1,Vertical
+ 3,(4),(),4,0,0,0,0,1,1,Horizontal
+ 14,(13),(),4,0,0,0,0,1,1,Horizontal
+ 14,(13),(),5,0,0,0,0,1,1,Vertical
+ 19,(18),(),5,0,0,0,0,1,1,Vertical
+ 19,(18),(),4,0,0,0,0,1,1,Horizontal
+ 2,(0),(),-16,0,0,0,0,1,1,Horizontal
+ 16,(17),(),5,0,0,0,0,1,1,Vertical
+ 16,(17),(),4,0,0,0,0,1,1,Horizontal
+Positions
+ (20,19),14,20,0,0,0,0,TBCenter,Top,Bottom
+ (6),8,3,0,0,0,0,Top,Top,Top
+ (6),8,3,0,0,0,0,Left,Left,Left
+ (23),2,20,0,0,0,0,Top,Top,Bottom
+ (16,11,3),22,-10,0,0,0,0,Right,Right,Left
+ (7,20,12),19,10,0,0,0,0,Left,Left,Right
+ (8,19,14),21,0,0,0,0,0,Left,Left,Right
+ (21),0,0,0,0,0,0,Left,Left,Left
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (1),0,10,0,0,0,0,Left,Left,Left
+ (10),11,3,0,0,0,0,Left,Left,Left
+ (10),11,3,0,0,0,0,Top,Top,Top
+ (11,9),3,20,0,0,0,0,TBCenter,Top,Bottom
+ (3,5),23,0,0,0,0,0,TBCenter,Top,Top
+ (4),3,3,0,0,0,0,Top,Top,Top
+ (4),3,3,0,0,0,0,Left,Left,Left
+ (14,12),8,20,0,0,0,0,TBCenter,Top,Bottom
+ (13),14,3,0,0,0,0,Top,Top,Top
+ (13),14,3,0,0,0,0,Left,Left,Left
+ (8,7),23,0,0,0,0,0,TBCenter,Top,Top
+ (18),19,3,0,0,0,0,Top,Top,Top
+ (18),19,3,0,0,0,0,Left,Left,Left
+ (2),1,4,0,0,0,0,Top,Top,Bottom
+ (2),1,-2,0,0,0,0,Left,Left,Left
+ (22,9,15,5),21,-30,0,0,0,0,Left,Right,Right
+ (16,15),11,20,0,0,0,0,TBCenter,Top,Bottom
+ (17),16,3,0,0,0,0,Top,Top,Top
+ (17),16,3,0,0,0,0,Left,Left,Left
+
+Items=CommonTasks_MinSize
+ ColWind(,,,653,182,NULL,"CommonTasks_MinSize","","",0,0,0,"(default)") 0xffffffff =CommonTasks_MinSize > -1
+ Rectangle(0,10,6,1,1,NULL,2,NULL,PNone)0x0 =rctBorder >-1
+ Line(0,9,62,1,0,NULL,PNone)0x0 =lnIconWidths >-1
+ Text(0,64,24,NULL,"Set Paths, Libraries, and Defines...",PNone)0x0 =txt1 >-1
+ Text(0,331,27,NULL,"Set Profiling Options...",PNone)0x0 =txt2 >-1
+ Line(0,140,69,0,1,NULL,PNone)0x0 =lnRectHeight >-1
+MinSizes
+Sizes
+ 0,(3,5,2),(),70,0,0,0,0,1,1,Vertical
+ 0,(2,3,4),(),90,0,0,0,0,1,1,Horizontal
+ 5,(1),(),0,0,0,0,0,3,1,Vertical
+ 2,(1),(),0,0,0,0,0,2,1,Horizontal
+Positions
+
+Items=SetDirsDialog
+ Dialogue(,,,439,234,NULL,"SetDirsDialog","SetDirsDialog_onSetup() ;","",0,0,0,"MULTIPIC") 0xffffffff =SetDirsDialog > -1
+ Icon(0,0,0,20,20,NULL,"makedir")0xffffffff =icDirs >-1
+ Text(0,0,0,NULL,"Set Paths, Libraries, and Defines",PNone)0xffffffff =txtSetDirs >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeparator >-1
+ Text(0,0,0,NULL,"Source Dirs:",PNone)0xffffffff =txtSourceDirs >-1
+ Text(0,0,0,NULL,"Library Dirs:",PNone)0xffffffff =txtLibDirs >-1
+ Text(0,0,0,NULL,"Include Dirs:",PNone)0xffffffff =txtIncludeDirs >-1
+ Text(0,0,0,NULL,"Libraries:",PNone)0xffffffff =txtLibraries >-1
+ Text(0,0,0,NULL,"Defines:",PNone)0xffffffff =txtDefines >-1
+ Line(0,0,-8,1,0,NULL,PNone)0x0 =lnListLabelHMax >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tfSourceDirs >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfLibDirs >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfIncludeDirs >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfLibraries >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfDefines >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetDirsDialog_EditSourceDirs"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditSourceDirs >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetDirsDialog_EditLibDirs"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditLibDirs >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetDirsDialog_EditIncludeDirs"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditIncludeDirs >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetDirsDialog_EditLibraries"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditLibraries >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetDirsDialog_EditDefines"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditDefines >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"Done",0,1,0,0,"SetDirsDialog_handle_btnOK() ;")0xffffffff =btnOK >-1
+MinSizes
+Sizes
+ 0,(3,20,1,19,18,17,16,15),(),54,0,0,0,0,1,1,Vertical
+ 13,(12),(),0,0,0,0,0,1,1,Horizontal
+ 14,(13),(),0,0,0,0,0,1,1,Horizontal
+ 12,(11),(),0,0,0,0,0,1,1,Horizontal
+ 11,(10),(),0,0,0,0,0,1,1,Horizontal
+ 10,(0),(9,15),8,0,0,0,0,1,1,Horizontal
+ 3,(0),(),-4,0,0,0,0,1,1,Horizontal
+ 20,(),(),0,0,6,0,0,1,1,Horizontal
+ 9,(4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,))))Horizontal
+Positions
+ (19,18,17,16,15),0,-2,0,0,0,0,Right,Right,Right
+ (19,14,8),18,4,0,0,0,0,TBCenter,Top,Bottom
+ (18,13,7),17,4,0,0,0,0,TBCenter,Top,Bottom
+ (17,12,6),16,4,0,0,0,0,TBCenter,Top,Bottom
+ (5,11,16),15,4,0,0,0,0,TBCenter,Top,Bottom
+ (14,13,12,11,10),15,8,0,0,0,0,Right,Right,Left
+ (15,10,4),3,10,0,0,0,0,TBCenter,Top,Top
+ (8,7,6,5,4,9),0,4,0,0,0,0,Right,Left,Left
+ (3),1,4,0,0,0,0,Top,Top,Bottom
+ (3),0,2,0,0,0,0,Left,Left,Left
+ (2),1,4,0,0,0,0,Left,Left,Right
+ (2,1),0,4,0,0,0,0,TBCenter,Top,Top
+ (1),0,4,0,0,0,0,Left,Left,Left
+ (20),0,-4,0,0,0,0,Bottom,Bottom,Bottom
+ (20),0,-4,0,0,0,0,Right,Right,Right
+
+Items=SetProfilingDialog
+ Dialogue(,,,439,132,NULL,"SetProfilingDialog","SetProfilingDialog_onSetup() ;","",0,0,0,"MULTIPIC") 0xffffffff =SetProfilingDialog > -1
+ Icon(0,0,0,20,20,NULL,"clock")0xffffffff =icProfiling >-1
+ Text(0,0,0,NULL,"Set Profiling Options",PNone)0xffffffff =txtProfiling >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =lnSeparator >-1
+ Text(0,0,0,NULL,"Profiling Level:",PNone)0xffffffff =txtProfilingLevel >-1
+ Text(0,0,0,NULL,"Coverage Analysis:",PNone)0xffffffff =txtCoverage >-1
+ Line(0,0,-8,1,0,NULL,PNone)0x0 =lnListLabelHMax >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tfProfilingLevel >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tfCoverage >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetProfilingDialog_EditProfilingLevel"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditProfilingLevel >-1
+ ButtonSet(0,0,0,29,28,NULL,NULL,NULL,    (1,"Edit..."),    (1,"SetProfilingDialog_EditCoverage"),    -1,1,1,0,0,61,0,    (1,NULL),    (1,"xpand1d"),    (1,NULL),    (1,NULL),0,0)0xffffffff =bsEditCoverage >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"Done",0,1,0,0,"SetProfilingDialog_handle_btnOK() ;")0xffffffff =btnOK >-1
+MinSizes
+Sizes
+ 0,(9,10,1,11,3),(),36,0,0,0,0,1,1,Vertical
+ 8,(7),(),0,0,0,0,0,1,1,Horizontal
+ 7,(0),(6,9),8,0,0,0,0,1,1,Horizontal
+ 3,(0),(),-4,0,0,0,0,1,1,Horizontal
+ 11,(),(),0,0,6,0,0,1,1,Horizontal
+ 6,(4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,((),(),0,0,0,0,0,1,1,))))Horizontal
+Positions
+ (10,9),0,-2,0,0,0,0,Right,Right,Right
+ (5,8,10),9,4,0,0,0,0,TBCenter,Top,Bottom
+ (8,7),9,8,0,0,0,0,Right,Right,Left
+ (9,7,4),3,10,0,0,0,0,TBCenter,Top,Top
+ (5,4,6),0,4,0,0,0,0,Right,Left,Left
+ (3),1,4,0,0,0,0,Top,Top,Bottom
+ (3),0,2,0,0,0,0,Left,Left,Left
+ (2),1,4,0,0,0,0,Left,Left,Right
+ (2,1),0,4,0,0,0,0,TBCenter,Top,Top
+ (1),0,4,0,0,0,0,Left,Left,Left
+ (11),0,-4,0,0,0,0,Bottom,Bottom,Bottom
+ (11),0,-4,0,0,0,0,Right,Right,Right
+

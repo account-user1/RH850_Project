@@ -1,0 +1,694 @@
+# JEDEC external flash chips
+#
+# Options:
+#  mid       Required 8-bit manufacturer code
+#  did       Required 16/32-bit primary device code
+#  name      Required
+#  did2,did3 Optional 16/32-bit device codes, usually found on Spansion chips
+#  fdi       Optional flash device interface
+#  sr_after_buffer_program  Optional flag if buffer program ends in status mode
+#  erase_low_voltage_sr_mask  Optional status bit mask for SCS chips
+# Command set (required if CFI table is not present):
+#  type      Required amd or scs
+#  buf_size  Required programming buffer size in bytes
+# AMD command set options:
+#  unlock_bypass Optional chip supports unlock bypass programming mode
+#  addr1,addr2   Required address indexes for commands
+# Geometry (required if CFI table is not present):
+#  Must be a list of erase block regions
+# Erase block region:
+#  count     Number of blocks in region
+#  size      Size of each block in the region
+jedec_chips {
+  { mid=0x01; did=0x004f; name="AMD Am29LV040B"; fdi="8"; erase_timeout_s=15
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=8; size=0x10000 }
+    }
+  }
+  { mid=0x01; did=0x2255; name="AMD Am29DL322DT"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x2256; name="AMD Am29DL322DB"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x2250; name="AMD Am29DL323DT"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x2253; name="AMD Am29DL323DB"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x225c; name="AMD Am29DL324DT"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x225f; name="AMD Am29DL324DB"; fdi="8,16";
+    erase_timeout_s=15 }
+  { mid=0x01; did=0x00a4; name="AMD Am29F040B"; fdi="8"; erase_timeout_s=8
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=8; size=0x10000 }
+    }
+  }
+  { mid=0x01; did=0xad; name="AMD Am29F016D"; fdi="8" }
+  { mid=0x01; did=0x00a3; name="AMD Am29LV033C" }
+  { mid=0x01; did=0x0093; name="AMD Am29LV065D"; fdi="8" }
+  { mid=0x01; did=0x2245; name="Fujitsu MBM29PL160BD" }
+  { mid=0x01; did=0x22c4; name="AMD Am29LV160DT"; fdi="8,16" }
+  { mid=0x01; did=0x2249; name="AMD Am29LV160DB"; fdi="8,16" }
+  { mid=0x01; did=0x2250; name="AMD Am29DL323GT" }
+  { mid=0x01; did=0x2253; name="AMD Am29DL323GB" }
+  { mid=0x01; did=0x2255; name="AMD Am29DL322GT" }
+  { mid=0x01; did=0x2256; name="AMD Am29DL322GB" }
+  { mid=0x01; did=0x225c; name="AMD Am29DL324GT" }
+  { mid=0x01; did=0x225f; name="AMD Am29DL324GB" }
+  { mid=0x04; did=0x227e; name="Fujitsu MBM29DL640E"; fdi="8,16" }
+  { mid=0x01; did=0x22d7; name="AMD Am29LV640D"; fdi="16" }
+  { mid=0x01; did=0x22d2; name="AMD Am29F160DT"; fdi="8,16" }
+  { mid=0x01; did=0x22d8; name="AMD Am29F160DB"; fdi="8,16" }
+  { mid=0x01; did=0x007e; did2=0x0012; did3=0x0000;
+      name="AMD Am29LV128M"; fdi="8,16"; logic_voltage="3.0" }
+  { mid=0x01; did=0x2222227e; did2=0x22222203; did3=0x22222200
+      name="AMD Am29PL320DB"; fdi="16,32" }
+  { mid=0x01; did=0x2222227e; did2=0x22222203; did3=0x22222201
+      name="AMD Am29PL320DT"; fdi="16,32" }
+  { mid=0x01; did=0x0000007e; did2=0x00000008; did3=0x00000000;
+      name="AMD Am29BDD160GT"; fdi="16,32" }
+  { mid=0x01; did=0x0000007e; did2=0x00000008; did3=0x00000001;
+      name="AMD Am29BDD160GB"; fdi="16,32" }
+  { mid=0x01; did=0x007e; did2=0x0008; did3=0x0001;
+      name="Spansion S29GL256M"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2212; did3=0x2200;
+      name="Spansion S29GL128M"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2213; did3=0x2200;
+      name="Spansion S29GL064M.R0"; fdi="8" }
+  { mid=0x01; did=0x227e; did2=0x2213; did3=0x2201;
+      name="Spansion S29GL064M.R5-7"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x220c; did3=0x2201;
+      name="Spansion S29GL064M"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2210; did3=0x2200;
+      name="Spansion S29GL064M.R4"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2210; did3=0x2201;
+      name="Spansion S29GL064M.R3"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x221c; did3=0x2200;
+      name="Spansion S29GL032M.R0"; fdi="8" }
+  { mid=0x01; did=0x227e; did2=0x221d; did3=0x2200;
+      name="Spansion S29GL032M"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x221a; did3=0x2200;
+      name="Spansion S29GL032M.R4/6"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x221a; did3=0x2201;
+      name="Spansion S29GL032M.R3/5"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2220; did3=0x2200
+      name="Spansion S29PL127J"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x2202; did3=0x2201
+      name="Spansion S29PL064J"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x220a; did3=0x2201
+      name="Spansion S29PL032J"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x2221; did3=0x2200
+      name="Spansion S29PL129J"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x2223; did3=0x2201; process=0x04
+      name="Spansion S29GL512N" }
+  { mid=0x01; did=0x227e; did2=0x2223; did3=0x2201; process=0x07
+      name="Spansion S29GL512S" }
+  { mid=0x01; did=0x227e; did2=0x2222; did3=0x2201; process=0x04
+      name="Spansion S29GL256N" }
+  { mid=0x01; did=0x227e; did2=0x2221; did3=0x2201; process=0x04
+      name="Spansion S29GL128N" }
+  # Byte-doubled GL-S
+  { mid=0x01; did=0x007e; did2=0x2223; did3=0x2201; process=0x07
+      name="Spansion S29GL512S"
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa;
+      buf_size=0 # Buffer programming impossible
+    }
+  }
+  { mid=0x01; did=0x22da; name="Spansion S29AL008JT"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2228; did3=0x2201; process=0x07
+      name="Spansion S29GL01GS"
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa;
+      buf_size=256
+    }
+  }
+  { mid=0x01; did=0x227e; did2=0x2228; did3=0x2201; process=0x05
+      name="Spansion S29GL01GP" }
+  { mid=0x01; did=0x225b; name="Spansion S29AL008JB"; fdi="8,16" }
+  { mid=0x01; did=0x227e; did2=0x2231; did3=0x2200
+      name="Spansion S29WS128N"; fdi="16" }
+  { mid=0x01; did=0x227e; did2=0x2230; did3=0x2200
+      name="Spansion S29WS256N"; fdi="16" }
+  # Renesas
+  { mid=0x1c; did=0x0038; name="Renesas M5M29KT331AVP"; fdi="8,16"
+      erase_timeout_s=1
+      command_set {
+        type="m5m"; buf_size=0
+      }
+      geometry {
+        { count=63; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x1c; did=0x0039; name="Renesas M5M29KB331AVP"; fdi="8,16"
+      erase_timeout_s=1
+      command_set {
+        type="m5m"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=63; size=0x10000 }
+      }
+  }
+  # Atmel
+  { mid=0x1f; did=0x90c3; name="Atmel AT49BV160D"; fdi="16"
+    geometry {
+      { count=8; size="8 KB" }
+      { count=31; size="64 KB" }
+    }
+  }
+  { mid=0x1f; did=0x90c2; name="Atmel AT49BV160DT"; fdi="16"
+    geometry {
+      { count=31; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00c0; name="Atmel AT49BV162A"; fdi="8,16"
+    geometry {
+      { count=8; size="8 KB" }
+      { count=31; size="64 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00c2; name="Atmel AT49BV162AT"; fdi="8,16"
+    geometry {
+      { count=31; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00c0; name="Atmel AT49BV16x4"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x5555; unlock2=0x2aaa; buf_size=0
+      unlock_at_base=true
+    }
+    geometry {
+      { count=8; size="8 KB" }
+      { count=2; size="32 KB" }
+      { count=30; size="64 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00c2; name="Atmel AT49BV16x4T"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x5555; unlock2=0x2aaa; buf_size=0
+      unlock_at_base=true
+    }
+    geometry {
+      { count=30; size="64 KB" }
+      { count=2; size="32 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0x1f; did=0x01c8; name="Atmel AT49BV322D"; fdi="8,16"
+    geometry {
+      { count=8; size="8 KB" }
+      { count=63; size="64 KB" }
+    }
+  }
+  { mid=0x1f; did=0x01c9; name="Atmel AT49BV322DT"; fdi="8,16"
+    geometry {
+      { count=63; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00d6; name="Atmel AT49BV6416"; fdi="16"
+    geometry {
+      { count=8; size="8 KB" }
+      { count=127; size="64 KB" }
+    }
+  }
+  { mid=0x1f; did=0x00d6; name="Atmel AT49BV6416T"; fdi="16"
+    geometry {
+      { count=127; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  # SST
+  { mid=0xbf; did=0x005b; name="SST49LF080A"; fdi="8"; erase_timeout_s=5
+    has_sw_block_protection=false
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x5555; unlock2=0x2aaa; buf_size=0
+      unlock_at_base=true
+    }
+    geometry {
+      # This is the sector geometry (not block geometry)
+      # but the sector erase command for this chip is what we already
+      # know how to work with.
+      { count=256; size="4 KB" }
+    }
+  }
+  { mid=0xbf; did=0x004c; name="SST49LF160C"; fdi="8"
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x5555; unlock2=0x2aaa; buf_size=0
+      unlock_at_base=true
+    }
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="8 KB" }
+      { count=1; size="32 KB" }
+      { count=32; size="64 KB" }
+    }
+  }
+  # STMicro
+  { mid=0x20; did=0x22c4; name="STMicroelectronics M29W160DT"; fdi="8,16" }
+  { mid=0x20; did=0x2249; name="STMicroelectronics M29W160DB"; fdi="8,16" }
+  { mid=0x20; did=0x2256; name="STMicroelectronics M29W320ET"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+    geometry {
+      { count=63; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0x20; did=0x2257; name="STMicroelectronics M29W320EB"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+    geometry {
+      { count=8; size="8 KB" }
+      { count=63; size="64 KB" }
+    }
+  }
+  { mid=0x20; did=0x22ca; name="STMicroelectronics M29W320DT"; fdi="8,16"
+  }
+  { mid=0x20; did=0x22cb; name="STMicroelectronics M29W320DB"; fdi="8,16" }
+  { mid=0x20; did=0x22de; name="STMicroelectronics M29W640DT"; fdi="8,16" }
+  { mid=0x20; did=0x22df; name="STMicroelectronics M29W640DB"; fdi="8,16" }
+  { mid=0x20; did=0x227e; did2=0x2212; did3=0x228a
+    name="STMicroelectronics M29W128FH"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+  }
+  { mid=0x20; did=0x227e; did2=0x2212; did3=0x228b
+    name="STMicroelectronics M29W128FL"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+  }
+  { mid=0x20; did=0x227e; did2=0x2221; did3=0x2201
+    name="STMicroelectronics M29W128GH"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+  }
+  { mid=0x20; did=0x227e; did2=0x2221; did3=0x2200
+    name="STMicroelectronics M29W128GL"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+  }
+  { mid=0x20; did=0x227e; did2=0x2222; did3=0x2201
+    name="Numonyx M29W256G"; fdi="8,16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+  }
+  #{ mid=0x20; did=0x8848 name="STMicroelectronics M28W640FCT"; fdi="16" }
+  #{ mid=0x20; did=0x8849 name="STMicroelectronics M28W640FCB"; fdi="16" }
+  { mid=0x20; did=0xffe9; name="STMicroelectronics PSD4256G6V"; fdi="16"
+    command_set {
+      type="amd"; unlock_bypass=true; unlock1=0x555; unlock2=0x2aa; buf_size=0
+      unlock_at_base=false
+    }
+    geometry {
+      { count=16; size="64 KB" }
+    }
+  }
+  # Intel
+  { mid=0x89; did=0x00d4; name="Intel 28F004B3T"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=7; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x00d5; name="Intel 28F004B3B"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=7; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x00d2; name="Intel 28F008B3T"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=15; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x00d3; name="Intel 28F008B3B"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=15; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x00d0; name="Intel 28F016B3T"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=31; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x00d1; name="Intel 28F016B3B"; fdi="8"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=31; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8894; name="Intel 28F400B3T"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=7; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x8895; name="Intel 28F400B3B"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=7; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8892; name="Intel 28F800B3T"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=15; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x8893; name="Intel 28F800B3B"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=15; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8890; name="Intel 28F160B3T"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=31; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x8891; name="Intel 28F160B3B"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=31; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8896; name="Intel 28F320B3T"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=63; size=0x10000 }
+        { count=8; size=0x2000 }
+      }
+  }
+  { mid=0x89; did=0x8897; name="Intel 28F320B3B"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=63; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8898; name="Intel 28F640B3T"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=127; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x8899; name="Intel 28F640B3B"; fdi="16"
+      has_sw_block_protection=false
+      command_set {
+        type="scs"; buf_size=0
+      }
+      geometry {
+        { count=8; size=0x2000 }
+        { count=127; size=0x10000 }
+      }
+  }
+  { mid=0x89; did=0x88c0; name="Intel 28F800C3T"; fdi="16" }
+  { mid=0x89; did=0x88c1; name="Intel 28F800C3B"; fdi="16" }
+  { mid=0x89; did=0x88c2; name="Intel 28F160C3T"; fdi="16" }
+  { mid=0x89; did=0x88c3; name="Intel 28F160C3B"; fdi="16" }
+  { mid=0x89; did=0x88c4; name="Intel 28F320C3T"; fdi="16" }
+  { mid=0x89; did=0x88c5; name="Intel 28F320C3B"; fdi="16" }
+  { mid=0x89; did=0x88cc; name="Intel 28F640C3T"; fdi="16" }
+  { mid=0x89; did=0x88cd; name="Intel 28F640C3B"; fdi="16" }
+  { mid=0x89; did=0x0014; name="Intel 28F320J5"; fdi="8,16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x0015; name="Intel 28F640J5"; fdi="8,16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x0016; name="Intel 28F320J3"; fdi="8,16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x0017; name="Intel 28F640J3"; fdi="8,16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x0018; name="Intel 28F128J3"; fdi="8,16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x001d; name="Intel 28F256J3"; fdi="8,16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x8801; name="Intel 28F640K3"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8802; name="Intel 28F128K3"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8803; name="Intel 28F256K3"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8805; name="Intel 28F640K18"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8806; name="Intel 28F128K18"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8807; name="Intel 28F256K18"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x880b; name="Intel 28F640L18T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x880c; name="Intel 28F128L18T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x880d; name="Intel 28F256L18T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x880e; name="Intel 28F640L18B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x880f; name="Intel 28F128L18B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8810; name="Intel 28F256L18B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8811; name="Intel 28F640L30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8812; name="Intel 28F128L30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8813; name="Intel 28F256L30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8814; name="Intel 28F640L30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8815; name="Intel 28F128L30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8816; name="Intel 28F256L30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8817; name="Intel 28F640P30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8818; name="Intel 28F128P30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8919; name="Intel 28F256P30T"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x881a; name="Intel 28F640P30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x881b; name="Intel 28F128P30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x891c; name="Intel 28F256P30B"; fdi="16";
+      sr_after_buffer_program=true }
+  { mid=0x89; did=0x8852; name="Intel 28F320W30T"; fdi="16" }
+  { mid=0x89; did=0x8853; name="Intel 28F320W30B"; fdi="16" }
+  { mid=0x89; did=0x8854; name="Intel 28F640W30T"; fdi="16" }
+  { mid=0x89; did=0x8855; name="Intel 28F640W30B"; fdi="16" }
+  { mid=0x89; did=0x8856; name="Intel 28F128W30T"; fdi="16" }
+  { mid=0x89; did=0x8857; name="Intel 28F128W30B"; fdi="16" }
+  { mid=0x89; did=0x8862; name="Intel 28F320W18T"; fdi="16" }
+  { mid=0x89; did=0x8863; name="Intel 28F320W18B"; fdi="16" }
+  { mid=0x89; did=0x8864; name="Intel 28F640W18T"; fdi="16" }
+  { mid=0x89; did=0x8865; name="Intel 28F640W18B"; fdi="16" }
+  { mid=0x89; did=0x8866; name="Intel 28F128W18T"; fdi="16" }
+  { mid=0x89; did=0x8867; name="Intel 28F128W18B"; fdi="16" }
+  { mid=0x89; did=0x881d; name="Intel 28F640P33T"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x8820; name="Intel 28F640P33B"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x881e; name="Intel 28F128P33T"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x8821; name="Intel 28F128P33B"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x891f; name="Intel 28F256P33T"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x8922; name="Intel 28F256P33B"; fdi="16";
+      sr_after_buffer_program=true; erase_low_voltage_sr_mask=0x28 }
+  # Micron M29EW
+  { mid=0x89; did=0x227e; did2=0x2222; did3=0x2201;
+    name="Micron 28F256M29EW"; fdi="8,16" }
+  { mid=0x89; did=0x227e; did2=0x2223; did3=0x2201;
+    name="Micron 28F512M29EW"; fdi="8,16" }
+  { mid=0x89; did=0x227e; did2=0x2228; did3=0x2201;
+    name="Micron 28F00AM29EW"; fdi="8,16" }
+  { mid=0x89; did=0x227e; did2=0x2248; did3=0x2201;
+    name="Micron 28F00BM29EW"; fdi="8,16" }
+  { mid=0xb0; did=0x00d0; name="Sharp LH28F160S3"; fdi="8,16";
+      logic_voltage="3.0"; erase_low_voltage_sr_mask=0x28 }
+  { mid=0xb0; did=0x00d0; name="Sharp LH28F160S5"; fdi="8,16";
+      logic_voltage="5.0"; erase_low_voltage_sr_mask=0x28 }
+  { mid=0xb0; did=0x00d4; name="Sharp LH28F320S3"; fdi="8,16";
+      logic_voltage="3.0"; erase_low_voltage_sr_mask=0x28 }
+  { mid=0xb0; did=0x00d4; name="Sharp LH28F320S5"; fdi="8,16";
+      logic_voltage="5.0"; erase_low_voltage_sr_mask=0x28 }
+  { mid=0x89; did=0x00aa; name="Sharp LH28F016SCT"; fdi="8";
+      command_set { type="scs"; buf_size=0 }
+      geometry {
+        { count=32; size="64 KB" }
+      }
+  }
+  { mid=0xc2; did=0x22da; name="Macronix MX26LV800T"; fdi="8,16";
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=15; size="64 KB" }
+      { count=1; size="32 KB" }
+      { count=2; size="8 KB" }
+      { count=1; size="16 KB" }
+    }
+  }
+  { mid=0xc2; did=0x225b; name="Macronix MX26LV800B"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="8 KB" }
+      { count=1; size="32 KB" }
+      { count=15; size="64 KB" }
+    }
+  }
+  { mid=0xc2; did=0x22ea; name="Macronix MX29SL800CT"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=15; size="64 KB" }
+      { count=1; size="32 KB" }
+      { count=2; size="8 KB" }
+      { count=1; size="16 KB" }
+    }
+  }
+  { mid=0xc2; did=0x226b; name="Macronix MX29SL800CB"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=1; size="16 KB" }
+      { count=2; size="8 KB" }
+      { count=1; size="32 KB" }
+      { count=15; size="64 KB" }
+    }
+  }
+  { mid=0xc2; did=0x22a7; name="Macronix MX29LV320DT"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=63; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0xc2; did=0x22a8; name="Macronix MX29LV320DB"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=8; size="8 KB" }
+      { count=63; size="64 KB" }
+    }
+  }
+  { mid=0xc2; did=0x22c9; name="Macronix MX29LV640ET"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=127; size="64 KB" }
+      { count=8; size="8 KB" }
+    }
+  }
+  { mid=0xc2; did=0x22cb; name="Macronix MX29LV640EB"; fdi="8,16"
+    erase_timeout_s=15;
+    command_set {
+      type="amd"; unlock_bypass=false; unlock1=0x555; unlock2=0x2aa; buf_size=0
+    }
+    geometry {
+      { count=8; size="8 KB" }
+      { count=127; size="64 KB" }
+    }
+  }
+}

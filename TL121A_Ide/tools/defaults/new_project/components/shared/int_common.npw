@@ -1,0 +1,181 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component_template.IntProjectT {
+	description = "set project info"
+
+	use_template = "startup2"
+
+	dlg_info {
+	    add {
+		dlg_filelist = "${__SHARED_PY_DIR__}/common.plc"
+		dlg_namelist = "ProjectWizardDirNameWithLang"
+	    }
+	}
+
+	attributes {
+	    tf_ProjectName {
+		sanity_check_action = "python ${__SHARED_PY_DIR__}/int_utils.py intproj_t_sanity_check" 
+
+		dlg_info {
+		    add {
+		    	dlg_filelist =  "${__SHARED_PY_DIR__}/common.plc" 
+		    	dlg_namelist =  "ProjectWizardDirNameWithLang"
+		    }
+		}
+	    }
+	    filename {
+		type = "string"
+		
+		refreshNode = true
+		build_file_setting = "filename $build_file_basename"
+	    }
+	    tf_diskname {
+		type = "string"
+		host_filename = true
+		build_file_setting = "filename $build_file_diskname"
+	    }
+
+	    tx_lang {
+		type = "string"
+		show_gui_item = true
+	    }
+	    pd_lang {
+		type = "choice"
+		display_name="Language:"
+		show_gui_item = true
+		
+		choices {
+%if defined(__PREFERS_ADA__)
+		    ada {
+			display_name = "Ada"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_ADA ADA" }
+				}
+			    }
+			}
+		    }
+%endif
+
+		    c {
+		    	default = true
+			display_name = "C"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_C C" }
+				}
+			    }
+			}
+		    }
+
+		    cxx {
+			display_name="C++"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_CXX C++" }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	actions {
+	    add {
+		standard {
+		    1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		    1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+		}
+	    }
+	    readin {
+		standard {
+		    1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		    1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+		}
+	    }
+	    copy_link {
+		standard {
+		    10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    11 += { "undefineLocal MY_GPJ_COOKIE"}
+		    11 += { "undefineLocal MY_ITEM_COOKIE"}
+		}
+	    }
+	    paste_link {
+		standard {
+		    10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+		}
+	    }	    
+	    paste_local {
+		standard {
+		    1 += { "defineLocal PROJ_DIR $(tf_ProjectDir)" }
+		    1 += { "defineLocal BASE_PROJ_NAME $LAST_BASE_PROJ_NAME" }
+		    1 += { "defineLocal tf_name $(tf_ProjectName)" }
+		    2 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+		    2 += { "localCalculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }			
+		    3 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+		} 
+	    }
+	    paste_parent_local {
+		standard {
+		    #1 += { "defineLocal PROJ_DIR $(tf_ProjectDir)" }
+		    #1 += { "defineLocal BASE_PROJ_NAME $LAST_BASE_PROJ_NAME" }
+		    #1 += { "defineLocal tf_name $(tf_ProjectName)" }
+		    98 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+		    98 += { "localCalculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }			
+		    99 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+		} 
+	    }
+	}
+}
+
+
+component_template.IntLibraryT {
+    top_file_type = "Library"    
+    bg_color="#ffedce"
+#    fg_color="#000000"
+    icon_name = "library"
+    filters =  { "Libraries" }
+
+    actions {
+	add {
+	    standard {
+		10 += { "python ${__DIR__}/int_utils.py intlib_add_std" }
+	    }
+	}
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/int_utils.py intlib_delete_std" }
+	    }
+	}	
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/int_utils.py intlib_delete_std" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_NAME $(display_name)" }
+	    }
+	}
+	paste_link {
+	    standard {
+		10 += { "python ${__DIR__}/int_utils.py intlib_paste_local_std" }
+	    }
+	}	
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_NAME $(display_name)" }
+	    }
+	}
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/int_utils.py intlib_paste_local_std" }
+	    }
+	}
+    }	
+}
+
+%endif

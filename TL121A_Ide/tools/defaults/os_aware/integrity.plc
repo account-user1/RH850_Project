@@ -1,0 +1,135 @@
+Placer 1.6
+State
+"GetMessageToConnection_TypeSel" = "if ($MsgType_PD == \"Data Immediate\") {\
+    $MsgLength_TF.dim = 0;\
+    $MsgLength_TF = \"\";\
+    $MsgValue_Txt = \"Address:\";\
+} else if ($MsgType_PD == \"String Data\") {\
+    $MsgLength_TF = \"N/A\";\
+    $MsgLength_TF.dim = 1;\
+    $MsgValue_Txt = \"String:\";\
+} else {\
+    $MsgLength_TF = \"N/A\";\
+    $MsgLength_TF.dim = 1;\
+    $MsgValue_Txt = \"Object:\";\
+}"
+
+"GetMessageToConnection_Setup" = "\
+    $MsgType_PD = \"String Data\"; \
+    GetMessageToConnection_TypeSel();"
+
+"GetMessageToConnection_BtOk" = "if (strlen($MsgValue_TF) <= 0) {\
+    alert(\"You must specify a value for the message.\");\
+} else {\
+    if ($MsgType_PD == \"Data Immediate\" && strlen($MsgLength_TF) <= 0) {\
+        alert(\"You must specify a length for the data.\");\
+    } else {\
+        OsaMessageInjectionCmd = \"osainject\" | \
+\011    \" -ObjType \\\"Connection\\\"\" | \" -ObjId \" | %1 | \
+\011    \" \\\"-MsgType \\\\\\\"\" | escapify($MsgType_PD) | \"\\\\\\\"\" |\
+\011    \" -MsgValue \\\\\\\"\" | escapify($MsgValue_TF) | \"\\\\\\\"\";\
+\011if ($MsgType_PD == \"Data Immediate\") {\
+\011    OsaMessageInjectionCmd = OsaMessageInjectionCmd |\
+\011        \" -MsgLength \\\\\\\"\" | escapify($MsgLength_TF) | \"\\\\\\\"\";\
+        }\
+\011OsaMessageInjectionCmd = OsaMessageInjectionCmd |\
+\011    \"\\\"\";\
+        if (cli(OsaMessageInjectionCmd) == 1) {\
+            dismiss(0);\
+        }\
+    }\
+}"
+
+"GetMessageToConnection_BtCancel" = "dismiss(0);"
+
+"GetMessageToConnection_Cleanup" = ""
+
+"TakeSemaphore_Setup" = "\
+    OsaMessageInjectionCmd = \"_osaFillGuiWithObj -Widget $ObjId_PD\" |\
+    \" -ObjType OSA_TASK -ObjFld TaskID Name \\\"Address Space\\\"\";\
+    cli(OsaMessageInjectionCmd);"
+
+"TakeSemaphore_Cleanup" = ""
+
+"TakeSemaphore_BtOk" = "if (strlen($ObjId_PD) <= 0) {\
+    alert(\"You must specify an object ID.\");\
+} else {\
+    OsaMessageInjectionCmd = \"osainject \" | \
+\011\" -ObjType \\\"Semaphore\\\"\" | \" -ObjId \" | %1 | \
+\011\" \\\"-MsgType \\\"Take\\\"\" |\
+\011\" -TaskId \\\"\" | $ObjId_PD | \"\\\"\\\"\";\
+    if (cli(OsaMessageInjectionCmd) == 1) {\
+        dismiss(0);\
+    }\
+}"
+
+"TakeSemaphore_BtCancel" = "dismiss(0);"
+
+Items=GetMessageToConnection
+ Dialogue(,,,446,203,NULL,"Inject Message to Connection Object","GetMessageToConnection_Setup","GetMessageToConnection_Cleanup",0,0,0,"MULTIPIC") 0xffffffff =GetMessageToConnection > -1
+ Text(0,0,0,NULL,"Message to Be Injected into Connection",PNone)0xffffffff =Title_Txt >-1
+ Text(0,0,0,NULL,"%1",PNone)0xffffffff =ConnectionID_Txt >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =MaxPromptWidth >-1
+ Text(0,77,0,NULL,"Address:",PNone)0xffffffff =MsgAddress_Txt >-1
+ Text(0,59,0,NULL,"Object:",PNone)0xffffffff =MsgObjectID_Txt >-1
+ Text(0,0,0,NULL,"Type:",PNone)0xffffffff =MsgType_Txt >-1
+ PullDown(0,0,0,1,18,NULL,NULL,NULL,NULL,NULL,"String Data",1,(2,NULL,("String Data",NULL,,"GetMessageToConnection_TypeSel",())("Data Immediate",NULL,,"GetMessageToConnection_TypeSel",()),0))0xffffffff =MsgType_PD >-1
+ Text(0,0,0,NULL,"String:",PNone)0xffffffff =MsgValue_Txt >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =MsgValue_TF >-1
+ Text(0,0,0,NULL,"Length:",PNone)0xffffffff =MsgLength_Txt >-1
+ TextField(0,0,0,1,18,NULL,NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =MsgLength_TF >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"OK",0,1,0,0,"GetMessageToConnection_BtOk")0xffffffff =Ok_BT >-1
+ Button(0,0,0,58,20,NULL,NULL,NULL,"Cancel",0,0,0,0,"GetMessageToConnection_BtCancel")0xffffffff =Cancel_BT >-1
+MinSizes
+ 0,(12,11,9,7,2,1),(),60,0,0,0,0,1,1,Vertical
+Sizes
+ 11,(9),(),0,0,0,0,0,1,1,Horizontal
+ 9,(0),(3),-8,0,0,0,0,1,1,Horizontal
+ 7,(0),(3),-30,0,0,0,0,1,1,Horizontal
+ 3,(6),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,))))Horizontal
+ 12,(13),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (5,4,3),0,-100,0,0,0,0,Top,Bottom,Top
+ (10,11),9,5,0,0,0,0,TBCenter,Top,Bottom
+ (2),1,2,0,0,0,0,Top,Top,Bottom
+ (9,11),3,-2,0,0,0,0,Left,Left,Right
+ (7),3,10,0,0,0,0,Left,Left,Right
+ (2,1),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (13),0,-20,0,0,0,0,Left,Right,Right
+ (12),13,-10,0,0,0,0,Right,Right,Left
+ (13,12),0,-20,0,0,0,0,TBCenter,Bottom,Bottom
+ (8,9),7,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,7),2,30,0,0,0,0,TBCenter,Top,Bottom
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (3,10,8,6),0,10,0,0,0,0,Left,Left,Left
+
+Items=TakeSemaphore
+ Dialogue(,,,442,192,NULL,"Take Semaphore","TakeSemaphore_Setup","TakeSemaphore_Cleanup",0,0,0,"MULTIPIC") 0xffffffff =TakeSemaphore > -1
+ Text(0,0,0,NULL,"Host Object to Take Semaphore",PNone)0xffffffff =Title_Txt >-1
+ Text(0,0,0,NULL,"%1",PNone)0xffffffff =SemaphoreID_Txt >-1
+ Line(0,0,183,1,0,NULL,PNone)0xffffffff =MaxPromptWidth >-1
+ Text(0,0,0,NULL,"Host Object Type:",PNone)0xffffffff =ObjType_Txt >-1
+ PullDown(0,0,0,1,18,NULL,NULL,NULL,NULL,NULL,"Task",1,(1,NULL,("Task",NULL,,NULL,()),0))0xffffffff =ObjType_PD >-1
+ Text(0,0,0,NULL,"Host Object ID:",PNone)0xffffffff =ObjId_Txt >-1
+ PullDown(0,0,0,1,18,NULL,NULL,NULL,NULL,NULL,"",0,)0xffffffff =ObjId_PD >-1
+ Button(0,0,0,1,20,NULL,NULL,NULL,"OK",0,1,0,0,"TakeSemaphore_BtOk")0xffffffff =Ok_BT >-1
+ Button(0,0,0,58,20,NULL,NULL,NULL,"Cancel",0,0,0,0,"TakeSemaphore_BtCancel")0xffffffff =Cancel_BT >-1
+MinSizes
+ 0,(8,7,5,2,1),(),50,0,0,0,0,1,1,Vertical
+Sizes
+ 7,(0),(3),-30,0,0,0,0,1,1,Horizontal
+ 5,(0),(3),-30,0,0,0,0,1,1,Horizontal
+ 3,(4),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Horizontal
+ 8,(9),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (2),1,2,0,0,0,0,Top,Top,Bottom
+ (3),0,-100,0,0,0,0,Right,Right,Left
+ (7,5),6,10,0,0,0,0,Left,Left,Right
+ (2,1),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (9),0,-20,0,0,0,0,Left,Right,Right
+ (8),9,-10,0,0,0,0,Right,Right,Left
+ (9,8),0,-20,0,0,0,0,TBCenter,Bottom,Bottom
+ (6,7),5,5,0,0,0,0,TBCenter,Top,Bottom
+ (5,4),2,40,0,0,0,0,TBCenter,Top,Bottom
+ (1),0,10,0,0,0,0,Top,Top,Top
+ (4,6),0,10,0,0,0,0,Right,Left,Left

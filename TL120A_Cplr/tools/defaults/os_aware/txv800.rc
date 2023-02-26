@@ -1,0 +1,18 @@
+obr Thread_Information TX_THREAD_STRUCT;
+obr Queue_Information TX_QUEUE_STRUCT;
+obr Semaphore_Information TX_SEMAPHORE_STRUCT;
+obr Event_Flags_Info TX_EVENT_FLAGS_GROUP_STRUCT;
+obr Block_Pool_Info TX_BLOCK_POOL_STRUCT;
+obr Byte_Pool_Info TX_BYTE_POOL_STRUCT;
+obr App_Timer_Info TX_TIMER_STRUCT;
+obr Mutex_Information TX_MUTEX_STRUCT;
+debugbutton ThreadX i=threadx c="{__dimwhilerunning; if($exists(_tx_mutex_created_ptr)) {obr ThreadXInfo TX_THREAD_STRUCT} else {obr ThreadX3Info TX_THREAD_STRUCT}; view *(struct TX_THREAD_STRUCT *)(&_tx_timer_thread);obr Thread_Information TX_THREAD_STRUCT}" t="ThreadX Information"
+configure leaveTypedef on
+
+if($exists(_tx_thread_system_resume)) {
+  loaddialoguefile os_aware/tx5.plc;
+  loaddialoguefile os_aware/tx5v800.plc;
+} else {
+  loaddialoguefile os_aware/tx.plc;
+  loaddialoguefile os_aware/txv800.plc;
+}

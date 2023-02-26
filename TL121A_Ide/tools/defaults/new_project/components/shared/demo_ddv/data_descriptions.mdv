@@ -1,0 +1,81 @@
+demo_profile {
+    profile_name = "Device_Bus_Profile"
+    
+    data_descriptions {
+	device {
+	    signature = {"Device"}
+	    type = "graph"
+    
+	    node_text = "mprintf(\"%s\nDevice ID: %d\", self.name, self.id)"
+	    children {
+		outputs {
+		    value = "return self.outputs"
+		    is_container = true;
+		}
+	    }
+	    
+	    parents {
+		inputs {
+		    value = "return self.inputs"
+		    is_container = true;
+		}
+	    }
+	}
+	
+	bus {
+	    signature = {"Bus"}
+	    type = "graph"
+    
+	    node_text = "mprintf(\"%s\nBus ID: %d\nInputs: %d\nOutputs: %d\","
+	    node_text+=         "self.name, self.id, self.inputs.size(), self.outputs.size())"
+    
+	    children {
+		outputs {
+		    value = "return self.outputs"
+		    is_container = true;
+		}
+	    }
+    
+	    parents {
+		inputs {
+		    value = "return self.inputs"
+		    is_container = true;
+		}
+	    }
+	}
+
+	my_list {
+	    signature = {"DeviceList", "BusList"}
+	    type = "container"
+
+	    size = "return self.size()"
+	    begin_iter = "return &self"
+	    next_iter = "return self.next"
+	    value_from_iter = "return self.data"
+
+	    functions {
+	    	listSize {
+		    name = "size"
+		    body = "eval $size = 0; eval $curr = self;"
+		    body+= "while ($curr != 0) {"
+		    body+= "   eval $size = $size + 1;"
+		    body+= "   eval $curr = $curr->next;"
+		    body+= "};"
+		    body+= "return $size"
+		}
+	    }
+	}
+    }
+}
+
+demo_view {
+    initial_pane = "only_pane"
+    default_root = "deviceA"
+    tab_name = "Device Graph"
+    
+    panes {
+	only_pane {
+	    profile_name = "Device_Bus_Profile"
+	}
+    }
+}

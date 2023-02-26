@@ -1,0 +1,381 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <title>GHS Config Option Descriptions</title>
+   </head>
+   <body>
+      <h2>GHS Config Option Descriptions</h2>
+      <hr>Each option is described in the following table. For more detailed information about these options, refer to the ETM specification from ARM.
+      
+      <div id="cfg.trace.etm.port_mode">
+         <p><strong>Port Mode</strong></p>
+         <p>Selects the ETM clocking mode used on the target system.</p>
+         <p>There are three choices for ETMv1.x and ETMv2.x targets:
+            
+            <ul>
+               <li><strong>Normal</strong> &#8212; Most targets only support this mode.<br></li>
+               <li><strong>Multiplexed</strong> &#8212; Uses half as many pins to output trace information, but twice the clock rate.<br></li>
+               <li><strong>Demultiplexed</strong> &#8212; Uses twice as many pins and half the clock rate. This mode typically requires a special adapter with dual Mictor connectors.<br></li>
+            </ul>
+         </p>
+         <p><strong>Multiplexed</strong> and <strong>Demultiplexed</strong> modes were eliminated with ETMv3.x. However, many ETMv3.x targets support several ETM clock multipliers relative to the processor core clock. All of the ETMv3.x clocking modes are listed below. Note that the ratios are of ETM data rate to core clock speed. The ETM data rate is twice the ETM clock speed because ETMv3.x always outputs data on both clock edges.
+         </p>
+         <p>
+            <ul>
+               <li><strong>2:1</strong><br></li>
+               <li><strong>1:1</strong><br></li>
+               <li><strong>1:2</strong><br></li>
+               <li><strong>1:3</strong><br></li>
+               <li><strong>1:4</strong><br></li>
+               <li><strong>Implementation Defined</strong><br></li>
+               <li><strong>Dynamic</strong><br></li>
+            </ul>
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.port_size">
+         <p><strong>Port Size/CoreSight Port Size</strong></p>
+         <p>Selects the ETM port size. This corresponds to the number of bits that will be drained from the ETMFIFO each cycle. Larger port sizes mean that more data can be generated without causing an overflow. It is generally desirable
+            to use the largest port size supported by the target system. 
+         </p>
+         <p>For CoreSight targets, this option displays as <strong>CoreSight Port Size</strong>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.data_capture">
+         <p><strong>Data Capture</strong></p>
+         <p>Selects the data access information that will be traced. The ETM can either trace data access addresses and values, addresses only, or values only.</p>
+         <p><strong>Note</strong>: To reduce the number of ETMFIFO overflows in your trace data, you can set this option to <strong>Address Only</strong>. However, this setting reduces the effectiveness of TimeMachine by preventing reconstruction of register and memory values.
+            For more information, see the documentation about incomplete trace data.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.data_only_trace">
+         <p><strong>Data Only Trace</strong></p>
+         <p>Enables data only mode for ETMv3.0 and greater. In this mode, the target traces data accesses only and does not output PC information.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.cycle_accurate">
+         <p><strong>Cycle Accurate</strong></p>
+         <p>Enables ETM cycle-accurate mode. For ETMv1.x and ETMv2.x targets, the ETM normally outputs one trace packet every cycle when trace is enabled. Often many of these packets contain no useful information
+            and can be discarded by the trace collection device. When this option is enabled on those targets, no packets will be discarded.
+            For ETMv3.x targets, this option enables cycle-accurate mode in the ETM, which then outputs cycle count data. This allows the trace tools to determine the number of cycles spent executing each
+            instruction, but requires extra space in the trace buffer.
+         </p>
+         <p><strong>Note</strong>: For ETMv1.x and ETMv2.x targets, the ETM continues to output trace packets even when the processor is stopped at a breakpoint. Therefore it is generally not a good
+            idea to enable <strong>Cycle Accurate</strong> mode if you will be hitting breakpoints while collecting trace data from an ETMv1.x or ETMv2.x target.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.break_on_trigger">
+         <p><strong>Break On Trigger</strong></p>
+         <p>Enables halting of the target processor when the trigger event occurs. There is some slip between when the trigger occurs
+            and where the target halts. For more information about configuring a trigger event, see the documentation about configuring trace collection.
+         </p>
+         <p>This option does not support external triggers.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.trace_coprocessor_registers">
+         <p><strong>Trace Coprocessor Registers</strong></p>
+         <p>Enables tracing of values read from and written to coprocessor registers.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.filter_trace_of_coprocessor_registers">
+         <p><strong>Filter Trace of Coprocessor Registers</strong></p>
+         <p>Enables ETM trace filtering of coprocessor register accesses. For more information about trace filtering, see the documentation about configuring trace collection.</p>
+         <p>This option is only available when the <strong>Trace Coprocessor Registers</strong> option is enabled.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.half_rate_clocking">
+         <p><strong>Half Rate Clocking</strong></p>
+         <p>Enables ETM half rate clocking mode. In this mode trace packets are output on both the rising and falling edges of the trace clock. This
+            allows the trace clock to run at half the speed of the core clock.
+         </p>
+         <p><strong>Note</strong>: Some targets do not support half rate clocking and some targets only support half rate clocking. If your target only supports
+            one clocking mode, the <strong>Half Rate Clocking</strong> option is disabled and the appropriate clocking mode is selected automatically.
+         </p>
+         <p><strong>Note</strong>: This option is not available with ETMv3.x targets because trace data is always output on both clock edges with ETMv3.x.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.use_timestamps">
+         <p><strong>Timestamps</strong></p>
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.overflow_threshold">
+         <p><strong>Overflow Threshold</strong></p>
+         <p>Some ETM targets can stall the CPU or suppress data trace to prevent a FIFO overflow when the ETM FIFO is close to full. This option specifies the number of bytes remaining in the FIFO when that action will be done. Setting this option to <code>0</code> disables overflow prevention.
+         </p>
+         <p>When using this option with <strong>Prevent Overflow by Stalling CPU</strong>, setting a value greater than or equal to the size of your FIFO may cause errors when running or single-stepping (because the CPU is constantly stalled). FIFO sizes are implementation defined, but are often around 16 to 32 bytes.
+         </p>
+         <p>For more information, see the <strong>Prevent Overflow by</strong> option.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.prevent_overflow_by">
+         <p><strong>Prevent Overflow by</strong></p>
+         <p>Enables the ETM<code>FIFOFull</code> mechanism. The amount of data output by the ETM varies depending on the code being executed and the trace configuration. Code with a large number of indirect branches and
+            data accesses (if data trace is enabled) may generate so much data that the ETMFIFO overflows. Trace data is lost when this happens. If this option is enabled, the ETM attempts to prevent FIFO overflows by using the selected method:
+         </p>
+         <p>
+            <ul>
+               <li><strong>Stalling CPU</strong> &#8212; Attempts to stall the target processor when the FIFO is close to overflowing. This slows execution of code on the target, but can be very helpful in reducing the number of gaps
+                  in the trace data.<br></li>
+               <li><strong>Suppressing Data Trace</strong> &#8212; Suppresses data trace when the FIFO is close to overflowing. This method is only available with ETMv3.x targets. Suppressing data trace is less effective at preventing the FIFO from overflowing than stalling the CPU, but has no impact on the speed of execution.<br></li>
+            </ul>
+         </p>
+         <p>To configure the overflow threshold, see the <strong>Overflow Threshold</strong> option.
+         </p>
+         <p>For more information, see the documentation about incomplete trace data.</p>
+         <p><strong>Note</strong>: The ETM<code>FIFOFull</code> mechanism is not supported by some targets.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.use_embedded_trace_buffer">
+         <p><strong>Use Embedded Trace Buffer</strong></p>
+         <p>Enables use of the Embedded Trace Buffer (ETB). This option may only be changed if you use a SuperTrace Probe to connect to a target that has an ETB. If you use a Green Hills Probe to connect to a target with an ETB, the ETB is the only method available for collecting trace.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.ASIC_value">
+         <p><strong>ASIC Control</strong></p>
+         <p>Provides a value for the optional ETMASIC Control register. This register is implemented by some ASICs and allows configuration of ASIC-specific features. </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.etm.CoreSight_source_id">
+         <p><strong>CoreSight Source ID</strong></p>
+         <p>The CoreSight trace source ID of the ETM. Each CoreSight trace source on a system must have a unique ID between <code>0x1</code> and <code>0x6f</code>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.ptm.infer_branch_target"><strong>Infer Branch Target</strong><p>Controls the circumstances in which the target emits a branch's target address instead of requiring the decompressor to infer
+            the address. Trace data is more compact when the decompressor infers more branch targets, while the decompressor is more resilient
+            to errors in the collected trace data when fewer branches must be inferred. There are three choices:
+            
+            <ul>
+               <li><code>Never</code> &#8212; The PTM emits the target address for all branches, and the decompressor never needs to infer the target.<br></li>
+               <li><code>Direct Branches</code> &#8212; The PTM does not emit the target address for direct branches; the decompressor must infer them instead.<br></li>
+               <li><code>Direct Branches and Return Addresses</code> &#8212; The PTM does not emit the target address for direct branches or for some indirect branches that return from a function; the decompressor
+                  must infer them instead. Use this option if you are uncertain which option is most appropriate.<br></li>
+            </ul>
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.ptm.trace_core_enable">
+         <p><strong>Trace Enable (core n)</strong></p>
+         <p>Enables or disables trace collection on an individual core in the system. This option determines the cores for which trace
+            data is collected when <strong>Enable Trace</strong> is turned on.
+         </p>
+      </div>
+      <hr>Each option is described in the following table.
+      
+      <div id="cfg.trace.coldfire.cycle_accurate">
+         <p><strong>Cycle Accurate</strong></p>
+         <p>Enables cycle-accurate mode. Often many trace packets contain no useful information and can be discarded by the trace collection
+            device. When this option is enabled, no packets will be discarded. This allows the trace tools to determine the number of
+            cycles spent executing each instruction, but requires extra space in the trace buffer.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.coldfire.data_capture">
+         <p><strong>Data Capture</strong></p>
+         <p>Selects the data access information that will be traced:
+            
+            <ul>
+               <li><strong>No Data Values (PC Trace Only)</strong><br></li>
+               <li><strong>Reads Only</strong><br></li>
+               <li><strong>Writes Only</strong><br></li>
+               <li><strong>Reads and Writes</strong><br></li>
+            </ul>
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.coldfire.integrity_interrupt_address">
+         <p><strong>INTEGRITY Interrupts at Address</strong></p>
+         <p>Specifies the address that the interrupt vectors are copied to. For most ColdFire cores, this option should be set to <code>0x0</code>.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.coldfire.integrity_interrupt_other">
+         <p><strong>INTEGRITY Interrupts at Other Location</strong></p>
+         <p>Enable this option if you are tracing INTEGRITY and the BSP copies the interrupt handlers to a different address than the <code>.vector</code> section is mapped to.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.coldfire.timestamps">
+         <p><strong>Timestamps</strong></p>
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer.
+         </p>
+      </div>
+      <hr>Each option is described in the following table.
+      
+      <div id="cfg.trace.nexus.MDO_data_port_width">
+         <p><strong>MDO Data Port Width</strong></p>
+         <p>Selects the number of pins used to output trace data. Some targets support multiple MDO data port widths. Using a larger port width reduces the chance of a processor stall and/or FIFO overflow. We recommend using the largest port width that your target supports. If you specify an unsupported port width,
+            you may get invalid trace data.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.nexus.trace_clock_multiplier">
+         <p><strong>Trace Clock Multiplier</strong></p>
+         <p>Specifies the divisor for the trace clock. Not all targets support all divisors listed. In general, a faster trace collect
+            (smaller divisor) allows for more data to be collected and results in fewer FIFO overflows. If you specify a divisor that your target does not support, you may get invalid trace data.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.nexus.stall_processor">
+         <p><strong>Stall Processor to Avoid Overflows</strong></p>
+         <p>Enables processor stalling to prevent FIFO overflows. The amount of trace data output by the target varies depending on the code being executed and the trace configuration.
+            Code with a large number of indirect branches and data accesses (if data trace is enabled) may generate so much data that
+            the FIFO overflows. Trace data is lost when this happens. If this option is enabled, the processor stalls when the FIFO starts to fill. This is very effective at preventing FIFO overflows, but does not prevent all overflows. For more information, see the documentation about incomplete trace data.
+         </p>
+         <p><strong>Note</strong>: OS-awareness in TimeMachine requires specific parts of OS execution to be reconstructed. If kernel trace data is lost due
+            to FIFO overflows, MULTI may discard trace data for some tasks. In this case, enabling <strong>Stall Processor to Avoid Overflows</strong> may improve OS-awareness.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.nexus.use_branch_history">
+         <p><strong>Use Branch History Messages</strong></p>
+         <p>Enables branch history messaging. Most Nexus targets are capable of generating 2 different types of Nexus program trace messages. Traditional Nexus program trace messages are generated each time a branch is taken (direct or indirect). Branch history messaging only generates a message when 31 direct branch instructions have been executed (taken or not) or when an indirect branch
+            is taken.
+         </p>
+         <p>Advantages of Branch History Messages:
+            
+            <ul>
+               <li>More compact trace data<br><ul>
+                     <li>Less chance of overflow<br></li>
+                     <li>Better utilization of trace buffer space<br></li>
+                  </ul>
+               </li>
+            </ul>
+         </p>
+         <p>Disadvantages of Branch History Messages:
+            
+            <ul>
+               <li>More likely to have uncorrelated data trace<br></li>
+               <li>More data is lost as a result of an overflow<br><ul>
+                     <li>Less likely that the tools will be able to reconstruct missing instructions<br></li>
+                  </ul>
+               </li>
+               <li>Less precise filtering<br></li>
+               <li>Less accurate timestamps<br></li>
+               <li>Less precise reporting of trigger locations<br></li>
+            </ul>
+         </p>
+         <p><strong>Note</strong>: ARM mode instructions on Nexus ARM targets (MAC71xx) are always traced with branch history messages.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.nexus.use_timestamps">
+         <p><strong>Timestamps</strong></p>
+         <p>This option is only supported with SuperTrace Probe v3.</p>
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer.
+         </p>
+      </div>
+      <hr>Each option is described in the following table.
+      
+      <div id="cfg.trace.e500mc.branch_and_link">
+         <p><strong>Branch and link correlation messages</strong></p>
+         <p>Enables trace messages every time a branch and link occurs. When these messages are enabled, timestamps are more precise,
+            but trace data is less efficient.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.corenet_trace">
+         <p><strong>CoreNet Trace</strong></p>
+         <p>Enables trace output from the CoreNet peripheral. This trace output appears in the trace list, but is not processed in any other way.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.data_path_trace">
+         <p><strong>Data Path Trace</strong></p>
+         <p>Enables trace output from the Data Path peripheral. This trace output appears in the trace list, but is not processed in any
+            other way.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.ddr_trace">
+         <p><strong>DDR Trace</strong></p>
+         <p>Enables trace output from the DDR peripheral. This trace output appears in the trace list, but is not processed in any other way.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.trace_msr_ppm">
+         <p><strong>Enable/Disable program trace with MSR[PMM]</strong></p>
+         <p>When used in conjunction with a mechanism in target software that sets and clears the <code>MSR[PMM]</code> bit, this option aids in determining which sections of code are traced. The <code>MSR[PMM]</code> bit is the performance monitor mark bit, used for Nexus to provide execution context filtering.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.lite_trace">
+         <p><strong>Lite Trace</strong></p>
+         <p>Available for e6500 targets only.</p>
+         <p>When enabled, the processor uses a link register stack optimization to double trace bandwidth efficiency, reducing the risk
+            of processor stalls (if enabled) and FIFO overflows.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.ocean_trace">
+         <p><strong>OCeaN Trace</strong></p>
+         <p>Enables trace output from the OCeaN peripheral. This trace output appears in the trace list, but is not processed in any other way.</p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.stall_processor">
+         <p><strong>Stall Processor to Avoid Overflows</strong></p>
+         <p>Enables processor stalling to prevent FIFO overflows. The amount of trace data output by the target varies depending on the code being executed and the trace configuration.
+            Code with a large number of indirect branches and data accesses (if data trace is enabled) may generate so much data that
+            the FIFO overflows. Trace data is lost when this happens. If this option is enabled, the processor stalls when the FIFO starts to fill. This is very effective at preventing FIFO overflows, but does not prevent all overflows. For more information, see the documentation about incomplete trace data.
+         </p>
+         <p><strong>Note</strong>: OS-awareness in TimeMachine requires specific parts of OS execution to be reconstructed. If kernel trace data is lost due
+            to FIFO overflows, MULTI may discard trace data for some tasks. In this case, enabling <strong>Stall Processor to Avoid Overflows</strong> may improve OS-awareness.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.stall_threshold">
+         <p><strong>Stall threshold</strong></p>
+         <p>When <strong>Stall Processor to Avoid Overflows</strong> is enabled, indicates a fraction of trace message queue capacity at which the processor should stall. Smaller values result
+            in more frequent stalls, but fewer FIFO overflows.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.timestamps">
+         <p><strong>Timestamps</strong></p>
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer. 
+         </p>
+         <p>QorIQ targets buffer Nexus trace data before sending it out over high-speed serial trace (HSST). The buffer creates a variation in the time delta between when the packet is emitted by the core and when it actually sends
+            over HSST. The size of the delta is inversely proportional to the HSST bandwidth, and varies depending on how full the buffer is. At minimum bandwidth (1 Aurora lane at 2.5 Gpbs), the maximum error is approximately 65 us.
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.e500mc.trace_core_n">
+         <p><strong>Trace core <var>n</var></strong></p>
+         <p>Enables or disables trace collection on an individual core in the system. This option determines the cores for which trace
+            data is collected when <strong>Enable Trace</strong> is turned on.
+         </p>
+      </div>
+      <hr>Each option is described in the following table.
+      
+      <div id="cfg.trace.ppc4xx.use_timestamps">
+         <p><strong>Timestamps</strong></p>
+         <p>Enables timestamps. When timestamps are enabled, the trace collection device records a timestamp with each packet. Timestamps
+            are displayed in the Trace List and are used by the MULTI <strong>Profile</strong> window, PathAnalyzer, and EventAnalyzer. 
+         </p>
+      </div>
+      <hr>
+      <div id="cfg.trace.ppc4xx.cycle_accurate">
+         <p><strong>Cycle Accurate</strong></p>
+         <p>Enables IBM cycle-accurate mode. Often many trace packets contain no useful information and can be discarded by the trace
+            collection device. When this option is enabled, no packets will be discarded. This allows the trace tools to determine the
+            number of cycles spent executing each instruction, but requires extra space in the trace buffer.
+         </p>
+      </div>
+      <hr>
+   </body>
+</html>

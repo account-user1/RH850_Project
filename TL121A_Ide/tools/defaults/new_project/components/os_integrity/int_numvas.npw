@@ -1,0 +1,77 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_integrity/int_numvas.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.integrity_num_vas {
+    parent_context_types = { "integrity_monolith", "integrity_dynamic_download" }
+
+    description = "Define the number of Virtual Address Spaces"
+
+    dlg_info {
+	add {
+	    menu_str = "Add INTEGRITY &Virtual AddressSpaces"
+	    cmd_str = "AddNumVAS"
+	    dlg_filelist =  "${__DIR__}/int_numvas.plc" 
+	    dlg_namelist =  "int_numvas"
+	    auto_import = false
+	    dlg_doc_included_childlists = false
+	    documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    doc_anchor_ids = { "multi.mpm.num_vas_dlg" }
+	}   
+    }
+
+    is_parent = false
+    
+    attributes {
+	tx_names_vas {
+	    type = "childlist"
+	    tags = "INTEGRITY_VirtualAddressSpace"
+	    name="Names of Virtual Address Spaces"
+	    unique_names=true		
+	    postDefineLocal = "LAST_AS_NAME"			
+	    copy_define_to_instance = "tf_name"
+	    sanity_check_action = "python ${__DIR__}/int_vas.py names_vas_sanity_check" 
+	}
+	tx_num_vas {
+	    type = "childlist"	    
+	    tags = "INTEGRITY_VirtualAddressSpace"
+	    name="Number of Virtual Address Spaces"		
+	    default="1"			
+	    postDefineLocal = "LAST_AS_NAME"			
+	    basename="$(BASE_PROJ_NAME)"			
+	    base_suffix="_as"
+	    copy_define_to_instance = "tf_name"
+	    sanity_check_action = "python ${__DIR__}/int_vas.py num_vas_sanity_check" 
+	}
+	num_vas {
+	    type = "bool"
+	    name="Number of Virtual Address Spaces"
+	    choices {
+		off {
+		    display_name = "off"
+		}
+		on {
+		    display_name = "on"
+		    default=true
+		}
+	    }
+	}
+	names_vas {
+	    type = "bool"
+	    name="Names of Virtual Address Spaces"
+	    choices {
+		off {
+		    display_name = "off"
+		    default=true
+		}
+		on {
+		    display_name = "on"
+		}
+	    }
+	}
+    }
+}
+
+%endif
+
+%endif

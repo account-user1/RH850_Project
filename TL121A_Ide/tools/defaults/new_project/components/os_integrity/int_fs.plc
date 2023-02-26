@@ -1,0 +1,600 @@
+Placer 1.6
+State
+"physDevDimIt" = "\
+ $pd_dev.dim=0;\
+ $tf_slice.dim=0;\
+ $tf_rdname.dim=1;\
+ $tf_rdsize.dim=1;\
+ $bt_rd.set=0;\
+ $tf_sharename.dim=1;\
+ $tf_servname.dim=1;\
+ $bt_phys.dim=0;\
+ $bt_phys.set=1;\
+ $bt_nfs.dim=1;\
+"
+
+"rdDevDimIt" = "\
+ $pd_dev.dim=1;\
+ $tf_slice.dim=1;\
+ $tf_rdname.dim=0;\
+ $tf_rdsize.dim=0;\
+ $bt_phys.set=0;\
+ $tf_sharename.dim=1;\
+ $tf_servname.dim=1;\
+ $bt_rd.dim=0;\
+ $bt_rd.set=1;\
+ $bt_nfs.dim=1;\
+"
+
+"nfsDevDimIt" = "\
+$bt_nfs.dim=0;\
+$tf_servname.dim=0;\
+$tf_sharename.dim=0;\
+$pd_dev.dim=1;\
+$tf_slice.dim=1;\
+$tf_rdname.dim=1;\
+$tf_rdsize.dim=1;\
+$bt_nfs.set=1;\
+$bt_phys.dim=1;\
+$bt_rd.dim=1;\
+"
+
+"fShowFFS" = "if ($bs_ffsopts.set(1)) {\
+  activate(1);\
+}"
+
+"fShowNFS" = "if ($bs_nfsopts.set(1)) {\
+  activate(2);\
+}"
+
+"fShowMSDOSFS" = "if ($bs_msdosfsopts.set(1)) {\
+  activate(3);\
+}"
+
+"fShowCD9660" = "if ($bs_cd9660opts.set(1)) {\
+  activate(5);\
+}"
+
+Items=int_fs_add_clients
+ Dialogue(,,,511,240,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =int_fs_add_clients > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ MScrollList(0,0,0,1,1,"msl_opts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),1)0xffffffff =msl_opts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Add",50)),("msl_opts"))0xffffffff =ch_opts >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 9,(4),(10),-20,0,0,0,0,1,1,Vertical
+ 9,(10),(),0,0,0,0,0,1,1,Horizontal
+ 10,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (10),4,10,0,0,0,0,Top,Top,Top
+ (9),10,0,0,0,0,0,Left,Left,Left
+ (10),4,10,0,0,0,0,Left,Left,Left
+ (9),10,0,0,0,0,0,Top,Top,Bottom
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs
+ Dialogue(,,,542,330,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ Text(0,0,0,NULL,"Name:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,"tf_name",NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_name >-1
+ MScrollList(0,0,0,1,1,"msl_libs",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0xffffffff =msl_libs >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Libraries",287)),("msl_libs"))0xffffffff =ch_libs >-1
+ TextField(0,219,43,28,19,"tf_mnttable",NULL,NULL,0xc1acc10,0,"",NULL)0x0 =tf_mnttable >-1
+ MScrollList(0,0,0,1,38,"msl_devlibs",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0xffffffff =msl_devlibs >-1
+ ColumnHeader(0,0,0,1,20,"ch_devlibs",NULL,NULL,0,(2,("",26)("DeviceLibraries",279)),("msl_devlibs"))0xffffffff =ch_devlibs >-1
+MinSizes
+ 0,(1,10,12,15),(),150,0,0,0,0,1,1,Vertical
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 14,(15),(),0,0,0,0,0,1,1,Horizontal
+ 15,(12),(),0,0,0,0,0,1,1,Horizontal
+ 11,(4),(10,12,15,14),-40,0,0,0,0,1,1,Vertical
+ 11,(12),(),0,0,0,0,0,1,1,Horizontal
+ 12,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 10,(4),(9),-10,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (14),15,0,0,0,0,0,Left,Left,Left
+ (15),0,10,0,0,0,0,Left,Left,Left
+ (14),15,0,0,0,0,0,Top,Top,Bottom
+ (15),11,10,0,0,0,0,Top,Top,Bottom
+ (11),12,0,0,0,0,0,Top,Top,Bottom
+ (12),10,10,0,0,0,0,Top,Top,Bottom
+ (12,11),4,10,0,0,0,0,Left,Left,Left
+ (10),9,0,0,0,0,0,Left,Left,Right
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (9,10),4,10,0,0,0,0,TBCenter,Top,Top
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable
+ Dialogue(,,,611,154,NULL,"edit_fs2",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ Text(0,0,0,NULL,"Mounttable Filename:",PNone)0xffffffff =tx_name >-1
+ TextField(0,0,0,1,19,"tf_mntfile_name",NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_mntfile_name >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 10,(4),(9),-10,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (10),9,0,0,0,0,0,Left,Left,Right
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (9,10),4,10,0,0,0,0,TBCenter,Top,Top
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable_dev
+ Dialogue(,,,538,392,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable_dev > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_phys >-1
+ Button(0,0,0,134,15,"bt_phys",NULL,NULL,"Use Physical Device",1,0,0,0,"physDevDimIt")0xffffffff =bt_phys >-1
+ Text(0,0,0,NULL,"Device:",PNone)0xffffffff =tx_dev >-1
+ PullDown(0,0,0,1,19,"pd_dev",NULL,NULL,NULL,NULL,"",0,)0xffffffff =pd_dev >-1
+ Text(0,0,0,NULL,"Slice:",PNone)0xffffffff =tx_slice >-1
+ TextField(0,0,0,1,19,"tf_slice",NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_slice >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_rd >-1
+ Button(0,0,0,94,15,"bt_rd",NULL,NULL,"Use Ram Disk",1,0,0,0,"rdDevDimIt")0xffffffff =bt_rd >-1
+ Text(0,0,0,NULL,"Ram Disk Name:",PNone)0xffffffff =tx_rdname >-1
+ TextField(0,0,0,1,19,"tf_rdname",NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_rdname >-1
+ Text(0,0,0,NULL,"Ram Disk Size:",PNone)0xffffffff =tx_ramsize >-1
+ TextField(0,0,0,1,19,"tf_rdsize",NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_rdsize >-1
+ Rectangle(0,0,0,1,1,NULL,2,NULL,PNone)0xffffffff =rect_nfsmnt >-1
+ Text(0,0,0,NULL,"NFS Server Name:",PNone)0xffffffff =tx_servname >-1
+ Button(0,0,0,66,15,"bt_nfs",NULL,NULL,"Use NFS",1,0,0,0,"nfsDevDimIt")0xffffffff =bt_nfs >-1
+ TextField(0,0,0,1,19,"tf_servname",NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_servname >-1
+ Text(0,0,0,NULL,"NFS Share Name:",PNone)0xffffffff =tx_sharename >-1
+ TextField(0,0,0,1,19,"tf_sharename",NULL,NULL,0xc1acc10,0,"",NULL)0xffffffff =tf_sharename >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 21,(26,24,23),(),50,0,0,0,0,1,1,Vertical
+ 26,(21),(22),-10,0,0,0,0,1,1,Horizontal
+ 24,(21),(22),-10,0,0,0,0,1,1,Horizontal
+ 21,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 15,(16,18,20),(),50,0,0,0,0,1,1,Vertical
+ 9,(14,12,10),(),50,0,0,0,0,1,1,Vertical
+ 15,(9),(),0,0,0,0,0,1,1,Horizontal
+ 9,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 20,(18),(),0,0,0,0,0,1,1,Horizontal
+ 18,(15),(17),-10,0,0,0,0,1,1,Horizontal
+ 14,(9),(11),-10,0,0,0,0,1,1,Horizontal
+ 12,(9),(11),-32,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (21),15,10,0,0,0,0,Top,Top,Bottom
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),9,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (25),21,10,0,0,0,0,Left,Left,Left
+ (26),22,0,0,0,0,0,Left,Left,Right
+ (24,22),23,20,0,0,0,0,TBCenter,Top,Bottom
+ (25,26),24,5,0,0,0,0,TBCenter,Top,Bottom
+ (24),22,0,0,0,0,0,Left,Left,Right
+ (22),21,10,0,0,0,0,Left,Left,Left
+ (23),21,10,0,0,0,0,Top,Top,Top
+ (23),21,10,0,0,0,0,Left,Left,Left
+ (21),4,10,0,0,0,0,Left,Left,Left
+ (16),15,10,0,0,0,0,Top,Top,Top
+ (16),15,10,0,0,0,0,Left,Left,Left
+ (10),9,10,0,0,0,0,Top,Top,Top
+ (10),9,10,0,0,0,0,Left,Left,Left
+ (15),9,10,0,0,0,0,Top,Top,Bottom
+ (15),4,10,0,0,0,0,Left,Left,Left
+ (9),4,10,0,0,0,0,Top,Top,Top
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (20),18,0,0,0,0,0,Left,Left,Left
+ (18),17,0,0,0,0,0,Left,Left,Right
+ (20,19),18,5,0,0,0,0,TBCenter,Top,Bottom
+ (19),15,10,0,0,0,0,Left,Left,Left
+ (18,17),16,20,0,0,0,0,TBCenter,Top,Bottom
+ (17),15,10,0,0,0,0,Left,Left,Left
+ (13,14),12,5,0,0,0,0,TBCenter,Top,Bottom
+ (14),12,-12,0,0,0,0,Left,Left,Left
+ (13),9,10,0,0,0,0,Left,Left,Left
+ (12),11,12,0,0,0,0,Left,Left,Right
+ (11),9,10,0,0,0,0,Left,Left,Left
+ (11,12),10,20,0,0,0,0,TBCenter,Top,Bottom
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable_dir
+ Dialogue(,,,556,392,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable_dir > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ Text(0,0,0,NULL,"Mount Directory:",PNone)0xffffffff =tx_dir >-1
+ TextField(0,0,0,1,19,"tf_dir",NULL,NULL,0xc1acc10,1,"",NULL)0xffffffff =tf_dir >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 10,(4),(9),-10,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (10),9,0,0,0,0,0,Left,Left,Right
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (9,10),4,10,0,0,0,0,TBCenter,Top,Top
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable_type
+ Dialogue(,,,510,229,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable_type > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ Text(0,0,0,NULL,"File System Type:",PNone)0xffffffff =tx_type >-1
+ PullDown(0,0,0,1,19,"pd_type",NULL,NULL,NULL,NULL,"",1,)0xffffffff =pd_type >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 10,(4),(9),-32,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (10),9,12,0,0,0,0,Left,Left,Right
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (9,10),4,10,0,0,0,0,TBCenter,Top,Top
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable_opts
+ Dialogue(,,,523,273,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable_opts > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,10,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ MScrollList(0,0,0,1,1,"msl_opts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),1)0x2 =msl_opts >-1
+ MScrollList(0,0,0,1,1,"msl_nfsopts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0x4 =msl_nfsopts >-1
+ MScrollList(0,0,0,1,1,"msl_msdosfsopts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0x8 =msl_msdosfsopts >-1
+ MScrollList(0,0,0,1,1,"msl_cd9660opts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),0)0x20 =msl_cd9660opts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Options",290)),("msl_opts"))0x2 =ch_opts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Options",290)),("msl_cd9660opts"))0x20 =ch_cd9660opts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Options",290)),("msl_nfsopts"))0x4 =ch_nfsopts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Options",290)),("msl_msdosfsopts"))0x8 =ch_msdosfsopts >-1
+ ButtonSet(0,130,10,90,15,"bs_ffsopts",NULL,NULL,
+    (1,"ShowFFS"),
+    (1,"fShowFFS"),
+    -1,1,1,0,0,2,0,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0x0 =bs_ffsopts >-1
+ ButtonSet(0,130,10,92,15,"bs_nfsopts",NULL,NULL,
+    (1,"ShowNFS"),
+    (1,"fShowNFS"),
+    -1,1,1,0,0,2,0,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0x0 =bs_nfsopts >-1
+ ButtonSet(0,130,10,128,15,"bs_msdosfsopts",NULL,NULL,
+    (1,"ShowMSDOSFS"),
+    (1,"fShowMSDOSFS"),
+    -1,1,1,0,0,2,0,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0x0 =bs_msdosfsopts >-1
+ ButtonSet(0,130,10,112,15,"bs_cd9660opts",NULL,NULL,
+    (1,"ShowCD9660"),
+    (1,"fShowCD9660"),
+    -1,1,1,0,0,2,0,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0x0 =bs_cd9660opts >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 9,(4),(13),-20,0,0,0,0,1,1,Vertical
+ 9,(13),(),0,0,0,0,0,1,1,Horizontal
+ 10,(4),(15),-20,0,0,0,0,1,1,Vertical
+ 10,(15),(),0,0,0,0,0,1,1,Horizontal
+ 11,(4),(16),-20,0,0,0,0,1,1,Vertical
+ 11,(16),(),0,0,0,0,0,1,1,Horizontal
+ 12,(4),(14),-20,0,0,0,0,1,1,Vertical
+ 12,(14),(),0,0,0,0,0,1,1,Horizontal
+ 13,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 14,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 15,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 16,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (11),16,0,0,0,0,0,Top,Top,Bottom
+ (16,15,14,13),0,10,0,0,0,0,Top,Top,Top
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (9),13,0,0,0,0,0,Top,Top,Bottom
+ (10),15,0,0,0,0,0,Top,Top,Bottom
+ (12),14,0,0,0,0,0,Top,Top,Bottom
+ (13),4,10,0,0,0,0,Left,Left,Left
+ (14),4,10,0,0,0,0,Left,Left,Left
+ (15),4,10,0,0,0,0,Left,Left,Left
+ (16),4,10,0,0,0,0,Left,Left,Left
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (10),4,10,0,0,0,0,Left,Left,Left
+ (11),4,10,0,0,0,0,Left,Left,Left
+ (12),4,10,0,0,0,0,Left,Left,Left
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left
+
+Items=edit_fs_mnttable_topts
+ Dialogue(,,,508,283,NULL,"int_osmodules",NULL,NULL,0,0,0,"MULTIPIC") 0xffffffff =edit_fs_mnttable_topts > -1
+ ButtonSet(0,0,0,246,21,NULL,NULL,NULL,
+    (3,"< Back","Next >","Finish"),
+    (3,"cli(\"npwback\")","cli(\"npwnext\")","cli(\"npwfinish\")"),
+    1,2,3,0,0,0,9,
+    (3,NULL,NULL,NULL),
+    (0),
+    (3,NULL,NULL,NULL),
+    (3,NULL,NULL,NULL),0,0)0xffffffff =bs_BackNext >-1
+ ButtonSet(0,0,0,82,21,NULL,NULL,NULL,
+    (1,"Cancel"),
+    (1,"cli(\"npwcancel\")"),
+    -1,1,1,0,0,0,9,
+    (1,NULL),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_Cancel >-1
+ Line(0,0,0,1,0,NULL,PNone)0xffffffff =ln_Divider >-1
+ Rectangle(0,0,0,1,1,"rect_notdocs",0,NULL,PNone)0x10000 =rect_notdocs >-1
+ OmniView(0,0,0,285,1,"ov_docs",NULL,NULL)0xffffffff =ov_docs >-1
+ Line(0,259,2,11,0,"v_spare",PNone)0x10000 =v_spare >-1
+ Line(0,273,-2,1,0,"v_ispare",PNone)0x10000 =v_ispare >-1
+ Splitter(0,0,0,5,1,"sp_docs",NULL,NULL)0xffffffff =sp_docs >-1
+ MScrollList(0,0,0,1,1,"msl_topts",NULL,NULL,0,1,2,(0,2),NULL,NULL,(0),1)0xffffffff =msl_topts >-1
+ ColumnHeader(0,0,0,1,20,NULL,NULL,NULL,0,(2,("",26)("Options",290)),("msl_topts"))0xffffffff =ch_topts >-1
+MinSizes
+Sizes
+ 7,(0),(8,4),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(8,5),-5,0,0,0,0,1,1,Horizontal
+ 8,(5),(),0,0,0,0,0,1,1,Vertical
+ 5,(0),(2),-40,0,0,0,0,1,1,Vertical
+ 4,(0),(2),-20,0,0,0,0,1,1,Vertical
+ 9,(4),(10),-20,0,0,0,0,1,1,Vertical
+ 9,(10),(),0,0,0,0,0,1,1,Horizontal
+ 10,(4),(),-20,0,0,0,0,1,1,Horizontal
+ 3,(0),(),0,0,0,0,0,1,1,Horizontal
+Positions
+ (8),5,0,0,0,0,0,Top,Top,Top
+ (8),4,-5,0,0,0,0,Left,Left,Right
+ (5),10,0,0,0,0,0,Top,Top,Top
+ (5),8,0,0,0,0,0,Left,Left,Right
+ (4),0,0,0,0,0,0,Top,Top,Top
+ (4),0,0,0,0,0,0,Left,Left,Left
+ (10),4,10,0,0,0,0,Top,Top,Top
+ (9),10,0,0,0,0,0,Top,Top,Bottom
+ (10),4,10,0,0,0,0,Left,Left,Left
+ (9),4,10,0,0,0,0,Left,Left,Left
+ (1),2,-8,0,0,0,0,Right,Right,Left
+ (1,2),0,-10,0,0,0,0,TBCenter,Bottom,Bottom
+ (2),0,-8,0,0,0,0,Right,Right,Right
+ (3),1,-12,0,0,0,0,Top,Bottom,Top
+ (3),0,0,0,0,0,0,Left,Left,Left

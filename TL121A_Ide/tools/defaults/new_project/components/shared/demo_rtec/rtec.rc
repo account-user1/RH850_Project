@@ -1,0 +1,21 @@
+/* Turn off breakpoint setting output. */
+configure cwindlines 9
+Q 1;
+D;
+
+bA main##DereferenceNull {\
+  echo " ";
+  echo " The next statement causes a dereference of zero. Continuing to run";
+  echo "the program after the null dereference is detected might cause your";
+  echo "target to behave unexpectedly. If you want to skip this statement";
+  echo "right-click on the next executable line and choose \"Change PC";
+  echo "to this line\"";
+}
+
+clear;
+echo " ";
+echo "This program contains several different programming errors that are";
+echo "detected at run time by the run time error checking features of";
+echo "the Green Hills compiler and the MULTI debugger.";
+echo " ";
+echo "  Click 'Go on Selected Items (F5)' to begin.";

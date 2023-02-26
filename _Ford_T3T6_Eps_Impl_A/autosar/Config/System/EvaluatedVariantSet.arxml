@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="3802EA01-E29C-4447-9164-2637B3B68600">
+      <SHORT-NAME>VariantDefinition</SHORT-NAME>
+      <ELEMENTS>
+        <EVALUATED-VARIANT-SET>
+          <SHORT-NAME>EvaluatedVariantSet</SHORT-NAME>
+          <APPROVAL-STATUS>APPROVED</APPROVAL-STATUS>
+          <EVALUATED-VARIANT-REFS>
+            <EVALUATED-VARIANT-REF DEST="PREDEFINED-VARIANT">/VariantDefinition/Variant/ECU1</EVALUATED-VARIANT-REF>
+            <EVALUATED-VARIANT-REF DEST="PREDEFINED-VARIANT">/VariantDefinition/Variant/ECU2</EVALUATED-VARIANT-REF>
+          </EVALUATED-VARIANT-REFS>
+        </EVALUATED-VARIANT-SET>
+      </ELEMENTS>
+      <AR-PACKAGES>
+        <AR-PACKAGE UUID="D2E786A7-C8B4-4C75-93C4-4A257F8428DB">
+          <SHORT-NAME>Variant</SHORT-NAME>
+          <ELEMENTS>
+            <PREDEFINED-VARIANT>
+              <SHORT-NAME>ECU1</SHORT-NAME>
+              <POST-BUILD-VARIANT-CRITERION-VALUE-SET-REFS>
+                <POST-BUILD-VARIANT-CRITERION-VALUE-SET-REF DEST="POST-BUILD-VARIANT-CRITERION-VALUE-SET">/VariantDefinition/Variant/CriterionValueSet/ECU1</POST-BUILD-VARIANT-CRITERION-VALUE-SET-REF>
+              </POST-BUILD-VARIANT-CRITERION-VALUE-SET-REFS>
+            </PREDEFINED-VARIANT>
+            <PREDEFINED-VARIANT>
+              <SHORT-NAME>ECU2</SHORT-NAME>
+              <POST-BUILD-VARIANT-CRITERION-VALUE-SET-REFS>
+                <POST-BUILD-VARIANT-CRITERION-VALUE-SET-REF DEST="POST-BUILD-VARIANT-CRITERION-VALUE-SET">/VariantDefinition/Variant/CriterionValueSet/ECU2</POST-BUILD-VARIANT-CRITERION-VALUE-SET-REF>
+              </POST-BUILD-VARIANT-CRITERION-VALUE-SET-REFS>
+            </PREDEFINED-VARIANT>
+          </ELEMENTS>
+          <AR-PACKAGES>
+            <AR-PACKAGE UUID="034D2A0E-434B-4061-B036-702B2DF55E04">
+              <SHORT-NAME>CriterionValueSet</SHORT-NAME>
+              <ELEMENTS>
+                <POST-BUILD-VARIANT-CRITERION-VALUE-SET>
+                  <SHORT-NAME>ECU1</SHORT-NAME>
+                  <POST-BUILD-VARIANT-CRITERION-VALUES>
+                    <POST-BUILD-VARIANT-CRITERION-VALUE>
+                      <VARIANT-CRITERION-REF DEST="POST-BUILD-VARIANT-CRITERION">/VariantDefinition/Criterion/Communication</VARIANT-CRITERION-REF>
+                      <VALUE>0</VALUE>
+                    </POST-BUILD-VARIANT-CRITERION-VALUE>
+                  </POST-BUILD-VARIANT-CRITERION-VALUES>
+                </POST-BUILD-VARIANT-CRITERION-VALUE-SET>
+                <POST-BUILD-VARIANT-CRITERION-VALUE-SET>
+                  <SHORT-NAME>ECU2</SHORT-NAME>
+                  <POST-BUILD-VARIANT-CRITERION-VALUES>
+                    <POST-BUILD-VARIANT-CRITERION-VALUE>
+                      <VARIANT-CRITERION-REF DEST="POST-BUILD-VARIANT-CRITERION">/VariantDefinition/Criterion/Communication</VARIANT-CRITERION-REF>
+                      <VALUE>1</VALUE>
+                    </POST-BUILD-VARIANT-CRITERION-VALUE>
+                  </POST-BUILD-VARIANT-CRITERION-VALUES>
+                </POST-BUILD-VARIANT-CRITERION-VALUE-SET>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+        <AR-PACKAGE UUID="DE765B07-004D-412D-8C50-88AB0AACB08B">
+          <SHORT-NAME>Criterion</SHORT-NAME>
+          <ELEMENTS>
+            <POST-BUILD-VARIANT-CRITERION>
+              <SHORT-NAME>Communication</SHORT-NAME>
+              <COMPU-METHOD-REF DEST="COMPU-METHOD">/VariantDefinition/Criterion/Value/Communication</COMPU-METHOD-REF>
+            </POST-BUILD-VARIANT-CRITERION>
+          </ELEMENTS>
+          <AR-PACKAGES>
+            <AR-PACKAGE UUID="16FDC8E3-BFE3-4988-9E50-14BF1E561533">
+              <SHORT-NAME>Value</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <SHORT-NAME>Communication</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>ECU1</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>ECU2</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

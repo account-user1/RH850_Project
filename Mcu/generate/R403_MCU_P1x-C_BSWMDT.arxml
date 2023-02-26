@@ -1,0 +1,1055 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************
+** Project      = AUTOSAR Renesas R4.0.3 P1x-C MCAL Components               **
+** Module       = R403_Mcu_P1x-C_BSWMDT                                      **
+*******************************************************************************
+**                                  COPYRIGHT                                **
+*******************************************************************************
+** Copyright(c) 2015-2016 Renesas Electronics Corporation                    **
+*******************************************************************************
+** Purpose:                                                                  **
+** Provides the BSW module description of MCU Driver Component for AUTOSAR   **
+** release 4.0.3                                                             **
+**                                                                           **
+*******************************************************************************
+**                                                                           **
+** Unless otherwise agreed upon in writing between your company and          **
+** Renesas Electronics Corporation the following shall apply!                **
+**                                                                           **
+** Warranty Disclaimer                                                       **
+**                                                                           **
+** There is no warranty of any kind whatsoever granted by Renesas. Any       **
+** warranty is expressly disclaimed and excluded by Renesas, either expressed**
+** including but not limited to those for non-infringement of intellectual or**
+** implied property, merchantability and/or fitness for the particular       **
+** purpose.                                                                  **
+**                                                                           **
+** Renesas shall not have any obligation to maintain, service or provide bug **
+** fixes for the supplied Product(s) and/or the Application.                 **
+**                                                                           **
+** Each User is solely responsible for determining the appropriateness of    **
+** using the Product(s) and assumes all risks associated with its exercise   **
+** of rights under this Agreement, including, but not limited to the risks   **
+** and costs of program errors, compliance with applicable laws, damage to   **
+** or loss of data, programs or equipment, and unavailability or             **
+** interruption of operations.                                               **
+**                                                                           **
+** Limitation of Liability                                                   **
+**                                                                           **
+** In no event shall Renesas be liable to the User for any incidental,       **
+** consequential, indirect, or punitive damage (including but not limited    **
+** to lost profits) regardless of whether such liability is based on breach  **
+** of contract, tort, strict liability, breach of warranties, failure of     **
+** essential purpose or otherwise and even if advised of the possibility of  **
+** such damages. Renesas shall not be liable for any services or products    **
+** provided by third party vendors, developers or consultants identified or  **
+** referred to the User by Renesas in connection with the Product(s) and/or  **
+** the Application.                                                          **
+**                                                                           **
+*******************************************************************************
+** Environment:                                                              **
+**              Devices:     RH850/P1x-C:  R7F701370A, R7F701371, R7F701372, **
+**                                         R7F701373, R7F701374.             **
+*******************************************************************************
+**                      Revision Control History                             **
+*******************************************************************************
+** V1.0.0:  14-Aug-2015,  Initial Version.                                   **
+** V1.0.1:  15-Apr-2016,  As part of P1x-C V4.01.00, following changes       **
+**                        are made:                                          **
+**                        1. As per JIRA ID ARDAAAF-319, the information on  **
+**                           Reset Reason is added in Mcu_Preconfiguration.  **
+**                        2. Software patch version is updated.              **
+**                        3. As per JIRA ID ARDAAAF-329, Exclusive Areas are **
+**                           added.                                          **
+**                        4. As per JIRA ID ARDAAF-309, added                **
+**                           CAN-ENTER-EXCLUSIVE-AREA-REF tag for each       **
+**                           exclusive area used in the code and all the     **
+**                           Called Entities are added.                      **
+**                        5. Copyright Information is updated.               **
+** V1.0.2:  24-Nov-2016,  Following changes were made:                       **
+**                        1. Software minor version is updated.              **
+**                        2. As per JIRA ID ARDAAF-496, IS-SYNCHRONOUS tag   **
+**                           updated as false for ISR functions.             **
+*******************************************************************************
+-->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="ECUS:b541cf24-f141-43f2-ba80-4bf8325daabe">
+      <SHORT-NAME>Renesas</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE UUID="ECUS:30a4c5c2-7a36-4e64-9f44-f1b9937ab75a">
+          <SHORT-NAME>EcucDefs_Mcu</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION UUID="ECUS:e59ee8f8-6de9-4ae3-8975-d7c8947e57ba">
+              <SHORT-NAME>Mcu_Impl</SHORT-NAME>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <SW-VERSION>1.1.0</SW-VERSION>
+              <VENDOR-ID>59</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <VENDOR-API-INFIX>Renesas</VENDOR-API-INFIX>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/Renesas/EcucDefs_Mcu/Mcu/BswInternalBehavior_0</BEHAVIOR-REF>
+              <PRECONFIGURED-CONFIGURATION-REFS>
+                <PRECONFIGURED-CONFIGURATION-REF DEST="ECUC-MODULE-CONFIGURATION-VALUES">Mcu_Preconfiguration</PRECONFIGURED-CONFIGURATION-REF>
+              </PRECONFIGURED-CONFIGURATION-REFS>
+            </BSW-IMPLEMENTATION>
+            <ECUC-MODULE-CONFIGURATION-VALUES UUID="ECUS:fa7a9371-f5ff-4fdf-a65d-626bb45d837b">
+              <SHORT-NAME>Mcu_Preconfiguration</SHORT-NAME>
+              <DEFINITION-REF DEST="ECUC-MODULE-DEF">Mcu</DEFINITION-REF>
+              <IMPLEMENTATION-CONFIG-VARIANT>VARIANT-PRE-COMPILE</IMPLEMENTATION-CONFIG-VARIANT>
+              <CONTAINERS>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:399c8bb0-d665-4311-81f9-150b65ef4f0a">
+                  <SHORT-NAME>McuResetReason_0</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPowOnRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPowOnRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>0</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:127f81a9-6804-4538-9bde-84b35a1c165f">
+                  <SHORT-NAME>McuResetReason_1</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfTerminalRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfTerminalRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>1</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:dc6e2be0-2fc9-4937-98a7-3d5ccc0a7946">
+                  <SHORT-NAME>McuResetReason_2</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCvmRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCvmRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>2</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:849f1bcb-4d71-4f31-a01e-93463024b7a9">
+                  <SHORT-NAME>McuResetReason_3</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSwSysRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSwSysRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>3</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:2e03fb4f-7c48-41c8-9fa1-f1cc3e76a466">
+                  <SHORT-NAME>McuResetReason_4</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfWdtRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfWdtRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>4</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:f5654e27-4e2a-42cc-8017-371606dbfb60">
+                  <SHORT-NAME>McuResetReason_5</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLockStepCoreRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLockStepCoreRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>5</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:a305dcdd-90ae-4309-835e-d653ccc0dd9b">
+                  <SHORT-NAME>McuResetReason_6</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPbusFssRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPbusFssRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>6</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:0838f6f2-c49a-4f95-aea6-3e5d31c398db">
+                  <SHORT-NAME>McuResetReason_7</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusBridgeErrorRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusBridgeErrorRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>7</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:b7a7b87a-4c20-4225-bb3d-7b614257815b">
+                  <SHORT-NAME>McuResetReason_8</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSafetyMechCompRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSafetyMechCompRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>8</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:69b88666-b33a-4ef0-81d2-d8f1e5842ceb">
+                  <SHORT-NAME>McuResetReason_9</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfTempSensorRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfTempSensorRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>9</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:ad8a8b69-6efa-4a0e-9ba4-30017dc949ae">
+                  <SHORT-NAME>McuResetReason_10</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma0Rst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma0Rst/McuResetReason</DEFINITION-REF>
+                      <VALUE>10</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:9bda5c65-3c7c-48db-ae4d-ee83bb47515a">
+                  <SHORT-NAME>McuResetReason_11</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma1Rst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma1Rst/McuResetReason</DEFINITION-REF>
+                      <VALUE>11</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:086ab29c-6adf-4c78-a769-1c1adec8c151">
+                  <SHORT-NAME>McuResetReason_12</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma2Rst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma2Rst/McuResetReason</DEFINITION-REF>
+                      <VALUE>12</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:2b2be21b-3775-4166-bd6b-dd7900552552">
+                  <SHORT-NAME>McuResetReason_13</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma3Rst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma3Rst/McuResetReason</DEFINITION-REF>
+                      <VALUE>13</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:89c3ebd7-2835-4606-ab4a-219dbb31d906">
+                  <SHORT-NAME>McuResetReason_14</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma5Rst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfClma5Rst/McuResetReason</DEFINITION-REF>
+                      <VALUE>14</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:b093e5de-1db8-4aba-9ed5-b3639351fc00">
+                  <SHORT-NAME>McuResetReason_15</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>15</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:079b3b9b-df7c-418c-965d-b836bbebb0c7">
+                  <SHORT-NAME>McuResetReason_16</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>16</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:03176938-3faf-4352-9e08-1c4236fc53d5">
+                  <SHORT-NAME>McuResetReason_17</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCacheRamEdcRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCacheRamEdcRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>17</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:d6367423-8966-4b49-8d5c-b0f6eeba9c0a">
+                  <SHORT-NAME>McuResetReason_18</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>18</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:e3920be6-10e8-477c-baf0-43dafac9c383">
+                  <SHORT-NAME>McuResetReason_19</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>19</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:6fd66c2d-2ede-4276-ad20-4ee5ebceb173">
+                  <SHORT-NAME>McuResetReason_20</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCsihRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCsihRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>20</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:9c4e5fd1-bd3b-42d7-adb2-511f8636bf1c">
+                  <SHORT-NAME>McuResetReason_21</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCanRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCanRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>21</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:e8ff0730-94b7-4042-b48b-931264b6c41b">
+                  <SHORT-NAME>McuResetReason_22</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEthRamDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEthRamDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>22</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:4a79495d-ea98-48e7-9cf0-f109f329b0cc">
+                  <SHORT-NAME>McuResetReason_23</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFrRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFrRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>23</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:47e3fbe0-ac36-40d0-93cf-514cd6be9a14">
+                  <SHORT-NAME>McuResetReason_24</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGtmRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGtmRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>24</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:a5cd52a3-fcc0-4ab5-8d77-ec96c399b399">
+                  <SHORT-NAME>McuResetReason_25</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>25</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:45f43e58-cce0-4394-8047-b8d65c89b93d">
+                  <SHORT-NAME>McuResetReason_26</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBusEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>26</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:34bbf611-fe91-4d63-8ad1-af7c88ff17ca">
+                  <SHORT-NAME>McuResetReason_27</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamAddrOvfRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamAddrOvfRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>27</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:8986125b-dd7e-4153-aff4-7d048e61fecb">
+                  <SHORT-NAME>McuResetReason_28</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamAddrOvfRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamAddrOvfRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>28</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:e671a103-5973-4a09-a0f4-693d279e8e54">
+                  <SHORT-NAME>McuResetReason_29</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsAddrOvfRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsAddrOvfRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>29</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:30929a5c-5eff-4912-83bc-e9e58d82f6b2">
+                  <SHORT-NAME>McuResetReason_30</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsAddrOvfRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsAddrOvfRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>30</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:7e323464-2969-4cea-97f9-bd667c28bb27">
+                  <SHORT-NAME>McuResetReason_31</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPeriRamEccAddrOvfRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPeriRamEccAddrOvfRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>31</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:477cc825-66cc-4996-858a-9911b87383ae">
+                  <SHORT-NAME>McuResetReason_32</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDtsRamEccDedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDtsRamEccDedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>32</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:d2c522d4-6539-4581-997f-1f8eb524f922">
+                  <SHORT-NAME>McuResetReason_33</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDtsRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDtsRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>33</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:6b1f7c0c-cd17-44d5-b6b1-7ad59c29f991">
+                  <SHORT-NAME>McuResetReason_34</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>34</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:5bfeaced-6657-415a-a53d-5b7c00e7ab25">
+                  <SHORT-NAME>McuResetReason_35</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>35</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:398fcaf9-1b5f-4c4e-9563-6fbdd6fb02d3">
+                  <SHORT-NAME>McuResetReason_36</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>36</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:55543443-c4d5-4ad0-a25e-f28aa6fd926c">
+                  <SHORT-NAME>McuResetReason_37</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDataFlsEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>37</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:6d62d1dd-a3f0-4ee7-b085-08d5468635af">
+                  <SHORT-NAME>McuResetReason_38</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCsihRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCsihRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>38</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:d55bb03c-9076-4d93-a161-f2c9e2392107">
+                  <SHORT-NAME>McuResetReason_39</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCanRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCanRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>39</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:bf428c27-8eeb-4e68-affd-9a35ded68f42">
+                  <SHORT-NAME>McuResetReason_40</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEthRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEthRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>40</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:9006aa84-3f8f-4aec-b81d-29bf400a9d61">
+                  <SHORT-NAME>McuResetReason_41</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFrRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFrRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>41</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:5f4888d9-0f12-4c15-9543-fa41c85ce995">
+                  <SHORT-NAME>McuResetReason_42</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGtmRamEccSedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGtmRamEccSedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>42</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:fbc3d606-98f4-46ee-a5fa-2794026ad558">
+                  <SHORT-NAME>McuResetReason_43</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPEGuardRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPEGuardRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>43</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:9397c3f3-6bbd-486f-ae5a-14fb4770e012">
+                  <SHORT-NAME>McuResetReason_44</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramGuardRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramGuardRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>44</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:4dd56a62-4233-4b5e-9329-d34f4eb77b79">
+                  <SHORT-NAME>McuResetReason_45</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfMemcGuardRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfMemcGuardRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>45</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:cfd02b59-dde5-4ad6-bd26-6b4a38eb5cb6">
+                  <SHORT-NAME>McuResetReason_46</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSlaveGuardRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSlaveGuardRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>46</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:bec4f8fb-826b-4785-95b5-8cb16d015a42">
+                  <SHORT-NAME>McuResetReason_47</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsPEUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsPEUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>47</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:23a7b598-f27c-414c-b618-5a1df76bc0d6">
+                  <SHORT-NAME>McuResetReason_48</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramPEUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramPEUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>48</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:ae9cf1d3-a762-483f-b490-1bbb4381ada2">
+                  <SHORT-NAME>McuResetReason_49</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLpbPEUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfLpbPEUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>49</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:3e981f6a-d0f7-4b94-9e5f-5f6bea99c597">
+                  <SHORT-NAME>McuResetReason_50</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPBusUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPBusUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>50</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:b21589a6-cbb1-41c7-845f-01819d2a0a5e">
+                  <SHORT-NAME>McuResetReason_51</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfHBusUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfHBusUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>51</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:5dc815f3-d6fd-41f9-bfdb-bd14d15a3d12">
+                  <SHORT-NAME>McuResetReason_52</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsGvciUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfCodeFlsGvciUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>52</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:0950c204-a335-4a3d-aabe-1683d67be69c">
+                  <SHORT-NAME>McuResetReason_53</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramFlsGvciUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfGramFlsGvciUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>53</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:7201f736-b59c-4c07-9336-bfc9cc776c59">
+                  <SHORT-NAME>McuResetReason_54</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfResHbusUnmapAccessRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfResHbusUnmapAccessRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>54</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:d8a1550c-752c-4b8d-ab05-8025dc9ffb37">
+                  <SHORT-NAME>McuResetReason_55</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDmaTransferRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDmaTransferRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>55</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:4d3212d4-da94-42a8-99d0-80f64464bb2b">
+                  <SHORT-NAME>McuResetReason_56</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDmaUnmappedRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDmaUnmappedRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>56</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:330e63f7-b77c-4992-b30b-d30ddfe8b16e">
+                  <SHORT-NAME>McuResetReason_57</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFlsSequenceRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFlsSequenceRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>57</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:64fac09d-6115-4965-8dc2-64f340125ae7">
+                  <SHORT-NAME>McuResetReason_58</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFlsFaciRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfFlsFaciRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>58</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:4080f189-d9dd-4737-af15-9af95a6bd5da">
+                  <SHORT-NAME>McuResetReason_59</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfAdcParityRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfAdcParityRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>59</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:c99fd7cc-ac2c-458c-8df8-bd020a886553">
+                  <SHORT-NAME>McuResetReason_60</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPEUnintenEnableDisableRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfPEUnintenEnableDisableRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>60</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:0a114e79-2aa0-4e29-8b33-323d2ba878d7">
+                  <SHORT-NAME>McuResetReason_61</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenDeactUserRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenDeactUserRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>61</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:0140aba2-29b9-49c3-90bc-509ca083d511">
+                  <SHORT-NAME>McuResetReason_62</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenActCfpModeRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenActCfpModeRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>62</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:339e8f8f-6355-42da-bebc-5d332262ded6">
+                  <SHORT-NAME>McuResetReason_63</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenDebugEnableDetectRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenDebugEnableDetectRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>63</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:3e9f4a73-131f-41c0-a96f-b37f58967f0e">
+                  <SHORT-NAME>McuResetReason_64</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenActTestModeRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfUnintenActTestModeRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>64</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:b7ab2a15-938d-427b-bfa3-c047dc61e962">
+                  <SHORT-NAME>McuResetReason_65</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEcmCompRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfEcmCompRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>65</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:6bd28e12-051d-4227-9537-7caa832c651c">
+                  <SHORT-NAME>McuResetReason_66</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDebuggerRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfDebuggerRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>66</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:5879c7de-3969-4333-8272-0983fc786eec">
+                  <SHORT-NAME>McuResetReason_67</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSwApplRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfSwApplRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>67</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:3d0f77ec-0fc2-4c4f-b1c2-e10122dca8fa">
+                  <SHORT-NAME>McuResetReason_68</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBistRst</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfBistRst/McuResetReason</DEFINITION-REF>
+                      <VALUE>68</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:b06f1a12-8872-4a1d-880e-af07b745f348">
+                  <SHORT-NAME>McuResetReason_69</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfRstUndefined</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfRstUndefined/McuResetReason</DEFINITION-REF>
+                      <VALUE>69</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+                <ECUC-CONTAINER-VALUE UUID="ECUS:696d4397-e587-4ff4-95e3-a9c90e475a45">
+                  <SHORT-NAME>McuResetReason_70</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfRstUnknown</DEFINITION-REF>
+                  <PARAMETER-VALUES>
+                    <ECUC-NUMERICAL-PARAM-VALUE>
+                      <DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/Mcu/EcucDefs_Mcu/Mcu/McuPublishedInformation/McuRstRsnConfRstUnknown/McuResetReason</DEFINITION-REF>
+                      <VALUE>70</VALUE>
+                    </ECUC-NUMERICAL-PARAM-VALUE>
+                  </PARAMETER-VALUES>
+                </ECUC-CONTAINER-VALUE>
+              </CONTAINERS>
+            </ECUC-MODULE-CONFIGURATION-VALUES>
+            <BSW-MODULE-DESCRIPTION UUID="ECUS:d8d57c79-6b0e-438f-ad62-58aca03480f0">
+              <SHORT-NAME>Mcu</SHORT-NAME>
+              <MODULE-ID>101</MODULE-ID>
+              <INTERNAL-BEHAVIORS>
+                <BSW-INTERNAL-BEHAVIOR UUID="ECUS:e67f09e7-3dbc-488f-8928-07e8f1f4c560">
+                  <SHORT-NAME>BswInternalBehavior_0</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA UUID="ECUS:c8ccb537-ebb2-44b5-b785-20f7f39b136e">
+                      <SHORT-NAME>MCU_PWR_MODE_PSC_PROTECTION</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                    <EXCLUSIVE-AREA UUID="ECUS:1d431c64-18b5-4c3d-874f-7cc10549d91b">
+                      <SHORT-NAME>MCU_REGISTER_PROTECTION</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                    <EXCLUSIVE-AREA UUID="ECUS:1b965de4-5e4a-49d8-a4cb-e7782386f347">
+                      <SHORT-NAME>MCU_VARIABLE_PROTECTION</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+                    <BSW-INTERRUPT-ENTITY UUID="ECUS:540eea39-b4c4-460e-98a1-c842ab66638e">
+                      <SHORT-NAME>BswInterruptEntity_0</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/MCU_FEINT_ISR</IMPLEMENTED-ENTRY-REF>
+                      <INTERRUPT-CATEGORY>CAT-1</INTERRUPT-CATEGORY>
+                      <INTERRUPT-SOURCE>INTECMnNMI</INTERRUPT-SOURCE>
+                    </BSW-INTERRUPT-ENTITY>
+                    <BSW-INTERRUPT-ENTITY UUID="ECUS:48b5ed54-9c43-4a6c-9b9c-4de262d6116a">
+                      <SHORT-NAME>BswInterruptEntity_1</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/MCU_FEINT_CAT2_ISR</IMPLEMENTED-ENTRY-REF>
+                      <INTERRUPT-CATEGORY>CAT-2</INTERRUPT-CATEGORY>
+                      <INTERRUPT-SOURCE>INTECMnNMI</INTERRUPT-SOURCE>
+                    </BSW-INTERRUPT-ENTITY>
+                    <BSW-INTERRUPT-ENTITY UUID="ECUS:b9faed58-6e6c-407f-af28-b576f7c7e246">
+                      <SHORT-NAME>BswInterruptEntity_2</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/MCU_ECM_EIC_ISR</IMPLEMENTED-ENTRY-REF>
+                      <INTERRUPT-CATEGORY>CAT-1</INTERRUPT-CATEGORY>
+                      <INTERRUPT-SOURCE>INTECMnMI</INTERRUPT-SOURCE>
+                    </BSW-INTERRUPT-ENTITY>
+                    <BSW-INTERRUPT-ENTITY UUID="ECUS:75b68d80-00fa-4b97-aab2-d987810d1223">
+                      <SHORT-NAME>BswInterruptEntity_3</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/MCU_ECM_EIC_CAT2_ISR</IMPLEMENTED-ENTRY-REF>
+                      <INTERRUPT-CATEGORY>CAT-2</INTERRUPT-CATEGORY>
+                      <INTERRUPT-SOURCE>INTECMnMI</INTERRUPT-SOURCE>
+                    </BSW-INTERRUPT-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e52eeb">
+                      <SHORT-NAME>BswCalledEntity_0</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Mcu/Mcu/BswInternalBehavior_0/MCU_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_Init</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e5edfb">
+                      <SHORT-NAME>BswCalledEntity_1</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Mcu/Mcu/BswInternalBehavior_0/MCU_REGISTER_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_InitRamSection</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e5eefb">
+                      <SHORT-NAME>BswCalledEntity_2</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_InitClock</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e6effb">
+                      <SHORT-NAME>BswCalledEntity_3</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_DistributePllClock</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e5e2fb">
+                      <SHORT-NAME>BswCalledEntity_4</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_GetPllStatus</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:dcec7fcc-4c43-4a74-8919-24a7018bef17">
+                      <SHORT-NAME>BswCalledEntity_5</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_GetResetReason</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e5e2db">
+                      <SHORT-NAME>BswCalledEntity_6</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_GetResetRawValue</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e597db">
+                      <SHORT-NAME>BswCalledEntity_7</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_PerformReset</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e6ddfb">
+                      <SHORT-NAME>BswCalledEntity_8</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Mcu/Mcu/BswInternalBehavior_0/MCU_PWR_MODE_PSC_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_SetMode</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e6cdfb">
+                      <SHORT-NAME>BswCalledEntity_9</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/Renesas/EcucDefs_Mcu/Mcu/BswInternalBehavior_0/MCU_VARIABLE_PROTECTION</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_GetRamState</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY UUID="ECUS:73caf7e3-4bb6-43a5-8fe7-862448e5e78b">
+                      <SHORT-NAME>BswCalledEntity_10</SHORT-NAME>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/Renesas/EcucDefs_Mcu/Mcu_GetVersionInfo</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                  </ENTITYS>
+                </BSW-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+            <BSW-MODULE-ENTRY UUID="ECUS:018052e7-0aa5-4a2c-8b4a-76fd35fcc9aa">
+              <SHORT-NAME>MCU_FEINT_ISR</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>INTERRUPT</CALL-TYPE>
+              <EXECUTION-CONTEXT>INTERRUPT-CAT-1</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID />
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16e7531af">
+              <SHORT-NAME>MCU_FEINT_CAT2_ISR</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>INTERRUPT</CALL-TYPE>
+              <EXECUTION-CONTEXT>INTERRUPT-CAT-2</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID />
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:da8c8b02-17ed-47f9-a96e-9ecbd05765b0">
+              <SHORT-NAME>MCU_ECM_EIC_ISR</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>INTERRUPT</CALL-TYPE>
+              <EXECUTION-CONTEXT>INTERRUPT-CAT-1</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID />
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:1529595e-2d31-4bf4-945b-57bc0f3aa050">
+              <SHORT-NAME>MCU_ECM_EIC_CAT2_ISR</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>INTERRUPT</CALL-TYPE>
+              <EXECUTION-CONTEXT>INTERRUPT-CAT-2</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID />
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16e7331af">
+              <SHORT-NAME>Mcu_Init</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>0</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16e7551af">
+              <SHORT-NAME>Mcu_InitRamSection</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>1</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16e7561af">
+              <SHORT-NAME>Mcu_InitClock</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>2</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16d7561af">
+              <SHORT-NAME>Mcu_DistributePllClock</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>3</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16d8561af">
+              <SHORT-NAME>Mcu_GetPllStatus</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>4</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a1668561af">
+              <SHORT-NAME>Mcu_GetResetReason</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>5</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a1666561af">
+              <SHORT-NAME>Mcu_GetResetRawValue</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>6</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16665d1af">
+              <SHORT-NAME>Mcu_PerformReset</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>7</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a16665deaf">
+              <SHORT-NAME>Mcu_SetMode</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>8</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a1666fdeaf">
+              <SHORT-NAME>Mcu_GetRamState</SHORT-NAME>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>10</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY UUID="ECUS:e2fe47e7-8bd2-4480-817b-e1a1666fdedf">
+              <SHORT-NAME>Mcu_GetVersionInfo</SHORT-NAME>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <SERVICE-ID>9</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

@@ -1,0 +1,1378 @@
+# caches.odb
+#
+# This file contains information about how to display cache data for
+# specific processors.  To add support for a new processor, the
+# following is required:
+# 
+# 1. Add a new section under %if.  You can look up the processor names
+#    in the file os_constants.grd.
+#
+# 2. Add an entry for each cache on the processor.  A cache entry
+#    takes the following form:
+#
+#    NAME {
+#        type = ${CACHE_TYPE};
+#             # CACHE_TYPE is one of CACHE_TYPE_DATA, CACHE_TYPE_INSTRUCTION,
+#             # CACHE_TYPE_L2, CACHE_TYPE_L3, or CACHE_TYPE_UNIFIED_L1
+#        VALID_ENTRY
+#             # See below for a description of this
+#        DIRTY_ENTRY
+#             # See below for a description of this
+#        columns {
+#            COLUMN_ENTRY
+#                 # See below for a description of this
+#        }
+#        record = "RECORD_STRING";
+#             # RECORD_STRING is a text string that will be displayed in the
+#             # cache find window before the cache data.  This string can be
+#             # a combination of plain text and cache values.
+#    }
+#
+#    REFERRING TO CACHE VALUES
+#    =========================
+#
+#    When entering a RECORD_STRING or the format for a COLUMN_ENTRY,
+#    the text that appears in each string will be printed verbatim
+#    except when you refer to a cache field.  To refer to a cache entry, you 
+#    can use the following constructs:
+#
+#    * "%{FIELD}" where FIELD is the name that the probe uses to refer to the 
+#      field.  This will print the value of this tag as a decimal number.  
+#      For example, to print the value of a field called "V", you would use
+#      the following: "%{V}"
+#    * "%x{FIELD}" will print FIELD formatted as a hexadecimal number.
+#    * "%#b{FIELD}" will print FIELD as a binary number with # bits.  For 
+#      example, to print a 4 bit field called D, you would use: "%4b{D}"
+#    * "%{FIELD[i]}" will print bit i of the field where bit 0 is the least
+#      significant bit.  For example, to print bit 3 of a field called M,
+#      you would use "%{M[3]}"
+#    * "%{FIELD?TRUE:FALSE}" will print TRUE if FIELD is non-zero and FALSE
+#      if FIELD is zero.  FIELD can either be a name that the probe uses to 
+#      refer to a field or a single bit within that field (as in FIELD[i]).
+#      For example, to print Valid when the V bit is set and Invalid when it
+#      is not set, you would use "%{V?Valid:Invalid}"
+#
+#    NAME
+#    ====
+#    The name of this cache entry.  This should be a unique identified
+#    for this processor.  This name is never actually used.
+#
+#    VALID_ENTRY
+#    ===========
+#
+#    The VALID_ENTRY field above tells cacheview what name the probe
+#    uses to describe the field(s) that determines whether the cache
+#    entry is valid.
+#
+#    If the cache has a single valid bit, then this entry should be:
+#
+#        valid = "valid_field";
+#             # valid_field is the name that the probe uses to describe the
+#             # valid field.  This is often "V", but can differ by processor.
+#
+#    However, if there are multiple valid bits used to describe portions of 
+#    the cache entry, then this entry should be:
+#
+#        valid {
+#            NAME { field="FIELD"; start_byte=X; num_bytes=Y }
+#                 # NAME is a unique identifier
+#                 # FIELD is the name the probe uses to describe this bit
+#                 # X is the starting byte in the data that this bit refers to
+#                 # Y is the number of bytes that this valid bit refers to
+#        }
+#
+#    You can have any number of valid bits, each described by a
+#    separate entry within the braces of the valid {} structure.
+#
+#    DIRTY_ENTRY
+#    ===========
+#
+#    The DIRTY_ENTRY field tells cacheview what name the probe uses to
+#    describe the field(s) that determine whether the cache line is
+#    dirty.  This field is optional.
+#
+#    If the cache has a single dirty bit, then this entry should be:
+#
+#        dirty = "dirty_field";
+#             # dirty_field is the name that the probe uses to describe the
+#             # dirty field.  This is often "D", but can differ by processor.
+#
+#    However, if there are multiple dirty bits used to describe portions of 
+#    the cache entry, then this entry should be:
+#
+#        dirty {
+#            NAME { field="FIELD"; start_byte=X; num_bytes=Y; value=Z }
+#                 # NAME is a unique identifier
+#                 # FIELD is the name the probe uses to describe this bit
+#                 # X is the starting byte in the data that this bit refers to
+#                 # Y is the number of bytes that this valid bit refers to
+#                 # The value field is entirely optional.  If it is
+#                   set, then if the value of the field bit is equal to
+#                   Z it is true, otherwise it is false.  If this value
+#                   is not specified, then any non-zero value is true
+#                   and zero is false.
+#        }
+#
+#    You can have any number of dirty bits, each described by a
+#    separate entry within the braces of the dirty {} structure.
+#
+#    COLUMN_ENTRY
+#    ============
+#
+#    The COLUMN_ENTRY structure allows you to define the columns that
+#    should appear in the cache view window.  You can have any number
+#    of columns for each cache within the columns {} structure.
+#
+#    Each COLUMN_ENTRY is of the following form:
+#
+#    NAME { name="TITLE"; format="FORMAT" }
+#        # NAME is a unique identifier for this column
+#        # TITLE is the title of this column in the cache view window
+#        # FORMAT is the text that will appear in this column for each cache 
+#        # entry.  This field uses the same format as a RECORD entry.
+#
+#
+#    GEOMETRY_ENTRY
+#    ==============
+#
+#    The GEOMETRY_ENTRY structure contains data about the layout and
+#    relationship of the cache tags to the overall memory hierarchy.
+#
+#    geometry { tag_bits=NNN; physical=boolean }
+#        # tag_bits NNN: number of address bits in the address tags for
+#        #               each line of this cache
+#        # physical: boolean specifying whether the addresses in the tags
+#        #           are physical/translated addresses, or virtual/effective
+#        #           addresses.  This controls part of the tag display, and
+#        #           also governs how cachefind's raw memory reads work.
+
+%include "registers/os_constants.grd"
+
+%if _TARGET == PPC440 || \
+    _TARGET == PPC440GX || \
+    _TARGET == PPC440EP || \
+    _TARGET == PPC440X5 || \
+    _TARGET == PPC440EPx || \
+    _TARGET == PPC440GRx || \
+    _TARGET == PPC440SP || \
+    _TARGET == PPC440SPe || \
+    _TARGET == PPC460EX || \
+    _TARGET == PPC460GT || \
+    _TARGET == PPC460GTx || \
+    _TARGET == PPC460SX || \
+    _TARGET == PPC440GR || \
+    (defined(APM82181) && (_TARGET == APM82181)) || \
+    (defined(APM86190) && (_TARGET == APM86190)) || \
+    (defined(APM86290) && (_TARGET == APM86290)) || \
+    (defined(APM86491) && (_TARGET == APM86491)) || \
+    (defined(APM86691) && (_TARGET == APM86691)) || \
+    (defined(APM86692) && (_TARGET == APM86692)) || \
+    (defined(APM86791) && (_TARGET == APM86791))
+
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty {
+		d1 { field="Dir[3]"; start_byte=0; num_bytes=8 }
+		d2 { field="Dir[2]"; start_byte=8; num_bytes=8 }
+		d3 { field="Dir[1]"; start_byte=16; num_bytes=8 }
+		d4 { field="Dir[0]"; start_byte=24; num_bytes=8 }
+	}
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%4b{Dir}" }
+		user  { name="User[0-3]"; format="%{U0}%{U1}%{U2}%{U3}" }
+		tera  { name="TERA"; format="%x{TERA}" }
+	}
+	record = "Dirty: %4b{Dir}   User bits [0-3]: %{U0}%{U1}%{U2}%{U3}  TERA: %x{TERA}";
+	# note: actually 36 bit, but probe sends TERA separately for now
+	geometry { tag_bits=32; physical=true }
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		ts    { name="TS"; format="%{TS}" }
+		td    { name="TD"; format="%{TD}" }
+		tid   { name="TID"; format="%{TID}" }
+	}
+	record = "TS: %{TS}    TD: %{TD}   TID: %{TID}\n";
+	# note: actually 36 bit, but probe sends TERA separately for now
+	geometry { tag_bits=32; physical=false }
+}
+%endif
+
+%if _TARGET == PPC476FP
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		tagp { name="TAGP"; format="%2b{TAGP}" }
+		lruv { name="LRUV"; format="%4b{LRUV}" }
+		lru  { name="LRU"; format="%x{LRU}" }
+		lock { name="LOCK"; format="%4b{LOCK}" }
+		lrup { name="LRUP"; format="%2b{LRUP}" }
+		datap { name="DATAP"; format="%x{DATAP}" }
+	}
+	record = "";
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		tagp { name="TAGP"; format="%2b{TAGP}" }
+		lruv { name="LRUV"; format="%4b{LRUV}" }
+		lru  { name="LRU"; format="%x{LRU}" }
+		lock { name="LOCK"; format="%4b{LOCK}" }
+		lrup { name="LRUP"; format="%3b{LRUP}" }
+		conf { name="CONF"; format="%{CONF}" }
+	}
+	record = "";
+}
+%endif
+
+%if _TARGET == PPC440GX
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		tera  { name="TERA"; format="%x{TERA}" }
+	}
+	record = "TERA: %x{TERA}";
+	# note: actually 36 bit, but probe sends TERA separately for now
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+
+%if (defined(APM86190) && (_TARGET == APM86190)) || \
+    (defined(APM86290) && (_TARGET == APM86290)) || \
+    (defined(APM86491) && (_TARGET == APM86491)) || \
+    (defined(APM86691) && (_TARGET == APM86691)) || \
+    (defined(APM86692) && (_TARGET == APM86692)) || \
+    (defined(APM86791) && (_TARGET == APM86791))
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid {
+		v1 { field="MESI0[2]"; start_byte=0; num_bytes=32 }
+		v2 { field="MESI1[2]"; start_byte=32; num_bytes=32 }
+		v3 { field="MESI2[2]"; start_byte=64; num_bytes=32 }
+		v4 { field="MESI3[2]"; start_byte=96; num_bytes=32 }
+	}
+	dirty {
+		d1 { field="MESI0[0]"; start_byte=0; num_bytes=32 }
+		d2 { field="MESI1[0]"; start_byte=32; num_bytes=32 }
+		d3 { field="MESI2[0]"; start_byte=64; num_bytes=32 }
+		d4 { field="MESI3[0]"; start_byte=96; num_bytes=32 }
+	}
+	columns {
+		MESI0 { name="MESI0"; format="%3b{MESI0}" }
+		MESI1 { name="MESI1"; format="%3b{MESI1}" }
+		MESI2 { name="MESI2"; format="%3b{MESI2}" }
+		MESI3 { name="MESI3"; format="%3b{MESI3}" }
+		user  { name="User[0-3]"; format="%{U0}%{U1}%{U2}%{U3}" }
+		M  { name="M"; format="%{M}" }
+		G  { name="G"; format="%{G}" }
+		TECC  { name="TECC"; format="%x{TECC}" }
+		LRU  { name="LRU"; format="%x{LRU}" }
+	}
+	record = "User bits [0-3]: %{U0}%{U1}%{U2}%{U3}  Memory Coherence: %{M}  Guarded: %{G}\n\
+Tag ECC: %x{TECC}  LRU: %x{LRU}\n\
+Granule 0:   MESI=%3b{MESI0}   Granule 1:   MESI=%3b{MESI1}\n\
+Granule 2:   MESI=%3b{MESI2}   Granule 3:   MESI=%3b{MESI3}\n";
+	geometry { tag_bits=36; physical=true }	
+}
+%endif
+
+%if _TARGET == PPC405
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lru   { name="LRU"; format="%{LRU}" }
+	}
+	record = "Dirty: %{D}    LRU: %{LRU}";
+	geometry { tag_bits=32; physical=true }	
+}
+
+inst {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lru   { name="LRU"; format="%{LRU}" }
+	}
+	record = "LRU: %{LRU}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+
+%if _TARGET == PPC8260 || \
+    _TARGET == PPC8240 || \
+    _TARGET == PPC603  || \
+    _TARGET == PPC603e || \
+    _TARGET == PPC740  || \
+    _TARGET == PPC745  || \
+    _TARGET == PPC750  || \
+    _TARGET == PPC755  || \
+    _TARGET == PPC5200 || \
+    _TARGET == PPC8255 || \
+    _TARGET == PPC8245 || \
+    _TARGET == PPC8264 || \
+    _TARGET == PPC8265 || \
+    _TARGET == PPC8266 || \
+    _TARGET == PPC8280 || \
+    _TARGET == PPC8270 || \
+    _TARGET == PPC8275 || \
+    _TARGET == PPC8247 || \
+    _TARGET == PPC8248 || \
+    _TARGET == PPC8271 || \
+    _TARGET == PPC8272
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+	}
+	record = "Dirty: %{D}\n";
+	geometry { tag_bits=32; physical=true }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+	}
+	record = "";
+	geometry { tag_bits=32; physical=true }	
+}
+
+%if _TARGET == PPC750
+l2 {
+	type = ${CACHE_TYPE_L2};
+	columns {
+		D1 { name="D1"; format="%{D1}" }
+		D0 { name="D0"; format="%{D0}" }
+		V1 { name="V1"; format="%{V1}" }
+		V0 { name="V0"; format="%{V0}" }
+	}
+	valid {
+		v0 { field="V0"; start_byte=0; num_bytes=32 }
+		v1 { field="V1"; start_byte=32; num_bytes=32 }
+	}
+	record = "D0: %{D0}  V0: %{V0}     D1: %{D1}  V1: %{V1}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+%endif
+
+
+%if _TARGET == PPC8349 || \
+    _TARGET == PPC8347 || \
+    _TARGET == PPC8343 || \
+    _TARGET == PPC8360 || \
+    _TARGET == PPC8358 || \
+    _TARGET == PPC8321 || \
+    _TARGET == PPC8323 || \
+    _TARGET == PPC8313 || _TARGET == PPC8314 || _TARGET == PPC8315 || \
+    _TARGET == PPC8377 || _TARGET == PPC8378 || _TARGET == PPC8379 || \
+    _TARGET == PPC5121 || _TARGET == PPC5123 || _TARGET == PPC5125
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+	}
+	record = "Dirty: %{D}\n";
+	geometry { tag_bits=32; physical=true }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+
+
+%if _TARGET == ARM_946 || \
+    _TARGET == ARM_920
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty {
+		d1 { field="Dirty[0]"; start_byte=0; num_bytes=16 }
+		d2 { field="Dirty[1]"; start_byte=16; num_bytes=16 }
+	}	
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%2b{Dirty}" }
+	}
+	record = "Dirty: %2b{Dirty}\n"
+	geometry { tag_bits=32; physical=false }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%2b{D}" }
+	}
+	record = "Dirty: %2b{D}\n"
+	geometry { tag_bits=32; physical=false }	
+}
+%endif
+
+%if _TARGET == ARM_1136
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%1b{D1}%1b{D0}" }
+	}
+	record = "Dirty: %1b{D1}%1b{D0}\n"
+	geometry { tag_bits=32; physical=true }	
+}
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+	}
+	record = ""
+	geometry { tag_bits=32; physical=true }	
+}
+	
+%endif
+
+%if _TARGET == ARM_CORTEXA5
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+	    valid { name="Valid"; format="%{V?Valid:Invalid}" }
+	    dirty { name="Dirty"; format="%{D}" }
+	    outerattr { name="Outer Mem Attrs"; format="%2b{OATTR}" }
+	    nonsecure { name="Secure"; format="%{NS?Non-Secure:Secure}" }
+	}
+	record = "Dirty: %1b{D}   %{NS?Non-Secure:Secure}\n\
+Outer Mem Attrs: %{OATTR[0]?Write-Back:Write-Through}, %{OATTR[1]?no :}Write-Allocate";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+
+%if defined(ARM_CORTEXA15) && _TARGET == ARM_CORTEXA15
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "MESI";
+	dirty { field="MESI"; value=3; start_byte=0; num_bytes=64 }
+	columns {
+	    valid { name="Valid"; format="%{MESI?Valid:Invalid}" }
+	    mesi { name="MESI"; format="%2b{MESI}" }
+	    nonsecure { name="Secure"; format="%{NS?Non-Secure:Secure}" }
+	    ecc { name="ECC"; format="%x{ECC}" }
+	    pahigh { name="Upper Phys Addr"; format="%x{PAHIGH}" }
+	}
+	record = "MESI: %2b{MESI}   %{NS?Non-Secure:Secure}  ECC: %x{ECC}";
+	geometry { tag_bits=40; physical=true }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+	    valid { name="Valid"; format="%{V?Valid:Invalid}" }
+	    nonsecure { name="Secure"; format="%{NS?Non-Secure:Secure}" }
+	    parity { name="Parity"; format="%{P}" }
+	    pahigh { name="Upper Phys Addr"; format="%x{PAHIGH}" }
+	}
+	record = "%{NS?Non-Secure:Secure}  Parity: %{P}";
+	geometry { tag_bits=40; physical=true }	
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid = "MESI";
+	dirty { field="MESI"; value=3; start_byte=0; num_bytes=64 }
+	columns {
+	    valid { name="Valid"; format="%{MESI?Valid:Invalid}" }
+	    mesi { name="MESI"; format="%2b{MESI}" }
+	    inclusion { name="L1 Inclusion"; format="%{I?Included:-}" }
+	    prefetched { name="Prefetched"; format="%{P?Prefetched:-}" }
+	    nonsecure { name="Secure"; format="%{NS?Non-Secure:Secure}" }
+	    ecc { name="ECC"; format="%x{ECC}" }
+	    pahigh { name="Upper Phys Addr"; format="%x{PAHIGH}" }
+	}
+	record = "MESI: %2b{MESI}   %{NS?Non-Secure:Secure}  %{I?L1-Included:Not L1-Included}  %{P?Prefetched:Not Prefetched}  ECC: %x{ECC}";
+	geometry { tag_bits=40; physical=true }	
+}
+
+# CCN504
+l3 {
+	type = ${CACHE_TYPE_L3};
+	valid = "MESI";
+	dirty { field="MESI"; value=3; start_byte=0; num_bytes=64 }
+	columns {
+	    valid { name="Valid"; format="%{MESI?Valid:Invalid}" }
+	    mesi { name="MESI"; format="%2b{MESI}" }
+	    nonsecure { name="Secure"; format="%{NS?Non-Secure:Secure}" }
+	    pahigh { name="Upper Phys Addr"; format="%x{PAHIGH}" }
+	}
+	record = "MESI: %2b{MESI}   %{NS?Non-Secure:Secure}  ECC: %x{ECC}";
+	# The address size is really 44 bits but the A15 only has 40 bits
+	# (which is not currently supported by the probe, anyway).
+	geometry { tag_bits=40; physical=true }	
+}
+%endif
+
+%if defined(ARM_CORTEXA7) && _TARGET == ARM_CORTEXA7
+data {
+    type = ${CACHE_TYPE_DATA};
+    valid = "Valid";
+    dirty = "Dirty";
+    columns {
+	Outer_Attr { 
+	    name = "Outer Memory Attributes"
+	    format = "%2b{Outer_Memory_Attributes}"
+	}
+	MOESI_dirty {
+	    name = "MOESI Dirty"
+	    format = "%2b{MOESI_dirty}"
+	}
+	MOESI_tag {
+	    name = "MOESI Tag"
+	    format = "%2b{MOESI_tag}"
+	}
+	NS {
+	    name = "NS"
+	    format = "%{NS?Non-Secure:Secure}"
+	}
+	Tag {
+	    name = "PA[39:32]"
+	    format = "%x{PA_High}"
+	}
+    }
+    record = "PA[39:32]: %x{PA_High}; %{NS?Non-Secure:Secure}; Outer Memory Attr: %2b{Outer_Memory_Attributes}; MOESI Dirty/Tag: %2b{MOESI_dirty}/%2b{MOESI_tag}"
+    geometry { tag_bits=40; physical=true }
+}
+instruction {
+    type = ${CACHE_TYPE_INSTRUCTION}
+    valid = "V"
+    columns {
+	V  { name="Valid"; format="%{V?Valid:Invalid}"      }
+	NS { name="NS";    format="%{NS?Non-Secure:Secure}" }
+	T  { name="Thumb"; format="%{T?Thumb:ARM}"          }
+    }
+    record = "%{NS?Non-Secure:Secure}; %{T?Thumb:ARM}"
+    geometry { tag_bits=40; physical=true }
+}
+%endif
+
+%if _TARGET == PPC7440 || \
+    _TARGET == PPC7450 || \
+    _TARGET == PPC7441 || \
+    _TARGET == PPC7451 || \
+    _TARGET == PPC7445 || \
+    _TARGET == PPC7455 || \
+    _TARGET == PPC7447 || \
+    _TARGET == PPC7457 || \
+    _TARGET == PPC7448 || \
+    _TARGET == PPC8641 || _TARGET == PPC8640 || \
+    _TARGET == PPC8610
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		shared { name="Shared"; format="%{S}" }
+	}
+	record = "Dirty: %{D}      Shared: %{S}\n";
+	geometry { tag_bits=32; physical=true }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+	}
+	record = "";
+	geometry { tag_bits=32; physical=true }	
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	columns {
+		A0 { name="A0"; format="%{A0}" }
+		MESI0 { name="MESI0"; format="%2b{MESI0}" }
+		A1 { name="A1"; format="%{A1}" }
+		MESI1 { name="MESI1"; format="%2b{MESI1}" }
+	}
+	valid {
+		mesi0 { field="MESI0"; start_byte=0; num_bytes=32 }
+		mesi1 { field="MESI1"; start_byte=32; num_bytes=32 }
+	}
+	dirty {
+		d0 { field="MESI0"; value=3; start_byte=0; num_bytes=32 }
+		d1 { field="MESI1"; value=3; start_byte=32; num_bytes=32 }
+	}
+	record = "A0: %{A0}  MESI0: %2b{MESI0}\nA1: %{A1}  MESI1: %2b{MESI1}";
+	geometry { tag_bits=32; physical=true }	
+}
+
+l3 {
+	type = ${CACHE_TYPE_L3};
+	geometry { tag_bits=32; physical=true }	
+	valid {
+		mesi0 { field="MESI0"; start_byte=0; num_bytes=32 }
+		mesi1 { field="MESI1"; start_byte=32; num_bytes=32 }
+%if _SIZE == 2048
+		mesi2 { field="MESI2"; start_byte=64; num_bytes=32 }
+		mesi3 { field="MESI3"; start_byte=96; num_bytes=32 }
+%endif
+	}
+	columns {
+		MESI0 { name="MESI0"; format="%2b{MESI0}" }
+		A0 { name="Alloc0"; format="%{A0}" }
+		P0 { name="Parity0"; format="%{P0}" }
+		MESI1 { name="MESI1"; format="%2b{MESI1}" }
+		A1 { name="Alloc1"; format="%{A1}" }
+		P1 { name="Parity1"; format="%{P1}" }
+%if _SIZE == 2048
+		MESI2 { name="MESI2"; format="%2b{MESI2}" }
+		A2 { name="Alloc2"; format="%{A2}" }
+		P2 { name="Parity2"; format="%{P2}" }
+		MESI3 { name="MESI3"; format="%2b{MESI3}" }
+		A3 { name="Alloc3"; format="%{A3}" }
+		P3 { name="Parity3"; format="%{P3}" }
+%endif
+	}
+	dirty {
+		d0 { field="MESI0"; value=3; start_byte=0; num_bytes=32 }
+		d1 { field="MESI1"; value=3; start_byte=32; num_bytes=32 }
+%if _SIZE == 2048
+		d2 { field="MESI2"; value=3; start_byte=64; num_bytes=32 }
+		d3 { field="MESI3"; value=3; start_byte=96; num_bytes=32 }
+%endif
+	}
+%if _SIZE == 2048
+	record = "Sector 0:   MESI=%{MESI0}   Alloc=%{A0}   Parity=%{P0}\n\
+Sector 1:   MESI=%{MESI1}   Alloc=%{A1}   Parity=%{P1}\n\
+Sector 2:   MESI=%{MESI2}   Alloc=%{A2}   Parity=%{P2}\n\
+Sector 3:   MESI=%{MESI3}   Alloc=%{A3}   Parity=%{P3}\n";
+%else
+	record = "Sector 0:   MESI=%{MESI0}   Alloc=%{A0}   Parity=%{P0}\n\
+Sector 1:   MESI=%{MESI1}   Alloc=%{A1}   Parity=%{P1}\n";
+%endif
+}
+%endif
+
+%if _TARGET == PPC5554 || _TARGET == PPC5553 || _TARGET == PPC5565 || \
+    _TARGET == PPC5566 || _TARGET == PPC5567 || _TARGET == PPC5561 || \
+    _TARGET == PPC5668
+l1 {
+	type = ${CACHE_TYPE_UNIFIED_L1};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Dirty: %{D}      Locked: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif # _TARGET == PPC5554
+
+%if _TARGET == PPC567xF || _TARGET == PPC5674M || _TARGET == PPC567xK \
+			|| _TARGET == PPC567xR || \
+			(defined(PPCE200Z7_GENERIC) && (_TARGET == PPCE200Z7_GENERIC))
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Dirty: %{D}      Locked: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+%if _TARGET == PPC564xL || _TARGET == PPC564xA || _TARGET == PPC564xS \
+			|| _TARGET == PPC564xB || _TARGET == PPC564xC || \
+			(defined(PPCE200Z4D_GENERIC) && (_TARGET == PPCE200Z4D_GENERIC))
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+%if (defined(PPC5746Mz425) && (_TARGET == PPC5746Mz425)) || \
+    (defined(PPC5746Mz420) && (_TARGET == PPC5746Mz420)) || \
+    (defined(PPC5744P)     && (_TARGET == PPC5744P))     || \
+    (defined(PPC5744Kz420) && (_TARGET == PPC5744Kz420)) || \
+    (defined(PPC5777Mz425) && (_TARGET == PPC5777Mz425)) || \
+    (defined(PPC5748Gz4204) && (_TARGET == PPC5748Gz4204)) || \
+    (defined(PPCE200Z420_GENERIC) && (_TARGET == PPCE200Z420_GENERIC)) || \
+    (defined(PPCE200Z425_GENERIC) && (_TARGET == PPCE200Z425_GENERIC)) || \
+    (defined(PPCE200Z720_GENERIC) && (_TARGET == PPCE200Z720_GENERIC)) || \
+    (defined(PPC5746R) && (_TARGET == PPC5746R)) || \
+    (defined(PPC5777Mz720) && (_TARGET == PPC5777Mz720))
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		so { name="Supervisor-Only"; format="%{SO}" }
+		replacement { name="Replacement"; format="%{R}" }
+		lockout  { name="Lockout"; format="%{L}" }
+	}
+	record = "SO: %{SO}  Replacement: %{R}  Lockout: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+
+%if (defined(PPC5746Mz420) && (_TARGET == PPC5746Mz420)) || \
+    (defined(PPC5744P)     && (_TARGET == PPC5744P))     || \
+    (defined(PPC5744Kz420) && (_TARGET == PPC5744Kz420)) || \
+    (defined(PPCE200Z420_GENERIC) && (_TARGET == PPCE200Z420_GENERIC)) || \
+    (defined(PPCE200Z720_GENERIC) && (_TARGET == PPCE200Z720_GENERIC)) || \
+    (defined(PPC5748Gz4204) && (_TARGET == PPC5748Gz4204)) || \
+    (defined(PPC5777Mz720) && (_TARGET == PPC5777Mz720))
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		so { name="Supervisor-Only"; format="%{SO}" }
+		uw { name="User-write"; format="%{UW}" }
+		sw { name="Supervisor-write"; format="%{SW}" }
+		replacement { name="Replacement"; format="%{R}" }
+		lockout  { name="Lockout"; format="%{L}" }
+	}
+	record = "SO: %{SO}  UW: %{UW}  SW: %{SW}  Replacement: %{R}  Lockout: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+%endif
+%if _TARGET == PPC8560 || _TARGET == PPC8540 || _TARGET == PPC8541 || \
+    _TARGET == PPC8555 || _TARGET == PPC8543 || _TARGET == PPC8545 || \
+    _TARGET == PPC8547 || _TARGET == PPC8548 || _TARGET == PPC8533 || \
+    _TARGET == PPC8568 || _TARGET == PPC8572 || _TARGET == PPC8536 || \
+    _TARGET == PPC8569 || _TARGET == PPC8544 || _TARGET == PPC8567 || \
+    _TARGET == PPCP1010 || _TARGET == PPCP1011 || \
+    _TARGET == PPCP1020 || _TARGET == PPCP1021 || \
+    _TARGET == PPCP2010 || _TARGET == PPCP2020 || _TARGET == PPCP2040 || \
+    _TARGET == PPCP3041 || _TARGET == PPCP4040 || \
+    _TARGET == PPCP4080 || _TARGET == PPCP5010 || _TARGET == PPCP5020 || \
+    (defined(PPCP5040) && (_TARGET==PPCP5040)) || \
+    (defined(PPCT1020) && (_TARGET==PPCT1020)) || \
+    (defined(PPCT1022) && (_TARGET==PPCT1022)) || \
+    (defined(PPCT1040) && (_TARGET==PPCT1040)) || \
+    (defined(PPCT1042) && (_TARGET==PPCT1042)) || \
+    (defined(PPCE500MC_GENERIC) && (_TARGET==PPCE500MC_GENERIC)) || \
+    (defined(PPCE500MC_64_GENERIC) && (_TARGET==PPCE500MC_64_GENERIC))
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		shared { name="Shared"; format="%{S}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Dirty: %{D}      Shared: %{S}      Locked: %{L}";
+	geometry { tag_bits=36; physical=true }
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}\n";
+	geometry { tag_bits=36; physical=true }
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid = "V";
+	geometry { tag_bits=36; physical=true }	
+%if _TARGET == PPCP2040 || _TARGET == PPCP3041 || _TARGET == PPCP4040 || \
+    _TARGET == PPCP4080 || _TARGET == PPCP5010 || _TARGET == PPCP5020 || \
+    (defined(PPCP5040) && (_TARGET==PPCP5040)) || \
+    (defined(PPCT1020) && (_TARGET==PPCT1020)) || \
+    (defined(PPCT1022) && (_TARGET==PPCT1022)) || \
+    (defined(PPCT1040) && (_TARGET==PPCT1040)) || \
+    (defined(PPCT1042) && (_TARGET==PPCT1042)) || \
+    (defined(PPCE500MC_GENERIC) && (_TARGET==PPCE500MC_GENERIC)) || \
+    (defined(PPCE500MC_64_GENERIC) && (_TARGET==PPCE500MC_64_GENERIC))
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+		shared { name="Shared"; format="%{S}" }
+		dirty { name="Dirty"; format="%{D}" }
+		n { name="N"; format="%{N?Instruction:Data}" }
+	}
+	record = "Dirty: %{D}      Shared: %{S}      Locked: %{L}   N: %{N}";
+%else
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		ilock { name="I-Lock"; format="%{IL}" }
+		dlock { name="D-Lock"; format="%{DL}" }
+		stale { name="Stale"; format="%{T}" }
+%if _TARGET == PPCP1010 || _TARGET == PPCP1011 || \
+    _TARGET == PPCP1020 || _TARGET == PPCP1021 || \
+    _TARGET == PPCP2010 || _TARGET == PPCP2020
+	}
+	record = "I-Lock: %{IL}   D-Lock: %{DL}   Stale: %{T}";
+%else
+		shared { name="Shared"; format="%{S}" }
+	}
+	record = "I-Lock: %{IL}   D-Lock: %{DL}   Stale: %{T}   Shared: %{S}";
+%endif
+%endif
+}
+%endif
+
+%if (defined(PPCT4240) && (_TARGET==PPCT4240)) || \
+    (defined(PPCT4160) && (_TARGET==PPCT4160)) || \
+    (defined(PPCT2080) && (_TARGET==PPCT2080)) || \
+    (defined(PPCE6500_GENERIC) && (_TARGET==PPCE6500_GENERIC))
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}\n";
+	geometry { tag_bits=40; physical=true }
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}\n";
+	geometry { tag_bits=40; physical=true }
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid = "V";
+	geometry { tag_bits=40; physical=true }	
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L?Locked:}" }
+		exclusive { name="Exclusive"; format="%{E?Exclusive:}" }
+		shared { name="Shared"; format="%{S?Shared:}" }
+		sharedowner { name="SharedOwner"; format="%{SO?SharedOwner:}" }
+		modified { name="Modified"; format="%{M?Modified:}" }
+		n { name="N"; format="%{N?Instruction:Data}" }
+	}
+	record = "Locked: %{D},  %{N?:MESI: }%{E?Exclusive:}%{S?Shared:}%{SO?SharedOwner:}%{M?Modified:}%{N?:,}  N: %{N?Instruction:Data}";
+}
+%endif
+
+%if _TARGET == PPC860  || _TARGET == PPC850  || _TARGET == PPC823    || \
+    _TARGET == PPC823e || _TARGET == PPC855T || _TARGET == PPC857T   || \
+    _TARGET == PPC862  || _TARGET == PPC852T || _TARGET == PPC857DSL || \
+    _TARGET == PPC859T || _TARGET == PPC866P || _TARGET == PPC859DSL || \
+    _TARGET == PPC866T || _TARGET == PPC885  || _TARGET == PPC880    || \
+    _TARGET == PPC875  || _TARGET == PPC870  || _TARGET == PPC821
+
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Dirty: %{D}      Locked: %{L}";
+	geometry { tag_bits=32; physical=true }	
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lock  { name="Locked"; format="%{L}" }
+	}
+	record = "Locked: %{L}\n";
+	geometry { tag_bits=32; physical=true }	
+}
+
+%endif
+
+
+%if _TARGET == R3000
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+	}
+	record = "Dirty: %{D}";
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+	}
+	record = "Dirty: %{D}";
+}
+%endif
+
+%if _TARGET == MIPS32_4Kc
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "Valid";
+	columns {
+		valid { name="Valid"; format="%2b{Valid}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		LRF { name="LRF"; format="%1b{LRF}" }
+	}
+	record = ""
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "Valid";
+	columns {
+		valid { name="Valid"; format="%2b{Valid}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		LRF { name="LRF"; format="%1b{LRF}" }
+	}
+	record = ""
+}
+%endif
+
+%if _TARGET == MIPS32
+%if defined(_TARGET_PRID)
+%define CompID ((_TARGET_PRID >> 16) & 0xff)
+%define ProcID ((_TARGET_PRID >> 8) & 0xff)
+%else
+%define CompID 0
+%define ProcID 0
+%endif
+%define isMTI  (CompID == 1)
+%define is1004K (isMTI && ProcID == 0x99)
+%define isinterAptiv (isMTI && ProcID == 0xa1)
+
+data {
+	type = ${CACHE_TYPE_DATA};
+%if (isinterAptiv || is1004K)
+	valid = "V|L";
+%else
+	valid = "V";
+%endif
+    
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%1b{V}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		Dirty { name="Dirty"; format="%1b{D}" }
+		Parity { name="Parity"; format="%1b{P}" }
+%if (isinterAptiv || is1004K)
+		MESI { name="MESI"; format="%{!V&!L?Invalid:}\
+%{!V&L&!D?Shared:}%{V&!L&!D?Exclusive:}%{V&!L&D?Modified:}\
+%{V&L&!D?Locked/Clean:}%{V&L&D?Locked/Dirty:}" }
+%endif
+	}
+%if (isinterAptiv || is1004K)
+	record = "Dirty: %1b{D} Locked: %1b{L} Parity: %1b{P} \
+MESI: %{!V&!L?Invalid:}%{!V&L&!D?Shared:}%{V&!L&!D?Exclusive:}%\
+{V&!L&D?Modified:}%{V&L&!D?Locked/Clean:}%{V&L&D?Locked/Dirty:}"
+%else
+	record = "Dirty: %1b{D} Locked: %1b{L} Parity: %1b{P}"
+%endif
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%1b{V}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		Parity { name="Parity"; format="%1b{P}" }
+	}
+	record = "Locked: %1b{L} Parity: %1b{P}"
+}
+
+l2 {
+        type = ${CACHE_TYPE_L2};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%1b{V}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		Dirty { name="Dirty"; format="%1b{D}" }
+		Parity { name="Parity"; format="%x{P}" }
+		TP { name="Total Parity"; format="%1b{TP}" }
+	}
+	record = "Dirty: %1b{D} Locked: %1b{L} Parity: %1b{P} Total Parity: %1b{TP}"
+}
+%endif
+
+
+%if _TARGET == MIPS64
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "PState";
+	dirty { field="PState"; value=3 }
+	columns {
+		PState { name="PState"; format="%2b{PState}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		Parity { name="Parity"; format="%1b{P}" }
+	}
+	record = "PState: %{PState}";
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "PState";
+	dirty { field="PState"; value=3 }
+	columns {
+		PState { name="PState"; format="%2b{PState}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		Parity { name="Parity"; format="%1b{P}" }
+	}
+	record = "PState: %{PState}";
+}
+%endif 
+
+%if _TARGET == RC32364
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "PState";
+	dirty { field="PState"; value=3 }
+	columns {
+		PState { name="PState"; format="%2b{PState}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		FIFO { name="FIFO"; format="%1b{F}" }
+		Parity { name="Parity"; format="%1b{P}" }
+	}
+	record = "PState: %{PState}";
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "PState";
+	dirty { field="PState"; value=3 }
+	columns {
+		PState { name="PState"; format="%2b{PState}" }
+		Locked { name="Locked"; format="%1b{L}" }
+		FIFO { name="FIFO"; format="%1b{F}" }
+		Parity { name="Parity"; format="%1b{P}" }
+	}
+	record = "PState: %{PState}";
+}
+%endif
+
+
+%if _TARGET == PPC7400 || \
+    _TARGET == PPC7410
+data {
+        type = ${CACHE_TYPE_DATA};
+        valid = "V";
+        dirty = "D";
+        columns {
+                valid { name="Valid"; format="%{V?Valid:Invalid}" }
+                dirty { name="Dirty"; format="%{D}" }
+                castout { name="Castout"; format="%{C}" }
+                modified { name="Modified"; format="%{M}" }
+                recent { name="Recent"; format="%{R}" }
+                shared { name="Shared"; format="%{S}" }
+        }
+        record = "Dirty: %{D}   Castout: %{C}   Modified: %{M}   Recent: %{R}   Shared: %{S}";
+	geometry { tag_bits=32; physical=true }	
+}
+
+instruction {
+        type = ${CACHE_TYPE_INSTRUCTION};
+        valid = "V";
+        columns {
+                valid { name="Valid"; format="%{V?Valid:Invalid}" }
+        }
+        record = "";
+	geometry { tag_bits=32; physical=true }	
+}
+
+
+l2 {
+        type = ${CACHE_TYPE_L2};
+	geometry { tag_bits=32; physical=true }	
+
+%if _SIZE < 1024
+        valid = "V";
+        columns {
+                M { name="M"; format="%{M}" }
+                S { name="S"; format="%{S}" }
+                V { name="V"; format="%{V}" }
+        }
+        record = "Modified: %{M}        Shared: %{S}";
+
+%elsif _SIZE == 1024
+        columns {
+                M0 { name="M0"; format="%{M0}" }
+                S0 { name="S0"; format="%{S0}" }
+                V0 { name="V0"; format="%{V0}" }
+                M1 { name="M1"; format="%{M1}" }
+                S1 { name="S1"; format="%{S1}" }
+                V1 { name="V1"; format="%{V1}" }
+        }
+        valid {
+                v0 { field="V0"; start_byte=0; num_bytes=32 }
+                v1 { field="V1"; start_byte=32; num_bytes=32 }
+        }
+        record = "M0: %{M0}   S0: %{S0}\nM1: %{M1}   S1: %{S1}";
+%else
+        columns {
+                M0 { name="M0"; format="%{M0}" }
+                S0 { name="S0"; format="%{S0}" }
+                V0 { name="V0"; format="%{V0}" }
+                M1 { name="M1"; format="%{M1}" }
+                S1 { name="S1"; format="%{S1}" }
+                V1 { name="V1"; format="%{V1}" }
+                M2 { name="M2"; format="%{M2}" }
+                S2 { name="S2"; format="%{S2}" }
+                V2 { name="V2"; format="%{V2}" }
+                M3 { name="M3"; format="%{M3}" }
+                S3 { name="S3"; format="%{S3}" }
+                V3 { name="V3"; format="%{V3}" }
+        }
+        valid {
+                v0 { field="V0"; start_byte=0; num_bytes=32 }
+                v1 { field="V1"; start_byte=32; num_bytes=32 }
+                v2 { field="V2"; start_byte=64; num_bytes=32 }
+                v3 { field="V3"; start_byte=96; num_bytes=32 }
+        }
+        record = "M0: %{M0}   S0: %{S0}\nM1: %{M1}   S1: %{S1}\n\
+M2: %{M2}   S2: %{S2}\nM3: %{M3}   S3: %{S3}";
+
+%endif
+}
+
+%endif
+
+
+%if _TARGET == PPC970
+data {
+	type = ${CACHE_TYPE_DATA};
+	valid = "V";
+	dirty = "D";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lru   { name="LRU"; format="%{LRU}" }
+	}
+	record = "Dirty: %{D}     LRU: %{LRU}\n";
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION};
+	valid = "V";
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		lru   { name="LRU"; format="%{LRU}" }
+	}
+	record = "";
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	columns {
+		valid { name="Valid"; format="%{V?Valid:Invalid}" }
+		dirty { name="Dirty"; format="%{D}" }
+		lru   { name="LRU"; format="%{LRU}" }
+	}
+	valid = "V";
+	dirty = "D";
+	record = "Dirty: %{D}     LRU: %{LRU}\n";
+}
+%endif
+
+%if _TARGET == BF_GHS_533
+data {
+	type = ${CACHE_TYPE_DATA}
+	valid = "Valid"
+	dirty = "Dirty"
+	columns {
+		LRU { name="LRU"; format="%{LRU}" }
+		dirty { name="Dirty"; format="%{Dirty?Dirty:Clean}" }
+		valid { name="Valid"; format="%{Valid?Valid:Invalid}" }
+	}
+	record = "LRU=%x{LRU},%{LRUPRIO?LRUPRIO:!LRUPRIO},%{Valid?Valid:!Valid}"
+}
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION}
+	valid = "Valid"
+	columns {
+		LRU { name="LRU"; format="%x{LRU}" }
+		LRUPRIO { name="LRUPRIO"; format="%{LRUPRIO}" }
+		valid { name="Valid"; format="%{Valid?Valid:Invalid}" }
+	}
+	record = "LRU=%x{LRU},%{LRUPRIO?LRUPRIO:!LRUPRIO},%{Valid?Valid:!Valid}"
+}
+%endif
+
+%if _TARGET == ARC_A5 || \
+    _TARGET == ARC_A600 || \
+    _TARGET == ARC_A700 || \
+    _TARGET == ARC_A4
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION}
+	valid = "valid"
+	columns {
+		valid { name = "valid"; format="%{valid?Valid:Invalid}"}
+		lock { name = "lock"; format = "%{lock?Lock:Unlock}" }
+	}
+	record = "Lock: %{lock}";
+}
+
+data {
+	type = ${CACHE_TYPE_DATA}
+	valid = "valid"
+	dirty = "dirty"
+	columns {
+		valid { name = "valid"; format="%{valid?Valid:Invalid}"}
+		lock { name = "lock"; format = "%{lock?Lock:Unlock}" }
+		dirty { name = "dirty"; format = "%{dirty?Dirty:Clean}" }
+	}
+	record = "Lock: %{lock}";
+}
+
+%endif
+
+%if _TARGET == XSCALE_IXP2350
+
+instruction {
+	type = ${CACHE_TYPE_INSTRUCTION}
+	valid = "valid"
+	columns {
+		valid { name = "Valid"; format="%{valid?Valid:Invalid}"}
+		lock { name = "Lock"; format="%{lock?Lock:Unlock}"}
+		lru { name = "LRU"; format="%{lru}" }
+	}
+	record = "Lock: %{lock}, LRU: %{lru}\n"
+}
+
+data {
+	type = ${CACHE_TYPE_DATA}
+	valid = "valid"
+	columns {
+		valid { name = "Valid"; format="%{valid?Valid:Invalid}"}
+		lock { name = "Lock"; format="%{lock?Lock:Unlock}"}
+		lru { name = "LRU"; format="%{lru}" }
+		dirty { name = "dirty"; format = "%{dirty?Dirty:Clean}" }
+	}
+	record = "Lock: %{lock}, LRU: %{lru}\n"
+}
+
+l2 {
+	type = ${CACHE_TYPE_L2};
+	valid = "valid";
+	columns {
+		valid { name="Valid"; format="%{valid?Valid:Invalid}" }
+		used { name="Used"; format="%{used}" }
+		lock { name = "Lock"; format="%{lock?Lock:Unlock}"}
+		state   { name="State"; format="%{state}" }
+	}
+	record = "Lock: %{lock}, LRU: %{lru}\n"
+%endif
+
+%if _TARGET == SH_2A
+
+instruction {
+    type = ${CACHE_TYPE_INSTRUCTION};
+    valid = "Valid"
+    columns {
+	valid { name = "Valid"; format="%{Valid?Valid:Invalid}"}
+	lru { name = "LRU"; format="%{LRU}" }
+    }
+    record = "LRU: %{LRU}\n"
+}
+    
+data {
+    type = ${CACHE_TYPE_DATA};
+    valid = "Valid"
+    dirty = "Dirty"
+    columns {
+	valid { name = "Valid"; format="%{Valid?Valid:Invalid}" }
+	dirty { name = "Dirty"; format="%{Dirty?Dirty:Clean}" }
+	lru { name = "LRU"; format="%{LRU}" }
+    }
+    record = "Dirty: %{Dirty}, LRU: %{LRU}\n"
+}
+%endif
+
+%if _TARGET == FireFly32
+
+instruction {
+    type = ${CACHE_TYPE_INSTRUCTION}
+    valid = "Valid"
+    columns {
+	valid { name = "Valid"; format="%{Valid?Valid:Invalid}" }
+	lrr { name = "LRR"; format="%{LRR}" }
+    }
+    record = "LRR: %{LRR}\n"
+}
+%endif

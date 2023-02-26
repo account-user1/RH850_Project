@@ -1,0 +1,169 @@
+configure bpsyntaxchecking false
+configure rememberbreakpoints Never
+configure cwindlines 15
+<mevbutton.rc
+D;
+b main#2 {switch -item sorter;
+  scrollcommand +MAX wid=-2;
+  echo "ThreadX programs begin executing at main().  At this point, the";
+  echo "program is in single-threaded mode.  Press F5 or click 'go.'";
+  echo " ";
+  d main#2}
+b main#5 {switch -item sorter;
+  scrollcommand +MAX wid=-2;
+  echo "The tx_kernel_enter() service call starts the ThreadX kernel";
+  echo "running.  This call never returns.";
+  echo " ";
+  echo "Press F5 to continue.";
+  echo " "; d main#5}
+b tx_application_define#32 {switch -item sorter;
+  scrollcommand +MAX wid=-2;
+  echo "This function, tx_application_define, creates the threads and"
+  echo "other objects in the system.  The main ThreadX information";
+  echo "window you see is displayed by pressing the ThreadX debugger";
+  echo "button.  In the ThreadX Information window, try clicking";
+  echo "the Threads button to see a list of the two threads";
+  echo "that have been created so far.  Press F10 (Next)";
+  echo "a few times to see more threads created.  Then press F5 (Go)";
+  echo "to continue.";
+  echo " ";
+  obr ThreadXInfo TX_THREAD_STRUCT;
+  view *(struct TX_THREAD_STRUCT *)(&_tx_timer_thread);
+  obr Thread_Information TX_THREAD_STRUCT;
+  d tx_application_define#32}
+b tx_application_define#93 {switch -item sorter;
+  scrollcommand +MAX wid=-2;
+  echo "After all seven threads are created, the program creates semaphores";
+  echo "and other objects.";
+  echo " ";
+  echo "Press F5 to continue.";
+  echo " ";
+  d tx_application_define#93}
+b tx_application_define#190 {switch -item sorter;
+  scrollcommand +MAX wid=-2;
+  echo "All objects are now created.  When this function returns, ";
+  echo "the highest-priority thread will run.";
+  echo " "; d tx_application_define#190;}
+b reader_entry#61 {switch -item sorter;
+  viewdel; view queue_read; scrollcommand +MAX wid=-2;
+  echo "This thread, \"reader,\" reads in name and age data records from a file.";
+  echo "The Queue Information window shown here is available by either";
+  echo "double-clicking on queue_read in either the source pane or";
+  echo "in the Queue List window. This shows that the thread \"sorter\" ";
+  echo "is suspended on this message queue.";
+  echo " ";
+  echo "Press F5 to execute this service call.";
+  echo " ";
+  d reader_entry#61;
+  b reader_entry#38 {switch -item sorter;
+    d reader_entry#38; scrollcommand +MAX wid=-2;
+    echo "Now the \"sorter\" thread is not suspended on the queue because";
+    echo "the current thread, \"reader\" sent a message on the queue";
+    echo "with the tx_queue_send() service call.";
+    echo " "; }
+  }
+b thread_3_entry#14 {switch -item sorter;
+  d thread_3_entry#14; echo " "; viewdel;
+  echo " ";
+  echo "The printing from the program is displayed above and also on the"
+  echo "I/O pane, which you can view by clicking the I/O tab below.";
+  echo " "; }
+b thread_4_entry#14 {switch -item sorter;
+  d thread_4_entry#14;viewdel; view mutex_1
+  b common_routine#4 {switch -item sorter;
+    d common_routine#4; echo " "; viewdel; view thread_5;
+    scrollcommand +MAX wid=-2;
+    echo "This routine is called from both thread_4 and thread_5";
+    echo " ";
+    echo "If you want to set a breakpoint that is valid only when";
+    echo "a specific thread is executing, click the \"Current PC\"";
+    echo "button in the \"Thread Information\" window to view that";
+    echo "thread. Set a breakpoint from that thread view. The";
+    echo "breakpoint will then stop the program only when that";
+    echo "thread is running.";
+    echo " ";
+    echo "You can also view the OSA Explorer using the \"osaexplorer\"";
+    echo "command or clicking the \"Threads\" button in the \"ThreadX";
+    echo "Information\" window, and then click the thread when it";
+    echo "appears in the target list above.";
+    echo " ";
+    }
+  scrollcommand +MAX wid=-2;
+  echo "The mutex object is used to keep more than one thread from";
+  echo "entering a critical section or modifying a shared data ";
+  echo "structure at the same time.  The mutex object is recursive,";
+  echo " which makes it suitable for use in complex code where";
+  echo "a semaphore is inadequate.";
+  echo " ";
+  echo "This call to tx_mutex_get will cause thread_4 to suspend because";
+  echo "thread_3 currently owns mutex_1.";
+  echo " ";
+  }
+b thread_5_entry#20 {switch -item sorter;
+  d thread_5_entry#20;
+  scrollcommand +MAX wid=-2;
+  echo "Notice thread_4 is now suspended, waiting for mutex_1.";
+  echo " ";
+  echo "The Mutex object also provides optional priority inheritance,";
+  echo "which provides one way to guard against nondeterministic priority";
+  echo "inversion.  If a higher-priority thread attempts to get a mutex";
+  echo "owned by a lower-priority thread, the lower-priority thread's priority";
+  echo "is invisibly raised to that of the higher-priority thread until";
+  echo "it gives up the mutex.";
+  echo " ";
+  }
+b thread_5_entry#23 {switch -item sorter;
+  d thread_5_entry#23; echo " "; viewdel; view flags_1;
+  scrollcommand +MAX wid=-2;
+  echo "This thread makes use of the event flags group flags_1.";
+  echo "thread_3 is suspended on this flags group.  Double-click on";
+  echo "thread_3 in the Suspended Threads list to see the Thread Information";
+  echo "window.";
+  echo " ";
+  }
+b thread_3_entry#26 {switch -item sorter;
+  d thread_3_entry#26; scrollcommand +MAX wid=-2;
+  echo "Notice that thread_3 is no longer suspended and disappears from";
+  echo "the list after thread_5 sets the flag thread_3 was waiting for.";
+  echo " ";
+  }
+b thread_5_entry#32 {switch -item sorter;
+    d thread_5_entry#32; echo " "; viewdel; obr ThreadXInfo TX_THREAD_STRUCT;
+    view *(struct TX_THREAD_STRUCT *)(&_tx_timer_thread);
+    obr Thread_Information TX_THREAD_STRUCT;
+    view bytepool_1;
+    b _tx_byte_allocate {
+        switch -item sorter;
+        d _tx_byte_allocate;
+        b _tx_thread_schedule {switch -item sorter;
+        d _tx_thread_schedule; echo " ";
+        obr Byte_Pool_Contents TX_BYTE_POOL_STRUCT; view bytepool_1;
+        obr Byte_Pool_Info TX_BYTE_POOL_STRUCT; e thread_5_entry#32;
+        echo "In fact, the request to allocate 80 bytes from this byte pool failed."
+        echo "MULTI for ThreadX allows users to view the actual contents of byte"
+        echo "and block pools. Examining bytepool_1's contents shows the request"
+        echo "failed because the pool is fragmented, in this case by leaked memory.";
+        echo " ";
+        echo "This ends the demonstration of MULTI for ThreadX, but you can also try";
+        echo "1. Click the EventAnalyzer button to look at this system's event data.";
+        echo "2. In the ThreadX Information window, click the Stack Check List button";
+        echo "   to see the peak stack use for each thread.";
+        echo "For further information, refer to the \"MULTI: Developing for";
+        echo "ThreadX\" manual or the \"ThreadX User Guide.\"";
+        echo " "; };
+        c;
+    }
+  scrollcommand +MAX wid=-2;
+  echo "We're nearing the end of this quick introduction to MULTI for ThreadX.";
+  echo "This call will attempt to allocate 80 bytes from this small byte";
+  echo "pool.  Since far more than 80 bytes are available, we might assume this";
+  echo "allocation request will succeed.";
+  echo "Click \"go\" or F5 to continue.";
+  echo " ";
+  }
+Q;
+scrollcommand +MAX wid=-2;
+echo "This is a ThreadX demonstration program. Connect to a simulator";
+echo "or to a hardware target and press F5 (Go) to begin this guided demo.";
+echo "Press F5 again after reading the text printed out at each stop.";
+echo " ";

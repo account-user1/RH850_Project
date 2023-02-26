@@ -1,0 +1,18 @@
+%include "../standalone.npw"
+
+target_connection {
+    850eserv.enabled=true
+    850eserv.setup_script="${__DIR__}/850eserv.mbs"
+    850eserv.replaceable_args+="-minicube"
+    850eserv.replaceable_args+=" -df=${__TOOLS_DIR__}/v850e/d3111.800"
+    850eserv.replaceable_args+=" -dclock=614400,0,swoff"
+
+    monserv.enabled=true
+    monserv.replaceable_args+="-baud 115200"
+
+    rteserv.enabled=true
+    rteserv.setup_script="${__DIR__}/rteserv.mbs"
+}
+
+# due to memory limitations, we should default to eec++ instead of stdc++
+exports.TOO_SMALL_FOR_STD_CXX="1"

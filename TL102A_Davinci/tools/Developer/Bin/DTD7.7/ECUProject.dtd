@@ -1,0 +1,1119 @@
+<!-- Entities -->
+
+<!ENTITY ti.ECUProject              "ECUProject">
+<!ENTITY ti.Task                    "Task">
+<!ENTITY ti.Runnable                "Runnable">
+<!ENTITY ti.ECUSWComposition        "ECUSWComposition">
+<!ENTITY ti.ServicePortConnector    "ServicePortConnector">
+<!ENTITY ti.DataMapping             "DataMapping">
+<!ENTITY ti.DataElement             "DataElement">
+<!ENTITY ti.OperationElement        "OperationElement">
+<!ENTITY ti.DataElementPrototype    "DataElementPrototype">
+<!ENTITY ti.ExternalTool            "ExternalTool">
+<!ENTITY ti.Generator               "Generator">
+<!ENTITY ti.NVMBlock                "NVMBlock">
+<!ENTITY ti.PerInstanceMemory       "PerInstanceMemory">
+<!ENTITY ti.OsApplication           "OsApplication">
+<!ENTITY ti.Package                 "Package">
+<!ENTITY ti.ComponentPrototype      "ComponentPrototype">
+<!ENTITY ti.ComponentType           "ComponentType">
+<!ENTITY ti.Signal                  "Signal">
+<!ENTITY ti.SignalGroup             "SignalGroup">
+<!ENTITY ti.SignalType              "SignalType">
+<!ENTITY ti.ArrayPrimitive          "ArrayPrimitive">
+<!ENTITY ti.ArrApp4Primitive        "ArrApp4Primitive">
+<!ENTITY ti.ArrImpl4Primitive       "ArrImpl4Primitive">
+<!ENTITY ti.ArrayElementConstant    "ArrayElementConstant">
+<!ENTITY ti.RecordElement           "RecordElement">
+<!ENTITY ti.RecElementApp4          "RecElementApp4">
+<!ENTITY ti.RecElementImpl4         "RecElementImpl4">
+<!ENTITY ti.RecordElementConstant   "RecordElementConstant">
+<!ENTITY ti.FlexRayCluster          "FlexRayCluster">
+<!ENTITY ti.Channel                 "Channel">
+<!ENTITY ti.NetworkNode             "NetworkNode">
+<!ENTITY ti.ECU                     "ECU">
+<!ENTITY ti.MappedSignal            "MappedSignal">
+<!ENTITY ti.MappedPDUSignal         "MappedPDUSignal">
+<!ENTITY ti.FlexRayAbsTiming        "FlexRayAbsTiming">
+<!ENTITY ti.NetworkSignal           "NetworkSignal">
+<!ENTITY ti.RxNodeRelation          "RxNodeRelation">
+<!ENTITY ti.TxNodeRelation          "TxNodeRelation">
+<!ENTITY ti.NodeMappingRelation     "NodeMappingRelation">
+<!ENTITY ti.MultiplexorGroup        "MultiplexorGroup">
+<!ENTITY ti.GatewaySignalMapping    "GatewaySignalMapping">
+<!ENTITY ti.PDUGroup                "PDUGroup">
+<!ENTITY ti.PDU                     "PDU">
+<!ENTITY ti.PDUNamespace            "PDUNamespace">
+<!ENTITY ti.LINBus                  "LINBus">
+<!ENTITY ti.ScheduleTable           "ScheduleTable">
+<!ENTITY ti.LINUnconditionalFrame   "LINUnconditionalFrame">
+<!ENTITY ti.LINEventTriggeredFrame  "LINEventTriggeredFrame">
+<!ENTITY ti.LINSporadicFrame        "LINSporadicFrame">
+<!ENTITY ti.FlexRayAbsTiming        "FlexRayAbsTiming">
+<!ENTITY ti.NvBlockDescriptor       "NvBlockDescriptor">
+<!ENTITY ti.EthernetCluster         "EthernetCluster">
+<!ENTITY ti.EvalVariantSet          "EvalVariantSet">
+<!ENTITY ti.SignalNamespace         "SignalNamespace">
+<!ENTITY ti.UnionElement            "UnionElement">
+<!ENTITY ti.XfISignalProps  	    "XfISignalProps">
+<!ENTITY ti.XfTechnology    	    "XfTechnology">
+<!ENTITY ti.XfData    	            "XfData">
+<!ENTITY ti.ClusterNamespace        "ClusterNamespace">
+
+<!-- Elements -->
+
+<!ELEMENT ECUProject                (%C.DefAttr;,CONTENT*,ATTRLink*,FileEntry*,Task*,TaskMap*,NVMBlock*,MemoryMap*,ECUSWComposition,ECUCommunication?,ExternalTool*,Generator*,GenAttrList?,OsApplication*,ModuleChecksum*,ECUCSplitter*,ExternalFile*,PncMap*)>
+<!ELEMENT ECUCommunication          (ATTRLink*,Signal*,SignalType*,SignalGroup*,PDU*,PDUNamespace*,ECU*,CANBus*,LINBus*,FlexRayCluster*, EthernetCluster*,SignalNamespace*,ClusterNamespace*)>
+
+<!ELEMENT Task                      (%C.DefAttr;,CONTENT*,ATTRLink*,GenAttrList?)>
+<!ELEMENT TaskMap                   (ATTRLink*,GenAttrList?)>
+<!ELEMENT PncMap                    (PortGroupMapping*,PDUGroupLink*, GenAttrList?)>
+<!ELEMENT NVMBlock                  (%C.DefAttr;)>
+<!ELEMENT MemoryMap                 (ATTRLink*)>
+<!ELEMENT DataMapping               (ATTRLink*,DataElement*, OperationElement*)>
+<!ELEMENT DataElement               (ATTRLink*,DataElementLink*,GenAttrList?,VariationPoint?)>
+<!ELEMENT OperationElement          (ATTRLink*,GenAttrList?,VariationPoint?)>
+<!ELEMENT ECUSWComposition          (%C.DefAttr;,ATTRLink*,ComponentPrototype*,PortConnector*,PortPrototype*,DataMapping?,ServicePortConnector*,GenAttrList?,E2EConfiguration?,PortTerminator*,PortGroup*)>
+<!ELEMENT ExternalTool               EMPTY>
+<!ELEMENT Generator                  EMPTY>
+<!ELEMENT ServicePortConnector      (%C.DefAttr;, ATTRLink*)>
+<!ELEMENT OsApplication             (%C.DefAttr;)>
+<!ELEMENT ModuleChecksum             EMPTY>
+<!ELEMENT ECUCSplitter               EMPTY>
+<!ELEMENT ExternalFile               EMPTY>
+<!ELEMENT E2EConfiguration           (%C.DefAttr;,ATTRLink*,E2EConnection*)>
+<!ELEMENT E2EConnection              (%C.DefAttr;,ATTRLink*,DataIDElement*)>
+<!ELEMENT DataIDElement              EMPTY>
+
+<!ELEMENT ECU                       (%C.DefAttr;,ATTRLink*,FlexRayController*,NetworkNode*,FileEntry*,GenAttrList?,NetworkNodeLink*,GatewaySignalMapping*,PDUGroup*)>
+<!ELEMENT Channel                   (%C.DefAttr;,NetworkNode*,GenAttrList?)>
+<!ELEMENT FlexRayController         (%C.DefAttr;,ATTRLink*,GenAttrList?)>
+<!ELEMENT NetworkNode               (%C.DefAttr;,GenAttrList?,LINSlaveNodeAttributes?,LINMasterNodeAttributes?,LINRxFrameNodeMap*,PDULink*,TxPDURelation*)>
+<!ELEMENT GatewaySignalMapping      (ATTRLink*)>
+<!ELEMENT PDUGroup                  (%C.DefAttr;,PDUGroupLink*,PDULink*)>
+<!ELEMENT PDU                       (%C.DefAttr;,ATTRLink*, GenAttrList?, MappedPDUSignal*, MappedPDUSignalGroup*, SignalGroupLink*)>
+<!ELEMENT PDUNamespace              (%C.DefAttr;,PDU*)>
+<!ELEMENT MappedPDUSignal           (ATTRLink*)>
+<!ELEMENT MappedPDUSignalGroup      (ATTRLink*)>
+<!ELEMENT SignalNamespace           (Signal*,SignalGroup*)>
+<!ELEMENT ClusterNamespace          (CANBus*,LINBus*,FlexRayCluster*, EthernetCluster*)>
+
+<!ELEMENT CANBus                    (%C.DefAttr;,CONTENT*,CANFrame*,Channel*,GenAttrList?,NetworkSignal*,ATTRLink*)>
+<!ELEMENT CANFrame                  (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT FlexRayCluster            (%C.DefAttr;,CONTENT*,FlexRayFrame*,Channel*,GenAttrList?,NetworkSignal*,ATTRLink*)>
+<!ELEMENT EthernetCluster           (%C.DefAttr;,CONTENT*,EthernetFrame*,Channel*,GenAttrList?,NetworkSignal*,ATTRLink*)>
+<!ELEMENT FlexRayFrame              (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT EthernetFrame             (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT LINBus                    (%C.DefAttr;,CONTENT*,LINUnconditionalFrame*,LINEventTriggeredFrame*,LINSporadicFrame*,Channel*,GenAttrList?,ScheduleTable*,NetworkSignal*,ATTRLink*)>
+<!ELEMENT LINUnconditionalFrame     (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT LINEventTriggeredFrame    (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,LINUnconditionalFrameIndex*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT LINSporadicFrame          (%C.DefAttr;,ATTRLink*,GenAttrList?,MultiplexorGroup*,FrameNodeMap*,FrameConstraint?,MappedSignal*,LINUnconditionalFrameIndex*,MappedSignalGroup*,NetworkNodeLink*,MappedPDU*)>
+<!ELEMENT LINUnconditionalFrameIndex (ATTRLink*)>
+<!ELEMENT ScheduleTable             (%C.DefAttr;,UnconditionalFrameSlot*,DiagnosticFrameSlot*,EventTriggeredFrameSlot*,SporadicFrameSlot*,AssignUnassignIDSlot*,AssignNADSlot*,FreeFormatSlot*,ReadByIdentifierSlot*,ConditionalChangeNADSlot*,DataDumpSlot*,SaveConfigurationSlot*,AssignFrameIDRangeSlot*,AssignNADviaSNPDSlot*)>
+<!ELEMENT UnconditionalFrameSlot    (ATTRLink*)>
+<!ELEMENT DiagnosticFrameSlot       (ATTRLink*)>
+<!ELEMENT EventTriggeredFrameSlot   (ATTRLink*)>
+<!ELEMENT SporadicFrameSlot         (ATTRLink*)>
+<!ELEMENT AssignUnassignIDSlot      (ATTRLink*)>
+<!ELEMENT AssignNADSlot             (ATTRLink*)>
+<!ELEMENT FreeFormatSlot            EMPTY>
+<!ELEMENT ReadByIdentifierSlot      (ATTRLink*)>
+<!ELEMENT ConditionalChangeNADSlot  EMPTY>
+<!ELEMENT DataDumpSlot              (ATTRLink*)>
+<!ELEMENT SaveConfigurationSlot     (ATTRLink*)>
+<!ELEMENT AssignFrameIDRangeSlot    (ATTRLink*)>
+<!ELEMENT AssignNADviaSNPDSlot      (ATTRLink*)>
+
+<!ELEMENT Signal                    (%C.DefAttr;,ATTRLink*,GenAttrList?,PrivateSigType?,VariationPoint?, XfISignalProps*)>
+<!ELEMENT PrivateSigType            (SignalDefine*)>
+<!ELEMENT SignalGroup               (%C.DefAttr;,ATTRLink*, GenAttrList?, SignalLink*, PDUTiming?,VariationPoint?, XfISignalProps*)>
+<!ELEMENT SignalType                (%C.DefAttr;,SignalDefine*)>
+<!ELEMENT SignalDefine              (DESC?)>
+
+<!ELEMENT NetworkSignal             (DESC?,ATTRLink*,GenAttrList?,MultiplexorGroupLink*,RxNodeRelation*,TxNodeRelation*,MappedSignalLink*)>
+<!ELEMENT RxNodeRelation            (ATTRLink*,GenAttrList?,NodeMappingRelation*,VariationPoint?)>
+<!ELEMENT TxNodeRelation            (ATTRLink*,GenAttrList?,VariationPoint?)>
+<!ELEMENT NodeMappingRelation       (ATTRLink*,GenAttrList?)>
+<!ELEMENT TxPDURelation             (ATTRLink*,PDUTiming?)>
+<!ELEMENT DataDefProps              (ATTRLink?,Constant*)>
+
+<!ELEMENT LINSlaveNodeAttributes    (ATTRLink*,BitrateType,Scalar*,NADValue*,NetworkSignalLink*)>
+<!ELEMENT LINMasterNodeAttributes   EMPTY>
+<!ELEMENT LINRxFrameNodeMap         (ATTRLink*)>
+
+<!ELEMENT FrameNodeMap              (ATTRLink*,GenAttrList?,FlexRayStaticSegment?,FlexRayDynamicSegment?,FlexRayAbsTiming*,CyclicTiming*,EvtTiming*,ReqTiming*)>
+
+<!ELEMENT FlexRayStaticSegment      (FlexRayAbsTimingLink*,CyclicTiming*)>
+<!ELEMENT FlexRayDynamicSegment     (ATTRLink*,EvtTiming*,CyclicTiming*,ReqTiming*)>
+<!ELEMENT FlexRayAbsTiming          EMPTY>
+<!ELEMENT ResponseRangeTolerance    EMPTY>
+<!ELEMENT DebounceRangeTolerance    EMPTY>
+<!ELEMENT StartingRangeTolerance    EMPTY>
+<!ELEMENT RepeatingRangeTolerance   EMPTY>
+<!ELEMENT CyclicTiming              (TimingCondition*,StartingRangeTolerance,RepeatingRangeTolerance)>
+<!ELEMENT EvtTiming                 (TimingCondition*,DebounceRangeTolerance)>
+<!ELEMENT ReqTiming                 (TimingCondition*,ResponseRangeTolerance)>
+
+<!ELEMENT TimingCondition           (SystemTrigger*,SignalTrigger*)>
+<!ELEMENT SystemTrigger             (SystemState*)>
+<!ELEMENT SignalTrigger             (ATTRLink*,SignalState*,DataFilter*)>
+
+<!ELEMENT SystemState               EMPTY>
+<!ELEMENT SignalState               EMPTY>
+<!ELEMENT DataFilter                EMPTY>
+<!ELEMENT PDUTiming                 (CyclicTiming*,EvtTiming*,ReqTiming*,SignalTrigger*)>
+
+<!ELEMENT MappedSignal              (ATTRLink*,GenAttrList?,DataDefProps?)>
+<!ELEMENT MappedSignalGroup         (ATTRLink*,GenAttrList?)>
+<!ELEMENT MappedPDU                 (ATTRLink*,GenAttrList?)>
+<!ELEMENT BitrateType               (BitrateAutomatic|BitrateSelect|BitrateScalar)>
+<!ELEMENT BitrateAutomatic          EMPTY>
+<!ELEMENT BitrateSelect             (Scalar*)>
+<!ELEMENT BitrateScalar             EMPTY>
+<!ELEMENT FrameConstraint           EMPTY>
+<!ELEMENT Scalar                    EMPTY>
+<!ELEMENT NADValue                  EMPTY>
+<!ELEMENT MultiplexorGroup          (%C.DefAttr;,NetworkSignalLink*)>
+
+<!ATTLIST ECUProject                    %A.ConfigItem;
+          GenOutputLevel                CDATA "0"
+          BSWMDFileCom                  CDATA ""
+          BSWMDFileNvM                  CDATA ""
+          BSWMDFileOs                   CDATA ""
+          ECUCFile                      CDATA ""
+          ECUCFileLastUpdate            CDATA ""
+          ECUCFileModificationTime      CDATA ""
+          AllowGenerationOfUnsavedData  CDATA "1"
+          DPAFile                       CDATA ""
+          SystemVersion                 CDATA ""
+          ExtractVersion                CDATA ""
+          PackageLink                   NMTOKEN #FIXED "&ti.Package;"
+          EvalVariantSetLink            NMTOKEN #FIXED "&ti.EvalVariantSet;"
+          SysMapName                    CDATA ""
+          ExtComm                       CDATA "0"
+          System                        CDATA ""
+>
+
+<!ATTLIST ECUSWComposition              %A.ChildItem;
+          CompositionPackageLink        NMTOKEN #FIXED "&ti.Package;"
+          CompositionTypePackageLink    NMTOKEN #FIXED "&ti.Package;"
+          CompositionName               CDATA ""
+          CompositionUUID               CDATA ""
+>
+
+<!ATTLIST ECUCommunication          %A.ChildItem;
+>
+
+<!ATTLIST DataMapping               %A.ChildItem;
+>
+
+<!ATTLIST DataElement                 %A.ChildItem;
+          DataElementPrototypeLink    NMTOKEN #FIXED "&ti.DataElementPrototype;"
+          PortPrototypeLink           NMTOKEN #FIXED "&ti.PortPrototype;"
+          ArrayIndex                  CDATA "-1"
+          RecordTypeElementLink       NMTOKEN #FIXED "&ti.RecordElement;"
+          RecordTypeElementApp4Link   NMTOKEN #FIXED "&ti.RecElementApp4;"
+          RecordTypeElementImpl4Link  NMTOKEN #FIXED "&ti.RecElementImpl4;"
+          ArrayTypeElementLink        NMTOKEN #FIXED "&ti.ArrayPrimitive;"
+          ArrayTypeElementApp4Link    NMTOKEN #FIXED "&ti.ArrApp4Primitive;"
+          ArrayTypeElementImpl4Link   NMTOKEN #FIXED "&ti.ArrImpl4Primitive;"
+          DataMapComplexElementLink   NMTOKEN #FIXED "&ti.SignalGroup;"
+          DataMapPrimitiveElementLink NMTOKEN #FIXED "&ti.Signal;"
+          UnionTypeElementLink        NMTOKEN #FIXED "&ti.UnionElement;"
+>
+
+<!ATTLIST OperationElement            %A.ChildItem;
+          OperationPrototypeLink      NMTOKEN #FIXED "&ti.OperationPrototype;"
+          PortPrototypeLink           NMTOKEN #FIXED "&ti.PortPrototype;"
+          CallSignalLink              NMTOKEN #FIXED "&ti.Signal;"
+          ReturnSignalLink            NMTOKEN #FIXED "&ti.Signal;"
+>
+
+<!ATTLIST E2EConfiguration            %A.ChildItem;
+          PackageLink                 NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST E2EConnection               %A.ChildItem;
+          DataElementPrototypeLink    NMTOKEN #FIXED "&ti.DataElementPrototype;"
+          OperationPrototypeLink      NMTOKEN #FIXED "&ti.OperationPrototype;"
+          PortPrototypeLink           NMTOKEN #FIXED "&ti.PortPrototype;"
+          CompPrototypeLink           NMTOKEN #FIXED "&ti.ComponentPrototype;"
+          ECUSWCompLink               NMTOKEN #FIXED "&ti.ECUSWComposition;"
+
+          CRCOffset                   CDATA "0"
+          DataIDMode                  CDATA "0"
+          DataLength                  CDATA "0"
+          MaxDeltaCounterInit         CDATA "0"
+          CounterOffset               CDATA "8"
+          GenericName                 CDATA ""
+          CategoryNew                 (NONE|PROFILE01|PROFILE02|PROFILE03|PROFILE04|PROFILE05|PROFILE06|PROFILEXOR|PROFILEXOR2|GENERIC|DAI_SAEJ|DAI_BR222_ID|DAI_BR222_NOID) "NONE"
+          ShortLabel                  CDATA ""
+          Offset                      CDATA "0"
+          OffsetFromStart             CDATA "false"
+          MinDataLength               CDATA "0"
+          MaxDataLength               CDATA "0"
+        NoComEnabled CDATA "false"
+        PermInvalidEnabled CDATA "false"
+        RepetitionsMax CDATA "0"
+        DebounceInit CDATA "0"
+        ErrorDebounceInit CDATA "0"
+        RepetitionsDebounceInit CDATA "0"
+        SequenceDebounceInit CDATA "0"
+        DebounceLevelInvalidMax CDATA "0"
+        Direction CDATA "0"
+        NibbleOffset CDATA "0"
+          SignalGroupLink             NMTOKEN #FIXED "&ti.SignalGroup;"
+          ISignalGroupRef             CDATA ""
+          ISignalIPduRef              CDATA ""
+          DataOffset                  CDATA "0"
+        InPlace CDATA "0"
+        DisableEndToEndCheck CDATA "0"
+        ExecuteDespiteDataUnavailability CDATA "0"
+        ProfileBehavior (NONE|R4_2|PRE_R4_2) "NONE"
+        HeaderLength CDATA "0"
+        UpperHeaderBitsToShift CDATA "0"
+        WindowSize CDATA "0"
+        MinOkStateInit CDATA "0"
+        MaxErrorStateInit CDATA "0"
+        MinOkStateValid CDATA "0"
+        MaxErrorStateValid CDATA "0"
+        MinOkStateInValid CDATA "0"
+        MaxErrorStateInValid CDATA "0"
+>
+
+<!ATTLIST DataIDElement               %A.ChildItem;
+          OrderIndex                  CDATA "0"
+          Value                       CDATA "0"
+>
+
+
+<!ATTLIST ServicePortConnector         %A.ChildItem;
+          ReceiverPortLink             NMTOKEN #FIXED "&ti.PortPrototype;"
+          TransmitterPortLink          NMTOKEN #FIXED "&ti.PortPrototype;"
+          ReceiveCompPrototypeLink     NMTOKEN #FIXED "&ti.ComponentPrototype;"
+          TransmitCompPrototypeLink    NMTOKEN #FIXED "&ti.ComponentPrototype;"
+>
+
+<!ATTLIST Task                  %A.ChildItem;
+          Type                  (APPLICATION|NONRTE|BSWSCHEDULER) "APPLICATION"
+          Priority              CDATA "0"
+          Schedule              (NON|FULL) "NON"
+          OsApplicationLink     NMTOKEN #FIXED "&ti.OsApplication;"
+          RTETaskType           (AUTO|BASIC|EXTENDED) "AUTO"
+          Activation            CDATA "1"
+          ScheduleCalls         CDATA "1"
+>
+
+<!ATTLIST PncMap                    %A.ChildItem;
+          PncID                     CDATA "0"
+>
+
+<!ATTLIST TaskMap                   %A.ChildItem;
+          TaskLink                  NMTOKEN #FIXED "&ti.Task;"
+          ComponentPrototypeLink    NMTOKEN #FIXED "&ti.ComponentPrototype;"
+          RunnableLink              NMTOKEN #FIXED "&ti.Runnable;"
+          OrderIndex                CDATA "-1"
+>
+
+<!ATTLIST NVMBlock                  %A.ChildItem;
+>
+
+<!ATTLIST MemoryMap                 %A.ChildItem;
+          NVMBlockLink              NMTOKEN #FIXED "&ti.NVMBlock;"
+          PIMLink                   NMTOKEN #FIXED "&ti.PerInstanceMemory;"
+          ComponentPrototypeLink    NMTOKEN #FIXED "&ti.ComponentPrototype;"
+          RamBlockLink              NMTOKEN #FIXED "&ti.NvBlockDescriptor;"
+>
+
+<!ATTLIST ExternalTool              %A.ChildItem;
+          CommandLineParameters     CDATA ""
+          DisplayString             CDATA ""
+          Path                      CDATA ""
+>
+
+<!ATTLIST Generator                 %A.ChildItem;
+          CommandLineParameters     CDATA ""
+          DisplayString             CDATA ""
+          Path                      CDATA ""
+          IsActivated               CDATA "1"
+          IsDefaultGenerator        CDATA "0"
+          OrderIndex                CDATA "-1"
+          UseStandard               CDATA "0"
+>
+
+<!ATTLIST OsApplication             %A.ChildItem;
+          IsTrusted                 CDATA "0"
+          CoreAssignment            CDATA ""
+>
+
+<!ATTLIST ModuleChecksum            %A.ChildItem;
+          Module                    CDATA ""
+          Checksum                  CDATA ""
+>
+
+<!ATTLIST ECUCSplitter              %A.ChildItem;
+          File                      CDATA ""
+          MTime                     CDATA ""
+>
+
+<!ATTLIST ExternalFile              %A.ChildItem;
+          FileName                  CDATA ""
+          TimeStamp                 CDATA ""
+>
+
+<!ATTLIST ECU                   %A.ChildItem;
+          UsesCCPChannelLink    NMTOKEN #FIXED "&ti.NetworkNode;"
+          UsesDiagChannelLink   NMTOKEN #FIXED "&ti.NetworkNode;"
+          ComProcessingPeriod   CDATA "0.005"
+          DiagnosticAddress     CDATA "0"
+          SleepModeSupported    CDATA "0"
+          BusWakeUpSupported    CDATA "0"
+>
+
+<!ATTLIST Channel                   %A.ChildItem; 
+          Identifier                (A|B) "A"
+>
+
+<!ATTLIST FlexRayController         %A.ChildItem; 
+          ClusterLink               NMTOKEN #FIXED "&ti.FlexRayCluster;"
+          KeySlotUsage              (NONE|STARTUPSYNC|SYNC) "NONE"
+          KeySlotId                 CDATA "1"
+          ClusterDriftDamping       CDATA "1"
+          ListenTimeout             CDATA "1444"
+          LatestTx                  CDATA "1"
+          MaxDrift                  CDATA "2"
+          ExternOffsetCorrection    CDATA "0"
+          ExternRateCorrection      CDATA "0"
+          MicroPerCycle             CDATA "720"
+          SamplesPerMicrotick       (1|2|4) "1"
+          OffsetCorrectionOut       CDATA "1"
+          RateCorrectionOut         CDATA "2"
+          DelayCompensationA        CDATA "0"
+          DelayCompensationB        CDATA "0"
+          WakeUpPattern             CDATA "2"
+          AllowHaltDueToClock       CDATA "0"
+          AllowPassiveToActive      CDATA "0"
+          AcceptedStartupRange      CDATA "0"
+          MicroInitialOffsetA       CDATA "0"
+          MicroInitialOffsetB       CDATA "0"
+          MacroInitialOffsetA       CDATA "0"
+          MacroInitialOffsetB       CDATA "0"
+          SingleSlotEnabled         CDATA "0"
+          MaxDynamicPayloadLength   CDATA "12"
+          Microtick                 CDATA "0.0"
+          MicroPerMacroNom          CDATA "0.0"
+          WakeUpChannel             (NONE|A|B) "NONE"
+          DecodingCorrection        CDATA "0"
+          WakeUpSupported           CDATA "0"
+>
+
+<!ATTLIST NetworkNode               %A.ChildItem;
+          ECUGUID                   CDATA ""
+          LINType                   (None|Master|Slave) "None"
+>
+
+<!ATTLIST GatewaySignalMapping      %A.ChildItem;
+          SourceSignalLink          NMTOKEN #FIXED "&ti.MappedSignal;"
+          DestinationSignalLink     NMTOKEN #FIXED "&ti.MappedSignal;"
+>
+
+<!ATTLIST PDUGroup                  %A.ChildItem;
+          IsRx                      CDATA "0"
+          Mode                      CDATA ""
+>
+
+<!ATTLIST PDU                       %A.ChildItem; 
+          ByteOrder                 (Motorola|Intel) "Motorola"
+          BitLength                 CDATA "0"
+          PDUType                   (None|SignalIPDU|DcmIPDU|NmPDU|DataNPDU|FlowControlNPDU) "None"
+          AppType                   (None|App|Nm|DiagState|DiagRequest|DiagResponse|TPL|Other|XCPPreConfigured|XCPRuntimeConfigured|Service|BAP) "None"
+          BitPattern                CDATA ""
+          PackageLink               NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST PDUNamespace              %A.ChildItem; >
+
+<!ATTLIST MappedPDUSignal           %A.ChildItem;
+          SignalLink                NMTOKEN #FIXED "&ti.Signal;"
+          StartBit                  CDATA "0"
+          UpdateBitPosition         CDATA "-1"
+>
+
+<!ATTLIST MappedPDUSignalGroup      %A.ChildItem;
+          SignalGroupLink           NMTOKEN #FIXED "&ti.SignalGroup;"
+          UpdateBitPosition         CDATA "-1"
+          ComSignalName             CDATA ""
+          ComSignalNameTx           CDATA ""
+          MappingId                 CDATA ""
+>
+
+<!ATTLIST SignalNamespace           %A.ChildItem;
+>
+
+<!ATTLIST ClusterNamespace          %A.ChildItem;
+>
+
+<!ATTLIST CANBus                    %A.ChildItem;
+          VehicleProjectGUID        CDATA ""
+	      Manufacturer              CDATA ""
+	      NMType                    CDATA ""
+	      Bitrate                   CDATA "0"
+	      Framesize                 CDATA "0"
+	      ConnectableStations       CDATA "0"
+          NMNodeDetectionEnabled    CDATA "0"
+          NMNodeIdEnabled           CDATA "0"
+          NMRepeatMessageSupport    CDATA "0"
+          PackageLink               NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST CANFrame                  %A.ChildItem;
+          MessageID                 CDATA "0"
+          DLC                       CDATA "0"
+          Format                    (CANSTD|CANEXT) "CANSTD"
+          PDUName                   CDATA ""
+          WakeupPDU                 CDATA "" 
+          AwakePDU                  CDATA ""
+          IsVirtual                 CDATA "0"
+>
+
+<!ATTLIST FlexRayCluster               %A.ChildItem;
+          VehicleProjectGUID           CDATA ""
+	      Manufacturer                 CDATA ""
+	      NMType                       CDATA ""
+          Baudrate	                   (2.5|5.0|10.0) "10.0"
+          CycleLength                  CDATA "5000"
+          PayloadLengthStatic          CDATA "8"
+          NumberOfStaticSlots          CDATA "100"
+          NumberOfMiniSlots            CDATA "618"
+          StaticSlotLength             CDATA "30"
+          MiniSlotLength               CDATA "3"
+          MacroTick                    CDATA "1.0"
+          WakeupSymbolTxIdle           CDATA "14"
+          WakeupSymbolTxLow            CDATA "14"
+          WakeupSymbolRxWindow         CDATA "76"
+          WakeupSymbolRxIdle           CDATA "45"
+          WakeupSymbolRxLow            CDATA "15"
+          StaticSlotActionPointOffset  CDATA "1"
+          MiniSlotActionPointOffset    CDATA "1"
+          DynamicSlotIdlePhase         CDATA "1"
+          NIT                          CDATA "135"
+          SymbolWindow                 CDATA "9"
+          SampleClockPeriod            CDATA "0.0125"
+          TSSTransmitter               CDATA "5"
+          ListenNoise                  CDATA "2"
+          MacroPerCycle                CDATA "0"
+          MaxInitError                 CDATA "0.450075"
+          MaxWOClockCorrFatal          CDATA "10"
+          MaxWOClockCorrPassive        CDATA "6"
+          NMVectorLength               CDATA "0"
+          SyncNodeMax                  CDATA "4"
+          CasRxLowMax                  CDATA "71"
+          CasRxLowMin                  CDATA "34"
+          ClusterDriftDamping          CDATA "1"
+          OffsetCorrStart              CDATA "4866"
+          ColdStartAttempts            CDATA "8"
+          LimitDynamicPayloadLength    CDATA "12"
+          Protocol                     (FLEXRAY) "FLEXRAY"
+          ProtocolVersion              CDATA "2.0"
+          Medium                       CDATA "0"
+          IsHighLowBitOrder            CDATA "0"
+          BitCounting                  (MONOTONE|SAWTOOTH) "MONOTONE"
+          OffsetCorrectionMax          CDATA "0.0"
+          MaxPropagationDelay          CDATA "0.0"
+          MinPropagationDelay          CDATA "0.0"
+          EnableSymbolWindow           CDATA "0"
+          EnableNetworkManagement      CDATA "0"
+          AssumedPrecision             CDATA "0.0"
+          MaxMicrotick                 CDATA "0.0"
+          NStarPath                    CDATA "0"
+          MacroInitialOffset           CDATA "0"
+          NMNodeDetectionEnabled       CDATA "0"
+          NMNodeIdEnabled              CDATA "0"
+          NMRepeatMessageSupport       CDATA "0"
+          PackageLink                  NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST EthernetCluster           %A.ChildItem;
+          PackageLink               NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST EthernetFrame             %A.ChildItem;
+>
+
+<!ATTLIST FlexRayFrame              %A.ChildItem;
+          SchedulingType            (STATIC|DYNAMIC) "STATIC"
+          CycleRepetition           (1|2|4|8|16|32|64) "1"
+          ApplicationType           CDATA ""
+          DLC                       CDATA "0"
+          RepeatingTimeRange        CDATA "0"
+          Tolerance                 CDATA "0"
+          DebounceTimeRange         CDATA "0"
+          WakeupPDU                 CDATA "" 
+          AwakePDU                  CDATA ""
+          IsVirtual                 CDATA "0"
+>
+
+<!ATTLIST LINBus                    %A.ChildItem;
+          VehicleProjectGUID        CDATA ""
+	      Manufacturer              CDATA ""
+	      NMType                    CDATA ""
+	      Protocol                  CDATA "2.0"
+	      Bitrate                   CDATA ""
+	      LDF                       CDATA ""
+	      ChannelName               CDATA ""
+	      NMNodeDetectionEnabled    CDATA "0"
+          NMNodeIdEnabled           CDATA "0"
+          NMRepeatMessageSupport    CDATA "0"
+          PackageLink               NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST LINUnconditionalFrame     %A.ChildItem;
+          FrameID                   CDATA "0"
+          DLC                       CDATA "0"
+          DynamicID                 CDATA "0"
+          MinPeriod                 CDATA "0"
+          MaxPeriod                 CDATA "0"
+          PDUName                   CDATA ""
+          WakeupPDU                 CDATA "" 
+          AwakePDU                  CDATA ""
+          IsVirtual                 CDATA "0"
+>
+
+<!ATTLIST LINEventTriggeredFrame    %A.ChildItem;
+          FrameID                   CDATA "0"
+          CollisionResolvingLink    NMTOKEN #FIXED "&ti.ScheduleTable;"
+          DLC                       CDATA "0"
+          MinPeriod                 CDATA "0"
+          MaxPeriod                 CDATA "0"
+          WakeupPDU                 CDATA "" 
+          AwakePDU                  CDATA ""
+          IsVirtual                 CDATA "0"
+>
+
+<!ATTLIST LINSporadicFrame          %A.ChildItem;
+          WakeupPDU                 CDATA "" 
+          AwakePDU                  CDATA ""
+          IsVirtual                 CDATA "0"
+>
+
+<!ATTLIST LINUnconditionalFrameIndex  %A.ChildItem;
+          OrderIndex                  CDATA "-1"
+          FrameLink                   NMTOKEN #FIXED "&ti.LINUnconditionalFrame;"
+>
+
+<!ATTLIST ScheduleTable             %A.ChildItem;
+          OrderIndex                CDATA "-1"
+>
+
+<!ATTLIST UnconditionalFrameSlot    %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FrameLink                 NMTOKEN #FIXED "&ti.LINUnconditionalFrame;"
+>
+
+<!ATTLIST DiagnosticFrameSlot       %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FrameLink                 NMTOKEN #FIXED "&ti.LINUnconditionalFrame;"
+>
+
+<!ATTLIST EventTriggeredFrameSlot   %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FrameLink                 NMTOKEN #FIXED "&ti.LINEventTriggeredFrame;"
+>
+
+<!ATTLIST SporadicFrameSlot         %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FrameLink                 NMTOKEN #FIXED "&ti.LINSporadicFrame;"
+>
+
+<!ATTLIST AssignUnassignIDSlot      %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          IsToAssign                CDATA "0"
+          UCFrameLink               NMTOKEN #FIXED "&ti.LINUnconditionalFrame;"
+          EVFrameLink               NMTOKEN #FIXED "&ti.LINEventTriggeredFrame;"
+          SPFrameLink               NMTOKEN #FIXED "&ti.LINSporadicFrame;"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST AssignNADSlot             %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FunctionID                CDATA "0"
+          NewNAD                    CDATA "0"
+          OldNAD                    CDATA "0"
+          SupplierID                CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST FreeFormatSlot            %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          Data1                     CDATA "0"
+          Data2                     CDATA "0"
+          Data3                     CDATA "0"
+          Data4                     CDATA "0"
+          Data5                     CDATA "0"
+          Data6                     CDATA "0"
+          Data7                     CDATA "0"
+          Data8                     CDATA "0"
+>
+
+<!ATTLIST ReadByIdentifierSlot      %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          NAD                       CDATA "0"
+          Identifier                CDATA "0"
+          SupplierID                CDATA "0"
+          FunctionID                CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST ConditionalChangeNADSlot  %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          NAD                       CDATA "0"
+          ID                        CDATA "0"
+          Byte                      CDATA "0"
+          Mask                      CDATA "0"
+          Inv                       CDATA "0"
+          NewNAD                    CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST DataDumpSlot              %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          NAD                       CDATA "0"
+          D1                        CDATA "0"
+          D2                        CDATA "0"
+          D3                        CDATA "0"
+          D4                        CDATA "0"
+          D5                        CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST SaveConfigurationSlot     %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          NAD                       CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST AssignFrameIDRangeSlot    %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          NAD                       CDATA "0"
+          FrameIndex                CDATA "0"
+          FramePID1                 CDATA "0"
+          FramePID2                 CDATA "0"
+          FramePID3                 CDATA "0"
+          FramePID4                 CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST AssignNADviaSNPDSlot      %A.ChildItem;
+          OrderIndex                CDATA "-1"
+          SlotDelay                 CDATA "0.0"
+          FunctionID                CDATA "0"
+          NewNAD                    CDATA "0"
+          OldNAD                    CDATA "0"
+          SupplierID                CDATA "0"
+          NodeLink                  NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST Signal  %A.ChildItem;
+          BaseTypeLink                    NMTOKEN #FIXED "&ti.SignalType;"
+          DataTypeLink                    NMTOKEN #FIXED "&ti.DataType;"
+          InitValueConstLink              NMTOKEN #FIXED "&ti.Constant;"
+          InitValueArrayElementConstLink  NMTOKEN #FIXED "&ti.ArrayElementConstant;"
+          InitValueRecordElementConstLink NMTOKEN #FIXED "&ti.RecordElementConstant;"
+          Length                          CDATA "-1"
+          PackageLink                     NMTOKEN #FIXED "&ti.Package;"
+          DynamicLength                   CDATA "0"
+          TpTransmitted                   CDATA ""
+          CompuMethodLink   NMTOKEN #FIXED "&ti.CompuMethod;"
+          UnitLink          NMTOKEN #FIXED "&ti.Unit;"
+          DataConstrLink    NMTOKEN #FIXED "&ti.DataConstr;"
+          Transformed                     CDATA "0"
+          XfDataLink                      NMTOKEN #FIXED "&ti.XfData;"
+>
+
+<!ATTLIST PrivateSigType            %A.ChildItem;
+          Length                    CDATA "1"
+          ValueType                 (Signed|Unsigned|IEEEFloat|IEEEDouble|ASCIIString|Bitfield) "Unsigned"
+          Unit                      CDATA ""
+          Factor                    CDATA "1"
+          Offset                    CDATA "0"
+          Minimum                   CDATA "0"
+          Maximum                   CDATA "1"
+          UseScaling                CDATA "1"
+          NotValidValue             CDATA "0"
+          InitValue                 CDATA "0"
+>
+
+<!ATTLIST SignalGroup               %A.ChildItem; 
+          PackageLink               NMTOKEN #FIXED "&ti.Package;"
+          XfDataLink                NMTOKEN #FIXED "&ti.XfData;"
+>
+
+<!ATTLIST SignalType                %A.ChildItem;
+          Length                    CDATA "1"
+          ValueType                 (Signed|Unsigned|IEEEFloat|IEEEDouble|ASCIIString|Bitfield) "Unsigned"
+          Unit                      CDATA ""
+          Factor                    CDATA "1"
+          Offset                    CDATA "0"
+          Minimum                   CDATA "0"
+          Maximum                   CDATA "1"
+          UseScaling                CDATA "1"
+          NotValidValue             CDATA "0"
+          InitValue                 CDATA "0"
+>
+
+<!ATTLIST SignalDefine              %A.ChildItem;
+          CodedValue                CDATA "0"
+          CodedValueMax             CDATA ""
+>
+
+<!ATTLIST NetworkSignal             %A.ChildItem;
+          SignalLink                NMTOKEN #FIXED "&ti.Signal;"
+          ByteOrder                 (Motorola|Intel) "Motorola"
+          SendTypeIndex             CDATA "0"
+          CycleTime                 CDATA "100"
+          CycleTimeIfActive         CDATA "100"
+          InactiveValue             CDATA "0"
+          InitValue                 CDATA "0"
+>
+
+<!ATTLIST RxNodeRelation            %A.ChildItem;
+          RxNodeLink                NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST TxNodeRelation            %A.ChildItem;
+          TxNodeLink                NMTOKEN #FIXED "&ti.NetworkNode;"
+>
+
+<!ATTLIST NodeMappingRelation       %A.ChildItem;
+          MappingRefLink            NMTOKEN #FIXED "&ti.MappedSignal;"
+          TimeOut                   CDATA "0"
+>
+
+<!ATTLIST TxPDURelation             %A.ChildItem;
+          TxPDULink                 NMTOKEN #FIXED "&ti.PDU;"
+>
+
+<!ATTLIST DataDefProps      %A.ChildItem;
+          Length            CDATA "1"
+          BaseTypeLink      NMTOKEN #FIXED "&ti.BaseType;"
+          CompuMethodLink   NMTOKEN #FIXED "&ti.CompuMethod;"
+>
+
+<!ATTLIST BitrateType               %A.ChildItem;
+>
+
+<!ATTLIST BitrateAutomatic          %A.ChildItem;
+          Min                       CDATA "0"
+          Max                       CDATA "0"
+>
+
+<!ATTLIST BitrateSelect             %A.ChildItem; 
+>
+
+<!ATTLIST BitrateScalar             %A.ChildItem; 
+          Value                     CDATA "0"
+>
+
+<!ATTLIST Scalar                    %A.ChildItem;
+          Value                     CDATA "0"
+>
+
+<!ATTLIST NADValue                  %A.ChildItem;
+          Value                     CDATA "0"
+>
+
+<!ATTLIST MultiplexorGroup          %A.ChildItem;
+          MultiplexorValue          CDATA "0"
+          DataPartLength            CDATA "0"
+>
+
+<!ATTLIST LINMasterNodeAttributes   %A.ChildItem;
+          TimeBase                  CDATA "1.0"
+          Jitter                    CDATA "0.0"
+          MaxHeaderLength           CDATA "47.6"
+          ResponseTolerance         CDATA "40.0"
+>
+
+<!ATTLIST LINSlaveNodeAttributes    %A.ChildItem;
+          Conformance               CDATA ""
+          Protocol                  CDATA ""
+          NCF                       CDATA ""
+          Nad_Initial               CDATA "0"
+          Nad_Configured            CDATA "0"
+          Nad_Min                   CDATA "0"
+          Nad_Max                   CDATA "0"
+          SupplierID                CDATA "0"
+          FunctionID                CDATA "0"
+          VariantID                 CDATA "0"
+          P2_Min                    CDATA "0.0"
+          ST_Min                    CDATA "0.0"      
+          MessageLengthMax          CDATA "0"
+          DiagnosticAddress         CDATA "0"
+          Voltage_Min               CDATA "0.0"
+          Voltage_Max               CDATA "0.0"
+          Temp_Min                  CDATA "0.0"
+          Temp_Max                  CDATA "0.0"
+          Bitrate                   (Automatic|Select|Scalar) "Scalar"
+          StatusSignalName          CDATA ""
+          ResponseTolerance         CDATA "40.0"
+          WakeupTime                CDATA "0.0"
+          PoweronTime               CDATA "0.0"
+          NADAddCapability          (NADAddCapNone|NADAddCapValueRange|NADAddCapValueList) "NADAddCapNone"
+          N_AS_Timeout              CDATA "0.0"
+          N_Cr_Timeout              CDATA "0.0"
+          StatusSignalLink          NMTOKEN #FIXED "&ti.NetworkSignal;"
+          SendsWakeupSignal         CDATA "0"
+          DiagnosticClass           CDATA "0"
+>
+
+<!ATTLIST LINRxFrameNodeMap         %A.ChildItem;
+          RxFrameLink               NMTOKEN #FIXED "&ti.LINUnconditionalFrame;"
+          MessageID                 CDATA "0"
+          FrameIndex                CDATA "0"
+>
+
+<!ATTLIST FrameNodeMap              %A.ChildItem;
+          TxNodeLink                NMTOKEN #FIXED "&ti.NetworkNode;"
+          SendTypeIndex             CDATA "0"
+          CycleTime                 CDATA "100"
+          CycleTimeFast             CDATA "100"
+          NrOfRepetitions           CDATA "0"
+          DelayTime                 CDATA "20"
+          StartDelayTime            CDATA "0"
+          MessageID                 CDATA "0"
+          FrameIndex                CDATA "0"
+          FRPayloadPI               CDATA "0"
+>
+
+<!ATTLIST MappedSignal              %A.ChildItem;
+          NetworkSignalLink         NMTOKEN #FIXED "&ti.NetworkSignal;"
+          StartBit                  CDATA "0"
+          ComSignalName             CDATA ""
+          ComSignalNameTx           CDATA ""
+          UpdateBitPosition         CDATA "-1"
+          MappingId                 CDATA ""
+          DataTypePolicy            (NONE|LEGACY|COMSPEC|OVERRIDE|PI) "NONE"
+          ComType                   (STD|LD) "STD"
+>
+
+<!ATTLIST MappedSignalGroup         %A.ChildItem;
+          SignalGroupLink           NMTOKEN #FIXED "&ti.SignalGroup;"
+          ComSignalName             CDATA ""
+          ComSignalNameTx           CDATA ""
+          UpdateBitPosition         CDATA "-1"
+          MappingId                 CDATA ""
+>
+
+<!ATTLIST MappedPDU                 %A.ChildItem;
+          PDULink                   NMTOKEN #FIXED "&ti.PDU;"
+          StartBit                  CDATA "0"
+          UpdateBitPosition         CDATA "-1"
+>
+
+<!ATTLIST FrameConstraint           %A.ChildItem;
+          ControlType               (SYSTEM|USER) "SYSTEM"
+>
+
+<!ATTLIST FlexRayStaticSegment      %A.ChildItem;
+>
+
+<!ATTLIST FlexRayDynamicSegment     %A.ChildItem;
+          AbsTimingLink             NMTOKEN #FIXED "&ti.FlexRayAbsTiming;"
+>
+
+<!ATTLIST FlexRayAbsTiming          %A.ChildItem;
+          SlotID                    CDATA "0"
+          BaseCycle                 CDATA "0"
+          CycleRepetition           (1|2|4|8|16|32|64) "1"
+>
+
+<!ATTLIST CyclicTiming              %A.ChildItem;
+          FinalRepetitions          CDATA "0"
+>
+
+<!ATTLIST EvtTiming                 %A.ChildItem;
+          FinalRepetitions          CDATA "0"
+          CycleTimeFast             CDATA "0"
+>
+
+<!ATTLIST ReqTiming                 %A.ChildItem;
+          FinalRepetitions          CDATA "0"
+>
+
+<!ATTLIST ResponseRangeTolerance    %A.ChildItem;
+          TimeRange                 CDATA "0"
+          Tolerance                 CDATA "0"
+          ToleranceType             (ABSOLUTE|RELATIVE) "ABSOLUTE"
+>
+
+<!ATTLIST DebounceRangeTolerance    %A.ChildItem;
+          TimeRange                 CDATA "0"
+          Tolerance                 CDATA "0"
+          ToleranceType             (ABSOLUTE|RELATIVE) "ABSOLUTE"
+>
+
+<!ATTLIST StartingRangeTolerance    %A.ChildItem;
+          TimeRange                 CDATA "0"
+          Tolerance                 CDATA "0"
+          ToleranceType             (ABSOLUTE|RELATIVE) "ABSOLUTE"
+>
+
+<!ATTLIST RepeatingRangeTolerance   %A.ChildItem;
+          TimeRange                 CDATA "0"
+          Tolerance                 CDATA "0"
+          ToleranceType             (ABSOLUTE|RELATIVE) "ABSOLUTE"
+>
+
+<!ATTLIST TimingCondition           %A.ChildItem;
+          ConditionType             (ACTIVE|START|STOP|SEND) "ACTIVE"
+>
+
+<!ATTLIST SystemTrigger             %A.ChildItem;
+>
+
+<!ATTLIST SignalTrigger             %A.ChildItem;
+          SendTypeIndex             CDATA "0"
+          MappedSignalLink          NMTOKEN #FIXED "&ti.MappedSignal;"
+          MappedPDUSignalLink       NMTOKEN #FIXED "&ti.MappedPDUSignal;"
+>
+
+<!ATTLIST SystemState               %A.ChildItem;
+          State                     (CHANNEL_ACTIVE|CLAMP_15|CLAMP_30|CLAMP_87|CLAMP_RADIO|CHANNEL_ACTIVE_ON|CHANNEL_ACTIVE_OFF|CLAMP_15_ON|CLAMP_15_OFF|CLAMP_30_ON|CLAMP_30_OFF|CLAMP_87_ON|CLAMP_87_OFF|CLAMP_RADIO_ON|CLAMP_RADIO_OFF|KEY_PRESSED|KEY_RELEASED|NO_OTHER_TRIGGERING_RUNNING|OTHER_TRIGGERING_RUNNING|NONE|OTHER) "OTHER"
+>
+
+<!ATTLIST SignalState               %A.ChildItem;
+          State                     (VALUE_CHANGED|VALUE_NOT_CHANGED|VALUE_DEFAULT|VALUE_NOT_DEFAULT|OTHER) "OTHER"
+>
+
+<!ATTLIST DataFilter                %A.ChildItem;
+          Filter                    (ALWAYS|NEVER|MASKEDNEWEQUALSX|MASKEDNEWDIFFERSX|NEWISEQUAL|NEWISDIFFERENT|MASKEDNEWEQUALSMASKEDOLD|MASKEDNEWDIFFERSMASKEDOLD|NEWISWITHIN|NEWISOUTSIDE|NEWISGREATER|NEWISLESSOREQUAL|NEWISLESS|NEWISGREATEROREQUAL|ONEEVERYN) "ALWAYS"
+          Mask                      CDATA "0"
+          X                         CDATA "0"
+          Min                       CDATA "0"
+          Max                       CDATA "0"
+          Offset                    CDATA "0"
+          Period                    CDATA "0"
+>
+
+<!ATTLIST PDUTiming                 %A.ChildItem;
+>
+
+<!-- Links -->
+
+<!ELEMENT ECUProjectLink EMPTY>
+<!ATTLIST ECUProjectLink
+          %A.LinkGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.ECUProject;"
+>
+
+<!ELEMENT DataElementLink EMPTY>
+<!ATTLIST DataElementLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.DataElement;"
+>
+
+<!ELEMENT NetworkNodeLink EMPTY>
+<!ATTLIST NetworkNodeLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.NetworkNode;"
+>
+
+<!ELEMENT NetworkSignalLink EMPTY>
+<!ATTLIST NetworkSignalLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.NetworkSignal;"
+>
+
+<!ELEMENT MultiplexorGroupLink EMPTY>
+<!ATTLIST MultiplexorGroupLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.MultiplexorGroup;"
+>
+
+<!ELEMENT MappedSignalLink EMPTY>
+<!ATTLIST MappedSignalLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.MappedSignal;"
+>
+
+<!ELEMENT PDUGroupLink EMPTY>
+<!ATTLIST PDUGroupLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PDUGroup;"
+>
+
+<!ELEMENT FlexRayAbsTimingLink EMPTY>
+<!ATTLIST FlexRayAbsTimingLink
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.FlexRayAbsTiming;"
+>
+
+<!ELEMENT PDULink EMPTY>
+<!ATTLIST PDULink %A.LinkGUID;
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.PDU;"
+>
+
+<!ELEMENT SignalGroupLink EMPTY>
+<!ATTLIST SignalGroupLink %A.LinkGUID;
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.SignalGroup;"
+>
+
+<!ELEMENT SignalLink EMPTY>
+<!ATTLIST SignalLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.Signal;"
+>
+
+<!ELEMENT XfISignalProps (ATTRLink*)>
+<!ATTLIST XfISignalProps
+	ErrorReaction			(Auto|Appl|NotSpecified) 'NotSpecified'
+    Type                    (E2E|USER|SOMEIP) 'E2E'
+	
+	TechnologyLink 			NMTOKEN #FIXED "&ti.XfTechnology;"
+	IDs						CDATA ''
+	Length					CDATA '-1'
+	MinLength				CDATA '-1'
+	MaxLength				CDATA '-1'
+	
+	InfVersion		        CDATA '-1'
+	MsgType					(Error|Notification|Request|RequestNR|Response|NotSpecified) 'NotSpecified'
+	SessionHandling			(Active|Inactive|NotSpecified) 'NotSpecified'
+	ArrayLengthFields		CDATA '-1'
+	StructLengthFields		CDATA '-1'
+	UnionLengthFields		CDATA '-1'
+>

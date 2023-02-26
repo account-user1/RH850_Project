@@ -1,0 +1,41 @@
+<!-- Entities -->
+
+<!ENTITY ti.Blueprint             "Blueprint">
+<!ENTITY ti.PortInterface         "PortInterface">
+<!ENTITY ti.Package               "Package">
+<!ENTITY ti.Constant              "Constant">
+<!ENTITY ti.DataElementPrototype  "DataElementPrototype">
+<!ENTITY ti.CalElementPrototype   "CalElementPrototype">
+
+<!-- Elements -->
+
+<!ELEMENT Blueprint       (%C.DefAttr;, ATTRLink*, (PortPrototypeBP|PortInterfaceBP), GenAttrList?)>
+<!ELEMENT PortPrototypeBP (ATTRLink*,InitValueBP*)>
+<!ELEMENT PortInterfaceBP EMPTY>
+<!ELEMENT InitValueBP     (ATTRLink*,Constant*)>
+
+<!ATTLIST Blueprint        %A.ConfigItem;
+    PackageLink          NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!ATTLIST PortPrototypeBP  %A.ChildItem;
+    Category             (SR|CS|Cal|Mod|NV|None) "None"
+    PortInterfaceLink    NMTOKEN #FIXED "&ti.PortInterface;"
+>
+<!ATTLIST PortInterfaceBP %A.ChildItem;>
+
+<!ATTLIST InitValueBP %A.ChildItem;
+    DataElementPrototypeLink NMTOKEN #FIXED "&ti.DataElementPrototype;" 
+    CalElementPrototypeLink  NMTOKEN #FIXED "&ti.CalElementPrototype;" 
+>
+
+
+<!-- Links -->
+
+<!ELEMENT BluepringLink EMPTY>
+<!ATTLIST BluepringLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.Blueprint;">
+

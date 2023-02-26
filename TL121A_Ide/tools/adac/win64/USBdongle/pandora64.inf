@@ -1,0 +1,70 @@
+; pandora64.inf for 64bit vista
+;
+; Installation inf for the USB Key adapter.
+;
+; (c) Copyright 2000-2007 Jujo Electronics
+;
+
+
+
+[Version]
+Signature="$Windows NT$"
+Provider=%Provider%
+ClassGUID={3A049680-77B9-11d2-9BBA-0060979CF7AA}
+Class=USB Keys
+CatalogFile=pandora64.cat
+DriverVer=11/16/2010
+
+; USB Key Class ------------------------------------------------------
+[ClassInstall32.NT]
+Addreg=Class.AddReg
+
+[Class.AddReg]
+HKR,,,,%ClassName%
+HKR,,Icon,,"-20"
+
+; Files --------------------------------------------------------------
+[DestinationDirs]
+DefaultDestDir   = 12
+
+; Driver information -------------------------------------------------
+[Manufacturer]
+%Provider%   = Jujo,NTamd64
+
+[Jujo.NTamd64]
+%Pandora.DeviceDesc% = Pandora, USB\VID_6A75&PID_9801
+
+; General installation section ---------------------------------------
+[Pandora.NTamd64]
+CopyFiles = Pandora.Files
+
+[Pandora.Files]
+PANDORA64.SYS
+
+[Pandora.NTamd64.Services]
+AddService = Pandora, 0x00000002 , Pandora_Service_Inst.NTamd64
+
+[Pandora_Service_Inst.NTamd64]
+DisplayName    = %Pandora.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 0                  ; SERVICE_ERROR_IGNORE
+LoadOrderGroup = Extended base
+ServiceBinary  = %12%\PANDORA64.SYS
+
+; Source file information --------------------------------------------
+[SourceDisksNames.amd64]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles.amd64]
+; Files for disk Jujo Installation Disk #1 (USB)
+PANDORA64.SYS = 1,,
+
+
+[Strings]
+; Localizable Strings ------------------------------------------------
+Pandora.DeviceDesc = "Pandora Key"
+DiskId1 = "Jujo Installation Disk #1 (USB)"
+Provider="Jujo"
+ClassName="USB Keys"
+Pandora.SvcDesc="Pandora Key"

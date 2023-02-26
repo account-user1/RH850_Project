@@ -1,0 +1,71 @@
+# options for the html compiler
+
+%if ! defined (HTML_COMPILER_OPTIONS)
+% define HTML_COMPILER_OPTIONS
+%endif
+
+CommandOptions {
+	
+    HTMLCompilerOptions {
+	AlternateSourceName {
+	    {
+		name="-o"
+	    }
+	    delimiter="Space"
+	    merge="Replace"
+	    # don't pass this option, as it's always on the command line.
+	    pass={"None"}
+	    flags={"OUTPUTNAME"}
+	    optionType="String"
+	    guiLabel="Alternate Source Name"
+	    guiCategory="HTML Compiler"
+	}
+	OmitCompression {
+	    {
+		name="-c"
+		value=0
+		enumLabel="No HTML Compression"
+	    }
+	    {
+		name="-C"
+		value=1
+		enumLabel="HTML Compression"
+	    }
+ 	    {
+		name="--enableCompression"
+ 		value=1
+ 		enumLabel="HTML Compression"
+ 	    }
+	    delimiter="NoArg"
+	    merge="Replace"
+	    optionType="Enum"
+	    guiLabel="HTML File Compression"
+	    guiCategory="HTML Compiler"
+	}
+	AlternateCompressionTable {
+	    {
+		name="-p"
+	    }
+	    delimiter="Space"
+	    merge="Replace"
+	    optionType="String"
+	    guiLabel="Alternate Compression Table"
+	    guiCategory="HTML Compiler"
+	}
+	AlternateHeaderName {
+	    {
+		name="-h"
+	    }
+	    # don't actually use this option, it's provided for legacy only
+	    disabled=true
+	    delimiter="Space"
+	    merge="Replace"
+	    flags={"EXTRAOUTPUTFILE"}
+	    optionType="String"
+	    disabled=true
+	    guiLabel="Alternate Header Name"
+	    guiCategory="HTML Compiler"
+	}
+    }
+
+}

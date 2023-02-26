@@ -1,0 +1,448 @@
+%if !defined(GHS_G653XINT_VERSION)
+%  define GHS_G653XINT_VERSION 2010
+%endif
+
+%if (GHS_G653XINT_VERSION >= 2010)
+% if streq(__MULTI_HOST__, "win32")
+%  if file_exists("${__DIR__}/../../bin/win32/g653xint_201x.exe")
+%  define G653XINT_OPTIONS
+%  endif
+% else
+%  if streq(__MULTI_HOST__, "linux86")
+%   if file_exists("${__DIR__}/../../bin/linux86/g653xint_201x")
+%   define G653XINT_OPTIONS
+%   endif
+%  else
+%   if file_exists("${__DIR__}/../../bin/solaris2/g653xint_201x")
+%   define G653XINT_OPTIONS
+%   endif
+%  endif
+% endif
+%else
+% if streq(__MULTI_HOST__, "win32")
+%  if file_exists("${__DIR__}/../../bin/win32/g653xint.exe")
+%  define G653XINT_OPTIONS
+%  endif
+% else
+%  if streq(__MULTI_HOST__, "linux86")
+%   if file_exists("${__DIR__}/../../bin/linux86/g653xint")
+%   define G653XINT_OPTIONS
+%   endif
+%  else
+%   if file_exists("${__DIR__}/../../bin/solaris2/g653xint")
+%   define G653XINT_OPTIONS
+%   endif
+%  endif
+% endif
+%endif
+
+%if defined(G653XINT_OPTIONS)
+CommandOptions {
+    GhsG653xintOptions {
+%if (GHS_G653XINT_VERSION >= 2010)
+	    KernelSpaceInAllWindows {
+                    {
+		            name="-a"
+			    value=0
+		    	    enumLabel="Schedule KernelSpace in all partitions windows"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="KernelSpace In All Windows (INTERNAL USE ONLY)"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%else
+	    NoKernelSpaceInAllWindows {
+                    {
+		            name="-a"
+			    value=0
+		    	    enumLabel="Don't Schedule KernelSpace in all partitions windows"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="No KernelSpace In All Windows (INTERNAL USE ONLY)"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%endif
+	    BackgroundPriority {
+		    name="-b"
+		    merge="Replace"
+		    optionType="Integer"
+		    pass={"All"}
+		    delimiter="Space"
+		    guiLabel="Background Priority"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    Checksum {
+                    {
+			    name="-checksum"
+			    value=0
+			    enumLabel="Allow for checksum value in generated linker control file entries"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Checksum"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    AllowPortsInNonARINCPartitions {
+                    {
+			    name="-d"
+			    value=0
+			    enumLabel="Allow Ports in Non-ARINC Partitions" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Allow Ports in Non-ARINC Partitions"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    DumpObjectInformationStandardOut {
+                    {
+			    name="-e"
+			    value=0
+			    enumLabel="Dump object information to standard out" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Dump object information to standard out"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    DumpObjectInformationStandardError {
+                    {
+			    name="-e2"
+			    value=0
+			    enumLabel="Dump object information to standard error" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Dump object information to standard error"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%if (GHS_G653XINT_VERSION < 2010)
+            NoKernelSpaceInAffinityGroup {
+                    {
+                            name="-f"
+                            value=0
+                            enumLabel="Don't put KernelSpace in Affinity Groups"
+                    }
+                    merge="Replace"
+                    optionType="Enum"
+                    pass={"All"}
+                    delimiter="NoArg"
+                    guiLabel="Don't put KernelSpace in Affinity Groups"
+                    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+                    commonLevel=101
+            }
+            ModuleHMIODevice {
+                    {
+                            name="-g"
+                            value=0
+                            enumLabel="Use an IODevice to propagate errors from partition HM to module HM"
+                    }
+                    merge="Replace"
+                    optionType="Enum"
+                    pass={"All"}
+                    delimiter="NoArg"
+                    guiLabel="Use an IODevice to propagate errors from partition HM to module HM"
+                    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+                    commonLevel=101
+            }
+%endif
+	    LittleEndian {
+                    {
+			    name="-i"
+			    value=0
+			    enumLabel="Target is little-endian" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Little-Endian Target"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    KernelInitialObjects {
+		    name="-k"
+		    merge="Replace"
+		    optionType="Integer"
+		    pass={"All"}
+		    delimiter="Space"
+		    guiLabel="Kernel Initial Objects"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    Language {
+                    {
+		            name="-l Ada"
+			    value=0
+			    enumLabel="Ada"
+                    }
+                    {
+		            name="-l C"
+			    value=1
+			    enumLabel="C"
+                    }
+                    {
+		            name="-l C++"
+			    value=2
+			    enumLabel="C++"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="AddressSpace Language"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    NoModuleHealthMonitor {
+                    {
+		            name="-m"
+			    value=0
+			    enumLabel="No Module Health Monitor"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="No Module Health Monitor (INTERNAL USE ONLY)"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    OutputFilename {
+		    name="-o"
+		    merge="Replace"
+		    optionType="String"
+		    delimiter="Equal"
+		    pass={"All"}
+		    flags={"OUTPUTNAME"}
+		    guiLabel="Output Filename"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    OutputDir {
+		    name="-outputdir"
+		    merge="Replace"
+		    optionType="String"
+		    delimiter="Equal"
+		    pass={"All"}
+		    flags={"OUTPUTDIR"}
+		    guiLabel="Output Diretory"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    PageSize {
+		    name="-p"
+		    merge="Replace"
+		    optionType="Integer"
+		    pass={"All"}
+		    delimiter="Space"
+		    guiLabel="Page Size"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%if (GHS_G653XINT_VERSION >= 2010)
+	    DisableMultiCore {
+                    {
+		            name="-q0"
+			    value=0
+			    enumLabel="Disable MultiCore Support"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Disable MultiCore Support"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%else
+	    EnableMultiCore {
+                    {
+		            name="-q"
+			    value=0
+			    enumLabel="Enable MultiCore Support"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Enable MultiCore Support"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%endif
+	    SpecifyOneWayPortConnections {
+                    {
+		            name="-t"
+			    value=0
+			    enumLabel="Specify port connections as OneWay"
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Specify port connections as OneWay"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    MultipleModuleSchedules {
+                    {
+			    name="-u"
+			    value=0
+			    enumLabel="Allow multiple module schedules" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Allow multiple module schedules"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    VirtualStartObjectNumber {
+		    name="-v"
+		    merge="Replace"
+		    optionType="Integer"
+		    pass={"All"}
+		    delimiter="Space"
+		    guiLabel="Virtual Start Object Number"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    DisableWarnings {
+                    {
+			    name="-w"
+			    value=0
+			    enumLabel="Disable warnings about unexpected tag lines" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Disable warnings"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    DisableWarnings2 {
+                    {
+			    name="-w2"
+			    value=0
+			    enumLabel="Disable warnings about periodic processes with shared schedules" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Disable warnings About Periodic Processes with Shared Schedules"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+	    MaxTransfersPerWindowRequired {
+                    {
+			    name="-y"
+			    value=0
+			    enumLabel="Disable requirement to specify MaxTransfersPerWindow for ports" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Don't require MaxTransfersPerWindow specification"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%if (GHS_G653XINT_VERSION >= 2010)
+	    VirtualizeObjectTables {
+                    {
+			    name="-z"
+			    value=0
+			    enumLabel="Generate object table data to be linked into virtual applications" 
+                    }
+		    merge="Replace"
+                    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    guiLabel="Virtualize Object Tables"
+		    guiCategory="Target;Operating System;ARINC653-1 XML INTEGRITY converter"
+		    commonLevel=101
+	    } 
+%endif
+    }
+}
+
+Commands {
+    g653xint {
+	    name="ARINC XML Instance File Processor"
+%if (GHS_G653XINT_VERSION >= 2010)
+% if streq(__MULTI_HOST__, "win32")
+	    exec="${__DIR__}/../../bin/win32/g653xint_201x.exe"
+% else
+%  if streq(__MULTI_HOST__, "linux86")
+	    exec="${__DIR__}/../../bin/linux86/g653xint_201x"
+%  else
+	    exec="${__DIR__}/../../bin/solaris2/g653xint_201x")
+%  endif
+% endif
+%else
+% if streq(__MULTI_HOST__, "win32")
+	    exec="${__DIR__}/../../bin/win32/g653xint.exe"
+% else
+%  if streq(__MULTI_HOST__, "linux86")
+	    exec="${__DIR__}/../../bin/linux86/g653xint"
+%  else
+	    exec="${__DIR__}/../../bin/solaris2/g653xint")
+%  endif
+% endif
+%endif
+	    options={"SpecialOptions", "GhsG653xintOptions"}
+    }
+    XML_Editor {
+        name="XML Editor"
+#Change the exec string to match the XML tool in the path
+	     exec="xcooktop"
+    }
+}
+
+FileTypes {
+    {
+	name="ARINC XML Instance File"
+	extensions={"xml"}
+	outputExtension=".int"
+	outputType="SourceFile"
+	grepable=true
+	extraFiles={"$(OUTPUTDIR)/kernel_additions.ld"}
+	extraFiles+={"$(OUTPUTDIR)/object_table.s"}
+	extraFiles+={"$(OUTPUTDIR)/module_hm_table.s"}
+	extraFiles+={"$(OUTPUTDIR)/system_hm_table.s"}
+	extraFiles+={"$(OUTPUTDIR)/partition_hm_callbacks.s"}
+	command="ARINC XML Instance File Processor"
+	commandLine="$COMMAND $OPTIONS $INPUTFILE -o $(OUTPUTDIR)/$(OUTPUTNAMEBASE).int"
+	progress="Processing instance file"
+	action="&Process instance file"
+	color="#500050"
+	findLinkLine=false
+	graphicalEditor="XML Editor"
+	useDefaultEditor=true
+    }
+}
+%endif

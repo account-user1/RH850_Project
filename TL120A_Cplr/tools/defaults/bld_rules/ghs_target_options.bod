@@ -1,0 +1,5554 @@
+###############################################################################
+# ghs_target_options.bod
+# This file contains most of the non-universal options. Each is disabled by
+# default, and must be enabled in a target's top-level bod file
+# The other major target-specific options are in ghs_toolchain_options.bod
+###############################################################################
+
+
+CommandOptions {
+    GhsCompilerOptions {
+    
+###############################################################################
+# In this first section are options supported by multiple targets
+###############################################################################
+
+    ################ Top-Level #######################
+    
+	    
+	    MemoryDescriptionFile {
+	    #### For all targets ##
+		    name="--memory_description_file"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=false
+		    guiLabel="Memory Description File"
+		    guiCategory="Target"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    RegisterDescriptionFile {
+	    #### For all targets ##
+		    name="--register_definition_file"
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    pass={"Link"}
+		    disabled=false
+		    guiLabel="Register Description File"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Endianness {
+	    #### arm, mips, ppc, sh, sc, sparc
+		    bigendian {
+			    name="-bigendian"
+			    value=0
+			    enumLabel="Big Endian"
+		    }
+		    eb {
+		    	    name="-EB"
+			    value=0
+			    enumLabel="Big Endian"
+		    }
+		    littleendian {
+			    name="-littleendian"
+			    value=1
+			    enumLabel="Little Endian"
+		    }
+		    el {
+		    	    name="-EL"
+			    value=1
+			    enumLabel="Little Endian"
+		    }
+		    be8 {
+			    name="--be8"
+			    value=2
+			    enumLabel="Big Endian Data, Little Endian Code"
+			    disabled=true
+		    }
+		    be32 {
+			    name="--be32"
+			    value=3
+			    enumLabel="Big Endian Data, Big Endian Code"
+			    disabled=true
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Endianness"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+    
+    
+    ################### Floating-Point #####################
+    
+	    FPCoprocessor {
+		    fnone {
+		    #### For all targets
+			    name="-fnone"
+			    value=0
+			    enumLabel="No Floating-Point"
+			    disabled=false
+		    }
+		    fhard {
+		    #### 68k, arm, mips, ppc, x86
+			    name="-fhard"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    f {
+		    #### 68k, arm, mips, ppc, x86
+			    name="-f"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    mhardfloat {
+		    #### 68k, arm, mips, ppc, x86
+		    # for GNU compatability
+			    name="-mhard-float"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    mfpu {
+		    #### 68k, arm, mips, ppc, x86
+		    # for GNU compatability
+			    name="-mfpu"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    68k_68881 {
+		    #### 68k
+			    name="-68881"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    68k_68882 {
+		    #### 68k
+			    name="-68882"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    fpuvfp {
+		    #### arm
+			    name="-fpu=vfp"
+			    value=1
+			    enumLabel="Hardware Coprocessor"
+			    disabled=true
+		    }
+		    fsingle {
+		    #### mips, v800
+			    name="-fsingle"
+			    value=3
+			    enumLabel="Hardware Single, Software Double"
+			    disabled=true
+		    }
+		    fsoft {
+		    #### For all targets
+			    name="-fsoft"
+			    value=4
+			    enumLabel="Software Emulation"
+			    disabled=false
+		    }
+		    msoftfloat {
+		    #### For all targets
+		    # for GNU compatability
+			    name="-msoft-float"
+			    value=4
+			    enumLabel="Software Emulation"
+			    disabled=false
+		    }
+		    mnofpu {
+		    #### For all targets
+		    # for GNU compatability
+			    name="-mno-fpu"
+			    value=4
+			    enumLabel="Software Emulation"
+			    disabled=false
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Floating-Point Mode"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatSingle {
+	    #### M32R,PPC,SH,V800
+		    {
+			    name="-floatsingle"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nofloatsingle"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+		    	    name="-floatdouble"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Treat Doubles as Singles"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    ARM_FPCoprocessor {
+	    #### ARM, floating point coprocessor version
+		    fpuvfpv1 {
+		    	    name="-fpu=vfpv1"
+			    value=0
+			    enumLabel="VFP v1"
+		    }
+		    fpuvfpv2 {
+		    	    name="-fpu=vfpv2"
+			    value=1
+			    enumLabel="VFP v2"
+		    }
+		    fpuvfpv3d16 {
+		    	    name="-fpu=vfpv3_d16"
+			    value=2
+			    enumLabel="VFP v3, 16 Double Registers"
+		    }
+		    fpuvfpv3 {
+		    	    name="-fpu=vfpv3"
+			    value=3
+			    enumLabel="VFP v3, 32 Double Registers"
+		    }
+		    fpuvfpv4d16 {
+		    	    name="-fpu=vfpv4_d16"
+			    value=4
+			    enumLabel="VFP v4, 16 Double Registers"
+		    }
+		    fpuvfpv4 {
+		    	    name="-fpu=vfpv4"
+			    value=5
+			    enumLabel="VFP v4, 32 Double Registers"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Coprocessor Version"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+            Mips_CoreToFPUClockRatio {
+	    #### mips, advanced option
+            
+		    {
+			    name="-core_fpu_ratio=2:1"
+			    value=0
+			    enumLabel="Core to FPU Pipeline Clock Ratio = 2 : 1"
+		    }
+		    {
+			    name="-core_fpu_ratio=1:1"
+			    value=1
+			    enumLabel="Core to FPU Pipeline Clock Ratio = 1 : 1"
+		    }
+		    {
+			    name="-core_fpu_ratio=1.5:1"
+			    value=2
+			    enumLabel="Core to FPU Pipeline Clock Ratio = 1.5 : 1"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+			    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Core to FPU Pipeline Clock Ratio"
+		    guiCategory="Target"
+            }
+	    FloatingPointTruncation {
+	    #### 68k, ppc, sparc, x86
+		    {
+			    name="-fprecise"
+			    value=0
+			    enumLabel="Precise"
+		    }
+		    {
+			    name="-fnoprecise"
+			    value=1
+			    enumLabel="Not Precise"
+		    }
+		    {
+			    name="-nofprecise"
+			    value=1
+			    enumLabel="Not Precise"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Truncation"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatingPointRounding{
+	    #### x86
+		    {
+			    name="-extended_fp"
+			    value=0
+			    enumLabel="Extended Precision"
+		    }
+		    {
+			    name="-no_extended_fp"
+			    value=1
+			    enumLabel="Double Precision"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Rounding"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }	    
+	    FloatingPointBetterCompareNaN{
+	    #### x86
+		    {
+			    name="-fbetter_cmp_NaN"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fnobetter_cmp_NaN"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Better Compare NaN"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatingPointSSEMath{
+	    #### x86
+		    {
+			    name="-sse_math"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_sse_math"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Use SSE for Floating-Point"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FastFloatingPointSSEMath{
+	    #### x86
+		    {
+			    name="-fast_sse_math"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_fast_sse_math"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Faster SSE Floating-Point Math"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    NaNCompareUnordered{
+	    #### ppc
+		    {
+			    name="-fNaN_cmp_unordered"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fno_NaN_cmp_unordered"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="NaN Compares as Unordered"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatAssociativity{
+	    #### All targets
+		    {
+			    name="-float_associativity"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_float_associativity"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Floating Point Associativity"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }	    
+	    FloatingPointBuiltIns {
+	    #### 68k, ppc, sparc, x86, mips, v800, ARM
+		    {
+			    name="-ffunctions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-ffunc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fnofunctions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fnofunc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Functions"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatingPointFusedMultiplyAdd {
+	    #### Ppc (later mips, v800)
+		    {
+			    name="-fused_madd"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--mfused-madd"
+			    name="-ffunc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_fused_madd"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--mno-fused-madd"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Floating-Point Fused Multiply and Add"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatingPointPreciseSignedZero {
+		    {
+			    name="-precise_signed_zero"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_precise_signed_zero"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Floating-Point Precise Signed Zero"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    FloatingPointPreciseSignedZeroCompare {
+		    {
+			    name="-precise_signed_zero_compare"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_precise_signed_zero_compare"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    delimiter="NoArg"
+		    guiLabel="Floating-Point Precise Signed Zero Compare"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    # [jy] I consider this the wrong place for -nofloatio.
+	    # it is really a library option, not a floating point option.
+	    # besides, we should be discontinuing this now that printf
+	    # adjusts for floating point dynamically.
+	    FloatingPointIO {
+	    #### For all targets ##
+		    {
+			    name="-floatio"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nofloatio"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Use Floating-Point in stdio Routines"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }       
+     	    FloatingPointScanf {
+		    {
+			    name="-float_scanf"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_float_scanf"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support floating point types in scanf"
+		    guiCategory="Linker"
+	    }
+	    FloatingPointWarnFloat {
+		    {
+			    name="-Wfloat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wnofloat"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Wno-float"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Warn for all floating point types"
+		    guiCategory="Target;Advanced Floating-Point"
+	    }
+	    FloatingPointWarnDouble {
+		    {
+			    name="-Wdouble"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Wnodouble"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Wno-double"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Warn for types double or long double"
+		    guiCategory="Target;Advanced Floating-Point"
+	    }
+	    FloatingPointNoDouble {
+		    {
+			    name="-fnodouble"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+		    	    name="-Xnodouble"
+			    value=0
+		    }
+		    {
+			    name="-fnonodouble"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Znodouble"
+			    value=1
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Do not allow types double or long double"
+		    guiCategory="Target;Advanced Floating-Point"
+	    }
+   
+	    V800_FPU4 {
+		    {
+			    name="-rh850_fpu4"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_fpu4"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Floating-Point instructions have a latency of 4 cycles, instead of the traditional 6"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    V800_DualFPU {
+		    {
+			    name="-rh850_dual_fpu"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_dual_fpu"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    hidden=true
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Processor has a dual-issue Floating-Point Unit"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+    
+    ################## Text and Data Placement #######################
+
+    # For PIC, PID, SDA, ZDA, etc    
+    
+	    AutoSDA {
+	    #### ppc
+		    {
+			    name="-auto_sda"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_auto_sda"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Automatic Link-Time SDA"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    SpecialDataArea {
+		    sda {
+		    #### 68k, fp, mips, ppc, sh, tricore, v800
+			    name="-sda"
+			    value=0
+			    delimiter="NoArg"
+			    disabled=true
+			    enumLabel="Small Data Area"
+		    }
+		    sda2 {
+		    #### 68k, fp, mips, ppc, sh, tricore, v800
+			    name="-sda"
+			    value=1
+			    delimiter="Equal"
+			    disabled=true
+			    enumLabel="Small Data Area with Threshold"
+		    }
+		    zda {
+		    #### 68k, mips, ndr, ppc, sc, tricore, v800
+			    name="-zda"
+			    value=2
+			    delimiter="Equal"
+			    disabled=true
+			    enumLabel="Zero Data Area with Threshold"
+		    }
+		    nothreshold {
+		    #### 68k, fp, mips, ndr, ppc, sc, sh, tricore, v800
+			    name="-nothreshold"
+			    value=3
+			    delimiter="NoArg"
+			    disabled=true
+			    enumLabel="No Special Data Area"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    guiLabel="Special Data Area"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    SDAFile {
+		    {
+		    name="-sda_file"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    disabled=true
+		    optionType="String"
+		    guiLabel="Small Data Area File"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+		    valueIsFilename=true
+	    }
+	    ZDAFile {
+		    {
+		    name="-zda_file"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    disabled=true
+		    optionType="String"
+		    guiLabel="Zero Data Area File"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+		    valueIsFilename=true
+	    }
+	    Elxr_SDA_Range {
+		    {
+		    name="-sda_range"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    disabled=true
+		    hidden=true
+		    optionType="String"
+		    enumLabel="Small Data Area Range"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    Elxr_SDA2_Range {
+		    {
+		    name="-sda2_range"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    disabled=true
+		    hidden=true
+		    optionType="String"
+		    enumLabel="Small Data Area 2 Range"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    Elxr_ZDA_Range {
+		    {
+		    name="-zda_range"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    disabled=true
+		    hidden=true
+		    optionType="String"
+		    enumLabel="Zero Data Area Range"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    ppc_AdditionalSdaReg {
+	    #### ppc, v800
+		    {
+			    name="-additional_sda_reg"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    guiLabel="Additional SDA Base Registers"
+		    guiCategory="Target"
+	    }
+	    ppc_SplitSdaReg {
+	    #### ppc
+		    {
+			    name="-split_sda_reg"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    guiLabel="Additional Non-Contiguous SDA Region Base Registers"
+		    guiCategory="Target"
+	    }
+	    AdditionalSdaCommon {
+	    #### v800
+		    {
+			    name="-additional_sda_common"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_additional_sda_common"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Additional SDA Base Registers (common)"
+		    guiCategory="Target"
+	    }
+	    
+
+	    V800_Mtda {
+	    #### V800
+		    {
+			    name="-mtda"
+			    delimiter="NoArg"
+			    enumLabel="Multiple TDAs"
+		    }
+		    {
+			    name="-single_tda"
+			    value=1
+			    enumLabel="Single TDA"
+		    }
+		    {
+			    name="--single_tda"
+			    value=1
+			    enumLabel="Single TDA"
+		    }
+		    {
+			    name="-notda"
+			    value=2
+			    enumLabel="No TDA"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="V850 Tiny Data Area"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+
+	    V800_SDA23 {
+	    #### V800 
+                    {
+                            name="-large_sda"
+                            delimiter="NoArg"
+			    value=0
+                            enumLabel="Generate 23-bit SDA relocations for load/store instructions"
+                    }
+                    {
+                            name="-no_large_sda"
+                            value=1
+                            enumLabel="Generate 16-bit SDA relocations for load/store instructions"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="23-bit SDA (V850E2V3 and later)"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    V800_ZDA23 {
+	    #### V800 
+                    {
+                            name="-large_zda"
+                            delimiter="NoArg"
+			    value=0
+                            enumLabel="Generate 23-bit ZDA relocations for load/store instructions"
+                    }
+                    {
+                            name="-no_large_zda"
+                            value=1
+                            enumLabel="Generate 16-bit ZDA relocations for load/store instructions"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="23-bit ZDA (V850E2V3 and later)"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+				
+            V800_SDA23_Shortening {
+            #### v800
+                    {
+                            name="-shorten_loads"
+                            value=0
+                            enumLabel="Convert 23-bit SDA and ZDA relocations to 16-bit in load/store instructions when possible"
+                    }
+                    {
+                            name="-no_shorten_loads"
+                            value=1
+                            enumLabel="Do not convert 23-bit SDA and ZDA relocations to 16-bit in load/store instructions"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Linker-Based SDA23/ZDA23 Shortening (V850E2V3 and later)"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+            }
+
+            V800_Move_Shortening {
+            #### v800
+                    {
+                            name="-shorten_moves"
+                            value=0
+                            enumLabel="Convert 32 and 48-bit move relocations to 16-bit in move instructions when possible"
+                    }
+                    {
+                            name="-no_shorten_moves"
+                            value=1
+                            enumLabel="Do not attempt to shrink move relocations in move instructions"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Linker-Based Move Shortening"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+            }
+
+	    V800_ROSDAISZDA {
+		    {
+			    name="-rosda_is_zda"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rosda_is_zda"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Place all read-only SDA items in ZDA instead"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+
+	    ZeroCommons {
+	    #### 68k, mips, ndr, ppc, SH, Tricore, v800
+		    {
+			    name="-zero_commons"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_zero_commons"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Allow Common Variables in ZDA"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+
+	    Pic {
+	    #### 68k, arm, fp, mips, ndr, ppc, sh, sparc, v800
+		    pic_large_offset {
+			    #### sparc
+			    name="-PIC"
+			    value=0
+			    disabled=true
+			    enumLabel="On with Large Offset"
+		    }
+		    pic_large_offset2 {
+			    #### sparc
+			    name="-fPIC"
+			    value=0
+			    disabled=true
+			    enumLabel="On with Large Offset"
+		    }
+		    {
+			    name="-pic"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fpic"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nopic"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nopicbig"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Position Independent Code"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    Pid {
+	    #### 68k, arm, fp, mips, ndr, ppc, sh, v800
+		    {
+			    name="-pid"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-PID"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nopid"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Position Independent Data"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    FarCalls {
+	    #### arm, mips, ppc, sc, tricore, v800, bf
+		    {
+			    name="-farcalls"
+			    value=0
+			    enumLabel="Make All Calls Far Calls"
+		    }
+		    {
+			    name="--far_calls"
+			    value=0
+			    enumLabel="Make All Calls Far Calls"
+		    }
+		    {
+			    name="-mlong-calls"
+			    value=0
+			    enumLabel="Make All Calls Far Calls"
+		    }
+		    {
+			    name="-nofarcalls"
+			    value=1
+			    enumLabel="Make No Far Calls"
+		    }
+		    {
+			    name="--no_far_calls"
+			    value=1
+			    enumLabel="Make No Far Calls"
+		    }
+		    {
+			    name="-mno-long-calls"
+			    value=1
+			    enumLabel="Make No Far Calls"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Far Calls"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    FarCallPatch {
+	    #### ppc, arm, mips, v800, bf,
+		    {
+			    name="-farcallpatch"
+			    value=0
+			    enumLabel="Patch Far Calls When Necessary"
+		    }
+		    {
+			    name="--far_call_patch"
+			    value=0
+			    enumLabel="Patch Far Calls When Necessary"
+		    }
+		    {
+			    name="-nofarcallpatch"
+			    value=1
+			    enumLabel="Do Not Patch Far Calls"
+		    }
+		    {
+			    name="--no_far_call_patch"
+			    value=1
+			    enumLabel="Do Not Patch Far Calls"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"Link"}
+		    guiLabel="Linker-Based Far Call Patching"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+    
+	    Mips_WFarcallpatch{
+	    #### mips
+		    {
+			    name="-nowfarcallpatch"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-wfarcallpatch"
+			    value=0
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Warnings for Out of Range Call Patches"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    WarnFarcallPatchLibs {
+	    #### mips
+		    {
+			    name="-warn_farcall_patch_libs"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="-nowarn_farcall_patch_libs"
+			    value=0
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Warnings for Out of Range Call Patches in Libraries"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    DiscardZeroInitializers {
+	    #### all targets - no enabling needed
+		    {
+			    name="-discard_zero_initializers"
+			    value=0
+			    enumLabel="Place Zero-Initialized Data in BSS Sections"
+		    }
+		    {
+			    name="-no_discard_zero_initializers"
+			    value=1
+			    enumLabel="Place Zero-Initialized Data in Data Sections"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=false
+		    guiLabel="Placement of Zero-Initialized Data"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    DataInText {
+	    #### mips, arm
+		    {
+			    name="-no_data_in_text"
+			    value=0
+			    enumLabel="No Literal Data in Text"
+		    }
+		    {
+			    name="-data_in_text"
+			    value=1
+			    enumLabel="Allow Literal Data in Text"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Placement of Literal Data in Text"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    68k_UseRodata {
+	    #### 68k
+		    {
+			    name="-use_rodata"
+			    value=0
+			    enumLabel="Place Read-Only Data in .rodata"
+		    }
+		    {
+			    name="-nouse_rodata"
+			    value=1
+			    enumLabel="Place Read-Only Data in .text"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Placement of Read-Only Data"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    GlobalReg {
+	    #### 68k, arm, mips, ppc, sc, v800, sh, bf
+		    {
+			    name="-globalreg"
+		    }
+		    delimiter="Equal"
+		    merge="Replace"
+		    optionType="String"
+		    disabled=true
+		    guiLabel="Global Registers"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    
+	    StackCheck {
+		    {
+			    name="-stack_check"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-check=stack"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fstack_check"
+			    value=0
+			    enumLabel="On"
+		    }		    
+		    {
+			    name="-no_stack_check"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-check=nostack"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno_stack_check"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Stack Limit Checking"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    StackProtector {
+		    {
+			    name="-stack_protector"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_stack_protector"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Check for Stack Smashing Attacks"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    RenameSection {	    
+		    name="-section"
+		    delimiter="Space"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Compile"}
+		    guiLabel="Rename Section"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    SplitDataSectionsByAlignment {
+                    {
+                            name="-split_data_sections_by_alignment"
+                            value=0
+                            enumLabel="Split Data Sections by Alignment"
+                    }
+                    {
+                            name="-no_split_data_sections_by_alignment"
+                            value=1
+                            enumLabel="Do Not Split Data Sections by Alignment "
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Aligned Data Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualDataSections {
+                    {
+                            name="-individual_data_sections"
+                            value=0
+                            enumLabel="Allocate Variables in Default Data Sections to Individual Variable Sections"
+                    }
+                    {
+                            name="-no_individual_data_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Variables in Default Data Sections to Individual Variable Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Variable Sections for Default Data Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualPragmaDataSections {
+                    {
+                            name="-individual_pragma_data_sections"
+                            value=0
+                            enumLabel="Allocate Variables in Data Sections Renamed by #pragma to Individual Variable Sections"
+                    }
+                    {
+                            name="-no_individual_pragma_data_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Variables in Data Sections Renamed by #pragma to Individual Variable Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Variable Sections for Renamed Data Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualAttrDataSections {
+                    {
+                            name="-individual_attribute_data_sections"
+                            value=0
+                            enumLabel="Allocate Variables in User-Defined Data Sections by __attribute__ to Individual Variable Sections"
+                    }
+                    {
+                            name="-no_individual_attribute_data_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Variables in User-Defined Data Sections by __attribute__ to Individual Variable Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Variable Sections for User-Defined Data Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualFunctionSections {
+                    {
+                            name="-individual_function_sections"
+                            value=0
+                            enumLabel="Allocate Functions in Default Text Section to Individual Function Sections"
+                    }
+                    {
+                            name="-no_individual_function_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Functions in Default Text Section to Individual Function Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Function Sections for Default Text Section"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualPragmaFunctionSections {
+                    {
+                            name="-individual_pragma_function_sections"
+                            value=0
+                            enumLabel="Allocate Functions in Text Sections Renamed by #pragma to Individual Function Sections"
+                    }
+                    {
+                            name="-no_individual_pragma_function_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Functions in Text Sections Renamed by #pragma to Individual Function Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Function Sections for Renamed Text Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    IndividualAttrFunctionSections {
+                    {
+                            name="-individual_attribute_function_sections"
+                            value=0
+                            enumLabel="Allocate Functions in User-Defined Text Sections by __attribute__ to Individual Function Sections"
+                    }
+                    {
+                            name="-no_individual_attribute_function_sections"
+                            value=1
+                            enumLabel="Do Not Allocate Functions in User-Defined Text Sections by __attribute__ to Individual Function Sections"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Individual Function Sections for User-Defined Text Sections"
+                    guiCategory="Target;Text and Data Placement"
+                    commonLevel=101
+	    }
+	    FastMalloc {
+	    #### For all targets ##
+		    {
+			    name="-fast_malloc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_fast_malloc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    guiLabel="Use Small Block Malloc"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+            InitRamAtStartup {
+            #### V800 ##
+                    {
+                            name="-init_ram_at_startup"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_init_ram_at_startup"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Initialize RAM at Startup"
+                    guiCategory="Target"
+            }
+            RamInitVal {
+            #### V800 ##
+                    {
+                            name="-ram_init_val"
+                    }
+                    delimiter="Equal"
+                    merge="Replace"
+                    optionType="String"
+                    disabled=true
+                    guiLabel="RAM Initialization Value"
+                    guiCategory="Target"
+            }
+
+################################################################################
+# From here on out, there are options which are only applicable to one target
+# There are sections for:
+# 68k, ARM, ARM64, Blackfin, FP, FR, MIPS, NDR, PPC, SH, SPARC, SC, TriCore,
+# V800, Win32, X86 (no specific options for i960, max, mcore)
+# See also Advanced Options section below
+################################################################################
+
+    ################## 68K #######################
+    
+	    68k_CfMac {
+		    {
+			    name="-cf_mac"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocf_mac"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for MAC Instructions"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    68k_CfEmac {
+		    {
+			    name="-cf_emac"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocf_emac"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for EMAC Instructions"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    68k_CfSSEmac {
+		    {
+			    name="-cf_ssemac"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocf_ssemac"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for SSEMAC Instructions"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    68k_UseMac {
+		    {
+			    name="-usemac"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_usemac"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Generation of MAC Instructions"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    68k_68851 {
+		    {
+			    name="-68851"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_68851"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for 68851 MMU"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+
+    ################## ARM: Thumb #######################
+    
+	    Arm_Thumb {
+		    {
+			    name="-thumb"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-mthumb"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nothumb"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_thumb"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Thumb Code Generation"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Arm_ThumbLib {
+		    # -thumb_lib, -nothumb_lib, -no_thumb_lib
+		    {
+			    name="-thumb_lib"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nothumb_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_thumb_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Thumb Libraries"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Arm_Neon {
+		    {
+			    name="--no_neon"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--neon"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="NEON SIMD Support"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Arm_AutoInterruptTable {
+		    {
+			    name="-auto_interrupt_table"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_auto_interrupt_table"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Auto-Interrupt Table"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_BreakupMultiple {
+		    {
+			    name="-no_breakup_multiple"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-breakup_multiple"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    disabled=true
+		    guiLabel="Breakup Multiple Loads/Stores"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_BreakupMultipleStores {
+		    {
+			    name="-breakup_multiple_stores"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    disabled=true 
+		    guiLabel="Breakup Multiple Stores"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_InterruptibleLoadMultiple {
+		    {
+			    name="-no_interruptible_load_multiple"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-interruptible_load_multiple"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Interruptible Load Multiple"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_FixCoreBit {
+		    {
+			    name="-no_fix_core_bit"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fix_core_bit"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true
+		    disabled=true
+		    guiLabel="Workaround XScale Core Bit Erratum"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_VolatileLoadBarrier {
+		    {
+			    name="-no_arm_volatile_load_barrier"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-arm_volatile_load_barrier"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Workaround Cortex-A9 Load Erratum 761319"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_HardwareDivide {
+		    {
+			    name="--no_hardware_divide"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--hardware_divide"
+			    value=1
+			    enumLabel="On"
+		    }
+		    {
+			    name="--thumb_hardware_divide"
+			    value=2
+			    enumLabel="Thumb Mode Support Only"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Hardware Divide Instruction"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_BranchSelfErrata {
+		    {
+			    name="-no_arm_branch_self_errata"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-arm_branch_self_errata"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Workaround Cortex-A9 Branch To Self Errata"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_StoreDMBLoopErrata {
+		    {
+			    name="-no_arm_store_dmb_loop_errata"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-arm_store_dmb_loop_errata"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Workaround Cortex-A9 Store DMB Loop Errata"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Arm_CortexA9AllErrataWorkarounds {
+		    {
+			    name="-no_cortexa9_errata"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-cortexa9_errata"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="All ARM Cortex A9 Errata Workarounds"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+
+    ################## ARM64 #############################
+	    Arm64_MemoryModel {
+	            {
+		    	    name="-small_memory_model"
+			    value=0
+			    enumLabel="Small Memory Model"
+		    }
+		    {
+		            name="-large_memory_model"
+			    value=1
+			    enumLabel="Large Memory Model"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Memory Model"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    ################## Blackfin #############################
+	    BF_HWErrata_MMR_Read {
+		    {
+			    name="-workaround=sdram-mmr-read"
+			    value=0
+			    enumLabel="Workaround for Anomaly #05000198"
+		    }
+		    {
+			    name="-workaround=nosdram-mmr-read"
+			    value=1
+			    enumLabel="Disable Workaround for Anomaly #05000198"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Hardware Workarounds"
+		    guiCategory="Target"
+	    }
+	    BF_HWErrata_Speculative_Load {
+		    {
+			    name="-workaround=speculative-loads"
+			    value=0
+			    enumLabel="Workaround for Anomaly #05000245"
+		    }
+		    {
+			    name="-workaround=nospeculative-loads"
+			    value=1
+			    enumLabel="Disable Workaround for Anomaly #05000245"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Hardware Workarounds"
+		    guiCategory="Target"
+	    }
+	    BF_HWErrata_Speculative_Sync {
+		    {
+			    name="-workaround=speculative-syncs"
+			    value=0
+			    enumLabel="Workaround for Anomaly #05000244"
+		    }
+		    {
+			    name="-workaround=nospeculative-syncs"
+			    value=1
+			    enumLabel="Disable workaround for Anomaly #05000244"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Hardware Workarounds"
+		    guiCategory="Target"
+	    }
+	    BFCPURevision {
+		    {
+			    name="-bf_cpu_rev=.0"
+			    value=0
+			    enumLabel="Revision 0.0"
+		    }
+		    {
+			    name="-bf_cpu_rev=.1"
+			    value=1
+			    enumLabel="Revision 0.1"
+		    }
+		    {
+			    name="-bf_cpu_rev=.2"
+			    value=2	    		
+			    enumLabel="Revision 0.2"
+		    }
+		    {
+			    name="-bf_cpu_rev=.3"
+			    value=3	    		
+			    enumLabel="Revision 0.3"
+		    }
+		    {
+			    name="-bf_cpu_rev=.4"
+			    value=4	    		
+			    enumLabel="Revision 0.4"
+		    }
+		    {
+			    name="-bf_cpu_rev=.5"
+			    value=5	    		
+			    enumLabel="Revision 0.5"
+		    }
+		    {
+			    name="-bf_cpu_rev=.6"
+			    value=6
+			    enumLabel="Revision 0.6"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Silicon Revision Number"
+		    guiCategory="Linker;Anomaly Correcting Linker"
+		    commonLevel=101;
+	    }
+	    BFAnomalyEnable {
+		    {
+			    name="-bf_anomaly_enable"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_bf_anomaly_enable"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Turn on anomaly fixes"
+		    guiCategory="Linker;Anomaly Correcting Linker";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarnAll {
+		    {
+			    name="-bf_anomaly_warn"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_bf_anomaly_warn"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warnings on all fixes"
+		    guiCategory="Linker;Anomaly Correcting Linker";
+		    commonLevel=101;
+	    }
+	    BFAnomalyImpact {
+		    {
+			    name="-bf_anomaly_impact"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_bf_anomaly_impact"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Show statistics on code impact for the anomaly fixes"
+		    guiCategory="Linker;Anomaly Correcting Linker";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000074 {
+		    {
+			    name="-bf_anomaly_fix=-05000074"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000074"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000074 - Multi-issue instruction with slot 2 store"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000122 {
+		    {
+			    name="-bf_anomaly_fix=-05000122"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000122"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000122 - Rx.h cannot be used to access 16 bit System MMR regs"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000114 {
+		    {
+			    name="-bf_anomaly_fix=-05000114"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000114"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000114 - Infinite Core Stall"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000127 {
+		    {
+			    name="-bf_anomaly_fix=-05000127"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000127"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000127 - SIGNBITS not functional"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000141 {
+		    {
+			    name="-bf_anomaly_fix=-05000141"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000141"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000141 - Infinite stall with sequence of dual-dag events"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000157 {
+		    {
+			    name="-bf_anomaly_fix=-05000157"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000157"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000157 - Error due to killed 32-bit System MMR write"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000198 {
+		    {
+			    name="-bf_anomaly_fix=-05000198"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000198"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000198 - Failing MMR accesses when stalled by preceding read"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000202 {
+		    {
+			    name="-bf_anomaly_fix=-05000202"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000202"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000202 - Possible infinite stall with specific dual-dag"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000209 {
+		    {
+			    name="-bf_anomaly_fix=-05000209"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000209"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000209 - Speed-path in computational unit"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000227 {
+		    {
+			    name="-bf_anomaly_fix=-05000227"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000227"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000227 - Incorrect scratchpad memory bank reads"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000244 {
+		    {
+			    name="-bf_anomaly_fix=-05000244"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000244"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000244 - CSYNC/SSYNC/IDLE around change of control"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000245 {
+		    {
+			    name="-bf_anomaly_fix=-05000245"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000245"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000245 - Error due to access in shadow of conditional branch"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000248 {
+		    {
+			    name="-bf_anomaly_fix=-05000248"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000248"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000248 - (BF561) TESTSET forces stall on other core"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000257 {
+		    {
+			    name="-bf_anomaly_fix=-05000257"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000257"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000257 - Interrupt/Exception during short HW loop"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000262 {
+		    {
+			    name="-bf_anomaly_fix=-05000262"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000262"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000262 - Stores to data cache may be lost"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000264 {
+		    {
+			    name="-bf_anomaly_fix=-05000264"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000264"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000264 - CSYNC/SSYNC/IDLE causes infinite stall in HW loop"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000311 {
+		    {
+			    name="-bf_anomaly_fix=-05000311"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000311"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000311 - Erroneous flag pin operations under specific sequences"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000312 {
+		    {
+			    name="-bf_anomaly_fix=-05000312"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000312"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000312 - Errors when CSYNC,SSYNC or loads are interrupted"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000371 {
+		    {
+			    name="-bf_anomaly_fix=-05000371"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000371"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000371 - RETS Register Corruption when Subroutine under 5 Cycles"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000412 {
+		    {
+			    name="-bf_anomaly_fix=-05000412"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000412"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000412 - (BF561) TESTSET Causes Data Corruption with Writeback Data Cache Enabled"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000426 {
+		    {
+			    name="-bf_anomaly_fix=-05000426"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000426"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000426 - Speculative Fetches of Indirect-Pointer Instructions Can Cause False Hardware Errors"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyFix05000428 {
+		    {
+			    name="-bf_anomaly_fix=-05000428"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_fix=05000428"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="05000428 - (BF561) Lost/Corrupted L2/L3 Memory Write after Speculative L2 Memory Read by Core B"
+		    guiCategory="Linker;Anomaly Correcting Linker;Fix Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000074 {
+		    {
+			    name="-bf_anomaly_warn=-05000074"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000074"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000074"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000122 {
+		    {
+			    name="-bf_anomaly_warn=-05000122"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000122"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000122"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000114 {
+		    {
+			    name="-bf_anomaly_warn=-05000114"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000114"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000114"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000127 {
+		    {
+			    name="-bf_anomaly_warn=-05000127"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000127"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000127"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000141 {
+		    {
+			    name="-bf_anomaly_warn=-05000141"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000141"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000141"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000157 {
+		    {
+			    name="-bf_anomaly_warn=-05000157"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000157"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000157"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000198 {
+		    {
+			    name="-bf_anomaly_warn=-05000198"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000198"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000198"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000202 {
+		    {
+			    name="-bf_anomaly_warn=-05000202"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000202"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000202"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000209 {
+		    {
+			    name="-bf_anomaly_warn=-05000209"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000209"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000209"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000227 {
+		    {
+			    name="-bf_anomaly_warn=-05000227"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000227"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000227"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000244 {
+		    {
+			    name="-bf_anomaly_warn=-05000244"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000244"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000244"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000245 {
+		    {
+			    name="-bf_anomaly_warn=-05000245"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000245"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000245"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000248 {
+		    {
+			    name="-bf_anomaly_warn=-05000248"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000248"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000248"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000257 {
+		    {
+			    name="-bf_anomaly_warn=-05000257"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000257"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000257"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000262 {
+		    {
+			    name="-bf_anomaly_warn=-05000262"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000262"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000262"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000264 {
+		    {
+			    name="-bf_anomaly_warn=-05000264"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000264"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000264"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000311 {
+		    {
+			    name="-bf_anomaly_warn=-05000311"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000311"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000311"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000312 {
+		    {
+			    name="-bf_anomaly_warn=-05000312"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000312"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000312"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000371 {
+		    {
+			    name="-bf_anomaly_warn=-05000371"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000371"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000371"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000412 {
+		    {
+			    name="-bf_anomaly_warn=-05000412"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000412"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000412"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000426 {
+		    {
+			    name="-bf_anomaly_warn=-05000426"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000426"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000426"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+	    BFAnomalyWarn05000428 {
+		    {
+			    name="-bf_anomaly_warn=-05000428"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-bf_anomaly_warn=05000428"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"Link"}
+		    disabled=true
+		    guiLabel="Warn on 05000428"
+		    guiCategory="Linker;Anomaly Correcting Linker;Warnings for Anomalies";
+		    commonLevel=101;
+	    }
+
+    ################## Firepath #######################
+    
+
+	    Fp_FNSC {
+		    {
+			    name="-fp_fnsc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nofp_fnsc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="FNSC Compression"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Fp_DynamicStackCheck {
+		    {
+			    name="-dynamic_stack_check"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_dynamic_stack_check"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Dynamic Stack Checking"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    ##################### FR ###########################
+
+	    FR_20BitMem {
+		    {
+			    name="-20bit_mem_model"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no20bit_mem_model"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="20-bit Memory Model"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+
+    ################## M32R ###############################
+	    M32R_DataModel {
+		    {
+			    name="-data_model=small"
+			    value=0
+			    enumLabel="Data addresses Are 24 bits"
+		    }
+		    {
+			    name="-data_model=large"
+			    value=1
+			    enumLabel="Data addresses Are 32 bits"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Data Model"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    M32R_CodeModel { 
+		    {
+			    name="-code_model=small"
+			    value=0
+			    enumLabel="Code Addresses Are 24 bits"
+		    }
+		    {
+			    name="-code_model=large"
+			    value=1
+			    enumLabel="Code Addresses Are 32 bits"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Code Model"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+
+    ################## MIPS: MIPS16 #######################
+    
+	    Mips_16Variant {
+		    {
+			    name="-mips16v1"
+			    value=0
+			    enumLabel="MIPS16v1"
+		    }
+		    {
+			    name="-mips16=1"
+			    value=0
+			    enumLabel="MIPS16v1"
+		    }
+		    {
+			    name="-mips16e"
+			    value=1
+			    enumLabel="MIPS16e"
+		    }
+		    {
+			    name="-mips16=2"
+			    value=1
+			    enumLabel="MIPS16e"
+		    }
+		    {
+			    name="-mips16e_tx"
+			    value=2
+			    enumLabel="MIPS16e-TX"
+		    }
+		    {
+			    name="-mips16=2b"
+			    value=2
+			    enumLabel="MIPS16e-TX"
+		    }
+		    {
+			    name="-nomips16"
+			    value=3
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-mno-mips16"
+			    value=3
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-mips16"
+			    value=4
+			    enumLabel="MIPS16 default"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MIPS16 Code Generation"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_16Usage {
+		    {
+			    name="-mips16_usage=none"
+			    value=0
+			    enumLabel="No Files Use MIPS16"
+		    }
+		    {
+			    name="-mips16_usage=some"
+			    value=1
+			    enumLabel="Some Files Use MIPS16"
+		    }
+		    {
+			    name="-mips16_usage=all"
+			    value=2
+			    enumLabel="All Files Use MIPS16"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MIPS16 Usage"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_16Libraries {
+		    {
+			    name="-mips16_lib"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nomips16_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_mips16_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MIPS16 Libraries"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_microMIPS {
+		    {
+			    name="-micromips"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-mmicromips"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nomicromips"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-mno-micromips"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="microMIPS Code Generation"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_microMIPS_Usage {
+		    {
+			    name="-micromips_usage=none"
+			    value=0
+			    enumLabel="No Files Use microMIPS"
+		    }
+		    {
+			    name="-micromips_usage=some"
+			    value=1
+			    enumLabel="Some Files Use microMIPS"
+		    }
+		    {
+			    name="-micromips_usage=all"
+			    value=2
+			    enumLabel="All Files Use microMIPS"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="microMIPS Usage"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_microMIPS_Libraries {
+		    {
+			    name="-micromips_lib"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nomicromips_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_micromips_lib"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="microMIPS Libraries"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_VR4133_Restriction15 {
+		    {
+			    name="-novr4133_restriction15"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-vr4133_restriction15"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true;
+		    disabled=true
+		    guiLabel="VR4133 Restriction 15 workaround"
+		    guiCategory="Target"
+	    }
+	    Mips_ERT_TX49H3_012 {
+		    {
+			    name="-noert_tx49h3_012"
+			    value=0
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-ert_tx49h3_012"
+			    value=1
+			    enumLabel="On"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    hidden=true;
+		    disabled=true
+		    guiLabel="TX49 Errata H3 012 Workaround"
+		    guiCategory="Target"
+	    }
+	    DefaultRegisterSize {
+		    {
+			    name="-32bit"
+			    value=0
+			    enumLabel="32-bit Wide Registers"
+		    }
+		    {
+			    name="-64bit"
+			    value=1
+			    enumLabel="64-bit Wide Registers"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Register Width"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Mips_FPURegisterSize {
+	 	    {
+			    name="-fpu_width_32bit"
+			    value=0
+			    enumLabel="32-bit Wide FPU Registers"
+		    }
+	 	    {
+			    name="-fpu_width_64bit"
+			    value=1
+			    enumLabel="64-bit Wide FPU Registers"
+		    }
+		    {
+			    name="-fpu_width_default"
+			    value=2
+			    enumLabel="Default Width FPU Registers"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="FPU Register Width"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+	    }
+	    Mips_Release2 {
+		    {
+			    name="-release2"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_release2"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Release2 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Mips_PicCompat {
+		    {
+			    name="-pic_compat"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_pic_compat"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Reserve Global PIC register"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    Mips_EVA3G {
+		    {
+			    name="-eva3g_segmentation"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_eva3g_segmentation"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use EVA Segmentation Control Configuration"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    Mips_JAXAVersion {
+		    {
+			    name="-jaxa_hazards"
+			    value=0
+			    enumLabel="JAXA1 hazards"
+		    }
+		    {
+			    name="-jaxa2_hazards"
+			    value=1
+			    enumLabel="JAXA2 hazards"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="JAXA Hazards version"
+		    guiCategory="Target;JAXA support"
+		    commonLevel=101
+	    }
+	    Mips_JAXAConversionCheckRange {
+		    {
+			    name="-jaxa_conversion_check_range"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_jaxa_conversion_check_range"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Check Input For Limited Range Conversions between Floating-Point and Integer"
+		    guiCategory="Target;JAXA Support"
+		    commonLevel=101
+	    }
+	    Mips_ABIVersion {
+	    	    # -mips_abi=workstation is currently unsupported
+		    # -mips_abi=n32 was added for a customer but is undocumented
+		    {
+			    name="-mips_abi=ghsstdcall"
+			    value=0
+			    enumLabel="GHS Standard ABI"
+		    }
+		    {
+		    	    name="-mips_abi=n32"
+			    value=1
+			    enumLabel="MIPS N32 ABI"
+			    hidden=true
+		    }
+		    {
+		    	    name="-mips_abi=o32"
+			    value=2
+			    enumLabel="MIPS O32 ABI"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="MIPS ABI Version"
+		    guiCategory="Target"		    
+	    }
+   
+    ################# NDR ###############################
+    
+	    Ndr_CoProc {
+		    {
+			    name="-ndr_coproc"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_coproc"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_CoProcCombine {
+		    {
+			    name="-ndr_coproc_combine"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_coproc_combine"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Combine Consecutive Coprocessor Macros"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_CoProcSched {
+		    {
+			    name="-ndr_coproc_sched"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_coproc_sched"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Schedule Consecutive Coprocessor Macros"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Mcr {
+		    {
+			    name="-ndr_mcr"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_mcr"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="MCR for Prologue/Epilogue and Mnemonic"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Mul8 {
+		    {
+			    name="-ndr_mul8"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_mul8"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor mul8 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Mul16 {
+		    {
+			    name="-ndr_mul16"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_mul16"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor mul16 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Mul32 {
+		    {
+			    name="-ndr_mul32"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_mul32"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor mul32 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Shift {
+		    {
+			    name="-ndr_shift"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_shift"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor shift Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Div8 {
+		    {
+			    name="-ndr_div8"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_div8"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor div8 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Div16 {
+		    {
+			    name="-ndr_div16"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_div16"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor div16 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Div32 {
+		    {
+			    name="-ndr_div32"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_div32"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor div32 Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_Float {
+		    {
+			    name="-ndr_float"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_float"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor float Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Ndr_DivFloat {
+		    {
+			    name="-ndr_div_float"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ndr_div_float"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Coprocessor float Division Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+    
+    ################## PPC: AltiVec #######################
+    
+	    ppc_AltiVec {
+		    {
+			    name="-AltiVec"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noAltiVec"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for AltiVec Extensions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_VRSave {
+		    {
+			    name="-VRSAVE"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noVRSAVE"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for VRSAVE Register"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_EieioLoads {
+		    {
+			    name="-eieio_loads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_eieio_loads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Place 'EIEIO' Around Volatile Loads"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_EieioStores {
+		    {
+			    name="-eieio_stores"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_eieio_stores"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Place 'EIEIO' Around Volatile Stores"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_fselGeneration {
+		    {
+			    name="-use_fsel"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_use_fsel"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Generation of fsel Instructions"
+		    guiCategory="Target"
+	    }
+	    ppc_iselGeneration {
+		    {
+			    name="-isel"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_isel"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Generation of isel Instructions"
+		    guiCategory="Target"
+	    }
+	    ppc_e500InstExpand1 {
+		    {
+			    name="-e500_inst_fix"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_e500_inst_fix"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Expansion of e500 evmwhs__a_w Intrinsics"
+		    guiCategory="Target"
+	    }
+	    ppc_e500InstExpand2 {
+		    {
+			    name="-e500_inst_fix2"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_e500_inst_fix2"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Expansion of e500 evmwhgs__a_ Intrinsics"
+		    guiCategory="Target"
+	    }
+	    ppc_spe {
+		    {
+			    name="-SPE"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noSPE"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Allow Use of SPE instructions"
+		    guiCategory="Target"
+	    }
+            ppc_interruptPrologueAlwaysUsesStm {
+                    {
+                            name="-interrupt_prologue_always_uses_stm"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_interrupt_prologue_always_uses_stm"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Always Use lmw/stmw in Interrupt Subroutine Prologue/Epilogue"
+                    guiCategory="Target"
+            }
+	    ppc_vle {
+		    {
+			    name="-vle"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-novle"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_vle"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="VLE Code Generation and Libraries"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_convert_asm_to_vle {
+		    {
+			    name="-convert_ppc_asm_to_vle"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_convert_ppc_asm_to_vle"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Convert Non-VLE PPC Instructions to VLE PPC Instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    ppc_64bit {
+	            {
+		    	    name="-ppc64"
+			    value=0
+			    enumLabel="64-bit Mode"
+		    }
+		    {
+		            name="-ppc32"
+			    value=1
+			    enumLabel="32-bit Mode"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="32/64-bit Mode"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    ppc_linux64_abi {
+		    {
+			    name="-ppc64_abi"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ppc64_abi"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="64-bit PowerPC ABI"
+		    guiCategory="Target"
+		    commonLevel=101
+		    hidden=true
+	    }
+	    ppc_bigtoc {		    
+		    {
+			name="-ppc_bigtoc"
+			value=0
+			enumLabel="On"
+		    }
+		    {
+			name="-no_ppc_bigtoc"
+			value=1
+			enumLabel="Off"
+		    }
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    delimiter="NoArg"
+		    disabled=true
+		    guiLabel="Support for very large TOC sections"
+		    guiCategory="Target"
+	    }	
+	    ppc_fp_full {
+		    {
+			    name="-fp_full"
+			    value=0
+			    enumLabel="On"
+		    }
+	            {
+		            name="-no_fp_full"
+			    value=1
+		            enumLabel="Off"
+	            }
+	            delimiter="NoArg"
+		    merge="Replace"
+	            optionType="Enum"
+                    disabled=true
+		    hidden=true
+                    guiLabel="Set Hardware FPU Full Mode"
+		    guiCategory="Target;Floating-Point"
+		    commonLevel=101
+		    hidden=true
+	    }
+            ppc_vle_carrybit_errata {
+                    {
+                            name="-vle_carrybit_errata"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_vle_carrybit_errata"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Workaround the VLE 16-bit Conditional Branch Errata"
+                    guiCategory="Target;Instruction Set"
+                    commonLevel=101
+                    hidden=true
+            }
+	    ppc_vle_rfi_errata {
+                    {
+                            name="-vle_rfi_errata"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_vle_rfi_errata"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="Workaround the VLE Return From Interrupt Errata"
+                    guiCategory="Target;Instruction Set"
+                    commonLevel=101
+                    hidden=true
+            }
+	    ppc_gnu_asm_se_vle_registers {
+                    {
+                            name="-gnu_asm_se_vle_registers"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_gnu_asm_se_vle_registers"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="GNU ASM Half-Word VLE Register Constraint"
+                    guiCategory="Target"
+            }
+
+    ################# PPC ##############################
+
+	    ppc_vle_all_wa {
+                    {
+                            name="-vle_errata"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_vle_errata"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="All PPC VLE Errata Workarounds"
+                    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+                    hidden=true
+            }
+	    ppc_e200_all_wa {
+                    {
+                            name="-e200_errata"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-no_e200_errata"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+                    guiLabel="All PPC e200 Errata Workarounds"
+                    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+                    hidden=true
+            }
+
+    ################# SH ###############################
+    
+	    sh_InlineBitops {
+	    #### sh
+		    {
+			    name="-inline_bit_operations"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_inline_bit_operations"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Bit Operations"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    sh_ReserveSystemRegs {
+		    {
+			    name="-reserve_system_regs"
+			    value=0
+			    enumLabel="Reserve for User"
+		    }
+		    {
+			    name="-no_reserve_system_regs"
+			    value=1
+			    enumLabel="Do Not Reserve for User"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="System Registers MACH and MACL"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    sh_AltFrame {
+		    {
+			    name="-sh_alt_frame"
+			    value=0
+			    enumLabel="Use Alternate Stack frame"
+		    }
+		    {
+			    name="-no_sh_alt_frame"
+			    value=1
+			    enumLabel="Do Not Use Alternate Stack Frame"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Alternate Stack Frame Compatible with v2.0"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    sh_Abs20 {
+		    {
+			    name="-abs20"
+			    value=0
+			    enumLabel="Pointers are 20 bits"
+		    }
+		    {
+			    name="-no_abs20"
+			    value=1
+			    enumLabel="Pointers are not 20 bits"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="20-Bit Pointers"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    sh_AssumeGbrIsZero {
+		    {
+			    name="-assume_gbr_is_zero"
+			    value=0
+			    enumLabel="Assume GBR is zero"
+		    }
+		    {
+			    name="-no_assume_gbr_is_zero"
+			    value=1
+			    enumLabel="Do not assume GBR is zero"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Optimize By Assuming GBR is Zero"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    ################## Sparc #######################
+    
+	    Sparc_ReserveG5G6G7 {
+		    {
+			    name="-reserve_g5g6g7"
+			    value=0
+			    enumLabel="Reserve for OS"
+		    }
+		    {
+			    name="-no_reserve_g5g6g7"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    {
+			    name="-noreserve_g5g6g7"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Reserve Registers G5, G6, and G7"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    Sparc_DAlign {
+		    {
+			    name="-dalign"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-mno-unaligned-doubles"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-munaligned-doubles"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    pass={"All"}
+		    guiLabel="Use ldd to Load a Double"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    Sparc_MT {
+		    {
+			    name="-mt"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-threads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_threads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Multi-Threaded Environment"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    ################## TriCore #######################
+    
+	    tc_1766AllWa {
+		    {
+			    name="-tc1766_all_wa"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-no_tricore_wa"
+			    value=1
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="All TC1766 Errata Workarounds"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_1796AllWa {
+		    {
+			    name="-tc1796_all_wa"
+			    value=0
+			    enumLabel="All"
+		    }
+		    {
+			    name="-no_tricore_wa"
+			    value=1
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="All TC1796 Errata Workarounds"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC048_Wa {
+		    {
+			    name="-cpu_tc048_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc048_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.048 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC060_Wa {
+		    {
+			    name="-cpu_tc060_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc060_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.060 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC069_Wa {
+		    {
+			    name="-cpu_tc069_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc069_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.069 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC070_Wa {
+		    {
+			    name="-cpu_tc070_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc070_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.070 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC072_Wa {
+		    {
+			    name="-cpu_tc072_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc072_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.072 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC083_Wa {
+		    {
+			    name="-cpu_tc083_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc083_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.083 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC094_Wa {
+		    {
+			    name="-cpu_tc094_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc094_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.094 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC095_Wa {
+		    {
+			    name="-cpu_tc095_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc095_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.095 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_CPU_TC096_Wa {
+		    {
+			    name="-cpu_tc096_wa"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nocpu_tc096_wa"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="CPU_TC.096 Workaround"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_LibraryWa {
+		    {
+			    name="-tc1766_lib_wa"
+			    value=0
+			    enumLabel="Libraries With All TC1766 Errata Workarounds"
+		    }
+		    {
+			    name="-tc1796_lib_wa"
+			    value=1
+			    enumLabel="Libraries With All TC1796 Errata Workarounds"
+		    }
+		    {
+			    name="-no_tricore_lib_wa"
+			    value=2
+			    enumLabel="Libraries With No Workarounds"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Libraries With Errata Workarounds"
+		    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+	    }
+	    tc_NoExternalMem {
+		    {
+			    name="-tricore_no_external_mem"
+			    value=0
+			    enumLabel="Allow Halfword-Aligned Doubleword Memory Accesses"
+		    }
+		    {
+			    name="-no_tricore_no_external_mem"
+			    value=1
+			    enumLabel="Do Not Allow Halfword-Aligned Doubleword Memory Accesses"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Halfword-Aligned Doubleword Memory Accesses"
+		    guiCategory="Target"
+	    }
+	    tc_UseFtoi {
+	            {
+			    name="-tricore_use_ftoi"
+			    value=0
+			    enumLabel="Use FTOI/FTOU"
+		    }
+		    {
+			    name="-no_tricore_use_ftoi"
+			    value=1
+			    enumLabel="Do Not Use FTOI/FTOU"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="FTOI Instruction for Float-to-Integer"
+		    guiCategory="Target" 
+	    }
+	    tc_ROXDA {
+		    {
+			    name="-roxda"
+			    value=0
+			    enumLabel="Support ROM SDA/ZDA"
+		    }
+	            {
+			    name="-no_roxda"
+			    value=1
+			    enumLabel="Do Not Support ROM SDA/ZDA"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Read-Only Small Data (ROM SDA/ZDA)"
+		    guiCategory="Target" 
+	    }
+    
+    ################## V800 Options #######################
+    
+	    V800_ReserveRegister2 {
+		    {
+			    name="-reserve_r2"
+			    value=0
+			    enumLabel="Reserve for User"
+		    }
+		    {
+			    name="-noreserve_r2"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    {
+			    name="-no_reserve_r2"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Register r2"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_ReserveRegister5 {
+		    {
+			    name="-reserve_r5"
+			    value=0
+			    enumLabel="Reserve for User"
+		    }
+		    {
+			    name="-noreserve_r5"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    {
+			    name="-no_reserve_r5"
+			    value=1
+			    enumLabel="Permit Compiler Use"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Register r5"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_NoROSDA {
+		    {
+			    name="-no_rosda"
+			    value=0
+			    enumLabel="Use ROM SDA base register (TP) as a temporary"
+		    }
+		    {
+			    name="-rosda"
+			    value=1
+			    enumLabel="Use the ROM SDA base register for ROM SDA"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="ROM SDA"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_RegisterMode {
+		    {
+			    name="-registermode=22"
+			    value=0
+			    enumLabel="Restrict to 22 Registers"
+		    }
+		    {
+			    name="-registermode=26"
+			    value=1
+			    enumLabel="Restrict to 26 Registers"
+		    }
+		    {
+			    name="-registermode=32"
+			    value=2
+			    enumLabel="Standard 32 Registers"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Register Mode"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_R20Has255 {
+		    {
+			    name="-r20has255"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-r20_has_255"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nor20has255"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_r20has255"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_r20_has_255"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Set Register r20 to the Value 255"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_R21Has65535 {
+		    {
+			    name="-r21has65535"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-r21_has_65535"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nor21has65535"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_r21has65535"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-no_r21_has_65535"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Set Register r21 to the Value 65535"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_CallT {
+		    {
+			    name="-callt"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_callt"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Epilogues and Prologues via callt"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_CallTInt {
+		    {
+			    name="-no_ignore_callt_state_in_interrupts"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-ignore_callt_state_in_interrupts"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Save CTPSW and CTPC registers in Interrupt Routines"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_PrepareDispose {
+		    {
+			    name="-prepare_dispose"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_prepare_dispose"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Epilogues and Prologues via prepare and dispose"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_PushPop {
+		    {
+			    name="-push_pop"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_push_pop"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use pushsp and popsp instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_AllocateEP {
+		    {
+			    name="-allocate_ep"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_allocate_ep"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Allocate Pointers to the EP Register"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_TraceLoads {
+		    {
+			    name="-rh850_trace_loads"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_trace_loads"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Instrument loads with software trace instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    #### v800, M32R
+	    SmallerBitops {
+		    {
+			    name="-smaller_bitops"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_smaller_bitops"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Optimize Accesses to Adjacent Bitfields"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_Allow1BitVolatile {
+		    {
+			    name="-allow_1bit_volatile_any_basetype"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_allow_1bit_volatile_any_basetype"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Allow 1-bit accesses to single-bit volatile fields with any base type"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_Allow1Bit {
+		    {
+			    name="-rh850_1bit"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_1bit"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Allow any use of 1-bit instructions CLR1 SET1 TST1"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_DivQ {
+		    {
+			    name="-divq"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_divq"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use divq Instruction for Divide (V850E2R and later)"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_Recipf {
+		    {
+			    name="-recipf"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_recipf"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use recipf.s/recipf.d for 1/x"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_FPU3 {
+		    {
+			    name="-fpu=fpu30"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nofpu=fpu30"
+			    value=1
+			    enumLabel="Off"
+			    hidden=true
+		    }
+		    {
+			    name="-fpu=fpu20"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use FPU 3.0 instructions (RH850 and later)"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_DataBusWidth {
+		    {
+			    name="-data_bus_width=24"
+			    value=0
+			    enumLabel="24-bit data bus"
+		    }
+		    {
+			    name="-data_bus_width=26"
+			    value=1
+			    enumLabel="26-bit data bus"
+		    }
+		    {
+			    name="-data_bus_width=29"
+			    value=2
+			    enumLabel="29-bit data bus"
+		    }
+		    {
+			    name="-data_bus_width=32"
+			    value=3
+			    enumLabel="32-bit data bus"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Data Bus Width"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+	    V800_SIMD {
+		    {
+			    name="-rh850_simd"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_simd"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-v850_simd"
+			    value=0
+			    enumLabel="On"
+			    hidden=true
+		    }
+		    {
+			    name="-no_v850_simd"
+			    value=1
+			    enumLabel="Off"
+			    hidden=true
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Enable SIMD instructions (RH850 and later)"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_FPSIMD {
+		    {
+			    name="-rh850_fpsimd=none"
+			    value=0
+			    enumLabel="No Floating-Point SIMD"
+		    }
+		    {
+			    name="-rh850_fpsimd=full"
+			    value=1
+			    enumLabel="Floating-Point SIMD in Full Register Configuration Mode"
+		    }
+		    {
+			    name="-rh850_fpsimd=half"
+			    value=2
+			    enumLabel="Floating-Point SIMD in Half Register Configuration Mode"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Floating-Point SIMD mode (RH850 and later)"
+		    guiCategory="Target;Floating-Point SIMD"
+		    commonLevel=101
+	    }
+	    V800_ISR_Save_R4R5 {
+		    {
+			    name="-v850_isr_save_r4r5"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v850_isr_save_r4r5"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Force the save/restore of R4/R5 in ISR prologue/epilogue"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_ISR_Save_EIIC {
+		    {
+			    name="-v850_isr_save_eiic"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v850_isr_save_eiic"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Force the save/restore of the EIIC register in ISR prologue/epilogue"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_Mul_Errata {
+		    {
+			    name="-v850e_mul_errata"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v850e_mul_errata"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Avoid mul and mulu instructions that trigger silicon errata"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V850e_Errata {
+		    {
+			    name="-v850e_errata"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v850e_errata"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="All v850e Errata Workarounds"
+                    guiCategory="Target;Errata Workarounds"
+		    commonLevel=101
+                    hidden=true
+	    }
+	    V800_Eint_Erratum {
+		    {
+			    name="-rh850_eint_erratum"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_eint_erratum"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Perform a syncp before branching in interrupt vectors created with #pragma intvect"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_VRAM_Errata {
+		    {
+			    name="-v850e2v3_vram_fix"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v850e2v3_vram_fix"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Address the VRAM erratum in early V850E2V3 processors"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_4ByteWordOffset {
+		    {
+			    name="-rh850_4bytewordoffset"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_rh850_4bytewordoffset"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Require 4-byte alignment on offsets of word-sized load/store instructions"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_Old_Callt {
+		    {
+			    name="-v800_old_callt"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_v800_old_callt"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Generate a backwards-compatible (MULTI 5.1.x and earlier) call table in the linker"
+		    guiCategory="Target;Text and Data Placement"
+		    commonLevel=101
+	    }
+	    V800_64bitLoadStore {
+		    {
+			    name="-64bit_load_store"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_64bit_load_store"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Use 64-bit Load/Store instructions (RH850 and later)"
+		    guiCategory="Target;Instruction Set"
+		    commonLevel=101
+	    }
+	    V800_RenesasInfo {
+		    {
+			    name="-renesas_info"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_renesas_info"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    hidden=true
+		    guiLabel="Generate extra RH850 ABI flags in .note.renesas section (RH850 only)"
+		    guiCategory="Target;Application Binary Interface"
+		    commonLevel=101
+	    }
+	    V800_CheckRH850ABIFlags {
+		    {
+			    name="-check_rh850_abi_flags"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_check_rh850_abi_flags"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Check incompatible RH850 ABI flags (RH850 only)"
+		    guiCategory="Target;Application Binary Interface"
+		    commonLevel=101
+	    }
+
+
+
+    ################## x86 #######################
+
+	    X86_64 {
+	            {
+		    	    name="-x86_64"
+			    value=0
+			    enumLabel="On"
+		    }
+	            {
+		    	    name="-amd64"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+		            name="-no_x86_64"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+		            name="-no_amd64"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="64-bit Mode"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+    
+	    X86_ShrinkInsts {
+	            {
+		    	    name="--shrink_insts"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+		            name="--no_shrink_insts"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Link-time Displacement Shrinking"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+    
+	    X86_OmitFramePointer{
+		    {
+			    name="-omit_frame_pointer"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_omit_frame_pointer"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Omit Frame Pointer"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+            X86_GHSAssembler {
+                    {
+                            name="-ghs_assembler"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-noghs_assembler"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+		    hidden=true
+                    guiLabel="Use GHS Assembler"
+                    guiCategory="Target"
+                    commonLevel=101
+            }
+
+            X86_FastCC {
+                    {
+                            name="-fastcc"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-nofastcc"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+		    hidden=true
+                    guiLabel="Use Fastcall Calling Convention"
+                    guiCategory="Target"
+                    commonLevel=101
+            }
+
+            X86_CFI {
+                    {
+                            name="-cfi"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="-cfi-explicit"
+                            value=1
+                            enumLabel="Explicit"
+                    }
+                    {
+                            name="-nocfi"
+                            value=2
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    disabled=true
+		    hidden=true
+                    guiLabel="Control Flow Integrity"
+                    guiCategory="Target"
+                    commonLevel=101
+            }
+
+	    X86_LargeAddresses {
+	            {
+		    	    name="-large_addresses"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+		            name="-no_large_addresses"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Large Addresses"
+		    guiCategory="Target"
+		    commonLevel=101
+	    }
+
+    ############### Advanced ###################
+    
+	    InlinePrologue {
+	    #### mips, ppc, v800
+		    {
+			    name="-inline_prologue"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-mprolog-function"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_inline_prologue"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-mno-prolog-function"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Function Prologues"
+		    guiCategory="Target"
+	    }
+	    BigSwitch {
+	    #### 68k, arm, fp, mips, ppc, sh, sc, tricore
+		    {
+			    name="-bigswitch"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-mbig-switch"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nobigswitch"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-mno-big-switch"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Support for Very Large Switch Statements"
+		    guiCategory="Target"
+	    }
+	    SwitchTable {
+		    {
+			    name="--switch_table"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_switch_table"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Switch Tables"
+		    guiCategory="Target"
+	    }
+	    68k_ClearStack {
+	    #### 68K
+		    {
+			    name="-clearstack"
+			    value=0
+			    enumLabel="Frequent Popping"
+		    }
+		    {
+			    name="-noclearstack"
+			    value=1
+			    enumLabel="Infrequent Popping"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Frequent Stack Popping"
+		    guiCategory="Target"
+	    }
+	    TargetBoard {
+		    {
+			    name="-bsp"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-bsp"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    hidden=true
+		    pass={"All"}
+		    guiLabel="Target Board"
+		    guiCategory="Target"
+	    }
+	    InlineVolatileStructCopy {
+		    {
+			    name="-no_inline_volatile_struct_copy"
+			    value=0
+			    enumLabel="Based on Optimization Settings"
+		    }
+		    {
+			    name="-inline_volatile_struct_copy"
+			    value=1
+			    enumLabel="Always"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Copy Volatile Structures Using In-Line Code"
+		    guiCategory="Target"
+	    }
+    }
+}

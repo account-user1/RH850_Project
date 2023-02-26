@@ -1,0 +1,53 @@
+Troubleshooting
+===============
+
+1. The Python statement only contains an object or its field; its value is not
+   printed as it is in the stand-alone Python interpreter.
+
+   This is an issue we will fix (see item 2 in the "To Do List" section).
+
+2. When executing a Python statement with a syntax error, no error message is
+   printed in the MULTI Python pane.
+
+   Make sure that the program "svc_python" is under the same directory as multi
+   (or mstart) and is up-to-date. Otherwise, recompile it.
+
+   (Of course, you should be sure that the whole source tree of your MULTI
+   checkout is refreshed and up-to-date.)
+
+3. MULTI reports startup errors in the MULTI Python pane.
+
+   Make sure that "defaults/python" is under the same directory as multi and
+   contains up-to-date MULTI Python classes. Refresh it if necessary.
+
+4. MULTI does not report any error, but it does not execute Python statements
+   correctly. The xterm (Linux, for example) displays error messages.
+
+   Refer to the "Python Requirements" section.
+
+5. The GUI demo using Tcl/Tk ("GUI Demo Using Tcl/Tk via Tkinter Module"
+   section) does not work on Windows.
+
+   The MULTI Python service crashes when it tries to import the "Tkinter"
+   module:
+       from Tkinter import *
+
+   See item 2 in the "To Do List".
+
+6. The MULTI Python GUI reports an undefined symbol, such as
+   "PyUnicodeUCS2_FromUnicode" or "PyUnicodeUCS4_FromUnicode" when you run the
+   GUI demo using Tcl/Tk ("GUI Demo Using Tcl/Tk via Tkinter Module" section).
+
+   Python on RedHat 9 is compiled with 4 byte Unicode characters (UCS4), while
+   most other distributions use 2 byte Unicode characters (UCS2).
+
+   To fix this problem, recompile your Python installation using UCS4 or UCS2,
+   respectively.
+
+   When following Python installation instructions, give the argument
+	--enable-unicode=ucs4
+   or
+	--enable-unicode=ucs2
+   to the "configure" command.
+
+   We suggest that you install Python locally rather than globally.

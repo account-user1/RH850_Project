@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+    <AR-PACKAGES>
+        <AR-PACKAGE UUID="9c5cf824-7831-4a06-877a-49e2b3d79a3b">
+            <SHORT-NAME>Nexteer</SHORT-NAME>
+            <AR-PACKAGES>
+                <AR-PACKAGE UUID="">
+                    <SHORT-NAME>EcucDefs_NvMProxy</SHORT-NAME>
+                    <ELEMENTS>
+                        <ECUC-DEFINITION-COLLECTION UUID="ECUS:627c9111-ec39-446b-a5a8-48bdb7d3bcc8">
+                            <SHORT-NAME>NexteerParameterDefinition_NvMProxy</SHORT-NAME>
+                            <MODULE-REFS>
+                                <MODULE-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_NvMProxy/NvMProxy</MODULE-REF>
+                            </MODULE-REFS>
+                        </ECUC-DEFINITION-COLLECTION>
+                        <ECUC-MODULE-DEF UUID="">
+                            <SHORT-NAME>NvMProxy</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">Configuration of the NvM (NvRam Manager) Proxy module.</L-2>
+                            </DESC>
+                            <CATEGORY>VENDOR_SPECIFIC_MODULE_DEFINITION</CATEGORY>
+                            <ADMIN-DATA>
+                                <DOC-REVISIONS>
+                                    <DOC-REVISION>
+                                        <REVISION-LABEL>1.0.0</REVISION-LABEL>
+                                        <STATE>released</STATE>
+                                        <ISSUED-BY>Nexteer</ISSUED-BY>
+                                        <DATE>2015-04-08</DATE>
+                                        <MODIFICATIONS>
+                                            <MODIFICATION>
+                                                <CHANGE>
+                                                    <L-2 L="EN">Initial Release</L-2>
+                                                </CHANGE>
+                                                <REASON>
+                                                    <L-2 L="EN"></L-2>
+                                                </REASON>
+                                            </MODIFICATION>
+                                        </MODIFICATIONS>
+                                    </DOC-REVISION>
+                                    <DOC-REVISION>
+                                        <REVISION-LABEL>1.0.1</REVISION-LABEL>
+                                        <STATE>released</STATE>
+                                        <ISSUED-BY>Nexteer</ISSUED-BY>
+                                        <DATE>2015-09-01</DATE>
+                                        <MODIFICATIONS>
+                                            <MODIFICATION>
+                                                <CHANGE>
+                                                    <L-2 L="EN">Added ability to include header files for callback functions.</L-2>
+                                                </CHANGE>
+                                                <REASON>
+                                                    <L-2 L="EN"></L-2>
+                                                </REASON>
+                                            </MODIFICATION>
+                                        </MODIFICATIONS>
+                                    </DOC-REVISION>
+                                </DOC-REVISIONS>
+                            </ADMIN-DATA>
+                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_NvMProxy/NvMProxy</REFINED-MODULE-DEF-REF>
+                            <SUPPORTED-CONFIG-VARIANTS>
+                                <SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+                            </SUPPORTED-CONFIG-VARIANTS>
+                            <CONTAINERS>
+                                <!-- Container Definition: NvMProxyCommon -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>NvMProxyCommon</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the common settings for NvM Proxy.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: NvMProxyIncludes -->
+                                        <ECUC-STRING-PARAM-DEF UUID="">
+                                            <SHORT-NAME>NvmProxyIncludes</SHORT-NAME>
+                                            <LONG-NAME>NvM Proxy Includes</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">List of header files to be included for callback functions.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <ORIGIN>Nexteer</ORIGIN>
+                                        </ECUC-STRING-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                        <!-- REFERENCE DEFINITION: NvMOsApplicationRef -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>NvMOsApplicationRef</SHORT-NAME>
+                                            <LONG-NAME>NvM Os Application</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">This defines the application in which the NvM BSW is integrated.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsApplication</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                <!-- Container Definition: NvMProxyBlkSet -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>NvMProxyBlkSet</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the NvM blocks that are required to be checked for CRC faults.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>65536</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: NvMBlockManagementType -->
+                                        <ECUC-ENUMERATION-PARAM-DEF UUID="">
+                                            <SHORT-NAME>NvMBlkFlt</SHORT-NAME>
+                                            <LONG-NAME>
+                                                <L-4 L="EN">NvM Block Fault</L-4>
+                                            </LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Defines the fault that shall be set for a NvM block with an invalid CRC.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES>
+                                                <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                                                </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                            </IMPLEMENTATION-CONFIG-CLASSES>
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>None</DEFAULT-VALUE>
+                                            <LITERALS>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>NTC_0x06</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>NTC_0x07</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>NTC_0x08</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>NTC_0x0A</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>None</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                            </LITERALS>
+                                        </ECUC-ENUMERATION-PARAM-DEF>
+                                        <!-- PARAMETER DEFINITION: NvMProxyApplCallCbk -->
+                                        <ECUC-STRING-PARAM-DEF UUID="f45d5546-c951-4ace-b34d-ec2910ec4fc3">
+                                            <SHORT-NAME>NvMProxyApplCallCbk</SHORT-NAME>
+                                            <LONG-NAME>
+                                                <L-4 L="EN">NvM Proxy Application Callback</L-4>
+                                            </LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">This field allows the application to configure a specific callback in the event of the CRC failing. If no callback is required, the default NULL_PTR shall be used. </L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES>
+                                                <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                                                </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                                            </IMPLEMENTATION-CONFIG-CLASSES>
+                                            <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <ECUC-STRING-PARAM-DEF-VARIANTS>
+                                                <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                                    <DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+                                                </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                            </ECUC-STRING-PARAM-DEF-VARIANTS>
+                                        </ECUC-STRING-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                        <!-- REFERENCE DEFINITION: NvMBlockReference -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>NvMBlkRef</SHORT-NAME>
+                                            <LONG-NAME>NvM Block Reference</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">NvM block to check for CRC fault</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/MICROSAR/NvM/NvMBlockDescriptor</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                            </CONTAINERS>
+                        </ECUC-MODULE-DEF>
+                        <BSW-IMPLEMENTATION UUID="">
+                            <SHORT-NAME>NvMProxy_Impl</SHORT-NAME>
+                            <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                            <USED-CODE-GENERATOR>EXTERNAL</USED-CODE-GENERATOR>
+                            <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/Nexteer/NvMProxy_ib_bswmd/BswModuleDescriptions/NvMProxy/NvMProxyBehavior</BEHAVIOR-REF>
+                            <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_NvMProxy/NvMProxy</VENDOR-SPECIFIC-MODULE-DEF-REF>
+                            </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                        </BSW-IMPLEMENTATION>
+                    </ELEMENTS>
+                </AR-PACKAGE>
+            </AR-PACKAGES>
+        </AR-PACKAGE>
+    </AR-PACKAGES>
+</AUTOSAR>

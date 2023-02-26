@@ -1,0 +1,2307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+***********************************************************************************************************************
+COPYRIGHT
+===============================================================================
+Copyright (c) 2016 by Vector Informatik GmbH.                                         All rights reserved.
+
+    This software is copyright protected and proprietary to Vector Informatik GmbH.
+    Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+    All other rights remain with Vector Informatik GmbH.
+===============================================================================
+FILE DESCRIPTION
+===============================================================================
+File:           Nm_bswmd.arxml
+Component:      
+Module:         Nm
+Generator:      
+
+Description:    -
+*********************************************************************************************************************** 
+-->
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+	<AR-PACKAGES>
+		<AR-PACKAGE UUID="31e56d84-e3e2-4344-ae83-fde3907ee0a5">
+			<SHORT-NAME>MICROSAR</SHORT-NAME>
+			<ELEMENTS>
+				<BSW-IMPLEMENTATION UUID="10e1d426-5838-4dbc-827a-9f03994ff3ed">
+					<SHORT-NAME>Nm_Impl</SHORT-NAME>
+					<PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+					<SW-VERSION>10.00.00</SW-VERSION>
+					<USED-CODE-GENERATOR>DaVinci Configurator</USED-CODE-GENERATOR>
+					<VENDOR-ID>30</VENDOR-ID>
+					<AR-RELEASE-VERSION>4.00.03</AR-RELEASE-VERSION>
+					<BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/MICROSAR/Nm_ib_bswmd/BswModuleDescriptions/Nm/NmBehavior</BEHAVIOR-REF>
+					<PRECONFIGURED-CONFIGURATION-REFS>
+						<PRECONFIGURED-CONFIGURATION-REF DEST="ECUC-MODULE-CONFIGURATION-VALUES">/MICROSAR/Nm_Pre</PRECONFIGURED-CONFIGURATION-REF>
+					</PRECONFIGURED-CONFIGURATION-REFS>
+					<RECOMMENDED-CONFIGURATION-REFS>
+						<RECOMMENDED-CONFIGURATION-REF DEST="ECUC-MODULE-CONFIGURATION-VALUES">/MICROSAR/Nm_Rec</RECOMMENDED-CONFIGURATION-REF>
+					</RECOMMENDED-CONFIGURATION-REFS>
+					<VENDOR-SPECIFIC-MODULE-DEF-REFS>
+						<VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/MICROSAR/Nm</VENDOR-SPECIFIC-MODULE-DEF-REF>
+					</VENDOR-SPECIFIC-MODULE-DEF-REFS>
+				</BSW-IMPLEMENTATION>
+				<ECUC-MODULE-DEF UUID="9a8e0bc9-60f8-4ecc-8412-3abf411cb25e">
+					<SHORT-NAME>Nm</SHORT-NAME>
+					<DESC>
+						<L-2 L="EN">Configuration of the NmIf (Network Management Interface) module.
+Addition of the container NmGeneration: Add support for basic ComStackLib optimizations</L-2>
+					</DESC>
+					<CATEGORY>VENDOR_SPECIFIC_MODULE_DEFINITION</CATEGORY>
+					<ADMIN-DATA>
+						<DOC-REVISIONS>
+							<DOC-REVISION>
+								<REVISION-LABEL>1.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2011-02-03T13:05:50+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Creation</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00048566</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>2.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr, visrpp</ISSUED-BY>
+								<DATE>2012-04-16T09:56:45+02:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Update to ASR 4.0.3</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00060411, ESCAN00060427</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>2.00.01</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2012-11-08T10:01:47+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted implementation version</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00062842</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>2.01.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2013-03-04T09:16:44+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted implementation version</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00062968</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>3.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2013-07-01T08:07:41+02:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Added missing descriptions for parameters/containers and removed INTRODUCTIONs; Added support for J1939Nm; adapted parameter descriptions; removed VectorCommonData; added NmRuntimeMeasurementSupport</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00067601; ESCAN00068792; ESCAN00070250; ESCAN00070278; ESCAN00070285</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>3.01.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2013-11-05T08:47:28+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted multiplicity of NmBusType in order to support multiple BusNms on one channel, added NmGenericBusNmChannelSleepMaster</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00071777</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>4.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vissrk</ISSUED-BY>
+								<DATE>2013-11-18T08:37:16+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Support Post-Build-Selectable Configuration Variant; added NmPassiveModeEnabled in NmGlobalFeatures, changed multiplicity of NmPassiveModeEnabled to 0..1 in NmChannelConfig; added NmCoordinatorRequestChannelsInBusSleep</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00072007; ESCAN00073835; ESCAN00074299; ESCAN00075013</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>5.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2014-07-09T06:00:14+02:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Changed multiplicity of NmChannelConfig to 0..*; Removed variant VARIANT-LINK-TIME</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00076764; ESCAN00077043</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>6.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2014-12-03T10:01:07+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted multiplicity of NmCycletimeMainFunction</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00078920</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>7.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2014-12-03T10:05:25+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted implementation version. Parameters added: NmGenericBusNmPduRxIndication, NmStandardBusNmPduRxIndication and NmBusNmSpecificPduRxIndicationEnabled</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00079122, ESCAN00082645, ESCAN00083855</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>8.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>visgle</ISSUED-BY>
+								<DATE>2015-09-08T11:40:14+02:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Added NmFiatC support Global Feature switch. Adapt multiplicity of NmCallbacksPrototypeHeader to 0..* . Use of NmRemoteSleepIndEnabled with NmGwExtEnabled</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00084859, ESCAN00084772, ESCAN00086890, ESCAN00086909</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>8.00.01</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2016-02-01T10:16:04+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted implementation version</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00087967</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>9.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2016-03-03T08:55:26+01:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Adapted implementation version</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00087797</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+							<DOC-REVISION>
+								<REVISION-LABEL>10.00.00</REVISION-LABEL>
+								<STATE>released</STATE>
+								<ISSUED-BY>vismdr</ISSUED-BY>
+								<DATE>2016-05-11T08:07:13+02:00</DATE>
+								<MODIFICATIONS>
+									<MODIFICATION>
+										<CHANGE>
+											<L-2 L="EN">Changed Config class of NmGlobalCoordinatorTime to POST-BUILD in VARIANT-POST-BUILD-SELECTABLE; added NmGlobalCoordinatorTimeAllNmOsekInNormal</L-2>
+										</CHANGE>
+										<REASON>
+											<L-2 L="EN">ESCAN00089789</L-2>
+										</REASON>
+									</MODIFICATION>
+								</MODIFICATIONS>
+							</DOC-REVISION>
+						</DOC-REVISIONS>
+					</ADMIN-DATA>
+					<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+					<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+					<REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Nm</REFINED-MODULE-DEF-REF>
+					<SUPPORTED-CONFIG-VARIANTS>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+						<SUPPORTED-CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</SUPPORTED-CONFIG-VARIANT>
+					</SUPPORTED-CONFIG-VARIANTS>
+					<CONTAINERS>
+						<!-- Container Definition: NmChannelConfig -->
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="a34010af-e386-406e-850b-47ba4847f803">
+							<SHORT-NAME>NmChannelConfig</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">This container represents the configuration of one Network Management channel.</L-2>
+							</DESC>
+							<ADMIN-DATA>
+								<SDGS>
+									<SDG GID="DV:CfgPostBuild">
+										<SD GID="DV:postBuildSelectableChangeable">true</SD>
+										<SD GID="DV:postBuildNotDeletable">false</SD>
+									</SDG>
+									<SDG GID="MSR:Process">
+										<SD GID="MSR:TraceRef">SPEC-4209</SD>
+									</SDG>
+								</SDGS>
+							</ADMIN-DATA>
+							<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY-INFINITE>true</UPPER-MULTIPLICITY-INFINITE>
+							<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<PARAMETERS>
+								<!-- PARAMETER DEFINITION: NmActiveCoordinator -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="bbab4661-e3ae-442a-8366-2d682bb30e15">
+									<SHORT-NAME>NmActiveCoordinator</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This parameter indicates whether a NM Coordinator is an active gateway (NmActiveCoordinator = TRUE) or a passive.
+
+An active coordinator is the node on the channel that is the last one that withdraws its network request. That means that it waits until all other nodes have indicated readiness to sleep and it waits for all other channels in the coordinator cluster for being ready to sleep until it indicates readiness to sleep itself.
+
+A passive coordinator is a node on the channel that is not the last one that withdraws its network request. Instead, the request is withdrawn when all channels in the coordinator cluster are ready to sleep and the own node is ready to sleep on the channel.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE. This parameter is only valid if 'NmCoordClusterIndex' is defined. This parameter needs to be set to true if 'NmCoordinatorSyncSupport' is OFF.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-19588,SPEC-51371,SPEC-19587,SPEC-19606</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>false</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmChannelId -->
+								<ECUC-INTEGER-PARAM-DEF UUID="2ec05e4a-3d24-4759-b8ac-0f804ce21376">
+									<SHORT-NAME>NmChannelId</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Handle ID of the NM channel. The value shall be the same as the ComMChannelId of the ComMChannel referenced by NmComMChannelRef. The value of this parameter is calculated automatically at validation time.
+										
+Implementation Type: NetworkHandleType</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-19594,SPEC-50037</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>LINK</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>true</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>255</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmChannelSleepMaster -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="1de5f30d-f10e-40ac-a999-2f9790658323">
+									<SHORT-NAME>NmChannelSleepMaster</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This parameter shall be set to indicate if the readiness to sleep of this network can be absolutely decided by the local node only and that no other nodes can oppose that decision.
+I.e. if this parameter is set to TRUE, the NM coordinator considers that the bus is ready to sleep at all times and shall not evaluate the remote sleep indication status. If this parameter is set to FALSE, the NM Coordinator evaluates the remote sleep indication status to decide whether the bus is ready to sleep or not.
+
+If a Generic BusNm is used that is not able to determine the 'Remote Sleep' State and/or all other nodes are always ready to sleep, consider setting this value to true and also consider setting the NmGenericBusNmChannelSleepMaster switch to TRUE.
+The setting for an AUTOSAR Standard BusNm is considered as
+- TRUE for J1939Nm
+- FALSE for all other BusNms (CanNm, FrNm, LinNm, UdpNm)
+
+This parameter must not be set to TRUE if other nodes need to keep this node awake althrough the own node is ready to sleep.
+
+This parameter needs to be turned ON, if NmGenericBusNmChannelSleepMaster is TRUE for at least one Generic BusNm on this channel.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE. This parameter is only valid if 'NmCoordClusterIndex' is defined.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4218</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>false</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmCoordClusterIndex -->
+								<ECUC-INTEGER-PARAM-DEF UUID="5f615eff-6488-45de-9ee3-9cf08999eaec">
+									<SHORT-NAME>NmCoordClusterIndex</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This parameter specifies to which coordination cluster a bus belongs. If this parameter is undefined for a channel, the corresponding bus does not belong to an NM coordination cluster.
+
+An NM coordination cluster is a group of networks/busses/channels that shall be shut down synchronously. Each NM coordination cluster requires at least two channels that need to be shut down synchronously.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4230,SPEC-4108,SPEC-4146,SPEC-4152</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>255</MAX>
+									<MIN>0</MIN>
+								</ECUC-INTEGER-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmPassiveModeEnabled -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="7d410193-576f-49b1-a988-95a2cb7a2360">
+									<SHORT-NAME>NmPassiveModeEnabled</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">If set to TRUE the passive mode of the network is enabled. Passive nodes are not able to send NM PDUs and therefore cannot keep the network awake. Passive nodes can however be woken up by the network by receiving the NM PDUs of other ECUs.
+If set to FALSE, the ECU will be able to keep the network awake by transmitting own NM PDUs.
+
+Restrictions: This parameter is not allowed to be defined in NmChannelConfig, if it is defined in NmGlobalFeatures.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4231</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>false</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmShutdownDelayTimer -->
+								<ECUC-FLOAT-PARAM-DEF UUID="14b10358-c8e7-4cf8-9967-8adf1552d73b">
+									<SHORT-NAME>NmShutdownDelayTimer</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Parameter not used as the value is determined automatically by the code generator.
+
+The Shutdown Delay Timer is started by the NM Coordinator on an actively coordinated channel when readiness for sleep is recognized on all channels in an NM coordination cluster. When the timer is elapsed, the Network Request is withdrawn on the BusNm.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:Display">
+												<SD GID="DV:BaseUnit">SEC</SD>
+												<SD GID="DV:Unit">MSEC</SD>
+											</SDG>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-19563,SPEC-50052</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>65.535</MAX>
+									<MIN>0</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmStateReportEnabled -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="5b3ca5e1-28ec-45bb-9f39-bac7620cb49e">
+									<SHORT-NAME>NmStateReportEnabled</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">If this feature is enabled the Nm module will write state transition information into the Com Signal provided by 'NmStateReportSignalRef'. Most likely, the signal is inside the NM User Data TX PDU of the BusNm.
+										
+false: No NM State is written into the Com Signal.
+true: The NM State is written into the Com Signal.
+
+If enabled, the referenced signal will contain the last state transition of the BusNm. This can be one of the following values:
+NM_RM_BSM (1): The last state transition has been from Bus Sleep to Repeat Message
+NM_RM_PBSM (2): The last state transition has been from Prepare Bus Sleep to Repeat Message
+NM_NO_RM (4) : The last state transition has been from Repeat Message to Normal Operation
+NM_NO_RS (8): The last state transition has been from Ready Sleep to Normal Operation
+NM_RM_RS (16): The last state transition has been from Ready Sleep to Repeat Message
+NM_RM_NO (32): The last state transition has been from Normal Operation to Repeat Message</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-19586</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>false</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<!-- PARAMETER DEFINITION: NmSynchronizingNetwork -->
+								<ECUC-BOOLEAN-PARAM-DEF UUID="9151fecc-57e9-4230-8cfe-d1727a0fa9d0">
+									<SHORT-NAME>NmSynchronizingNetwork</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">If this parameter is true the network is a synchronizing network for the NM coordination cluster which it belongs to. A synchronizing network is a network where the NM message is usually sent in a static time pattern and an NM message cannot be sent asynchronously due to the restrictions of the underlying bus type (e.g. FrNm) or due to the restrictions of the NM algorithm (e.g. OSEK NM).
+If enabled, the network is expected to call Nm_SynchronizationPoint() at regular intervals.
+Otherwise, the NM coordinator does not wait for Nm_SynchronizationPoint() calls.
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE. This parameter is only valid if 'NmCoordClusterIndex' is defined. This parameter can only be set to TRUE if all channels in the NM Coordination Cluster are actively coordinated, i.e. 'NmActiveCoordinator' is TRUE.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4210,SPEC-51364</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>false</DEFAULT-VALUE>
+								</ECUC-BOOLEAN-PARAM-DEF>
+								<ECUC-FLOAT-PARAM-DEF UUID="8d323b08-1ec2-4549-9cc9-66204f0992d9">
+									<SHORT-NAME>NmGlobalCoordinatorTimeAllNmOsekInNormal</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This parameter defines the maximum shutdown time of a connected and coordinated NM-Cluster if all channels equipped with NmOsek are in the NMNormal state, i,e. not in NMLimpHome.
+This time indicates to the NM coordinator how long it takes to shut down all NM coordinated channels on all ECUs in the vehicle networks. This is not a hard upper limit, since there may be slight time differences due to NM algorithms, call cycles of functions, etc.
+
+For minimum values, refer to the description of NmGlobalCoordinatorTime in the NmGlobalFeatures container.
+The only exception for NmOsek channels is that instead of NmGenericBusNmShutdownTime, the result of (NmGenericBusNmShutdownTime - (NmOsekErrorWaitBusSleepTime - NmOsekWaitBusSleepTime)) is used as BusNm shutdown time.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE and NmOsekWaitBusSleepExtensions is TRUE.
+This parameter shall only be defined if and only if the parameter is relevant AND NmSynchronizingNetwork is turned ON.
+Note: this parameter is automatically calculated.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:Display">
+												<SD GID="DV:BaseUnit">SEC</SD>
+												<SD GID="DV:Unit">MSEC</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>Vector Informatik</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+									<DEFAULT-VALUE>0</DEFAULT-VALUE>
+									<MAX>65.535</MAX>
+									<MIN>0</MIN>
+								</ECUC-FLOAT-PARAM-DEF>
+							</PARAMETERS>
+							<REFERENCES>
+								<!-- Symbolic Name Reference Definition: NmComMChannelRef -->
+								<ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="1e33bc7a-8890-4661-9780-0584feace0ca">
+									<SHORT-NAME>NmComMChannelRef</SHORT-NAME>
+									<LONG-NAME>
+										<L-4 L="EN">ComM Channel Ref</L-4>
+									</LONG-NAME>
+									<DESC>
+										<L-2 L="EN">Reference to the ComM channel that is handled by the Nm channel.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4220</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>LINK</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel</DESTINATION-REF>
+								</ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+								<!-- Symbolic Name Reference Definition: NmStateReportSignalRef -->
+								<ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="df2aafea-ff82-413e-86f3-8947e9eb49ff">
+									<SHORT-NAME>NmStateReportSignalRef</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Reference to the signal that is used to write the Network Management State information to. The signal is usually part of the NM User Data TX PDU.
+
+Restrictions: Only relevant if 'NmStateReportEnabled' is TRUE.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-19580</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<IMPLEMENTATION-CONFIG-CLASSES>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+										<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+											<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+										</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+									</IMPLEMENTATION-CONFIG-CLASSES>
+									<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+									<REQUIRES-INDEX>false</REQUIRES-INDEX>
+									<DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComSignal</DESTINATION-REF>
+								</ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+							</REFERENCES>
+							<SUB-CONTAINERS>
+								<!-- Container Definition: NmBusType -->
+								<ECUC-CHOICE-CONTAINER-DEF UUID="ae05e2e7-4c80-43b8-86e9-54ac44fbd11e">
+									<SHORT-NAME>NmBusType</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This choice container determines the underlying BusNm for this channel.
+
+If this container exists multiple times, this means that there are multiple BusNms on this channel.
+
+RESTRICTIONS: The multiplicity of this container is only allowed to be greater than one if the underlying bus system is CAN.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:CfgPostBuild">
+												<SD GID="DV:postBuildSelectableChangeable">true</SD>
+												<SD GID="DV:postBuildNotDeletable">false</SD>
+											</SDG>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4232,SPEC-50018</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>255</UPPER-MULTIPLICITY>
+									<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+									<CHOICES>
+										<!-- Container Definition: NmGenericBusNmConfig -->
+										<ECUC-PARAM-CONF-CONTAINER-DEF UUID="ad78d002-6921-4757-bf7e-57d502dbf8cc">
+											<SHORT-NAME>NmGenericBusNmConfig</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Choose this container if the underlying BusNm is a Complex Device Driver with a Generic BusNm Interface.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="DV:CfgPostBuild">
+														<SD GID="DV:postBuildSelectableChangeable">true</SD>
+														<SD GID="DV:postBuildNotDeletable">false</SD>
+													</SDG>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-43167</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+											<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+											<PARAMETERS>
+												<!-- PARAMETER DEFINITION: NmGenericBusNmPrefix -->
+												<ECUC-STRING-PARAM-DEF UUID="7e8f3ecc-c2c4-42a1-a1e5-c8871939a3c2">
+													<SHORT-NAME>NmGenericBusNmPrefix</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">This parameter defines the short name of the lower layer Nm used as &lt;BusNm&gt; prefix. The name is used to determine the function names of the APIs provided by the Generic BusNm that are called by Nm. 
+This string will used for the module prefix in front of the "_" character in the API call name.</L-2>
+													</DESC>
+													<ADMIN-DATA>
+														<SDGS>
+															<SDG GID="MSR:Process">
+																<SD GID="MSR:TraceRef">SPEC-4245,CREQ-105651,CREQ-1294</SD>
+															</SDG>
+														</SDGS>
+													</ADMIN-DATA>
+													<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+												</ECUC-STRING-PARAM-DEF>
+												<ECUC-FLOAT-PARAM-DEF UUID="149f0f50-3938-4935-b9d3-cf22a9971c27">
+													<SHORT-NAME>NmGenericBusNmShutdownTime</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">This parameter defines the time the generic BusNm needs to shut down the channel.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE. This parameter is only valid if 'NmCoordClusterIndex' is defined.</L-2>
+													</DESC>
+													<ADMIN-DATA>
+														<SDGS>
+															<SDG GID="DV:Display">
+																<SD GID="DV:BaseUnit">SEC</SD>
+																<SD GID="DV:Unit">MSEC</SD>
+															</SDG>
+															<SDG GID="MSR:Process">
+																<SD GID="MSR:TraceRef">SPEC-50029</SD>
+															</SDG>
+														</SDGS>
+													</ADMIN-DATA>
+													<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>Vector Informatik</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+													<DEFAULT-VALUE>0</DEFAULT-VALUE>
+													<MAX>65.535</MAX>
+													<MIN>0</MIN>
+												</ECUC-FLOAT-PARAM-DEF>
+												<ECUC-BOOLEAN-PARAM-DEF UUID="33bbc656-a5e4-4eca-9935-d1b811ce6107">
+													<SHORT-NAME>NmGenericBusNmChannelSleepMaster</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">This parameter shall be set to indicate if the readiness to sleep of the NM algorithm for this Generic BusNm can be absolutely decided by the local node only and that no other nodes can oppose that decision.
+I.e. if this parameter is set to TRUE, the NM coordinator considers that the BusNm is ready to sleep at all times and shall not evaluate the remote sleep indication status. If this parameter is set to FALSE, the NM Coordinator evaluates the remote sleep indication status to decide whether the BusNm is ready to sleep or not.
+
+Set this parameter to TRUE if this GenericBusNm does not provide the 'Remote Sleep' status (i.e. it cannot determine whether the other nodes are ready to sleep) and/or if the own node can completely decide on its own that the other nodes are ready to sleep.
+This parameter must not be set to TRUE if other nodes need to keep this node awake althrough the own node is ready to sleep.
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE and 'NmChannelSleepMaster' is TRUE. This parameter is only valid if 'NmCoordClusterIndex' is defined.</L-2>
+													</DESC>
+													<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>Vector Informatik</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+													<DEFAULT-VALUE>false</DEFAULT-VALUE>
+												</ECUC-BOOLEAN-PARAM-DEF>
+												<ECUC-FUNCTION-NAME-DEF UUID="4d0646da-7c89-4421-b7dc-88f6b5feae8d">
+													<SHORT-NAME>NmGenericBusNmPduRxIndication</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">Function called to notify the reception of a NmPdu.
+This function can be used to distinguish between each BusNm on the same channel by using different identifiers for each BusNm.
+It is not necessary to configure the function if there is only one BusNm on the channel. The NmPduReceiveIndCallback can be used as an alternative for this purpose.
+Function prototype:
+FUNC(void, &lt;MODULE_NAME&gt;_CODE)&lt;FunctionName&gt;(CONST(NetworkHandleType, AUTOMATIC) nmNetworkHandle, P2CONST(PduInfoType, AUTOMATIC, AUTOMATIC) pduInfo)
+
+This function can be implemented by the Application, but it can also be used by BswM as a mode request port.
+
+Example:
+In a setup with two channels, one of them equipped with one Generic BusNm, the other one equipped with another Generic BusNm, there is no distinction required between the BusNms, because the Network Handle parameter is different for each channel.
+Therefore it suffices to use NmPduRxIndicationEnabled with NmPduReceiveIndCallback. However, this type of notification cannot be realized in BswM.
+If a mode request port in BswM is required, define this parameter to a function name that BswM shall implement and configure.
+
+Another example:
+In a setup with one channel equipped with CanNm and NmOsek on the same channel, a distinction of which BusNm has received a NM PDU cannot be made by the NmPduReceiveIndCallback, since the provided Network Handle is the same.
+Therefore, for a distinction, define this parameter to a certain value for NmOsek and the NmStandardBusNmPduRxIndication for the CanNm to a certain value.
+</L-2>
+													</DESC>
+													<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>Vector Informatik</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+												</ECUC-FUNCTION-NAME-DEF>
+											</PARAMETERS>
+										</ECUC-PARAM-CONF-CONTAINER-DEF>
+										<!-- Container Definition: NmStandardBusNmConfig -->
+										<ECUC-PARAM-CONF-CONTAINER-DEF UUID="2e1ead3a-0ed5-4b0a-8b2e-0c462eb56cfc">
+											<SHORT-NAME>NmStandardBusNmConfig</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Choose this container if the underlying BusNm is an AUTOSAR standard BusNm.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="DV:CfgPostBuild">
+														<SD GID="DV:postBuildSelectableChangeable">true</SD>
+														<SD GID="DV:postBuildNotDeletable">false</SD>
+													</SDG>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4255</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+											<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+											<PARAMETERS>
+												<!-- PARAMETER DEFINITION: NmStandardBusType -->
+												<ECUC-ENUMERATION-PARAM-DEF UUID="092a4659-36dd-4551-8fbe-bb81ed912a77">
+													<SHORT-NAME>NmStandardBusType</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">Identifies the bus type for standard AUTOSAR &lt;BusNm&gt;s and is used to determine which APIs are to be called by the Nm module.
+
+NOTE: The BusNm for Ethernet is UdpNm.</L-2>
+													</DESC>
+													<ADMIN-DATA>
+														<SDGS>
+															<SDG GID="MSR:Process">
+																<SD GID="MSR:TraceRef">SPEC-4236,SPEC-50058,CREQ-1293</SD>
+															</SDG>
+														</SDGS>
+													</ADMIN-DATA>
+													<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+													<LITERALS>
+														<ECUC-ENUMERATION-LITERAL-DEF UUID="1c615309-90e7-4959-a40a-04dcd59d01cb">
+															<SHORT-NAME>NM_BUSNM_CANNM</SHORT-NAME>
+															<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+														</ECUC-ENUMERATION-LITERAL-DEF>
+														<ECUC-ENUMERATION-LITERAL-DEF UUID="efa675ab-4779-40da-bd39-e02d45f9c412">
+															<SHORT-NAME>NM_BUSNM_FRNM</SHORT-NAME>
+															<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+														</ECUC-ENUMERATION-LITERAL-DEF>
+														<ECUC-ENUMERATION-LITERAL-DEF UUID="34ad0595-ff83-454f-8bfa-7aca9f168fbf">
+															<SHORT-NAME>NM_BUSNM_J1939NM</SHORT-NAME>
+															<ORIGIN>Vector Informatik</ORIGIN>
+														</ECUC-ENUMERATION-LITERAL-DEF>
+														<ECUC-ENUMERATION-LITERAL-DEF UUID="336753e0-6f01-4d9d-a631-28450009045a">
+															<SHORT-NAME>NM_BUSNM_LINNM</SHORT-NAME>
+															<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+														</ECUC-ENUMERATION-LITERAL-DEF>
+														<ECUC-ENUMERATION-LITERAL-DEF UUID="0a2b027f-8e3a-44ec-a60c-19d5d9f88a95">
+															<SHORT-NAME>NM_BUSNM_UDPNM</SHORT-NAME>
+															<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+														</ECUC-ENUMERATION-LITERAL-DEF>
+													</LITERALS>
+												</ECUC-ENUMERATION-PARAM-DEF>
+												<ECUC-FUNCTION-NAME-DEF UUID="8ec0b024-17cd-4d68-91df-d85f89f2e92a">
+													<SHORT-NAME>NmStandardBusNmPduRxIndication</SHORT-NAME>
+													<DESC>
+														<L-2 L="EN">Function called to notify the reception of a NmPdu.
+This function can be used to distinguish between each BusNm on the same channel by using different identifiers for each BusNm.
+It is not necessary to configure the function if there is only one BusNm on the channel. The NmPduReceiveIndCallback can be used as an alternative for this purpose.
+Function prototype:
+FUNC(void, &lt;MODULE_NAME&gt;_CODE)&lt;FunctionName&gt;(CONST(NetworkHandleType, AUTOMATIC) nmNetworkHandle, P2CONST(PduInfoType, AUTOMATIC, AUTOMATIC) pduInfo)
+
+This function can be implemented by the Application, but it can also be used by BswM as a mode request port.
+
+Example:
+In a setup with two channels, one of them equipped with CanNm, the other one equipped with FrNm, there is no distinction required between the BusNms, because the Network Handle parameter is different for each channel.
+Therefore it suffices to use NmPduRxIndicationEnabled with NmPduReceiveIndCallback. However, this type of notification cannot be realized in BswM.
+If a mode request port in BswM is required, define this parameter to a function name that BswM shall implement and configure.
+
+Another example:
+In a setup with one channel equipped with CanNm and NmOsek on the same channel, a distinction of which BusNm has received a NM PDU cannot be made by the NmPduReceiveIndCallback, since the provided Network Handle is the same.
+Therefore, for a distinction, define this parameter to a certain value for CanNm and the NmGenericBusNmPduRxIndication for the NmOsek to a certain value.
+
+RESTRICTIONS: This parameter cannot be defined if NmStandardBusType equals to NM_BUSNM_J1939NM or equals to NM_BUSNM_LINNM.</L-2>
+													</DESC>
+													<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+													<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+													<IMPLEMENTATION-CONFIG-CLASSES>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+														<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+															<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+															<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+														</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													</IMPLEMENTATION-CONFIG-CLASSES>
+													<ORIGIN>Vector Informatik</ORIGIN>
+													<REQUIRES-INDEX>false</REQUIRES-INDEX>
+													<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+												</ECUC-FUNCTION-NAME-DEF>
+											</PARAMETERS>
+										</ECUC-PARAM-CONF-CONTAINER-DEF>
+									</CHOICES>
+								</ECUC-CHOICE-CONTAINER-DEF>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+						<!-- Container Definition: NmGlobalConfig -->
+						<ECUC-PARAM-CONF-CONTAINER-DEF UUID="3c405fea-52ba-41fe-b676-310f20a4bc83">
+							<SHORT-NAME>NmGlobalConfig</SHORT-NAME>
+							<DESC>
+								<L-2 L="EN">General configuration parameters of the NM module.</L-2>
+							</DESC>
+							<ADMIN-DATA>
+								<SDGS>
+									<SDG GID="DV:CfgPostBuild">
+										<SD GID="DV:postBuildSelectableChangeable">false</SD>
+										<SD GID="DV:postBuildNotDeletable">false</SD>
+									</SDG>
+									<SDG GID="MSR:Process">
+										<SD GID="MSR:TraceRef">SPEC-4222</SD>
+									</SDG>
+								</SDGS>
+							</ADMIN-DATA>
+							<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+							<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+							<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+							<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+							<SUB-CONTAINERS>
+								<!-- Container Definition: NmGlobalConstants -->
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="a7ad00d4-c902-42aa-8fbc-afa568036a6b">
+									<SHORT-NAME>NmGlobalConstants</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This container contains module constants related to the NM functionality.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:CfgPostBuild">
+												<SD GID="DV:postBuildSelectableChangeable">false</SD>
+												<SD GID="DV:postBuildNotDeletable">false</SD>
+											</SDG>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4254</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+									<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+									<PARAMETERS>
+										<!-- PARAMETER DEFINITION: NmNumberOfChannels -->
+										<ECUC-INTEGER-PARAM-DEF UUID="66261fb4-974b-4b8e-b478-58cff3c8cceb">
+											<SHORT-NAME>NmNumberOfChannels</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Defines the number of logical Nm channels the ECU shall handle.
+Parameter not used as the value is determined through the number of NmChannelConfig containers by the code generator.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4243</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>1</DEFAULT-VALUE>
+											<MAX>255</MAX>
+											<MIN>1</MIN>
+										</ECUC-INTEGER-PARAM-DEF>
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+								<!-- Container Definition: NmGlobalFeatures -->
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="1f5436d6-3f33-450b-8ef3-28daa1d81090">
+									<SHORT-NAME>NmGlobalFeatures</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This container contains module features related to the NM functionality.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:CfgPostBuild">
+												<SD GID="DV:postBuildSelectableChangeable">false</SD>
+												<SD GID="DV:postBuildNotDeletable">false</SD>
+											</SDG>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4233</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+									<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+									<PARAMETERS>
+										<!-- PARAMETER DEFINITION: NmBusSynchronizationEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="4fc94752-655c-4c9f-a182-9ad4c543b214">
+											<SHORT-NAME>NmBusSynchronizationEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled, the bus synchronization support of the &lt;BusNm&gt;s is turned ON. This parameter needs to be enabled if the NM Coordinator is used on this ECU.
+Bus Synchronization permits an asynchronous message transmission for BusNms that support this feature (e.g. CanNm, UdpNm). This feature is required for the NM Coordinator to send the last NM message on the Bus that is responsible for restarting the Timeout Timer in the BusNm.
+
+Restrictions: This parameter is only valid if it has the same value as 'NmCoordinatorSupportEnabled'.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4211</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmCarWakeUpCallback -->
+										<ECUC-FUNCTION-NAME-DEF UUID="9be96d22-4e23-464e-ab76-17f2ce32a421">
+											<SHORT-NAME>NmCarWakeUpCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Callback function that is called if the BusNm has detected the Car Wake-up Bit being set to 1 in the NM message (indicated by a function call of Nm_CarWakeUpIndication()).
+
+Restrictions: Only relevant if 'NmCarWakeUpRxEnabled' is TRUE</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-19562</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<!-- PARAMETER DEFINITION: NmCarWakeUpRxEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="1fd5c47b-4ed5-4439-839b-672463201b95">
+											<SHORT-NAME>NmCarWakeUpRxEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables or disables Car Wake-Up detection.
+If this option is enabled the Nm reports a detected Car Wake-Up in a received NM message to an upper layer (e.g. Complex Device Driver/Application) by calling the function given in 'NmCarWakeUpCallback'.
+
+false: Car Wake-up is not supported.
+true: Car Wake-up is supported.
+
+It is completely application-specific how to react on this event. This can for instance be used for wake-up forwardings, so that all ComM users assigned to communication channels have to request FULL COMMUNICATION if this event occurs.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-19560</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmComControlEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="0b15e8c3-5bdd-47b3-b071-f3a22bd97dce">
+											<SHORT-NAME>NmComControlEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If this option is enabled an additional API (CanNm_DisableCommunication(), CanNm_EnableCommunication()) is available that allows to enable and disable the transmission of NM PDUs at run-time while the NM is in the Normal Operation State. While the transmission is disabled the network cannot be released which implies that the network cannot be shut down.
+
+Enable this feature in order to support ISO 14229 Communication Control Service $28.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4257</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmComUserDataSupport -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="ad0bff72-2080-4d09-af38-5e263e77adf7">
+											<SHORT-NAME>NmComUserDataSupport</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled NM user data that is transmitted inside the NM PDU is determined through the contents of the COM I-PDU configured as NM User Data TX PDU inside the BusNm. The User Data of NM TX messages are handled as standard COM Signals and can be set by the application. The API Nm_SetUserData is not available.
+If disabled NM user data that is transmitted inside the NM PDU can be set by the API Nm_SetUserData.
+
+The NM user data in received NM PDUs is not handled by this feature and can be determined via Nm_GetUserData() and/or Nm_GetPduData().
+
+Restrictions: This parameter is only relevant if at least one channel is not passive or the CONFIG-VARIANT is not VARIANT-PRE-COMPILE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4225</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmCoordinatorSupportEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="cf5ccea2-35a7-4353-9555-ffe4977dd442">
+											<SHORT-NAME>NmCoordinatorSupportEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled the NM module allows the coordinated shutdown for all synchronized channels of the node. All synchronized channels are kept awake until the readiness to sleep is reached on all coordinated channels in one NM Coordination Cluster. Supported Network Managements are CANNM, FRNM, LINNM, UDPNM and Generic BusNms. J1939NM is not supported.
+If disabled and a coordinated shutdown is required, the ComM users can be used inside the application.
+If wake-up coordination is required, the 'Synchronous Wake-up' feature in ComM can be used and the coordination of different channels can be implemented by the application using ComM users.
+
+Restrictions: This parameter is only relevant if at least one channel is not passive or the CONFIG-VARIANT is not VARIANT-PRE-COMPILE. If 'NmCoordinatorSupportEnabled' is set to TRUE, then 'NmRemoteSleepIndEnabled' and 'NmBusSynchronizationEnabled' have to be TRUE.
+
+										<!--
+										--></L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-19611,SPEC-4122</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmGlobalCoordinatorTime -->
+										<ECUC-FLOAT-PARAM-DEF UUID="7225cfb2-35e4-496c-9cdb-7d1e6af2677b">
+											<SHORT-NAME>NmGlobalCoordinatorTime</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter defines the maximum shutdown time of a connected and coordinated NM-Cluster.
+This time indicates to the NM coordinator how long it takes to shut down all NM coordinated channels on all ECUs in the vehicle networks. This is not a hard upper limit, since there may be slight time differences due to NM algorithms, call cycles of functions, etc.
+The minimum value of this parameter is given as the maximum of:
+CanNmWaitBusSleepTime + CanNmTimeoutTime for all coordinated CAN NM channels
+((FrNmReadySleepCnt + 1) * FrNmRepetitionCycle * FrCycleTime for all coordinated FR NM channels
+0 for all coordinated LIN NM channels
+UdpNmWaitBusSleepTime + UdpNmTimeoutTime for all coordinated UDP NM channels
+NmGenericBusNmShutdownTime for all coordinated channels with a Generic BusNmIf this parameter is not defined, the minimum value as given above is calculated and used for code generation.
+
+Note: This includes connections to coordinators across multiple networks.
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="DV:Display">
+														<SD GID="DV:BaseUnit">SEC</SD>
+														<SD GID="DV:Unit">MSEC</SD>
+													</SDG>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-19571,SPEC-50013</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>0</DEFAULT-VALUE>
+											<MAX>65.535</MAX>
+											<MIN>0</MIN>
+										</ECUC-FLOAT-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmNodeDetectionEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="c3c2dc8b-1f06-44c3-9103-70b4664ff91b">
+											<SHORT-NAME>NmNodeDetectionEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If this feature is enabled on all nodes of a network other ECUs or a tester have the opportunity to detect all present active network nodes of a network.
+The node that transmit an NM PDU with the 'Repeat Message Bit' set to 1, initiates the node detection. This can be realized by a Nm_RepeatMessageRequest() function call. This node and all nodes that receive this message return back to the 'Repeat Message' state so that their NM PDUs can be seen on the bus.
+The function Nm_GetNodeIdentifier() returns the Node Identifier of the most recently received NM PDU. This function may be called in the context of Nm_PduRxIndication() and its configured callback function in 'NmPduReceiveIndCallback'.
+Thus the algorithm for node detection can be realized by the application or by a Complex Device Driver.
+Restrictions: This parameter is only relevant if at least one channel is not passive or the CONFIG-VARIANT is not VARIANT-PRE-COMPILE. If 'NmNodeDetectionEnabled' is set to TRUE, then 'NmNodeIdEnabled' has to be TRUE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4249</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmNodeIdEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="4a0ffad6-d3df-4eed-ae27-19083eacd62a">
+											<SHORT-NAME>NmNodeIdEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This option provides read access to the local node identifier and to the node identifier received in the last NM message. Also, the own node identifier is transmitted in the NM PDU.
+The following APIs are provided if the option is enabled:
+- Nm_GetPduData() to receive the whole data bytes of the most recently received NM PDU.
+- Nm_GetNodeIdentifier() to receive the Node Identifier byte of the most recently received NM PDU
+- Nm_GetLocalNodeIdentifier() to receive the Node Identifier byte of own NM TX PDU</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4238</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmPduRxIndicationEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="7e17dda4-81d5-4c6d-8e15-6541f45af9f3">
+											<SHORT-NAME>NmPduRxIndicationEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled a callback function for every received NM PDU will be triggered.
+The name of the callback function is configurable by the parameter 'NmPduReceiveIndCallback'. The function provided by this parameter can be implemented in the Application or in a Complex Device Driver.
+The function Nm_GetPduData() may be used to access the data bytes (payload) of the received NM PDU. In order to use this function, the settings 'NmNodeIdEnabled' and/or 'NmUserDataEnabled' must be turned ON.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4229</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmRemoteSleepIndEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="b02e4442-55bb-4637-8d2b-ffba5d6ff1d9">
+											<SHORT-NAME>NmRemoteSleepIndEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enable this feature in gateways (e.g. if NM coordinator is used) to allow the remote sleep detection. 'Remote Sleep' is a state of the network where all other nodes have indicated their readiness to sleep (e.g. in AUTOSAR Standard BusNms due to the absence of the NM PDU/negative votes).
+This switch needs to be enabled if the synchronized shutdown of networks has to be carried out.
+It comprises Remote Sleep Indication, Remote Sleep Cancellation and checking of the Remote Sleep Indication State.
+If the feature is enabled, the following behavior is activated: Remote Sleep Indication is notified to the Nm module when your network node is the only one in the whole network that requests bus-communication for 'Remote Sleep Indication Time'.
+Remote Sleep Cancellation is notified if any other network node requires the communication bus while Remote Sleep Indication takes place in your network node.
+The Remote Sleep Status can be determined via the API Nm_CheckRemoteSleepIndication().
+Optionally, an upper layer (e.g. Complex Device Driver, Application) can be notified by callback function calls about a Remote Sleep Indication and a remote Sleep Cancellation using the functions configured in 'NmRemoteSleepIndCallback' and 'NmRemoteSleepCancelCallback'.
+If disabled, the above mentioned notifications do not happen and the API Nm_CheckRemoteSleepIndication is not available.
+This feature is required for NM Coordinator nodes.
+
+										<!--
+										-->		
+
+Restrictions: This parameter is only relevant if at least one channel is not passive or the CONFIG-VARIANT is not VARIANT-PRE-COMPILE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4221,SPEC-50035</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmRepeatMsgIndEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="441e3865-1625-41bb-962e-c54e6156a72c">
+											<SHORT-NAME>NmRepeatMsgIndEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled the ECU can request the transmission of NM messages from other nodes in order to detect which nodes are present in the network. To request this functionality the API Nm_RepeatMessageRequest() has to be called. Activated nodes can then be detected by the Application/by a Complex Device Driver through the API Nm_GetNodeIdentifier() that is enabled by 'NmNodeIdEnabled'. This API determines the Node Identifier of the most recently received NM PDU.
+
+Restrictions: If 'NmRepeatMsgIndEnabled' is set to TRUE, then 'NmNodeDetectionEnabled' has to be TRUE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4251</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmStateChangeIndEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="78310111-6b10-4a75-805b-b7e9ae8e6911">
+											<SHORT-NAME>NmStateChangeIndEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled every change in the NM state machine in the BusNm is reported as a function call to  Nm_StateChangeNotification(). This state change indication can be forwarded to an upper layer (e.g. Complex Device Driver, Application) using the function configured in 'NmStateChangeIndCallback'.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4246</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmUserDataEnabled -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="29e340c8-86e8-4369-b9b9-dd3f2f7a95e5">
+											<SHORT-NAME>NmUserDataEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables read and write access to the user data of NM PDUs. The location of user data in the NM message depends on the message configuration.
+If enabled, the NM user data can be read from the most recently received NM PDU through the APIs:
+- Nm_GetUserData(): determines a pointer to the first user data byte.
+- Nm_GetPduData(): determines a pointer to the first byte of the NM PDU.
+If 'NmComUserDataSupport' is not enabled, the NM User Data Bytes can also be changed through the API:
+- Nm_SetUserData().</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4256</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="5b8ff026-da7d-461e-aeb9-1e57659f4072">
+											<SHORT-NAME>NmMacroLayerEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If enabled, this option can be used to minimize the NM resource consumption ROM, RAM and runtime in case 'NmCoordinatorSupportEnabled' is FALSE and in case only one type of BusNm is used.
+If disabled all NM options and features are available.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="3320a315-736c-4a54-81e0-a725582b9fea">
+											<SHORT-NAME>NmStateChangeIndCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Define the callback function that shall be invoked in case of NM state changes. The function is only called if 'NmStateChangeIndEnabled' has been enabled.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="2e7b83d1-46cd-48a6-9842-9073726edfc0">
+											<SHORT-NAME>NmRemoteSleepIndCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Define the remote sleep indication callback. The function is only called if 'NmRemoteSleepIndEnabled' has been enabled. If no function name is defined, no API call will be made.
+The indication will be called when the own node has detected that all other nodes are ready to sleep.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="bd1445a8-2f68-492b-a2b5-c1fa68194a60">
+											<SHORT-NAME>NmRemoteSleepCancelCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Define the remote sleep cancellation indication callback. The function is only called if 'NmRemoteSleepIndEnabled' has been enabled. If no function name is defined, no API call will be made.
+The cancellation indication will be called when the own node has detected that it is not the only node that is ready to sleep.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="82f83e42-59bf-43a9-bf9d-33e54d87f354">
+											<SHORT-NAME>NmPduReceiveIndCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If 'NmPduRxIndicationEnabled' is enabled, the configured callback function will be invoked to notify an upper layer (e.g. Complex Device Driver, Application) about the reception of an NM PDU.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="8b5f37c8-1639-4159-a5ac-eded356b3621">
+											<SHORT-NAME>NmRepeatMessageIndCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If 'NmRepeatMsgIndEnabled' is enabled, the configured callback function will be invoked to notify an upper layer (e.g. Complex Device Driver, Application) upon the state transition to Repeat Message due to a Repeat Message Request issued by any node. The repeat message state will be entered and executed by the NM module independently of the configured callback function. Note that entering Repeat Message will not always be notified, only if it has been entered because of a Repeat Message Request. If an upper layer shall always be notified about a state transition, for instance to Repeat Message, it is recommended to use the 'NmStateChangeIndEnabled' setting in combination with a configured callback function in the parameter 'NmStateChangeIndCallback'.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-FUNCTION-NAME-DEF UUID="8a2f6c31-17c8-47c6-a21b-4b798eb89140">
+											<SHORT-NAME>NmTxTimeoutErrorCallback</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If a function name is configured the configured callback function will be invoked if the transmission of a NM PDU has failed due to a TX timeout. The notification may be used by an upper layer (e.g. Complex Device Driver) for error reporting.
+
+Restrictions: This parameter is only relevant if at least one channel is not passive or CONFIG-VARIANT is not VARIANT-PRE-COMPILE.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-FUNCTION-NAME-DEF>
+										<ECUC-STRING-PARAM-DEF UUID="94039f03-2c75-47cc-8b4e-1b75eb76db2c">
+											<SHORT-NAME>NmCallbacksPrototypeHeader</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If any of the configurable callback functions in the Nm is used the name of the header file providing the callback prototypes has to be defined here.
+A header file is required for the following callback APIs: State Change Notification, Remote Sleep Indication, Remote Sleep Cancellation, Pdu Receive Indication, Repeat Message Indication, Tx Timeout Error Notification and/or Car Wakeup Indication.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY-INFINITE>true</UPPER-MULTIPLICITY-INFINITE>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-STRING-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="c78ae930-346b-4cb1-ba8d-1076e74cc108">
+											<SHORT-NAME>NmCoordinatorSyncSupport</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables/disables the coordinator synchronization support.
+If enabled, there can be active and passive coordinators. To allow synchronization between multiple coordinators, the NM PDU also contains a 'Sleep Ready' bit. For the difference of an active and a passive coordinator, see also the description of the 'NmActiveCoordinator' parameter.
+If disabled, only active coordinators can be used and the 'Sleep Ready' bit in the NM PDU is not available.
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-50209</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-FLOAT-PARAM-DEF UUID="774e090f-4907-4243-81d5-6a631b523e03">
+											<SHORT-NAME>NmSynchronizationTimeoutTime</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter defines the maximum waiting time for a synchronization point. After this time, NM coordinator will continue the shutdown even if no synchronization point has appeared. If the time is set to 0, the NM module will not force any shutdown without a synchronization point.
+A 'synchronization point' in this context is a notification that the BusNm has reached a state where usually the NM message is being sent or another NM algorithm-specific event has occurred that is relevant for the shutdown timing. See also the description of the parameter 'NmSynchronizingNetwork'.
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE and at least one channel is a synchronizing network.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="DV:Display">
+														<SD GID="DV:BaseUnit">SEC</SD>
+														<SD GID="DV:Unit">MSEC</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>0</DEFAULT-VALUE>
+											<MAX>65.535</MAX>
+											<MIN>0</MIN>
+										</ECUC-FLOAT-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="cf86e1e6-4076-4705-9bad-dd3b53c210e8">
+											<SHORT-NAME>NmRuntimeMeasurementSupport</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter defines if runtime measurement points are added to the BSW module code and to the module configuration of MICROSAR RTM. The available measurement points can be seen and configured in the RTM module configuration. Availability of the MICROSAR RTM module is a prerequisite to make use of the runtime measurement functionality.
+Runtime measurement should be disabled in production code as measurement points may inflict additional runtime.
+</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="b85324c6-2b6e-4550-b6a3-d549623308b6">
+											<SHORT-NAME>NmPassiveModeEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">If set to TRUE the passive mode of all networks is enabled. Passive nodes are not able to send NM PDUs and therefore cannot keep the network awake. Passive nodes can however be woken up by the network by receiving the NM PDUs of other ECUs.
+If set to FALSE, the ECU will be able to keep the network awake by transmitting own NM PDUs. The functions Nm_NetworkRequest() and Nm_NetworkRelease() will be available.
+If set to TRUE, the ECU will not be able to keep all networks awake by transmitting own NM PDUs. The functions Nm_NetworkRequest() and Nm_NetworkRelease() will not be available.
+If this parameter is not defined, the NmPassiveModeEnabled switch needs to be defined in each NmChannelConfig. This way, Passive Mode can be set individually for each network.
+
+Restrictions: This parameter is only valid if 'NmPassiveModeEnabled' is not defined in every NmChannelConfig.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-50010</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="fde39b79-cadd-45b9-8e99-cfbb33f2089f">
+											<SHORT-NAME>NmCoordinatorRequestChannelsInBusSleep</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables/disables the support to request channels that are in Bus Sleep Mode.
+If enabled, channels that belong to a coordination cluster are also requested (BusNm_NetworkRequest() call) if they are in Bus Sleep Mode if there is any reason to abort the coordinated shutdown.
+If disabled, only those channels are requested that are not in Bus Sleep mode if there is any reason to abort the coordinated shutdown.
+
+This behavior can be used to have an alternative to 'Synchronous Wake-up' at ComM that requests only the channels that belong to a coordination cluster.
+ 
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE.
+</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="f19a2333-75ba-45d4-a820-5dbb1d0ba7d4">
+											<SHORT-NAME>NmBusNmSpecificPduRxIndicationEnabled</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables/disables the generation of a BusNm specific callback that shall be called by the BusNm upon reception of the RxNmPdu.
+
+The BusNm shall call this function instead of Nm_PduRxIndication to have a distinction between the BusNm if there are multiple BusNm on one channel.
+However, Nm_PduRxIndication() can also be called instead of the specific BusNm Pdu RxIndication.
+
+BusNm shall not call both functions. 
+
+RESTRICTIONS:
+The functions are generated only for CAN channels.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-BOOLEAN-PARAM-DEF UUID="044f74b1-5e9b-4ae3-8c5a-7a3e1d6237d5">
+											<SHORT-NAME>NmCoordinatorPassiveStartUpForwarding</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Enables/disables the direct call of BusNm_PassiveStartUp when calling Nm_PassiveStartUp.
+
+If enabled, the algorithm of the coordinator has a special handling in which the call of Nm_PassiveStartUp leads always to a BusNm_PassiveStartUp. Shortly after, the coordinator algorithm will call BusNm_NetworkRequest
+
+Use this switch if the active wake up bit is used.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!--
+										-->
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+								<!-- Container Definition: NmGlobalProperties -->
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="da6dc8cd-7161-4c69-90b2-f7090f5c1589">
+									<SHORT-NAME>NmGlobalProperties</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">This container contains module properties related to the NM functionality.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:CfgPostBuild">
+												<SD GID="DV:postBuildSelectableChangeable">false</SD>
+												<SD GID="DV:postBuildNotDeletable">false</SD>
+											</SDG>
+											<SDG GID="MSR:Process">
+												<SD GID="MSR:TraceRef">SPEC-4226</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+									<MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+									<PARAMETERS>
+										<!-- PARAMETER DEFINITION: NmCycletimeMainFunction -->
+										<ECUC-FLOAT-PARAM-DEF UUID="dceae664-96d4-4a36-8464-d9c745de1b2f">
+											<SHORT-NAME>NmCycletimeMainFunction</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">The period between successive calls to the NM Main Function (Nm_MainFunction()).
+
+Restrictions: This parameter is only relevant if 'NmCoordinatorSupportEnabled' is TRUE.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="DV:Display">
+														<SD GID="DV:BaseUnit">SEC</SD>
+														<SD GID="DV:Unit">MSEC</SD>
+													</SDG>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-19609,SPEC-50053</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>0.01</DEFAULT-VALUE>
+											<MAX>0.255</MAX>
+											<MIN>0.001</MIN>
+										</ECUC-FLOAT-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmDevErrorDetect -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="5419aa68-c663-42ed-9555-607e3701c305">
+											<SHORT-NAME>NmDevErrorDetect</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter switches the Development Error Detection and Notification ON or OFF.
+true:	Development error detection is enabled.
+false:	Development error detection is disabled.
+
+Note: In general, the development error detection is recommended during pre-test phase. It is not recommended to enable the development error detection in production code due to increased runtime and ROM needs.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4224</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>true</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!-- PARAMETER DEFINITION: NmVersionInfoApi -->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="adcc5aca-74e7-4f62-a7c4-e2db3cce4859">
+											<SHORT-NAME>NmVersionInfoApi</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter enables/disables the function Nm_GetVersionInfo() to get major, minor and patch version information.</L-2>
+											</DESC>
+											<ADMIN-DATA>
+												<SDGS>
+													<SDG GID="MSR:Process">
+														<SD GID="MSR:TraceRef">SPEC-4228</SD>
+													</SDG>
+												</SDGS>
+											</ADMIN-DATA>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>AUTOSAR_ECUC</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<ECUC-STRING-PARAM-DEF UUID="c041b2bf-52b8-41bb-8b23-7ac3f94c93fe">
+											<SHORT-NAME>NmUserConfigFile</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">Reference to an external user configuration file that will be included during generation.
+The content of the user configuration file will be added at the end of the generated module configuration file and allows altering or extending the generated code.
+Caution: User configuration files can cause the software module to malfunction and must only be used with great care!</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+										</ECUC-STRING-PARAM-DEF>
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+								<!-- Container Definition: NmGeneration-->
+								<ECUC-PARAM-CONF-CONTAINER-DEF UUID="f32b77b9-868f-4982-9340-5ada81674eb5">
+									<SHORT-NAME>NmGeneration</SHORT-NAME>
+									<DESC>
+										<L-2 L="EN">Contains the generation configuration parameters of the module Nm.</L-2>
+									</DESC>
+									<ADMIN-DATA>
+										<SDGS>
+											<SDG GID="DV:CfgPostBuild">
+												<SD GID="DV:postBuildSelectableChangeable">false</SD>
+												<SD GID="DV:postBuildNotDeletable">false</SD>
+											</SDG>
+										</SDGS>
+									</ADMIN-DATA>
+									<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+									<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+									<POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+									<PARAMETERS>
+										<!--NmOutOfBoundsWriteProtectionStrategy-->
+										<!--NmOutOfBoundsWriteSanitizer-->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="5518dfb6-b266-4538-8967-ef486355bfbf">
+											<SHORT-NAME>NmOutOfBoundsWriteSanitizer</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter activates/deactivates the generation of runtime checks which call a DET error notification function to find easily out of bounds write problems.
+
+FALSE:  no checks are generated in the data access.
+TRUE: the data access is enriched with DET checks to validate indexes.
+</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!--NmOutOfBoundsReadSanitizer-->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="55334441-78d5-4cea-90f8-814ef979a1a1">
+											<SHORT-NAME>NmOutOfBoundsReadSanitizer</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter activates/deactivates the generation of runtime checks which call a DET error notification function to find easily out of bounds read problems.
+
+FALSE:  no checks are generated in the data access.
+TRUE: the data access is enriched with DET checks to validate indexes.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!--NmShortSymbols-->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="de06d416-a90e-4b77-a706-0f10ad03fa12">
+											<SHORT-NAME>NmShortSymbols</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter activates/deactivates the capability to generate shortened symbol names.
+
+FALSE: symbol names are generated in a human readable style based on the MIP, tags and variant names.
+TRUE: symbol names are generated based on the MIP and a CRC32.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!--NmInterfacesForDeactivatedData-->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="7e017510-dd21-4a63-93de-55fc0fc8429f">
+											<SHORT-NAME>NmInterfacesForDeactivatedData</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter activates/deactivates the capability to generate bsw data interfaces for deactivated data elements. This is an advantage for the BSW developer to reduce the time to market with a development environment using auto completition and to investigate potential interfaces.
+
+FALSE: data interfaces are not generated if the data elementis deactivated.
+TRUE: data interfaces are generated as e.g. emty macros.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+										<!--NmReferringKeysInComments-->
+										<ECUC-BOOLEAN-PARAM-DEF UUID="65615d86-c377-4c65-a7b5-5f76f8273c8a">
+											<SHORT-NAME>NmReferringKeysInComments</SHORT-NAME>
+											<DESC>
+												<L-2 L="EN">This parameter activates/deactivates the capability to generate referring keys in comments. This is an advantage for the developer to investigate indirections, but this feature reduces the overall readability of the generated data.
+
+FALSE: referring keys are not generated in comments.
+TRUE: referring keys are generated in comments.</L-2>
+											</DESC>
+											<LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+											<UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+											<IMPLEMENTATION-CONFIG-CLASSES>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+												<ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+													<CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+													<CONFIG-VARIANT>VARIANT-POST-BUILD-SELECTABLE</CONFIG-VARIANT>
+												</ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+											</IMPLEMENTATION-CONFIG-CLASSES>
+											<ORIGIN>Vector Informatik</ORIGIN>
+											<REQUIRES-INDEX>false</REQUIRES-INDEX>
+											<SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+											<DEFAULT-VALUE>false</DEFAULT-VALUE>
+										</ECUC-BOOLEAN-PARAM-DEF>
+									</PARAMETERS>
+								</ECUC-PARAM-CONF-CONTAINER-DEF>
+							</SUB-CONTAINERS>
+						</ECUC-PARAM-CONF-CONTAINER-DEF>
+					</CONTAINERS>
+				</ECUC-MODULE-DEF>
+				<ECUC-MODULE-CONFIGURATION-VALUES UUID="DCE:78dff519-7e10-4ff0-9e04-3fa17d9ad19f">
+					<SHORT-NAME>Nm_Pre</SHORT-NAME>
+					<DEFINITION-REF DEST="ECUC-MODULE-DEF">/MICROSAR/Nm</DEFINITION-REF>
+					<CONTAINERS></CONTAINERS>
+				</ECUC-MODULE-CONFIGURATION-VALUES>
+				<ECUC-MODULE-CONFIGURATION-VALUES UUID="DCE:7b32bc44-023a-4d34-bcbf-bfa64a6fb21a">
+					<SHORT-NAME>Nm_Rec</SHORT-NAME>
+					<DEFINITION-REF DEST="ECUC-MODULE-DEF">/MICROSAR/Nm</DEFINITION-REF>
+					<CONTAINERS></CONTAINERS>
+				</ECUC-MODULE-CONFIGURATION-VALUES>
+			</ELEMENTS>
+		</AR-PACKAGE>
+	</AR-PACKAGES>
+</AUTOSAR>

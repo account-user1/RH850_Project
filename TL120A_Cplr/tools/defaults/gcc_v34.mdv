@@ -1,0 +1,403 @@
+#
+#            Debugger STL Visualization Script
+#
+#    Copyright (c) 2005 Green Hills Software, Inc.
+#
+#    This program is the property of Green Hills Software, Inc,
+#    its contents are proprietary information and no part of it
+#    is to be disclosed to anyone except employees of Green Hills
+#    Software, Inc., or as agreed in writing signed by the President
+#    of Green Hills Software, Inc.
+#
+
+tree {
+    signature = {"set<*>", "std::set<*>", "map<*>", "std::map<*>"}
+    required_fields = {"_M_t"} 
+    #required_fields = {"_M_t","_M_t._M_impl","_M_t._M_impl._Ty"}
+    type = "container"
+
+    size = "return self._M_t._M_impl._M_node_count;"
+    begin_iter = "return ($M_typeof(self._M_t._M_impl._Tp) *)self._M_t._M_impl._M_header._M_left;
+
+    # Do a tree walk using the iterator
+    next_iter  = "$GHSptr = self;
+    next_iter += "if ($GHSptr->_M_right != 0) {"
+    next_iter += "   $GHSptr = ($M_typeof(self))($GHSptr->_M_right);"
+    next_iter += "   while ($GHSptr->_M_left != 0) {"
+    next_iter += "      $GHSptr = ($M_typeof(self))($GHSptr->_M_left);
+    next_iter += "   };"
+    next_iter += "} else {"
+    next_iter += "   $GHSparent = ($M_typeof(self))($GHSptr->_M_parent);"
+    next_iter += "   while ($GHSptr == $GHSparent->_M_right) {"
+    next_iter += "      $GHSptr = $GHSparent;"
+    next_iter += "      $GHSparent = ($M_typeof(self))($GHSparent->_M_parent);
+    next_iter += "   };"
+    next_iter += "   if ($GHSptr->_M_right != $GHSparent) {"
+    next_iter += "      $GHSptr = $GHSparent;"
+    next_iter += "   };"
+    next_iter += "};"
+    next_iter += "return $GHSptr;"
+
+    value_from_iter = "return self._M_value_field;"
+
+    functions {
+    	size {
+	    name = "size"
+
+	    body = "return self._M_t._M_node_count;"
+	}
+    }
+}
+
+list {
+    signature = {"list<*>", "std::list<*>"}
+    required_fields = {"_M_impl"}
+    #required_fields = {"_M_impl","_Node"}
+    type = "container"
+
+    size = "return self.size();"
+
+    begin_iter = "return ($M_typeof(self)::_Node *)(self._M_impl._M_node._M_next);
+    next_iter = "return ($M_typeof(self))(self->_M_next);"
+    value_from_iter = "return self->_M_data;"
+
+    functions {
+	size {
+	    name = "size"
+
+	    # Loop through the list since there is no "size" member
+	    body  = "$GHScur = self._M_impl._M_node._M_next;"
+	    body += "$GHSend = &self._M_impl._M_node;"
+	    body += "$GHScount = 0;"
+	    body += "while ($GHScur != $GHSend) {"
+	    body += "   $GHScount++;"
+	    body += "   $GHScur = $GHScur->_M_next;"
+	    body += "};"
+	    body += "return $GHScount;"
+	    
+	}
+	front {
+	    name = "front"
+	    body = "return (($M_typeof(self)::_Node *) (self._M_impl._M_node._M_next))->_M_data;"
+	}
+	back {
+	    name = "back"
+	    body = "return (($M_typeof(self)::_Node *) (self._M_impl._M_node._M_prev))->_M_data;"
+	}
+    }
+}
+
+list_iterator {
+    signature = {"_List_iterator<*>", "std::_List_iterator<*>"}
+    required_fields = {"_M_node"}
+    type = "structure"
+
+    fields {
+	value {
+	    name = "_M_node"
+	    value = "return self._M_node"
+	}
+    }
+    functions {
+	deref {
+	    name = "operator*"
+	    body = "return (($M_typeof(self)::_Node*)(self._M_node))->_M_data;"
+	}
+    }
+}
+
+vector {
+    signature = {"vector<*>", "std::vector<*>"}
+    required_fields = {"_M_impl"}
+    type = "container"
+
+    size = "return self._M_impl._M_finish - self._M_impl._M_start;"
+
+    begin_iter = "return self._M_impl._M_start;"
+    next_iter = "return self + 1;"
+    value_from_iter = "return *(self);"
+
+    functions {
+	size {
+	    name = "size"
+	    body = "return self._M_impl._M_finish - self._M_impl._M_start;"
+	}
+	front {
+	    name = "front"
+	    body = "return *(self._M_impl._M_start);"
+	}
+	back {
+	    name = "back"
+	    body = "return *(self._M_impl._M_finish - 1);
+	}
+    }
+}
+
+vector_iterator {
+    signature = { "__normal_iterator<*, std::vector<*>>" }
+    required_fields = { "_M_current" }
+    type = "structure"
+    predicate = "return self._M_current != 0"
+
+    fields {
+	value {
+	    name = "_M_current"
+	    value = "return *(self._M_current)"
+	}
+    }
+    functions {
+	deref {
+	    name = "operator*"
+	    body = "return *(self._M_current)"
+	}
+    }
+}
+
+boolvec {
+    signature = {"vector<bool, *allocator<bool>>", "std::vector<bool, *allocator<bool>>"}
+    required_fields = {"_M_impl"}
+    type = "container"
+
+    size = "return self.size()"
+
+    begin_iter  = "$GHSWordBits = 8 * sizeof(unsigned long);"
+    begin_iter += "$GHSOffset = self._M_impl._M_start._M_offset;"
+    begin_iter += "$GHSPtr = self._M_impl._M_start._M_p;"
+    begin_iter += "return $GHSPtr;"
+
+    next_iter  = "if ($GHSOffset++ == $GHSWordBits - 1) {"
+    next_iter += "   $GHSOffset = 0;"
+    next_iter += "   ++$GHSPtr;"
+    next_iter += "};"
+    next_iter += "return $GHSPtr;"
+
+    value_from_iter = "$GHSResult = (bool) !!(*$GHSPtr & (1UL << $GHSOffset)); "
+    value_from_iter+= "return $GHSResult;"
+
+    functions {
+	size {
+	    name = "size"
+	    body  = "$GHSWordBits = 8 * sizeof(unsigned long);"
+	    body += "return $GHSWordBits * "
+	    body += "(self._M_impl._M_finish._M_p - self._M_impl._M_start._M_p)"
+	    body += "    + self._M_impl._M_finish._M_offset "
+	    body += "    - self._M_impl._M_start._M_offset;"
+	}
+	front {
+	    name = "front"
+	    body = "$GHSResult = (bool) (*self._M_impl._M_start._M_p & (1UL << self._M_impl._M_start._M_offset));"
+	    body+= "return $GHSResult;"
+	}
+	back {
+	    name = "back"
+	    body = "$GHSWordBits = (int) (8 * sizeof(unsigned long));"
+	    body+= "$GHSPtr = self._M_impl._M_finish._M_p;"
+	    body+= "$GHSOffset = self._M_impl._M_finish._M_offset;"
+	    body+= "$GHSDiff = (int) $GHSOffset - 1;"
+	    body+= "$GHSPtr += (int) $GHSDiff / $GHSWordBits;"
+	    body+= "$GHSDiff = (int) $GHSDiff % $GHSWordBits;"
+	    body+= "if ($GHSDiff < 0) {"
+	    body+= "    $GHSOffset = (unsigned int)($GHSDiff + $GHSWordBits);
+	    body+= "    $GHSPtr--;"
+	    body+= "} else {"
+	    body+= "    $GHSOffset = (unsigned int)$GHSDiff;
+	    body+= "};"
+	    body+= "$GHSResult = (bool) !!(*$GHSPtr & (1UL << $GHSOffset));"
+	    body+= "return $GHSResult;"
+	}
+    }
+}
+
+boolvec_iterator {
+    signature = {"_Bit_iterator", "std::_Bit_iterator"}
+    required_fields = {"_M_p","_M_offset"}
+    type = "structure"
+    predicate = "return self._M_p != 0;"
+
+    fields {
+	value {
+	    name = "value"
+	    value = "$GHSResult = (bool) !!(*self._M_p & (1UL << self._M_offset));"
+	    value+= "return $GHSResult;"
+	}
+    }
+    functions {
+	deref {
+	    name = "operator*"
+	    body = "$GHSResult = (bool) !!(*self._M_p & (1UL << self._M_offset));"
+	    body+= "return $GHSResult;"
+	}
+    }
+}
+
+deque {
+    signature = {"deque<*>", "std::deque<*>"}
+    required_fields = {"_M_impl"}
+    type = "container"
+
+    size = "return self.size()"
+    begin_iter = "$GHSValSize = sizeof(*(self._M_impl._M_start._M_cur));"
+    begin_iter+= "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;"
+    begin_iter+= "$GHSLast = self._M_impl._M_start._M_last;"
+    begin_iter+= "$GHSNode = self._M_impl._M_start._M_node;"
+    begin_iter+= "$GHSCurNode = self._M_impl._M_start._M_cur;"
+    begin_iter+= "return self;"
+    
+    next_iter  = "++$GHSCurNode;"
+    next_iter += "if ($GHSCurNode == $GHSLast) {"
+    next_iter += "   $GHSNode = $GHSNode + 1;"
+    next_iter += "   $GHSCurNode = *$GHSNode;"
+    next_iter += "   $GHSLast = $GHSCurNode + $GHSBufSize;"
+    next_iter += "};"
+    next_iter += "return self;"
+    
+    value_from_iter = "return *$GHSCurNode"
+
+    functions {
+	size {
+	    # size = self._M_finish - self._M_start
+	    # A - B = buffer_size * (A._M_node - B._M_node - 1) +
+	    #         (A._M_cur - A._M_first) + (B._M_last - B._M_cur)
+	    name = "size"
+	    body =  "$GHSValSize = sizeof(*(self._M_impl._M_start._M_cur));
+	    body+=  "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;
+	    body+=  "return $GHSBufSize *
+	    body += "  (self._M_impl._M_finish._M_node - self._M_impl._M_start._M_node - 1)"
+	    body += "+ (self._M_impl._M_finish._M_cur - self._M_impl._M_finish._M_first)"
+	    body += "+ (self._M_impl._M_start._M_last - self._M_impl._M_start._M_cur);"
+	}
+
+	front {
+	    name = "front"
+	    body = "return *self._M_impl._M_start._M_cur;
+	}
+
+	back {
+	    name = "back"
+	    body = "$GHSValSize = sizeof(*(self._M_impl._M_start._M_cur));"
+	    body+= "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;"
+	    body+= "$GHSLast = self._M_impl._M_finish._M_last;"
+	    body+= "$GHSFirst = self._M_impl._M_finish._M_first;"
+	    body+= "$GHSNode = self._M_impl._M_finish._M_node;"
+	    body+= "$GHSCurNode = self._M_impl._M_finish._M_cur;"
+	    body+= "if ($GHSCurNode == $GHSFirst) {"
+	    body+= "    $GHSNode = $GHSNode - 1;"
+	    body+= "    $GHSFirst = *$GHSNode;"
+	    body+= "    $GHSLast = $GHSFirst + $GHSBufSize;"
+	    body+= "    $GHSCurNode = $GHSLast;"
+	    body+= "};"
+	    body+= "$GHSCurNode--;"
+	    body+= "return *$GHSCurNode;"
+	}
+    }
+}
+
+deque_iterator {
+    signature = {"_Deque_const_iterator<*>", "std::_Deque_const_iterator<*>","_Deque_iterator<*>", "std::_Deque_iterator<*>"}
+    required_fields = {"_M_cur"}
+    type = "structure"
+    predicate = "return self._M_cur != 0"
+
+    fields {
+	value {
+	    name = "value"
+	    value = "return *self._M_cur;"
+	}
+    }
+    functions {
+	deref {
+	    name = "operator*"
+	    body = "return *(self._M_cur)"
+	}
+    }
+}
+
+# Classes that use the deque.
+queue {
+    signature = {"queue<*, *deque<*>>", "std::queue<*,*deque<*>>", "stack<*,*deque<*>>", "std::stack<*,*deque<*>>"}
+    required_fields = {"c"}
+    type = "container"
+
+    size = "return self.size()"
+    begin_iter = "$GHSValSize = sizeof(*(self.c._M_impl._M_start._M_cur));"
+    begin_iter+= "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;"
+    begin_iter+= "$GHSLast = self.c._M_impl._M_start._M_last;"
+    begin_iter+= "$GHSNode = self.c._M_impl._M_start._M_node;"
+    begin_iter+= "$GHSCurNode = self.c._M_impl._M_start._M_cur;"
+    begin_iter+= "return self;"
+    
+    next_iter  = "++$GHSCurNode;"
+    next_iter += "if ($GHSCurNode == $GHSLast) {"
+    next_iter += "   $GHSNode = $GHSNode + 1;"
+    next_iter += "   $GHSCurNode = *$GHSNode;"
+    next_iter += "   $GHSLast = $GHSCurNode + $GHSBufSize;"
+    next_iter += "};"
+    next_iter += "return self;"
+
+    value_from_iter = "return *$GHSCurNode"
+
+    functions {
+	size {
+	    # size = self._M_finish - self._M_start
+	    # A - B = buffer_size * (A._M_node - B._M_node - 1) +
+	    #         (A._M_cur - A._M_first) + (B._M_last - B._M_cur)
+	    name = "size"
+	    body =  "$GHSValSize = sizeof(*(self.c._M_impl._M_start._M_cur));
+	    body+=  "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;
+	    body+=  "return $GHSBufSize *
+	    body += "  (self.c._M_impl._M_finish._M_node - self.c._M_impl._M_start._M_node - 1)"
+	    body += "+ (self.c._M_impl._M_finish._M_cur - self.c._M_impl._M_finish._M_first)"
+	    body += "+ (self.c._M_impl._M_start._M_last - self.c._M_impl._M_start._M_cur);"
+	}
+
+	front {
+	    name = "front"
+	    body = "return *self.c._M_impl._M_start._M_cur;
+	}
+
+	back {
+	    name = "back"
+	    body = "$GHSValSize = sizeof(*(self.c._M_impl._M_start._M_cur));"
+	    body+= "$GHSBufSize = $GHSValSize < 512 ? 512 / $GHSValSize : 1;"
+	    body+= "$GHSLast = self.c._M_impl._M_finish._M_last;"
+	    body+= "$GHSFirst = self.c._M_impl._M_finish._M_first;"
+	    body+= "$GHSNode = self.c._M_impl._M_finish._M_node;"
+	    body+= "$GHSCurNode = self.c._M_impl._M_finish._M_cur;"
+	    body+= "if ($GHSCurNode == $GHSFirst) {"
+	    body+= "    $GHSNode = $GHSNode - 1;"
+	    body+= "    $GHSFirst = *$GHSNode;"
+	    body+= "    $GHSLast = $GHSFirst + $GHSBufSize;"
+	    body+= "    $GHSCurNode = $GHSLast;"
+	    body+= "};"
+	    body+= "$GHSCurNode--;"
+	    body+= "return *$GHSCurNode;"
+	}
+    }
+}
+
+string {
+    signature = {"basic_string<*>", "std::basic_string<*>"}
+    required_fields = {"_M_dataplus"}
+    type = "alias"
+
+    value = "return self._M_dataplus._M_p;"
+    mutable = false
+}
+
+pair {
+    signature = {"pair<*>", "std::pair<*>"}
+    required_fields = {"first", "second"}
+    type = "structure"
+
+    fields {
+	first {
+	    name = "first"
+	    value = "return self.first;"
+	    mutable = false
+	}
+	second {
+	    name = "second"
+	    value = "return self.second;"
+	}
+    }
+}

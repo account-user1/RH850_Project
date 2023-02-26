@@ -1,0 +1,30 @@
+# MPC500 family CDR internal flash
+#
+# Options:
+#  midr        Required PARTNUM in the IMMR
+#  cpu_name    Required
+#  flash_rev   1 for CMF, 3 for C3F
+# Geometry:
+#  Must be a list of erase block regions
+# Erase block region:
+#  count     Number of blocks in region
+#  size      Size of each block in the region
+cdr_chips {
+  { partnum=0x30; cpu_name="Freescale MPC555"; flash_rev=1;
+    geometry {
+      { count=14; size=0x8000 }
+    }
+  }
+  { partnum=0x33; cpu_name="Freescale MPC565"; flash_rev=3;
+    shadow_size=512; module_count=2
+    geometry {
+      { count=16; size=0x10000 }
+    }
+  }
+  { partnum=0x36; cpu_name="Freescale MPC563"; flash_rev=3;
+    shadow_size=512; module_count=1
+    geometry {
+      { count=8; size=0x10000 }
+    }
+  }
+}

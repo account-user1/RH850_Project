@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="com.vector.cfg.util.projectservices" name="Project Services" schema="schema/com.vector.cfg.util.projectservices.exsd"/>
+   <extension-point id="com.vector.cfg.util.generateprocess" name="GenerateProcess" schema="schema/com.vector.cfg.util.generateprocess.exsd"/>
+   <extension-point id="com.vector.cfg.util.path" name="Path" schema="schema/com.vector.cfg.util.path.exsd"/>
+   <extension-point id="com.vector.cfg.util.services" name="Services" schema="schema/com.vector.cfg.util.services.exsd"/>
+   <extension-point id="com.vector.cfg.util.servicecontext.di.modules" name="DI_Modules" schema="schema/com.vector.cfg.util.servicecontext.di.modules.exsd"/>
+   <extension
+         point="com.vector.cfg.util.projectservices">
+      <service
+            id="IPathManager">
+         <implementation
+               class="com.vector.cfg.util.internal.path.PathManager">
+         </implementation>
+         <type
+               class="com.vector.cfg.util.IPathManager">
+         </type>
+      </service>
+   </extension>
+   <extension
+         point="com.vector.cfg.util.path">
+      <path
+            changeable="false"
+            class="com.vector.cfg.util.internal.path.TempFolderPath"
+            id="TempFolder">
+      </path>
+      <path
+            changeable="false"
+            class="com.vector.cfg.util.internal.path.ProcessingEcucFilePath"
+            id="ProcessingEcuCFile">
+      </path>
+      <path
+            changeable="false"
+            class="com.vector.cfg.util.internal.path.XsltResultFilePath"
+            id="XsltResultFile">
+      </path>
+   </extension>
+ 
+</plugin>

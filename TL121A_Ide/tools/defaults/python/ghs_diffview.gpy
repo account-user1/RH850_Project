@@ -1,0 +1,107 @@
+import ide;
+import ghs_ideobject;
+import ghs_constants;
+import ghs_winreg;
+from ghs_util import *;
+
+class GHS_DiffView(ghs_ideobject.GHS_IdeObject):
+    """ Describe information for MULTI Diffview. """
+    #
+    # Initialize object.
+    #
+    # GHS: Validated 
+    #
+    def __init__(self, workingDir=""):
+	ghs_ideobject.GHS_IdeObject.__init__(self, "DiffView",
+					     workingDir);
+	self.service = GHS_GetGeneralService(self.serviceName,
+					    "MULTI Diff View",
+					    workingDir);
+    #
+    # Open the window to choose files to view differences.
+    #
+    # Return an object of GHS_Window for the window which is for you to choose
+    # two files to diff.
+    #
+    # GHS: Validated 
+    #
+    def OpenChooseWindow(self, fileName1="", fileName2="", reuse=True):
+	if not self.service:
+	    print("MULTI DiffView service is not started up.");
+	    return None;
+
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	self.service.ChooseNewDiff(fileName1, fileName2, reuse, 0);
+	obj = winreg.WaitForWindow(oldWinList,
+				   self.maxSecToWaitForNewWindow);
+	return obj;
+    # Define some aliases for the function
+    openchoosewindow = OpenChooseWindow;
+    OpenChooseWin = OpenChooseWindow;
+    openchoosewin = OpenChooseWindow;
+    #
+    # Diff files.
+    #
+    # Return an object of GHS_DiffViewWindow when "reuse" is False.
+    #
+    # GHS: Validated 
+    #
+    def DiffFiles(self, fileName1, fileName2, reuse=False, append=False):
+	if not self.service:
+	    print("MULTI DiffView service is not started up.");
+	    return None;
+	self.CleanCmdExecVariables();
+	if not fileName1 or not fileName2:
+	    self.OpenChooseWindow(fileName1, fileName2, reuse);
+	    return None;
+
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	# First argument is the command, so fileName1 must be quoted in case it
+	# contains spaces in the path.
+	self.cmdExecOutput = self.service.CreateNewDiff(GHS_QuotifyString(fileName1),
+							fileName2,
+							reuse,
+							append);
+	if self.cmdExecOutput:
+	    print("%s" % self.cmdExecOutput);
+	    return None;
+	if reuse:
+	    # Without changing the diffview's code, we have no idea which
+	    # diffview window is reused, so don't try to wait for a new
+	    # diffview window to showup.
+	    obj = None;
+	else:
+	    winreg = ghs_misc.GetGlobal("winreg");
+	    if not winreg:
+		winreg = ghs_winreg.GHS_WindowRegister();
+		ghs_misc.SetGlobal("winreg", winreg);
+
+	    obj = winreg.WaitForWindowFromClass(oldWinList,
+			  self.maxSecToWaitForNewWindow,
+			  getattr(ghs_constants.winClassNames, "diffview", ""),
+			  "");
+	    if not obj:
+		print("Did not see MULTI DiffView window.");
+	return obj;
+    # Define some aliases for the function
+    difffiles = DiffFiles;
+
+
+    ##########################################################################
+    #
+    # More APIs......
+    #
+    ##########################################################################
+
+# Define an object for the class.
+ghs_diffview = GHS_DiffView;

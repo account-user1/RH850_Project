@@ -1,0 +1,91 @@
+configure cwindlines 14
+D;
+
+bA main##PrintHello {
+  scrollcommand +MAX wid=-2;
+  echo "  We have stopped at the first line of main.  When you continue, "
+  echo "the 'printf' call will print to the target's standard I/O pane which "
+  echo "you can see by clicking the I/O tab below this pane or by selecting "
+  echo "'IO Pane' from the right-click menu."
+  echo " ";
+  echo "  To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  echo " ";
+};
+  
+bA main##InitializeCounter {
+  scrollcommand +MAX wid=-2;
+  echo "  Notice that 'Hello World!' was printed to the target I/O pane.";
+  echo "Output from the target is also shown in the command pane with 'I/O:'";
+  echo "before each line.";
+  echo "  You can double click on a variable in the source pane to display it";
+  echo "in a Data Explorer.";
+  echo " ";
+  echo "  To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  view counter;
+};
+
+bA main##InForLoop {
+  scrollcommand +MAX wid=-2;
+  echo "  At this point in our sample application we will populate a simple";
+  echo "linked-list with data from the array 'table'.  Click on the '+' next to"
+  echo "an array element in the Data Explorer to expand that element.";
+  echo " ";
+  echo "  To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  echo " ";
+  viewdel;
+  view table;
+};
+
+bA main##Done {
+  scrollcommand +MAX wid=-2;
+  echo "  This concludes the scripted portion of this demo. For more information ";
+  echo "about the MULTI debugger, please refer to the online help.";
+  echo " ";
+  echo "  To terminate the application, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  echo " ";
+  viewdel;
+};
+
+bA print_global_list##ViewList {
+  scrollcommand +MAX wid=-2;
+  echo "  To quickly view elements of the linked-list, double-click on the       ";
+  echo "variable 'temp' to open it in the Data Explorer.  Now use the";
+  echo "'View'->'View temp as Container' menu item to view the complete list.";
+  echo " ";
+  echo "  To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  echo " ";
+  viewdel;
+  view temp;
+};
+
+bA fact##ViewCallStack {
+  scrollcommand +MAX wid=-2;
+  echo "  At any point in a debug session a Call Stack View window can be ";
+  echo "opened by clicking on the 'Call Stack' button in the toolbar.  This ";
+  echo "view shows stack information which can help determine how the";
+  echo "application got to the current location.";
+  echo "  Click on a function in the Call Stack View to jump to that location";
+  echo "in the source pane.";
+  echo " ";
+  echo "  To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+  echo " ";
+  viewdel;
+  callsview;
+};
+
+
+clear;
+scrollcommand +MAX wid=-2;
+echo "  The MULTI script driving this demo session will take you through a few ";
+echo "basic features of the debugger.  For a more in-depth look at the capabilities";
+echo "of the debugger, please refer to the online help.";
+echo " ";
+echo "  Click 'Go on Selected Items (F5)' to begin.";
+echo " ";
+echo " ";

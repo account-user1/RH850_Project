@@ -1,0 +1,164 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   CDD_FlsMem_Cfg.c
+* Module Description: Variable definition for Flash CRC Sections from Configurator .
+* Project           : CBD
+* Author            : Avinash James
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       rzk04c %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 11/10/17  1        AJM       Initial Version                                                              EA4#13211
+**********************************************************************************************************************/
+<#
+    /* List Declaration */
+    List<WriteRegionClass> WriteRegionList = new List<WriteRegionClass>();
+#>
+
+/************************************************ Include Statements *************************************************/
+#include "CDD_FlsMem_Cfg_private.h"
+
+/******************************************** File Level Rule Deviations *********************************************/
+ /* MISRA-C:2004 Rule 11.3 [NXTRDEV 11.3.2]    Cast of a variable address to an integer type required for writing a 
+                                               variable address to a register. */
+ /* MISRA-C:2004 Rule 19.1 [NXTRDEV 19.1.1]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+/**************************************************** Type defs ******************************************************/
+
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+<#
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "FlsMem" ) );
+#>
+
+#define CDD_FlsMem_START_SEC_CODE
+#include "CDD_FlsMem_MemMap.h"
+
+<# !LOOP( Xp.ContainerAtDefRefTo( "FlashCRCRegnConfig" ) ) #>
+<#
+        WriteRegionClass data = new WriteRegionClass();
+        
+        /* Gather data for each region */
+        
+        data.StartAddr = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/StartingAddress" ));
+        data.StartAddrSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/StartingAddressSymbol" ));
+        data.StartAddrSym = data.StartAddrSym.Trim();
+        
+        data.PredefinedCrcAddress = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/PredefinedCrcAddress" ));
+        data.PredefinedCrcAddressSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/PredefinedCrcAddressSymbol" ));
+        data.PredefinedCrcAddressSym = data.PredefinedCrcAddressSym.Trim();
+ 
+        data.Length = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/Length" ));
+        data.LengthSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/LengthSymbol" ));
+        data.LengthSym = data.LengthSym.Trim();
+
+        data.UseSym = ValueOf( Xp.ValueAtDefRefTo( "FlashCRCRegnConfig/UseSymbolName" ));
+        
+        /* Quick data checking */
+        if ( data.UseSym == true )
+        {
+            if ( String.IsNullOrEmpty(data.StartAddrSym) )
+            {
+                data.StartAddrSym = "@error \"CRC Region Start Address not defined\"";
+            }
+            
+            if ( String.IsNullOrEmpty(data.PredefinedCrcAddressSym) )
+            {
+                data.PredefinedCrcAddressSym = "@error \"CRC Predefined Address not defined\"";
+            }
+            if ( String.IsNullOrEmpty(data.LengthSym) )
+            {
+                data.LengthSym = "@error \"Length not defined\"";
+            }
+        }
+        else
+        {
+            if ( data.StartAddr == 0 )
+            {
+                data.StartAddrSym = "@error \"CRC Region Start Address not defined\"";
+            }
+            
+            if ( data.PredefinedCrcAddress == 0 )
+            {
+                data.PredefinedCrcAddressSym = "@error \"CRC Predefined Address not defined\"";
+            }
+            if ( data.Length == 0 )
+            {
+                data.LengthSym = "@error \"Length not defined\"";
+            }
+        }
+    WriteRegionList.Add(data);
+#>
+<# !ENDLOOP #>
+<# 
+int LoopCntr = 0;
+int LoopCntrMax = Count( Xp.ContainerAtDefRefTo("FlashCRCRegnConfig"));
+#>
+
+const FlsCrcCfgBlkRec FLSCFGTBL[NROFFLSCRCREGNS_CNT_U08] = 
+{
+<#
+foreach( WriteRegionClass entry in WriteRegionList )
+{
+    LoopCntr++;
+    if (entry.UseSym == true)
+    {
+#>
+    {
+        ((uint32)<#= entry.StartAddrSym #>),
+        ((uint32)<#= entry.LengthSym #>),
+        ((uint32)<#= entry.PredefinedCrcAddressSym #>),
+    }
+<#
+    }
+    else
+    {
+#>
+    {
+        (uint32)<#= FormatHex(entry.StartAddr, 8, HexCase.Upper) #>UL,
+        (uint32)<#= FormatHex(entry.Length, 8, HexCase.Upper) #>UL,
+        (uint32)<#= FormatHex(entry.PredefinedCrcAddress, 8, HexCase.Upper) #>UL,
+    }
+<#
+    }
+    if(LoopCntr < LoopCntrMax)
+    {#>    ,
+<#
+    }
+    else
+    {
+    }
+}
+#>
+
+};
+<# /*-------------------------------------------------------------------------------------------------------------*/ #>
+
+#define CDD_FlsMem_STOP_SEC_CODE
+#include "CDD_FlsMem_MemMap.h"
+
+
+/****************************************************** Macros *******************************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+<# /* ----------------------------------------------------------------------------------------------------------- */ #>
+<#+
+    public class WriteRegionClass
+    {
+        public string StartAddrSym;
+        public uint StartAddr;
+        public string LengthSym;
+        public uint Length;
+        public string PredefinedCrcAddressSym;
+        public uint PredefinedCrcAddress;
+        public bool UseSym;
+    }
+#>

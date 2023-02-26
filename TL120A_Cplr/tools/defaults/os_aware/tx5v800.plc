@@ -1,0 +1,311 @@
+Placer 1.5
+Items=Thread_Information
+ ColWind(,,,265,440,"threadx.TX_ThreadInformation","Thread Information",NULL,NULL,0,0,0,"AAAMULTIPIC") 0xffffffff =Thread_Information > -1
+ Text(0,33,13,NULL,"Thread Name:",PNone)0xffffffff =tx_thread_name >-1
+ TextField(0,117,10,148,18,"`if($self->tx_thread_name) {print/a ($self->tx_thread_name + 0)} else {print \"(None)\"}`",NULL,NULL,256,1,NULL)0xffffffff =tf_thread_name >-1
+ Button(0,31,33,86,20,"if ($self == _tx_thread_current_ptr) {katask $self; substitute route debugger.fm.task.%EVAL{print/x $self} E} else {katask $self; substitute route debugger.fm.task.%EVAL{print/x $self} E}",NULL,NULL,"Current PC",0,0,0,0,NULL)0xffffffff =tx_thread_current_pc >-1
+ TextField(0,117,34,148,18,"`if ($self == _tx_thread_current_ptr) {print/pb $pc + 0; print \" (\"; print /x $pc+0;print \")\"} else {if (1 == *(int *)($self->tx_thread_stack_ptr)) {eval ($curpc = *(int *)(((int *)($self->tx_thread_stack_ptr)) + 31)); print/pb 0 + $curpc; print \" (\"; print/x $curpc + 0;print \")\"} else {eval ($curpc= *(int *)(((int *)($self->tx_thread_stack_ptr)) + 13)); print /pb $curpc+0; print \" (\"; print /x $curpc+0;print \")\"}}`;if ($self == _tx_thread_current_ptr) {E} else {if (1 == *(int *)($self->tx_thread_stack_ptr)) {$etopc = *(int *)(((int *)($self->tx_thread_stack_ptr)) + 31); e $etopc;} else {$etopc =  *(int *)(((int *)($self->tx_thread_stack_ptr)) + 13); e $etopc;}}",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_current_pc >-1
+ Button(0,31,58,86,20,"if ($self == _tx_thread_current_ptr) {memview ((char *)($sp + 0))} else {memview ((char *)(((int)($self->tx_thread_stack_ptr) + 0)))}",NULL,NULL,"Current SP",0,0,0,0,NULL)0xffffffff =bt_current_sp >-1
+ TextField(0,117,59,148,18,"`if ($self == _tx_thread_current_ptr) {print/x (0 + (int *)$sp)} else {print/x 0 + (char *)$self->tx_thread_stack_ptr}`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_current_sp >-1
+ Text(0,47,86,NULL,"Stack Use:",PNone)0xffffffff =tx_thread_stack_use >-1
+ TextField(0,117,83,148,18,"`if ($self == _tx_thread_current_ptr) {print ((char *)$self->tx_thread_stack_end - (char *)$sp + 1)} else {print (char *)$self->tx_thread_stack_end-(char *)$self->tx_thread_stack_ptr+1}`/`print (char *)$self->tx_thread_stack_end-(char *)$self->tx_thread_stack_start+1`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_stack_use >-1
+ Text(0,19,132,NULL,"Priority (PT):",PNone)0xffffffff =tx_thread_priority >-1
+ TextField(0,117,129,148,18,"`print/d $self->tx_thread_priority + 0` (`print/d $self->tx_thread_preempt_threshold + 0`)",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_priority >-1
+ Text(0,40,155,NULL,"Time Slice:",PNone)0xffffffff =tx_thread_time_slice >-1
+ TextField(0,117,152,148,18,"`print $self->tx_thread_time_slice + 0`/`print $self->tx_thread_new_time_slice + 0`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_time_slice >-1
+ Text(0,5,188,NULL,"Execution State:",PNone)0xffffffff =tx_thread_exe_state >-1
+ TextField(0,117,185,148,18,"`if ($self == _tx_thread_current_ptr) {print \"Executing\"} else {if ($self->tx_thread_state == 0) {print \"Ready\"} else {if ($self->tx_thread_state == 4) {print \"Suspended\"} else {if ($self->tx_thread_state > 2) {print \"Suspended\"} else {if ($self->tx_thread_state == 2) {print \"Terminated\"} else {print \"Completed\"}}}}}` [`print/xb $self->tx_thread_state + 0`]",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_exe_state >-1
+ Text(0,26,211,NULL,"Suspended on:",PNone)0xffffffff =tx_thread_susp_obj >-1
+ TextField(0,117,208,148,18,"`if ($self->tx_thread_state == 5) {print \"Queue\"} else {if ($self->tx_thread_state == 6) {print \"Semaphore\"} else {if ($self->tx_thread_state == 7) {print \"Event Flags Group\"} else { if($self->tx_thread_state == 8) {print \"Block Pool\"} else { if($self->tx_thread_state == 9) {print \"Byte Pool\"} else { if ($self->tx_thread_state == 4) {print \"Sleep\"} else {if ($self->tx_thread_state == 3) {print \"Suspend Call\"} else {if($self->tx_thread_state == 10) {print \"I/O Driver\"} else {if($self->tx_thread_state == 11) {print \"File\"} else {if($self->tx_thread_state == 12) {print \"TCP/IP\"} else {if($self->tx_thread_state == 13) {print \"Mutex\"} else {print \"N/A\"}}}}}}}}}}}`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_susp_obj >-1
+ TextField(0,117,232,148,18,"`if (($self->tx_thread_state >= 5) && ((ULONG)($self->tx_thread_suspend_control_block))) {if(((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_name) {print/a ((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_name + 0} else {print/x ((ULONG)$self->tx_thread_suspend_control_block) + 0}} else {print \"N/A\"}`;if ($self->tx_thread_state == 5) {view (struct TX_QUEUE_STRUCT *)$self->tx_thread_suspend_control_block;} else {if ($self->tx_thread_state == 6) {view (struct TX_SEMAPHORE_STRUCT *)$self->tx_thread_suspend_control_block;} else {if ($self->tx_thread_state == 7) {view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)$self->tx_thread_suspend_control_block;} else { if($self->tx_thread_state == 8) {view (struct TX_BLOCK_POOL_STRUCT *)$self->tx_thread_suspend_control_block;} else { if($self->tx_thread_state == 9) {view (struct TX_BYTE_POOL_STRUCT *)$self->tx_thread_suspend_control_block;} else if ($self->tx_thread_state == 13) {view (struct TX_MUTEX_STRUCT *)$self->tx_thread_suspend_control_block;}}}}}",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_susp_name >-1
+ Text(0,47,282,NULL,"Condition:",PNone)0xffffffff =tx_thread_susp_cond >-1
+ TextField(0,117,279,148,18,"`if ($self->tx_thread_state == 7) {eval($ti_tempcond = $self->tx_thread_suspend_option);print/x $self->tx_thread_suspend_info + 0;if($ti_tempcond & 0x02) {print \" TX_AND\"}else {print \" TX_OR\"};if($ti_tempcond & 0x01) {print \"_CLEAR\"}} else {if ($self->tx_thread_state == 9) {print $self->tx_thread_suspend_info + 0;print \" Byte Request\"} else {if ($self->tx_thread_state == 5) {print \"\"; if (((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_enqueued) {print \"Send\"} else {print \"Receive\"}} else {print \"N/A\"}}}`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_susp_cond >-1
+ Button(0,23,312,94,20,"{eval($etopc = $self->tx_thread_entry);} e $etopc;",NULL,NULL,"Entry Point",0,0,0,0,NULL)0xffffffff =tx_thread_entry >-1
+ TextField(0,117,313,148,18,"`print/pb (int)($self->tx_thread_entry) + 0` (`print/x (int)($self->tx_thread_entry) + 0`)",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_entry >-1
+ Text(0,47,340,NULL,"Run Count:",PNone)0xffffffff =tx_thread_run_count >-1
+ TextField(0,117,337,148,18,"`print/x $self->tx_thread_run_count + 0`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_run_count >-1
+ Button(0,9,360,108,20,"obr -delete TX_THREAD_STRUCT; view $self; obr Thread_Information TX_THREAD_STRUCT;",NULL,NULL,"Control Block",0,0,0,0,NULL)0xffffffff =tx_thread_addr >-1
+ TextField(0,117,361,148,18,"`print/x $self+0`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_addr >-1
+ Button(0,85,415,94,20,NULL,NULL,NULL,"Thread List",0,0,0,0,"cli\"if((ULONG)_tx_thread_created_count && !((ULONG)_tx_thread_created_count & 0xc0000000)) {osaexplorer};\"")0xffffffff =bt_thread_list >-1
+ Line(0,-200,10,-200,28,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,-200,33,-200,53,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,-200,58,-200,78,NULL,PNone)0xffffffff =dummy3 >-1
+ Line(0,-200,83,-200,101,NULL,PNone)0xffffffff =dummy4 >-1
+ Line(0,-200,129,-200,147,NULL,PNone)0xffffffff =dummy5 >-1
+ Line(0,-200,152,-200,170,NULL,PNone)0xffffffff =dummy6 >-1
+ Line(0,-200,185,-201,203,NULL,PNone)0xffffffff =dummy7 >-1
+ Line(0,-200,208,-200,226,NULL,PNone)0xffffffff =dummy8 >-1
+ Line(0,-200,279,-200,297,NULL,PNone)0xffffffff =dummy9 >-1
+ Line(0,-200,312,-200,332,NULL,PNone)0xffffffff =dummy10 >-1
+ Line(0,-200,337,-200,355,NULL,PNone)0xffffffff =dummy11 >-1
+ Line(0,-200,360,-199,380,NULL,PNone)0xffffffff =dummy12 >-1
+ Line(0,5,-200,117,-200,NULL,PNone)0xffffffff =hdummy1 >-1
+ Button(0,73,231,44,20,"if ($self->tx_thread_state == 5) {view *(struct TX_QUEUE_STRUCT *)$self->tx_thread_suspend_control_block} else {if ($self->tx_thread_state == 6) {view *(struct TX_SEMAPHORE_STRUCT *)$self->tx_thread_suspend_control_block} else {if ($self->tx_thread_state == 7) {view *(struct TX_EVENT_FLAGS_GROUP_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 8) {view *(struct TX_BLOCK_POOL_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 9) {view *(struct TX_BYTE_POOL_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 13) {view *(struct TX_MUTEX_STRUCT *)$self->tx_thread_suspend_control_block}}}}}}",NULL,NULL,"Name",0,0,0,0,NULL)0xffffffff =bt_thread_susp_name >-1
+ Line(0,-200,231,-200,251,NULL,PNone)0xffffffff =dummy13 >-1
+ Text(0,61,259,NULL,"Timeout:",PNone)0xffffffff =tx_thread_timeout >-1
+ TextField(0,117,256,148,18,"`if ($self->tx_thread_state > 4) {if ($self->tx_thread_timer.tx_timer_internal_remaining_ticks == 0xffffffff) {print \"Forever\"} else {print/d $self->tx_thread_timer.tx_timer_internal_remaining_ticks + 0}} else {if ($self->tx_thread_state == 4) {print/d $self->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"N/A\"}}`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_timeout >-1
+ Line(0,-200,256,-200,274,NULL,PNone)0xffffffff =dummy14 >-1
+ Text(0,26,109,NULL,"Stack Extent:",PNone)0xffffffff =tx_thread_stack_extent >-1
+ TextField(0,117,106,148,18,"`print /x (char *)$self->tx_thread_stack_start + 0`-`print/x (char *)$self->tx_thread_stack_end + 0`",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_stack_extent >-1
+ Line(0,-200,106,-200,124,NULL,PNone)0xffffffff =dummy15 >-1
+ ButtonSet(0,84,390,96,20,NULL,NULL,NULL,
+    (1,"Stack Check"),
+    (1,NULL),
+    -1,2,2,0,0,0,0,
+    (1,"if(_txs_thread_stack_check) {obr Stack_Check_Info TX_THREAD_STRUCT; view $self; obrfreeze; obr Thread_Information TX_THREAD_STRUCT;}"),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_thread_stuff >-1
+MinSizes
+Sizes
+ 0,(48),(),10,0,0,0,0,5,2,Horizontal
+ 47,(45),(),0,0,0,0,0,1,1,((46),(),0,0,0,0,0,1,1,)Vertical
+ 46,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 0,(48,27,28,29,30,31,32,33,34,35,36,37,38,41,44,26,47),(),120,0,0,0,0,1,1,Vertical
+ 43,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 44,(42),(),0,0,0,0,0,1,1,((43),(),0,0,0,0,0,1,1,)Vertical
+ 41,(40),(),0,0,0,0,0,1,1,((17),(),0,0,0,0,0,1,1,)Vertical
+ 25,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 23,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 21,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 19,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 17,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 16,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 14,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 39,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,((15),(),0,0,0,0,0,1,1,((18),(),0,0,0,0,0,1,1,((20),(),0,0,0,0,0,1,1,((22),(),0,0,0,0,0,1,1,((24),(),0,0,0,0,0,1,1,)))))))))))Horizontal
+ 38,(24),(),0,0,0,0,0,1,1,((25),(),0,0,0,0,0,1,1,)Vertical
+ 37,(22),(),0,0,0,0,0,1,1,((23),(),0,0,0,0,0,1,1,)Vertical
+ 36,(20),(),0,0,0,0,0,1,1,((21),(),0,0,0,0,0,1,1,)Vertical
+ 35,(18),(),0,0,0,0,0,1,1,((19),(),0,0,0,0,0,1,1,)Vertical
+ 34,(15),(),0,0,0,0,0,1,1,((16),(),0,0,0,0,0,1,1,)Vertical
+ 33,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 32,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 31,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 30,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 29,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 28,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 27,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (26),48,5,0,0,0,0,Top,Top,Bottom
+ (48),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (48),38,10,0,0,0,0,Top,Top,Bottom
+ (47),0,-200,0,0,0,0,Left,Left,Left
+ (46),39,0,0,0,0,0,Left,Left,Right
+ (45,46,47),30,5,0,0,0,0,TBCenter,Top,Bottom
+ (44),0,-200,0,0,0,0,Left,Left,Left
+ (43),42,0,0,0,0,0,Left,Left,Right
+ (43,42,44),41,5,0,0,0,0,TBCenter,Top,Bottom
+ (41),0,-200,0,0,0,0,Left,Left,Left
+ (17,40,41),34,5,0,0,0,0,TBCenter,Top,Bottom
+ (39),0,-200,0,0,0,0,Top,Top,Top
+ (38,37,36,35,34,33,32,31,30),0,-200,0,0,0,0,Left,Left,Left
+ (29),0,-200,0,0,0,0,Left,Left,Left
+ (28),0,-200,0,0,0,0,Left,Left,Left
+ (27),0,-200,0,0,0,0,Left,Left,Left
+ (26),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (25),39,0,0,0,0,0,Left,Left,Right
+ (23),39,0,0,0,0,0,Left,Left,Right
+ (21),39,0,0,0,0,0,Left,Left,Right
+ (19),39,0,0,0,0,0,Left,Left,Right
+ (17),39,0,0,0,0,0,Left,Left,Right
+ (16),39,0,0,0,0,0,Left,Left,Right
+ (14),39,0,0,0,0,0,Left,Left,Right
+ (12),39,0,0,0,0,0,Left,Left,Right
+ (10),39,0,0,0,0,0,Left,Left,Right
+ (8),39,0,0,0,0,0,Left,Left,Right
+ (6),39,0,0,0,0,0,Left,Left,Right
+ (4),39,0,0,0,0,0,Left,Left,Right
+ (2),39,0,0,0,0,0,Left,Left,Right
+ (45,40,24,22,20,18,15,13,11,9,7,5,3,1,39,42),0,5,0,0,0,0,Right,Left,Left
+ (25,24,38),37,5,0,0,0,0,TBCenter,Top,Bottom
+ (23,22,37),36,5,0,0,0,0,TBCenter,Top,Bottom
+ (36,20,21),35,15,0,0,0,0,TBCenter,Top,Bottom
+ (35,18,19),44,5,0,0,0,0,TBCenter,Top,Bottom
+ (16,15,34),33,5,0,0,0,0,TBCenter,Top,Bottom
+ (33,13,14),32,15,0,0,0,0,TBCenter,Top,Bottom
+ (32,11,12),31,5,0,0,0,0,TBCenter,Top,Bottom
+ (31,9,10),47,5,0,0,0,0,TBCenter,Top,Bottom
+ (30,7,8),29,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,29),28,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,28),27,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,27),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Current_Thread_Information
+ ColWind(,,,265,440,"threadx.TX_CurrentThreadInformation","Current Thread Information",NULL,NULL,0,0,0) 0xffffffff =Current_Thread_Information > -1
+ Text(0,33,13,NULL,"Thread Name:",PNone) 0xffffffff =tx_thread_name >-1
+ TextField(0,117,10,148,18,"`if($self == 0){print \"(No current thread)\"} else {if($self->tx_thread_name) {print/a ($self->tx_thread_name + 0)} else {print \"(None)\"}}`",NULL,NULL,256,1,NULL) 0xffffffff =tf_thread_name >-1
+ Button(0,31,33,86,20,"if($self != 0){katask $self; substitute route debugger.fm.task.%EVAL{print/x $self} E}",NULL,NULL,"Current PC",0,0,0,0,NULL)0xffffffff =tx_thread_current_pc >-1
+ TextField(0,117,34,148,18,"`if($self == 0){print \"N/A\"} else {if ($self == _tx_thread_current_ptr) {print/pb $pc + 0; print \" (\"; print /x $pc+0;print \")\"} else {if (1 == *(int *)($self->tx_thread_stack_ptr)) {eval ($curpc = *(int *)(((int *)($self->tx_thread_stack_ptr)) + 31)); print/pb 0 + $curpc; print \" (\"; print/x $curpc + 0;print \")\"} else {eval ($curpc= *(int *)(((int *)($self->tx_thread_stack_ptr)) + 13)); print /pb $curpc+0; print \" (\"; print /x $curpc+0;print \")\"}}}`;if ($self == _tx_thread_current_ptr) {E} else {if (1 == *(int *)($self->tx_thread_stack_ptr)) {eval ($etopc = *(int *)(((int *)($self->tx_thread_stack_ptr)) + 31)); e $etopc;} else {eval($etopc =  *(int *)(((int *)($self->tx_thread_stack_ptr)) + 13)); e $etopc;}}",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_current_pc >-1
+ Button(0,33,58,84,20,"if($self != 0){if ($self == _tx_thread_current_ptr) {memview ((char *)($sp + 0))} else {memview ((char *)(((int)($self->tx_thread_stack_ptr) + 0)))}}",NULL,NULL,"Current SP",0,0,0,0,NULL) 0xffffffff =bt_current_sp >-1
+ TextField(0,117,59,148,18,"`if($self == 0){print \"N/A\"} else {if ($self == _tx_thread_current_ptr) {print/x (0 + (int *)$sp)} else {print/x 0 + (char *)$self->tx_thread_stack_ptr}}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_current_sp >-1
+ Text(0,47,86,NULL,"Stack Use:",PNone) 0xffffffff =tx_thread_stack_use >-1
+ TextField(0,117,83,148,18,"`if($self == 0){print \"N/A \"} else {if ($self == _tx_thread_current_ptr) {print ((char *)$self->tx_thread_stack_end - (char *)$sp + 1)} else {print (char *)$self->tx_thread_stack_end-(char *)$self->tx_thread_stack_ptr+1}}`/`if($self == 0){print \" N/A\"} else {print (char *)$self->tx_thread_stack_end-(char *)$self->tx_thread_stack_start+1}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_stack_use >-1
+ Text(0,19,132,NULL,"Priority (PT):",PNone) 0xffffffff =tx_thread_priority >-1
+ TextField(0,117,129,148,18,"`if($self == 0){print \"N/A\"} else {print/d $self->tx_thread_priority + 0}` (`if($self == 0){print \"N/A\"} else {print/d $self->tx_thread_preempt_threshold + 0}`)",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_priority >-1
+ Text(0,40,155,NULL,"Time Slice:",PNone) 0xffffffff =tx_thread_time_slice >-1
+ TextField(0,117,152,148,18,"`if($self == 0){print \"N/A\"} else {print $self->tx_thread_time_slice + 0}`/`if($self == 0){print \"N/A\"} else {print $self->tx_thread_new_time_slice + 0}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_time_slice >-1
+ Text(0,5,188,NULL,"Execution State:",PNone) 0xffffffff =tx_thread_exe_state >-1
+ TextField(0,117,185,148,18,"`if($self == 0){print \"N/A\"} else {if ($self == _tx_thread_current_ptr) {print \"Executing\"} else {if ($self->tx_thread_state == 0) {print \"Ready\"} else {if ($self->tx_thread_state == 4) {print \"Suspended\"} else {if ($self->tx_thread_state > 2) {print \"Suspended\"} else {if ($self->tx_thread_state == 2) {print \"Terminated\"} else {print \"Completed\"}}}}}}` [`if($self == 0){print \"N/A\"} else {print/xb $self->tx_thread_state + 0}`]",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_exe_state >-1
+ Text(0,26,211,NULL,"Suspended on:",PNone) 0xffffffff =tx_thread_susp_obj >-1
+ TextField(0,117,208,148,18,"`if($self == 0){print \"N/A\"} else {if ($self->tx_thread_state == 5) {print \"Queue\"} else {if ($self->tx_thread_state == 6) {print \"Semaphore\"} else {if ($self->tx_thread_state == 7) {print \"Event Flags Group\"} else { if($self->tx_thread_state == 8) {print \"Block Pool\"} else { if($self->tx_thread_state == 9) {print \"Byte Pool\"} else { if ($self->tx_thread_state == 4) {print \"Sleep\"} else {if ($self->tx_thread_state == 3) {print \"Suspend Call\"} else {if($self->tx_thread_state == 10) {print \"I/O Driver\"} else {if($self->tx_thread_state == 11) {print \"File\"} else {if($self->tx_thread_state == 12) {print \"TCP/IP\"} else {if($self->tx_thread_state == 13) {print \"Mutex\"} else {print \"N/A\"}}}}}}}}}}}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_susp_obj >-1
+ TextField(0,117,232,148,18,"`if($self == 0){print \"N/A\"} else {if (($self->tx_thread_state >= 5) && ($self->tx_thread_suspend_control_block)) {if(((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_name) {print/a ((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_name + 0} else {print/x $self->tx_thread_suspend_control_block + 0}} else {print \"N/A\"}}`;if($self != 0) {if ($self->tx_thread_state == 5) {view (struct TX_QUEUE_STRUCT *)$self->tx_thread_suspend_control_block;} else {if ($self->tx_thread_state == 6) {view (struct TX_SEMAPHORE_STRUCT *)$self->tx_thread_suspend_control_block;} else {if ($self->tx_thread_state == 7) {view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)$self->tx_thread_suspend_control_block;} else { if($self->tx_thread_state == 8) {view (struct TX_BLOCK_POOL_STRUCT *)$self->tx_thread_suspend_control_block;} else { if($self->tx_thread_state == 9) {view (struct TX_BYTE_POOL_STRUCT *)$self->tx_thread_suspend_control_block;} else if ($self->tx_thread_state == 13) {view (struct TX_MUTEX_STRUCT *)$self->tx_thread_suspend_control_block;}}}}}}",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_susp_name >-1
+ Text(0,47,282,NULL,"Condition:",PNone) 0xffffffff =tx_thread_susp_cond >-1
+ TextField(0,117,279,148,18,"`if($self == 0){print \"N/A\"} else {if ($self->tx_thread_state == 7) {eval($cti_tempcond = $self->tx_thread_suspend_option);print/x $self->tx_thread_suspend_info + 0;if($cti_tempcond & 0x02) {print \" TX_AND\"}else {print \" TX_OR\"};if($cti_tempcond & 0x01) {print \"_CLEAR\"}} else {if ($self->tx_thread_state == 9) {print $self->tx_thread_suspend_info + 0;print \" Byte Request\"} else {if ($self->tx_thread_state == 5) {print \"\"; if (((TX_QUEUE *)$self->tx_thread_suspend_control_block)->tx_queue_enqueued) {print \"Send\"} else {print \"Receive\"}} else {print \"N/A\"}}}}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_susp_cond >-1
+ Button(0,26,312,91,20,"if($self != 0){eval($etopc = $self->tx_thread_entry); e $etopc;}",NULL,NULL,"Entry Point",0,0,0,0,NULL) 0xffffffff =tx_thread_entry >-1
+ TextField(0,117,313,148,18,"`if($self == 0){print \"N/A\"} else {print/pb (int)($self->tx_thread_entry) + 0}` (`if($self == 0){print \"N/A\"} else {print/x (int)($self->tx_thread_entry) + 0}`)",NULL,NULL,256,0,NULL)0xffffffff =tf_thread_entry >-1
+ Text(0,47,340,NULL,"Run Count:",PNone) 0xffffffff =tx_thread_run_count >-1
+ TextField(0,117,337,148,18,"`if($self == 0){print \"N/A\"} else {print/x $self->tx_thread_run_count + 0}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_run_count >-1
+ Button(0,12,360,105,20,"if($self != 0){obr -delete TX_THREAD_STRUCT; view $self; obr Thread_Information TX_THREAD_STRUCT;}",NULL,NULL,"Control Block",0,0,0,0,NULL) 0xffffffff =tx_thread_addr >-1
+ TextField(0,117,361,148,18,"`if($self == 0){print \"N/A\"} else {print/x $self+0}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_addr >-1
+ Button(0,87,415,91,20,NULL,NULL,NULL,"Thread List",0,0,0,0,"cli\"if((ULONG)_tx_thread_created_count && !((ULONG)_tx_thread_created_count & 0xc0000000)) {osaexplorer};\"") 0xffffffff =bt_thread_list >-1
+ Line(0,-200,10,-200,28,NULL,PNone) 0xffffffff =dummy1 >-1
+ Line(0,-200,33,-200,53,NULL,PNone) 0xffffffff =dummy2 >-1
+ Line(0,-200,58,-200,78,NULL,PNone) 0xffffffff =dummy3 >-1
+ Line(0,-200,83,-200,101,NULL,PNone) 0xffffffff =dummy4 >-1
+ Line(0,-200,129,-200,147,NULL,PNone) 0xffffffff =dummy5 >-1
+ Line(0,-200,152,-200,170,NULL,PNone) 0xffffffff =dummy6 >-1
+ Line(0,-200,185,-201,203,NULL,PNone) 0xffffffff =dummy7 >-1
+ Line(0,-200,208,-200,226,NULL,PNone) 0xffffffff =dummy8 >-1
+ Line(0,-200,279,-200,297,NULL,PNone) 0xffffffff =dummy9 >-1
+ Line(0,-200,312,-200,332,NULL,PNone) 0xffffffff =dummy10 >-1
+ Line(0,-200,337,-200,355,NULL,PNone) 0xffffffff =dummy11 >-1
+ Line(0,-200,360,-199,380,NULL,PNone) 0xffffffff =dummy12 >-1
+ Line(0,5,-200,117,-200,NULL,PNone) 0xffffffff =hdummy1 >-1
+ Button(0,75,231,42,20,"if($self != 0){if ($self->tx_thread_state == 5) {view *(struct TX_QUEUE_STRUCT *)$self->tx_thread_suspend_control_block} else {if ($self->tx_thread_state == 6) {view *(struct TX_SEMAPHORE_STRUCT *)$self->tx_thread_suspend_control_block} else {if ($self->tx_thread_state == 7) {view *(struct TX_EVENT_FLAGS_GROUP_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 8) {view *(struct TX_BLOCK_POOL_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 9) {view *(struct TX_BYTE_POOL_STRUCT *)$self->tx_thread_suspend_control_block} else {if($self->tx_thread_state == 13) {view *(struct TX_MUTEX_STRUCT *)$self->tx_thread_suspend_control_block}}}}}}}",NULL,NULL,"Name",0,0,0,0,NULL) 0xffffffff =bt_thread_susp_name >-1
+ Line(0,-200,231,-200,251,NULL,PNone) 0xffffffff =dummy13 >-1
+ Text(0,61,259,NULL,"Timeout:",PNone) 0xffffffff =tx_thread_timeout >-1
+ TextField(0,117,256,148,18,"`if($self == 0){print \"N/A\"} else {if ($self->tx_thread_state > 4) {if ($self->tx_thread_timer.tx_timer_internal_remaining_ticks == 0xffffffff) {print \"Forever\"} else {print/d $self->tx_thread_timer.tx_timer_internal_remaining_ticks + 0}} else {if ($self->tx_thread_state == 4) {print/d $self->tx_thread_timer.tx_timer_internal_remaining_ticks + 0} else {print \"N/A\"}}}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_timeout >-1
+ Line(0,-200,256,-200,274,NULL,PNone) 0xffffffff =dummy14 >-1
+ Text(0,26,109,NULL,"Stack Extent:",PNone) 0xffffffff =tx_thread_stack_extent >-1
+ TextField(0,117,106,148,18,"`if($self == 0){print \"N/A\"} else {print /x (char *)$self->tx_thread_stack_start + 0}`-`if($self == 0){print \"N/A\"} else {print/x (char *)$self->tx_thread_stack_end + 0}`",NULL,NULL,256,0,NULL) 0xffffffff =tf_thread_stack_extent >-1
+ Line(0,-200,106,-200,124,NULL,PNone) 0xffffffff =dummy15 >-1
+ ButtonSet(0,84,390,96,20,NULL,NULL,NULL,
+    (1,"Stack Check"),
+    (1,NULL),
+    -1,2,2,0,0,0,0,
+    (1,"if($self != 0){if(_txs_thread_stack_check) {obr Stack_Check_Info TX_THREAD_STRUCT; view $self; obrfreeze; obr Thread_Information TX_THREAD_STRUCT;}}"),
+    (0),
+    (1,NULL),
+    (1,NULL),0,0)0xffffffff =bs_thread_stuff >-1
+MinSizes
+Sizes
+ 0,(48),(),10,0,0,0,0,5,2,Horizontal
+ 47,(45),(),0,0,0,0,0,1,1,((46),(),0,0,0,0,0,1,1,)Vertical
+ 46,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 0,(48,27,28,29,30,31,32,33,34,35,36,37,38,41,44,26,47),(),120,0,0,0,0,1,1,Vertical
+ 43,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 44,(42),(),0,0,0,0,0,1,1,((43),(),0,0,0,0,0,1,1,)Vertical
+ 41,(40),(),0,0,0,0,0,1,1,((17),(),0,0,0,0,0,1,1,)Vertical
+ 25,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 23,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 21,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 19,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 17,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 16,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 14,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 12,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 10,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 8,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 6,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 2,(0),(39),-5,0,0,0,0,1,1,Horizontal
+ 39,(1),(),0,0,0,0,0,1,1,((3),(),0,0,0,0,0,1,1,((5),(),0,0,0,0,0,1,1,((7),(),0,0,0,0,0,1,1,((9),(),0,0,0,0,0,1,1,((11),(),0,0,0,0,0,1,1,((13),(),0,0,0,0,0,1,1,((15),(),0,0,0,0,0,1,1,((18),(),0,0,0,0,0,1,1,((20),(),0,0,0,0,0,1,1,((22),(),0,0,0,0,0,1,1,((24),(),0,0,0,0,0,1,1,)))))))))))Horizontal
+ 38,(24),(),0,0,0,0,0,1,1,((25),(),0,0,0,0,0,1,1,)Vertical
+ 37,(22),(),0,0,0,0,0,1,1,((23),(),0,0,0,0,0,1,1,)Vertical
+ 36,(20),(),0,0,0,0,0,1,1,((21),(),0,0,0,0,0,1,1,)Vertical
+ 35,(18),(),0,0,0,0,0,1,1,((19),(),0,0,0,0,0,1,1,)Vertical
+ 34,(15),(),0,0,0,0,0,1,1,((16),(),0,0,0,0,0,1,1,)Vertical
+ 33,(13),(),0,0,0,0,0,1,1,((14),(),0,0,0,0,0,1,1,)Vertical
+ 32,(11),(),0,0,0,0,0,1,1,((12),(),0,0,0,0,0,1,1,)Vertical
+ 31,(9),(),0,0,0,0,0,1,1,((10),(),0,0,0,0,0,1,1,)Vertical
+ 30,(7),(),0,0,0,0,0,1,1,((8),(),0,0,0,0,0,1,1,)Vertical
+ 29,(5),(),0,0,0,0,0,1,1,((6),(),0,0,0,0,0,1,1,)Vertical
+ 28,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 27,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (26),48,5,0,0,0,0,Top,Top,Bottom
+ (48),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (48),38,10,0,0,0,0,Top,Top,Bottom
+ (47),0,-200,0,0,0,0,Left,Left,Left
+ (46),39,0,0,0,0,0,Left,Left,Right
+ (45,46,47),30,5,0,0,0,0,TBCenter,Top,Bottom
+ (44),0,-200,0,0,0,0,Left,Left,Left
+ (43),42,0,0,0,0,0,Left,Left,Right
+ (43,42,44),41,5,0,0,0,0,TBCenter,Top,Bottom
+ (41),0,-200,0,0,0,0,Left,Left,Left
+ (17,40,41),34,5,0,0,0,0,TBCenter,Top,Bottom
+ (39),0,-200,0,0,0,0,Top,Top,Top
+ (38,37,36,35,34,33,32,31,30),0,-200,0,0,0,0,Left,Left,Left
+ (29),0,-200,0,0,0,0,Left,Left,Left
+ (28),0,-200,0,0,0,0,Left,Left,Left
+ (27),0,-200,0,0,0,0,Left,Left,Left
+ (26),0,0,0,0,0,0,LRCenter,LRCenter,LRCenter
+ (25),39,0,0,0,0,0,Left,Left,Right
+ (23),39,0,0,0,0,0,Left,Left,Right
+ (21),39,0,0,0,0,0,Left,Left,Right
+ (19),39,0,0,0,0,0,Left,Left,Right
+ (17),39,0,0,0,0,0,Left,Left,Right
+ (16),39,0,0,0,0,0,Left,Left,Right
+ (14),39,0,0,0,0,0,Left,Left,Right
+ (12),39,0,0,0,0,0,Left,Left,Right
+ (10),39,0,0,0,0,0,Left,Left,Right
+ (8),39,0,0,0,0,0,Left,Left,Right
+ (6),39,0,0,0,0,0,Left,Left,Right
+ (4),39,0,0,0,0,0,Left,Left,Right
+ (2),39,0,0,0,0,0,Left,Left,Right
+ (45,40,24,22,20,18,15,13,11,9,7,5,3,1,39,42),0,5,0,0,0,0,Right,Left,Left
+ (25,24,38),37,5,0,0,0,0,TBCenter,Top,Bottom
+ (23,22,37),36,5,0,0,0,0,TBCenter,Top,Bottom
+ (36,20,21),35,15,0,0,0,0,TBCenter,Top,Bottom
+ (35,18,19),44,5,0,0,0,0,TBCenter,Top,Bottom
+ (16,15,34),33,5,0,0,0,0,TBCenter,Top,Bottom
+ (33,13,14),32,15,0,0,0,0,TBCenter,Top,Bottom
+ (32,11,12),31,5,0,0,0,0,TBCenter,Top,Bottom
+ (31,9,10),47,5,0,0,0,0,TBCenter,Top,Bottom
+ (30,7,8),29,5,0,0,0,0,TBCenter,Top,Bottom
+ (6,5,29),28,5,0,0,0,0,TBCenter,Top,Bottom
+ (4,3,28),27,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,27),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Stack_Check_Info
+ ColWind(,,,300,56,"threadx.TX_StackCheckInformation","Stack Check Information",NULL,NULL,0,0,0,"AAAMULTIPIC") 0xffffffff =Stack_Check_Info > -1
+ Text(0,26,13,NULL,"Thread Name:",PNone)0xffffffff =tx_sc_name >-1
+ TextField(0,110,10,190,18,"`if($self->tx_thread_name) {print/a ($self->tx_thread_name + 0)} else {print/x $self+0}`",NULL,NULL,256,1,NULL)0xffffffff =tf_sc_name >-1
+ Text(0,5,36,NULL,"Peak Stack Use:",PNone)0xffffffff =tx_sc_peak_stack >-1
+ TextField(0,110,33,190,18,"`print/d _txs_thread_stack_check($self) + 0;`/`print/d $self->tx_thread_stack_end-$self->tx_thread_stack_start+1`",NULL,NULL,256,0,NULL)0xffffffff =tf_sc_peak_stack >-1
+ Line(0,-200,10,-200,28,NULL,PNone)0xffffffff =dummy1 >-1
+ Line(0,-200,33,-200,51,NULL,PNone)0xffffffff =dummy2 >-1
+ Line(0,5,-200,110,-200,NULL,PNone)0xffffffff =hdummy1 >-1
+MinSizes
+Sizes
+ 0,(6,5),(),20,0,0,0,0,1,1,Vertical
+ 2,(0),(7),-5,0,0,0,0,1,1,Horizontal
+ 4,(0),(7),-5,0,0,0,0,1,1,Horizontal
+ 7,(3),(),0,0,0,0,0,1,1,((1),(),0,0,0,0,0,1,1,)Horizontal
+ 6,(3),(),0,0,0,0,0,1,1,((4),(),0,0,0,0,0,1,1,)Vertical
+ 5,(1),(),0,0,0,0,0,1,1,((2),(),0,0,0,0,0,1,1,)Vertical
+Positions
+ (7),0,-200,0,0,0,0,Top,Top,Top
+ (6,5),0,-200,0,0,0,0,Left,Left,Left
+ (4),7,0,0,0,0,0,Left,Left,Right
+ (2),7,0,0,0,0,0,Left,Left,Right
+ (1,3,7),0,5,0,0,0,0,Right,Left,Left
+ (4,3,6),5,5,0,0,0,0,TBCenter,Top,Bottom
+ (2,1,5),0,10,0,0,0,0,TBCenter,Top,Top
+
+Items=Thread_Stack_Check_List
+ ColWind(,,,330,150,"threadx.TX_ThreadStackCheckList","Thread Stack Check List",NULL,NULL,0,0,0,"AAAMULTIPIC") 0xffffffff =Thread_Stack_Check_List > -1
+ MScrollList(0,5,5,315,130,"$thsl_temp=_txs_thread_stack_check_2(),$thsl_tempcont=((ULONG)_tx_thread_created_count && !((ULONG)_tx_thread_created_count & 0xc0000000) && (_tx_thread_created_ptr != 0)),$thsl_temp=(struct TX_THREAD_STRUCT *)_tx_thread_created_ptr;(($thsl_tempcont) ? (1) : (_txs_thread_stack_check_2_fixup(),(0)));$thsl_temp=$thsl_temp->tx_thread_created_next,$thsl_tempcont = (($thsl_temp != (struct TX_THREAD_STRUCT *)_tx_thread_created_ptr) && ($thsl_temp->tx_thread_id == 0x54485244));`if($thsl_temp->tx_thread_name) {print/a ($thsl_temp->tx_thread_name + 0)} else {print/x $thsl_temp+0}`;`print/d ($thsl_temp->tx_thread_stack_size + 0)`/`print/d ($thsl_temp->tx_thread_stack_end-$thsl_temp->tx_thread_stack_start+1)`;`if ($thsl_temp == _tx_thread_current_ptr) {print/d ($thsl_temp->tx_thread_stack_end - (char *)$sp + 1)} else {print/d $thsl_temp->tx_thread_stack_end-$thsl_temp->tx_thread_stack_ptr+1}`/`print/d $thsl_temp->tx_thread_stack_end-$thsl_temp->tx_thread_stack_start+1`;{obr Thread_Information TX_THREAD_STRUCT; view *(struct TX_THREAD_STRUCT *)$thsl_temp}",NULL,NULL,0,1,2,(0,3),NULL,NULL,(1,"Name            ",,"Peak Use   ",,"Current Use  ",),1)0xffffffff =msl_threads >-1
+MinSizes
+Sizes
+ 1,(0),(),-20,0,0,0,0,1,1,Vertical
+ 1,(0),(),-15,0,0,0,0,1,1,Horizontal
+Positions
+ (1),0,5,0,0,0,0,Top,Top,Top
+ (1),0,5,0,0,0,0,Left,Left,Left

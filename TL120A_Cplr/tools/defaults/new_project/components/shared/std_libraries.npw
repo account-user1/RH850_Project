@@ -1,0 +1,285 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+component_template.stdlib {
+	display_type_name = "Custom Library"
+
+	top_file_type = "Library"
+	parent_context_types = {"ExecutableProgram"}
+
+	documentation_files = { "${__DIR__}/std_libraries_docs.gpd" }
+	
+	is_nameable = false;
+
+	disabled = true
+	isparent = true
+
+	bg_color="#ffedce"
+#	fg_color="#000000"
+	icon_name = "library"
+
+        filters =  { "Libraries" }
+    
+	tags = {"STD_LIBRARY"}
+
+	dlg_info.add.auto_import = false;
+}
+
+component.stdlib_startup {
+	use_template = "stdlib"
+	display_object_name = "Startup"
+	variable_defs {
+		LIBNAME = "startup"
+	}
+	doc_anchor_ids = { "multi.mpm.libstartup" }
+	provides = {"LIBSTARTUP"}
+	requires = {"LIBSTARTUP_IMPL"}
+
+	disabled = true
+
+	actions {
+	    add {
+	        standard {
+		    200 += { "python ${__DIR__}/std_libraries.py add_custom_libstartup" }
+		}
+	    }
+	    remove {
+	        standard {
+		    200 += { "python ${__DIR__}/std_libraries.py remove_custom_libstartup" }
+		}
+	    }
+	}
+
+	attributes.parent_target {
+	    type = "string"
+	    actions.edit.standard {
+		1 += { "handleRequires LIBSTARTUP_IMPL" }
+	    }
+	}
+}
+
+component.stdlib_sys {
+	use_template = "stdlib"
+	display_object_name = "System"
+	variable_defs {
+		LIBNAME = "sys"
+	}
+	doc_anchor_ids = { "multi.mpm.libsys" }
+	provides = {"LIBSYS"}
+	requires = {"LIBSYS_IMPL"}
+	
+	disabled = true
+
+	actions {
+	    add {
+	        standard {
+		    200 += { "python ${__DIR__}/std_libraries.py add_custom_libsys" }
+		}
+	    }
+	    remove {
+	        standard {
+		    200 += { "python ${__DIR__}/std_libraries.py remove_custom_libsys" }
+		}
+	    }
+	}
+
+	attributes.parent_target {
+	    type = "string"
+	    actions.edit.standard {
+		1 += { "handleRequires LIBSYS_IMPL" }
+	    }
+	}
+}
+
+component.stdlib_boardinit {
+	use_template = "stdlib"
+	display_object_name = "Board Initialization"
+	variable_defs {
+		LIBNAME = "boardinit"
+	}
+	doc_anchor_ids = { "multi.mpm.libboardinit" }
+	provides = {"LIBBOARD"}
+	requires = {"LIBBOARD_IMPL"}
+
+	disabled = true
+
+	actions {
+	    add {
+	        standard {
+		    1 += { "defineLocal TARGET_INFO_DIR ${__TARGET_INFO_DIR__}" }
+		    200 += { "python ${__DIR__}/std_libraries.py add_libboardinit" }
+		}
+	    }
+	    remove {
+	        standard {
+		    200 += { "python ${__DIR__}/std_libraries.py remove_libboardinit" }
+		}
+	    }
+	}
+
+	attributes.parent_target {
+	    type = "string"
+	    actions.edit.standard {
+		1 += { "handleRequires LIBBOARD_IMPL" }
+	    }
+	}
+}
+
+
+component.stdlib_stub_boardinit {
+	display_type_name = "Custom Library"
+	display_object_name = "Board Initialization Stub"
+
+	top_file_type = "Library"
+	parent_context_types = {"ExecutableProgram"}
+
+	is_nameable = false;
+	isparent = true
+	visible = false
+
+        filters =  { "Libraries" }
+    
+	tags = {"STD_LIBRARY_STUB"}
+
+	dlg_info.add.auto_import = false;
+	variable_defs {
+		LIBNAME = "boardinit"
+	}
+
+	attributes.parent_target {
+	    type = "string"
+	    actions.edit.standard {
+		20 += { "python ${__DIR__}/std_libraries.py remove_libboardinit_if_unsupported" }
+	    }
+	}
+}
+
+component.libstartup {
+	display_type_name = "Custom Startup Library"
+	display_object_name = "Custom Startup Library"
+
+	top_file_type = "Library"
+	parent_context_types = {"ExecutableProgram"}
+	context_types += { "Container", "AnyProject" }
+
+	documentation_files = { "${__DIR__}/std_libraries_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.libstartup" }
+	
+	is_nameable = false;
+
+	disabled = true
+	isparent = true
+	silent_if_required = true;
+
+	bg_color="#ffedce"
+#	fg_color="#000000"
+	icon_name = "project"
+
+        filters =  { "Libraries" }
+    
+	tags = {"STD_LIBRARY_IMPL"}
+	provides = {"LIBSTARTUP_IMPL"}
+
+	dlg_info.add.auto_import = false;
+
+	actions {
+	    add {
+	        standard {
+		    50 += { "python ${__DIR__}/std_libraries.py copy_custom_libstartup" }
+		}
+	    }
+	    remove {
+	        standard {
+		    50 += { "python ${__SHARED_PY_DIR__}/utils.py remove_self_from_parent_project" }
+		}
+	    }
+	}
+}
+
+
+component.libsys {
+	display_type_name = "Custom System Library"
+	display_object_name = "Custom System Library"
+
+	top_file_type = "Library"
+	parent_context_types = {"ExecutableProgram"}
+	context_types += { "Container", "AnyProject" }
+
+	documentation_files = { "${__DIR__}/std_libraries_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.libsys" }
+	
+	is_nameable = false;
+
+	disabled = true
+	silent_if_required = true;
+
+	bg_color="#ffedce"
+#	fg_color="#000000"
+	icon_name = "library"
+
+        filters =  { "Libraries" }
+    
+	tags = {"STD_LIBRARY_IMPL"}
+	provides = {"LIBSYS_IMPL"}
+
+	dlg_info.add.auto_import = false;
+
+	actions {
+	    add {
+	        standard {
+		    50 += { "python ${__DIR__}/std_libraries.py copy_custom_libsys" }
+		}
+	    }
+	    remove {
+	        standard {
+		    50 += { "python ${__SHARED_PY_DIR__}/utils.py remove_self_from_parent_project" }
+		}
+	    }
+	}
+}
+
+
+component.libboardinit {
+	# Requires support from the board definition, so unavailable by
+	# default.
+	disabled = true;
+
+	display_type_name = "Board Initialization Library"
+	display_object_name = "Board Initialization Library"
+
+	top_file_type = "Library"
+	parent_context_types = {"ExecutableProgram"}
+	context_types += { "Container", "AnyProject" }
+
+	documentation_files = { "${__DIR__}/std_libraries_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.libboardinit" }
+	
+	is_nameable = false;
+	silent_if_required = true;
+
+	bg_color="#ffedce"
+#	fg_color="#000000"
+	icon_name = "library"
+
+        filters =  { "Libraries" }
+    
+	tags = {"STD_LIBRARY_IMPL"}
+	provides = {"LIBBOARD_IMPL"}
+
+	dlg_info.add.auto_import = true;
+
+	actions {
+	    add {
+	        standard {
+		    1 += { "defineLocal TARGET_INFO_DIR ${__TARGET_INFO_DIR__}" }
+		    50 += { "python ${__DIR__}/std_libraries.py copy_custom_libboardinit" }
+		}
+	    }
+	    remove {
+	        standard {
+		    50 += { "python ${__SHARED_PY_DIR__}/utils.py remove_self_from_parent_project" }
+		}
+	    }
+	}
+}
+
+%endif

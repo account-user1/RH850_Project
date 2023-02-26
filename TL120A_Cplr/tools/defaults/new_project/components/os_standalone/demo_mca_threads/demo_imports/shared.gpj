@@ -1,0 +1,13 @@
+#!gbuild
+[SharedMemory]
+        -o shared_imp.so
+        -u _common_lib0_f0
+        -u _common_lib1_var0
+        -exportall=-lshared_1
+        -L..
+	{isdefined(__BINDIR)} -L${__BINDIR}
+	:dependsNonRelative=libshared_0.ghsexports	
+shared.c
+libshared_0.gpj  [Library]
+libshared_1.gpj  [Library]
+shared.ld

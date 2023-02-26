@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' value='text/html;charset=utf8'>
+  <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
+  <title>MemMtrc(1) - Nexteer Embedded Software Memory Metrics Tool</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#ARGUMENTS">ARGUMENTS</a>
+    <a href="#OPTIONS">OPTIONS</a>
+    <a href="#RETURN-VALUES">RETURN VALUES</a>
+    <a href="#LINKER-COMMAND-FILE-FORMAT">LINKER COMMAND FILE FORMAT</a>
+    <a href="#BUGS">BUGS</a>
+    <a href="#HISTORY">HISTORY</a>
+    <a href="#DOCUMENTATION">DOCUMENTATION</a>
+    <a href="#AUTHOR">AUTHOR</a>
+    <a href="#COPYRIGHT">COPYRIGHT</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>MemMtrc(1)</li>
+    <li class='tc'>Nexteer Embedded Software Memory Metrics Tool</li>
+    <li class='tr'>MemMtrc(1)</li>
+  </ol>
+
+  <h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>MemMtrc</code> - <span class="man-whatis">Nexteer Embedded Software Memory Metrics Tool</span>
+</p>
+
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p>MemMtrc.py [-h] [-v] [-V] [-d DIR] [-e ELF] [-f FEE] [-l LINKER] [-o OUTPUT] [-t {text,html}]</p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p>This tool was designed to extract information regarding memory utilization metrics from EA4 software projects and
+generate documentation detailing the utilization.  The tool automatically parses information from a series of
+configuration and output files in an integration project to produce an output report.</p>
+
+<h2 id="ARGUMENTS">ARGUMENTS</h2>
+
+<p>The memory metrics tool does not take any positional arguments.  For information on the optional arguments, see below.</p>
+
+<h2 id="OPTIONS">OPTIONS</h2>
+
+<dl>
+<dt><code>-h</code>, <code>--help</code></dt><dd><p>  Print a help message and exit.</p></dd>
+<dt><code>-v</code>, <code>--verbose</code></dt><dd><p>  Output detailed information to console.  This option can be doubled (i.e. <code>-vv</code> or <code>--verbose --verbose</code>) to emit
+  even more information.  Be aware that all commands issued to Synergy CCM will be printed to the console when this
+  argument is doubled.  This includes the <code>start</code> command which includes a plain-text copy of your password.</p></dd>
+<dt><code>-V</code>, <code>--version</code></dt><dd><p>  Display version information and exit.</p></dd>
+<dt><code>-d DIR</code>, <code>--dir DIR</code></dt><dd><p>  The path to the integration prject.  If omitted, the tool will search '../../' for a subdirectory containing
+  <em><em>EPS</em></em> in the name.  The path will be used to search for the input files listed below according to the standard
+  project structure.  If absolute pathes to each of the inputs are supplied using optional arguments for <code>--fee</code>,
+  <code>--linker</code>, and <code>--elf</code> then this argument may be omitted as it will be ignored by the tool.</p></dd>
+<dt><code>-e ELF</code>, <code>--elf ELF</code></dt><dd><p>  Specify the absolute path to the .elf file generated when the project is compiled.  This file will be parsed for
+  information pertaining to the size of sections as well as the software name and version number.  If omitted, the
+  tool will search within the output directory in the integration project.  See <code>--dir</code> for more information about how
+  the integration project path is specified or derrived.</p></dd>
+<dt><code>-f FEE</code>, <code>--fee FEE</code></dt><dd><p>  Specify the path to the FEE configuration file.  The tool parses this file to gather information regarding the FEE
+  block configuration and usage for the project.  If omitted, the autosar/Config/ECUC directory will be searched
+  within the integration project for a file named EPS_Fee_ecuc.arxml.  See <code>--dir</code> for more information about how
+  the integration project path is specified or derrived.</p></dd>
+<dt><code>-l LINKER</code>, <code>--linker LINKER</code></dt><dd><p>  Specify the path to the linker command file for the project.  This file is used to parse memory sections to
+  understand how Flash memory has been divided and to provide information about the utilization of each of the
+  sections.  This tool expects specific formatting of part of this file to work properly, see the
+  <a href="#LINKER-COMMAND-FILE-FORMAT" title="LINKER COMMAND FILE FORMAT" data-bare-link="true">LINKER COMMAND FILE FORMAT</a> section below for additional information.  If omitted, the tool will search within
+  the tools directory of the integration project for a single file ending with a *.ld extension.  Further, the
+  filename of the linker command file is expected to be the model number of the processor for the project.  This
+  information is used to select the proper Processor class within the tool which defines the memory ranges that are
+  available for the program..  See <code>--dir</code> for more information about how the integration project path is specified
+  or derrived.</p></dd>
+<dt><code>-o OUTPUT</code>, <code>--output OUTPUT</code></dt><dd><p>  Report output path and/or filename.  Defaults to ../output/MemoryMetrics_<var>Timestamp</var> if omitted.  The output
+  directory will be created if it does not exist.</p></dd>
+<dt><code>-t {text,html}</code>, <code>--type {text,html}</code></dt><dd><p>  Report output format.  The filename extension will automatically be updated if incorrect to apply the proper
+  extension for the selected format.  The text format does not produce a file as output but rather prints the results
+  to the terminal through stdout.</p></dd>
+</dl>
+
+
+<h2 id="RETURN-VALUES">RETURN VALUES</h2>
+
+<dl>
+<dt class="flush"><code>1</code></dt><dd><p>  Either the path specified by <code>--dir</code> is invalid or the tool was unable to locate the integration project directory
+  in the folder up two directories from the tool script.  If <code>--dir</code> is omitted, the tool will search the directory
+  that is located two directories up from <code>MemMtrc.py</code> for a directory containing <em><em>EPS</em></em> in the name.  If not found
+  this return code will be given.  If the integration project does not reside in a folder with EPS in the name, then
+  the <code>--dir</code> switch must be used to manually specify the integration project folder path.</p></dd>
+<dt class="flush"><code>2</code></dt><dd><p>  Either the .elf file provided using the <code>--elf</code> switch is invalid or the tool was unable to automatically locate
+  an .elf file in the output folder of the integration project.  This can happen if the project has never been built.</p></dd>
+<dt class="flush"><code>3</code></dt><dd><p>  Either the .arxml file specified for the <code>--fee</code> switch is invalid or the tool was unable to find the file in the
+  ECUC config file directory (see <code>--fee</code> in the <a href="#OPTIONS" title="OPTIONS" data-bare-link="true">OPTIONS</a> section for more information about the default, expected
+  filename and path).</p></dd>
+<dt class="flush"><code>4</code></dt><dd><p>  Either the linker command file specified with the <code>--linker</code> switch is invalid or the tool was unable to find a
+  linker command file (file with a .ld extension) in the tools folder of the integration project.</p></dd>
+<dt class="flush"><code>5</code></dt><dd><p>  The tool attempted to find the linker command file in the tools folder of the integration project automatically but
+  found more than one file with a .ld extension.  To respolve this issue, use the <code>--linker</code> switch so manually
+  specify the linker command file that should be used.</p></dd>
+<dt class="flush"><code>6</code></dt><dd><p>  Invalid output filename provided for the <code>--output</code> switch.  Ensure that the filename is provided or omit the
+  <code>--output</code> option.</p></dd>
+<dt class="flush"><code>7</code></dt><dd><p>  Invalid report format type specified.  The only supported report output formats are text and html.</p></dd>
+<dt class="flush"><code>8</code></dt><dd><p>  The processor type, as determined from the linker command file name, is unknown by this tool.  An update to this
+  tool to define the processor type is required.  Without this change the tool is not aware of the memory types or
+  ranges for the processor.</p></dd>
+</dl>
+
+
+<h2 id="LINKER-COMMAND-FILE-FORMAT">LINKER COMMAND FILE FORMAT</h2>
+
+<p>The linker command file must follow a specific format for the memory metrics tool to properly parse information from the
+file.  The MEMORY section within the file must be split into sections separated by two newline characters.  The sctions
+may also start with a comment (/&ast; ... &ast;/) containing a textual description of the section.  Below is an example
+configuration taken from the T1xx GA project:</p>
+
+<pre><code>MEMORY
+{
+    /* Bootloader 0x0000 0000 - 0x0000 17FFF */
+
+    /* Application */
+    GMAPPHEADER      (RX) : ORIGIN=0x00018000, LENGTH=0x00000200
+    APPVECTOR        (RX) : ORIGIN=0x00018200, LENGTH=0x00000800
+    APP_FLASH        (RX) : ORIGIN=0x00018A00, LENGTH=0x0009F3F0
+    APP_CRC          (RX) : ORIGIN=0x000B7DF0, LENGTH=0x00000010
+    APPPRESENCE      (RX) : ORIGIN=0x000B7E00, LENGTH=0x00000100
+    APP_VALDBLK      (RX) : ORIGIN=0x000B7F00, LENGTH=0x00000100
+
+    /* Calibration 2 - Feature Cals */
+    GMCAL2HEADER     (RX) : ORIGIN=0x000B8000, LENGTH=0x00000020
+    CAL2_FLASH       (RX) : ORIGIN=0x000B8020, LENGTH=0x00007DD0
+    CAL2_CRC         (RX) : ORIGIN=0x000BFDF0, LENGTH=0x00000010
+    CAL2PRESENCE     (RX) : ORIGIN=0x000BFE00, LENGTH=0x00000100
+    CAL2_VALDBLK     (RX) : ORIGIN=0x000BFF00, LENGTH=0x00000100
+
+    /* Calibration 1 - System Cals */
+    GMCAL1HEADER     (RX) : ORIGIN=0x000C0000, LENGTH=0x00000020
+    CAL1_FLASH       (RX) : ORIGIN=0x000C0020, LENGTH=0x0001FDD0
+    CAL1_CRC         (RX) : ORIGIN=0x000DFDF0, LENGTH=0x00000010
+    CAL1PRESENCE     (RX) : ORIGIN=0x000DFE00, LENGTH=0x00000100
+    CAL1_VALDBLK     (RX) : ORIGIN=0x000DFF00, LENGTH=0x00000100
+
+    /* Calibration 3 - Performance Cals */
+    GMCAL3HEADER     (RX) : ORIGIN=0x000E0000, LENGTH=0x00000020
+    CAL3_FLASH       (RX) : ORIGIN=0x000E0020, LENGTH=0x0001FDD0
+    CAL3_CRC         (RX) : ORIGIN=0x000FFDF0, LENGTH=0x00000010
+    CAL3PRESENCE     (RX) : ORIGIN=0x000FFE00, LENGTH=0x00000100
+    CAL3_VALDBLK     (RX) : ORIGIN=0x000FFF00, LENGTH=0x00000100
+
+    iROM_1         : ORIGIN = 0x01000000,  LENGTH = 32k
+    iRAM_0         : ORIGIN = 0xFEBE0000,  LENGTH = 124k
+    iRAM_DMAWRITE  : ORIGIN = 0xFEBFF000,  LENGTH = 4k
+}
+</code></pre>
+
+<p>Important notes from this configuration:</p>
+
+<ol>
+<li>The tool will see the bootloader comment as a "section" but becuase it contains no ORIGIN or LENGTH it will be
+ignored.</li>
+<li>The iRxM entries at the bottom of the MEMORY section reside outside of the Flash memory region for this processor
+and will therefore be ignored.</li>
+<li>This configuration would produce 4 sections in the resultant report, one each for the Application, and three
+calibration regions.  The sections would be labelled "Application", "Calibration 2 - Feature Cals", "Calibration 1 -
+System Cals", and "Calibration 3 - Performance Cals", respectively in the report.</li>
+<li>It is critical that the newlines between sections are back-to-back to ensure the proper split.  This means that the
+lines between sections must <strong>not</strong> contain any whitespace characters such as tabs or spaces.</li>
+</ol>
+
+
+<h2 id="BUGS">BUGS</h2>
+
+<p>Bugs should be reported and tracked using the Anomaly system in <a href="http://10.199.100.212:8603/change">Change Synergy</a>.
+The use of a "Continuous Improvement" CR is recommended in favor of writing an anomaly against a particular program.</p>
+
+<h2 id="HISTORY">HISTORY</h2>
+
+<ul>
+<li><code>01.00.00 - 2017-12-31</code>
+
+<ul>
+<li>First release of tool.</li>
+<li>Runs against EA4 programs to generate Flash, RAM, and FEE usage information.</li>
+<li>Works with both Fee and SmallSector Fee.</li>
+</ul>
+</li>
+</ul>
+
+
+<h2 id="DOCUMENTATION">DOCUMENTATION</h2>
+
+<p>This documentation was generated using <a href="http://rtomayko.github.io/ronn">ronn</a>.  <code>ronn</code> converts a text file with a
+format similar to Markdown into an HTML file with a format typical of a standard manpage.  For more information about
+<code>ronn</code> see it's manpage: <a href="http://rtomayko.github.io/ronn/ronn.1.html">ronn(1)</a>.  For more information on the syntax see
+that manpage: <a href="http://rtomayko.github.io/ronn/ronn-format.7.html">ronn-format(7)</a>.</p>
+
+<h2 id="AUTHOR">AUTHOR</h2>
+
+<p>Jared Julien <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#x6a;&#x61;&#x72;&#101;&#x64;&#46;&#106;&#x75;&#108;&#105;&#101;&#x6e;&#x40;&#x6e;&#101;&#x78;&#116;&#x65;&#x65;&#x72;&#x2e;&#x63;&#111;&#x6d;" data-bare-link="true">&#106;&#x61;&#x72;&#101;&#x64;&#x2e;&#106;&#x75;&#108;&#x69;&#x65;&#x6e;&#64;&#110;&#101;&#x78;&#116;&#101;&#101;&#114;&#x2e;&#99;&#111;&#109;</a></p>
+
+<h2 id="COPYRIGHT">COPYRIGHT</h2>
+
+<p>(c) 2017 Nexteer Automotive</p>
+
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'>Nexteer Automotive</li>
+    <li class='tc'>December 2017</li>
+    <li class='tr'>MemMtrc(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>

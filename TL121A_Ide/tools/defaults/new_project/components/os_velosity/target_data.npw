@@ -1,0 +1,145 @@
+%if !file_exists("${__INTEGRITY_DIST__}/multi/new_project/components/os_velosity/target_data.npw")
+
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+default_filters {
+    hidden += { "velOSity Resource Files", "velOSity Generic Libraries" }
+}
+
+#component.source_file_c.attributes.filename.actions.readin.standard.10 += { "python ${__SHARED_PY_DIR__}/source.py source_readin_std"  }
+
+component.top_level_project.dlg_info.edit.right_click_list = { "AddVELK", "AddSEMUVELK" }
+	    
+component.project.dlg_info.edit.right_click_list = { "AddVELK", "AddSEMUVELK" }
+
+component.top_level_project.actions.add.standard.20 += { "python ${__SHARED_PY_DIR__}/int_utils.py top_add_macros" }		
+component.top_level_project.actions.edit.standard.20 += { "python ${__SHARED_PY_DIR__}/int_utils.py top_edit_macros" }		
+		
+%if defined(__BSP_DIR_FULL__)
+% define BSP_DIR ${__BSP_DIR_FULL__}
+%else
+% define BSP_DIR  ${__INTEGRITY_DIST__}/${__BSP_NAME__}
+%endif
+
+
+board_attributes {
+    target_resources {
+
+%if file_exists("${BSP_DIR}/default.con")
+	nocopy_files += { "${BSP_DIR}/default.con" }
+%endif
+
+	# For all Integrity targets, always grab default.bsp, default.ld,
+	# and flash.ld for the target resources file.
+    
+	copy_files += { "${BSP_DIR}/default.ld" }
+%if file_exists("${BSP_DIR}/flash.ld")
+	copy_files += { "${BSP_DIR}/flash.ld" }
+%endif
+#	copy_files += { "${__INTEGRITY_DIST__}/INTEGRITY.ld" }
+#	copy_files += { "${__INTEGRITY_DIST__}/reloc.ld" }
+	copy_files += { "${BSP_DIR}/default.bsp" }
+    }
+}
+
+component.linker_directives_vel_ram {
+    use_template = "linker_directives"
+    parent_context_types = { "velosity_kernel"  }
+    display_object_name = "Load and Execute from RAM"
+    default_module_filename = "default.ld"
+    variable_defs {
+    	LINKMAP = "default.ld"
+    }
+    filters =  { "velOSity Resource Files" }
+}
+component.linker_directives_vel_rom {
+    use_template = "linker_directives"
+    parent_context_types = { "velosity_kernel"  }
+    display_object_name = "Load and Execute from ROM"
+    default_module_filename = "flash.ld"
+    variable_defs {
+    	LINKMAP = "flash.ld"
+    }    
+    filters =  { "velOSity Resource Files" }
+}
+#component.linker_directives_vel_virt {
+#    use_template = "linker_directives"
+#    parent_context_types = { "velosity_virtual_address_space", "velosity_os_modules_file_system_copy" ,"velosity_os_modules_posix_system_server_virtual"}
+#    default_module_filename = "INTEGRITY.ld"
+#    variable_defs {
+#    	LINKMAP = "INTEGRITY.ld"
+#    }    
+#    filters =  { "velOSity Resource Files" }
+#}
+component.linker_directives_vel_reloc {
+    use_template = "linker_directives"
+    parent_context_types = { "velosity_relocatable"  }
+    default_module_filename = "reloc.ld"
+    variable_defs {
+    	LINKMAP = "reloc.ld"
+    }    
+    filters =  { "velOSity Resource Files" }
+}
+component.linker_directives_vel_custom {
+    use_template = "linker_directives"
+    display_object_name = "Custom"
+    default_for_filetypes = { "Linker Directives" }
+    filters =  { "velOSity Resource Files" }
+}
+
+component.bsp_description {
+    use_template = "resource_file"
+    
+    parent_context_filetypes = { "velOSity Application" }
+    parent_context_types = { "velosity_monolith", "velosity_dynamic_download"}
+    display_type_name = "BSP Description"
+
+    top_file_type = "BSP Description"
+    default_for_filetypes = { "BSP Description" }
+
+    filters =  { "velOSity Resource Files" }
+
+    icon_name = "source_file"
+    bg_color = "#9ECEFF"
+    
+    actions {
+	add {
+	    standard {
+		1 += { "defineProject BSP_FILE_NAME $filename" }
+		1 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	edit {
+	    standard {
+		20 += { "defineProject BSP_FILE_NAME $filename" }
+		20 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	readin {
+	    standard {
+		1 += { "defineProject BSP_FILE_NAME $filename" }
+		1 += { "defineProject ABS_BSP_FILE_NAME $tf_diskname" }
+		1000000 += { "defineProject LAST_BSP_FILE_NAME $filename" }
+		1000000 += { "defineProject LAST_ABS_BSP_FILE_NAME $tf_diskname" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME BSP Description" }
+	    }
+	}	
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME BSP Description" }
+	    }
+	}
+    }
+}
+
+%endif
+
+%endif

@@ -1,0 +1,147 @@
+configure cwindlines 16
+D;
+
+bA main {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "This example program includes some common programming errors.";
+  echo "MULTI can help find them with the run-time error checking feature.";
+  echo "This program has run-time error checking and memory checking enabled";
+  echo "by default. To enable run-time error checks in other programs,";
+  echo "use the Project Manager. Select 'Set Build Options' in the Edit menu.";
+  echo "Double-click the 'Run-Time Error Checks' build option on the 'Basic";
+  echo "Options' tab. Click the plus sign after 'All' to enable";
+  echo "the available run-time error checks.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##OutOfBounds {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Array index out of bounds' Run-time Error has been detected.  This";
+  echo "handler can be application specific.  This program will print an error";
+  echo "message to the standard output.";
+  echo " ";
+  echo "To see where this error occurred, use the command \"E +3\" to climb";
+  echo "call stack.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##NullDereference {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Null pointer dereference' Run-time Error has been detected.  This";
+  echo "handler can be application specific.  This program will print an error";
+  echo "message to the standard output. The program may not be able to";
+  echo "continue after performing this illegal operation.";
+  echo " ";
+  echo "To see where this error occurred, use the command \"E +4\" to climb";
+  echo "call stack.";
+  echo " ";
+  echo "To Continue, click 'Return (F9)' four times, right-click on the next";
+  echo "executable line, choose 'Change PC To This Line'. Then click 'Go on Selected Items (F5)";
+}
+
+bA MyRunTimeErrorHandler##SwitchFallThrough  {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Case/switch has no match' Run-time Error has been detected.  This";
+  echo "handler can be application specific.  This program will print an error";
+  echo "message to the standard output.";
+  echo " ";
+  echo "To see where this error occurred, use the command \"E +3\" to climb";
+  echo "call stack.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##DivideByZero {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Divide by Zero' Run-time Error has been detected.  This handler can";
+  echo "be application specific.  This program will print an error message to";
+  echo "the standard output. Depending on the architecture you may not be";
+  echo "able to continue after performing this illegal operation.";
+  echo " ";
+  echo "To see where this error occurred, use the command \"E +3\" to climb";
+  echo "call stack.";
+  echo " ";
+  echo "To Continue, click 'Return (F9)' three times, right-click on the next";
+  echo "executable line, choose 'Change PC To This Line'. Then click 'Go on Selected Items (F5)";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##AttemptToFree {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Attempt to Free unallocated Memory' Run-time Error has been detected.";
+  echo "This handler can be application specific.  This program will print an";
+  echo "error message to the standard output.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##AttemptToFree2 {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "'Attempt to Free unallocated Memory' Run-time Error has been detected.";
+  echo "This handler can be application specific.  This program will print an";
+  echo "error message to the standard output.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+bA MyRunTimeErrorHandler##Error {
+  scrollcommand +MAX wid=-2;
+  echo "===============================================================================";
+  echo " ";
+  echo "A Run-time Error has been detected; look above in the source file to";
+  echo "see what type.  This handler can be application specific.  This program";
+  echo "will print an error message to the standard output.";
+  echo " ";
+  echo "To Continue, click 'Go on Selected Items (F5)'.";
+  echo " ";
+}
+
+//b main##Done {
+//  scrollcommand +MAX wid=-2;
+//  echo "===============================================================================";
+//  echo " ";
+//  echo "The next error is a divide by zero.";
+//  echo " ";
+//  echo "Depending on the architecture you may not be able to continue after";
+//  echo "performing this illegal operation.";
+//  echo " ";
+//  echo "To kill the process now, type 'k' and hit enter in this command pane.";
+//  echo " ";
+//  echo "To Continue, click 'Go on Selected Items (F5)'.";
+//  echo " ";
+//  d main##Done}
+Q;
+clear;
+echo " ";
+echo "Normally when run-time errors are reported in the debugger, the";
+echo "program's execution is halted and an error message is displayed.";
+echo "Some applications may require these run-time error tests to be";
+echo "performed when the program cannot be halted, such as during in-field"
+echo "operation.";
+echo " ";
+echo "This program will demonstrate a customized run-time error checking";
+echo "handler that can be used in such circumstances.";
+echo " ";
+echo "Click 'Go on Selected Items (F5)' to begin.";
+echo " ";

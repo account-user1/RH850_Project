@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="InitService" targetNamespace="InitService" elementFormDefault="qualified" version="1.0">
+	<xs:element name="ExtModuleInitialization">
+		<xs:complexType>
+			<xs:annotation>
+				<xs:documentation>InitFunction documentation.</xs:documentation>
+			</xs:annotation>
+			<xs:sequence>
+				<xs:element name="InitModule" type="ModuleType" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="ModuleType">
+		<xs:annotation>
+			<xs:documentation>InitFunction documentation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ModuleRef" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Specifies the modules DefRef path.
+
+E.g.: /AUTOSAR/EcucDefs/Msn</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ModuleInitFunction" type="InitFunctionType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InitFunctionType">
+		<xs:annotation>
+			<xs:documentation>ConfigPtr documentation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="InitFunctionName" type="xs:Name">
+				<xs:annotation>
+					<xs:documentation>Specify the name of the Function. If InitFunctionCall is not set, this name is used as C function to call during initialization.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitFunctionCall" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specify additional code which can be referenced from the initialization callouts of EcuM and BswM.
+
+E.g.: Mcu_InitClock()
+
+If it is necessary to call a function with a module pointer from the global postbuild-loadable configuration, the placeholder %CONFIGPTR% can be used:
+
+E.g.: Mcu_Init(%CONFIGPTR%)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitFunctionHeader" type="xs:Name">
+				<xs:annotation>
+					<xs:documentation>Specify the header file which declares the function and necessary types.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitPhase" type="InitPhaseEnum">
+				<xs:annotation>
+					<xs:documentation>Specify the phase in which this init function shall be called.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="InitFunctionData" type="InitFunctionDataType" minOccurs="0" maxOccurs="6">
+				<xs:annotation>
+					<xs:documentation>Specify InitFunctionData for each relevant Configuration Variant.
+
+If no InitFunctionData is specified, the InitFunction will never have a config pointer.
+
+If a config pointer is necessary in some variants, each variant can be assigned to a config pointer via the InitFunctionData. Also a combination of several ConfigVariants is possible.
+
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="InitFunctionDataType">
+		<xs:annotation>
+			<xs:documentation>ConfigPtr documentation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="PostBuildVariantSupport" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Mark if this InitFunctionData is valid for variant configurations.
+
+If this parameter is not available, this InitFunctionData will be valid for variant and invariant usecases.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConfigVariant" type="ConfigVariantEnum" minOccurs="0" maxOccurs="3">
+				<xs:annotation>
+					<xs:documentation>Specify the ConfigVariants in which this InitFunctionData is relevant.
+
+If no ConfigVariant is specified, this InitFunctionData is relevant for each ConfigVariant.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConfigPtrData" type="ConfigPtrDataType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>If the InitFunction needs a Config Pointer in the current variant, this has to be specified here.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ConfigPtrDataType">
+		<xs:annotation>
+			<xs:documentation>ConfigPtr documentation.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ConfigPtrName" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Multiple ConfigPtrNames are only possible in the case of variance. To support dynamic Conifg Pointer Names, wildcards can be used.
+
+Possible wildcards are:
+
+-%VARNAME%
+-%VARNAME_PRE_UNDERSCORE%
+-%VARNUMBER%
+-%VARNUMBER_PRE_UNDERSCORE%
+-%MULTICONFIGNAME%</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConfigPtrClass" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Memory class of this Config Pointer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ConfigPtrType" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Type of this Config Pointer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="MultipleConfigContainerDefRefString" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>DefRef Path to the MultipleConfigContainer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="InitPhaseEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NO_INIT"/>
+			<xs:enumeration value="INIT_MEMORY"/>
+			<xs:enumeration value="INIT_ZERO"/>
+			<xs:enumeration value="INIT_ONE_EARLY"/>
+			<xs:enumeration value="INIT_ONE"/>
+			<xs:enumeration value="INIT_ONE_LATE"/>
+			<xs:enumeration value="INIT_TWO_MCAL"/>
+			<xs:enumeration value="INIT_TWO_TRCV"/>
+			<xs:enumeration value="INIT_TWO_DRV"/>
+			<xs:enumeration value="INIT_TWO_IF"/>
+			<xs:enumeration value="INIT_TWO_COM"/>
+			<xs:enumeration value="INIT_TWO_SM"/>
+			<xs:enumeration value="INIT_TWO_NM"/>
+			<xs:enumeration value="INIT_TWO_TP"/>
+			<xs:enumeration value="INIT_TWO_SYS"/>
+			<xs:enumeration value="INIT_TWO_POST_NVMREADALL"/>
+			<xs:enumeration value="INIT_THREE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ConfigVariantEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="VARIANT_PRE_COMPILE"/>
+			<xs:enumeration value="VARIANT_POST_BUILD_LOADABLE"/>
+			<xs:enumeration value="VARIANT_LINK_TIME"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

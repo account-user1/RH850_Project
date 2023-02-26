@@ -1,0 +1,20 @@
+%if !defined(__TOOLS_DIR__)
+% define __TOOLS_DIR__ __MULTI_DIR__
+%endif
+
+Services.trace_etm {
+    ExecName="${__TOOLS_DIR__}/trace_etm"
+    PluginName="ETM Trace Plugin"
+    Persistent=0
+    PluginData {
+        Description="Provides ETM trace support"
+    }
+    ServicesProvided {
+        {
+            ServiceName="TraceArchPlugin.ETM"
+            ServiceData {
+                Description="Interface to traceserv"
+            }
+	}
+    }
+}

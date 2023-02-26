@@ -1,0 +1,138 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/2.1.2'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="false" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2016 Nexteer 
+* Nexteer Confidential
+*
+* Module File Name:   CDD_NvMProxyDftDataGroup.h
+* Module Description: Default Data Group for NvMProxy
+* Project           : CBD 
+* Author            : Kevin Smith
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       cz7lt6 %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 01/27/16  1        KJS       Initial Version of this Template                                                EA4#3443
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef CDD_NVMPROXYDFTDATAGROUP_H
+#define CDD_NVMPROXYDFTDATAGROUP_H
+
+/************************************************ Include Statements *************************************************/
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/**************************************************** Type defs ******************************************************/
+
+/************************************************ Embedded Constants *************************************************/
+
+/****************************************************** Macros *******************************************************/
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/* The following extern statements are generated based on the configuration of the software components and are design
+ * to generate the same definitions that the RTE generator will create. */
+<#
+    /* Switch context to the RTE for searching for components to patch */
+    ChangeContext( Xp.ModuleConfAtDefRefTo( "Rte" ) );
+    
+    List<SwcTypeCalEnClass> SwcTypeCalEnList = new List<SwcTypeCalEnClass>();
+    List<SwcInstanceCalEnClass> SwcInstanceList = new List<SwcInstanceCalEnClass>();
+#>
+<# /*--------------------------------------------------------------------------------------------------------------*/ #>
+<# /* Record all the component types and mark if the calibration support is required */ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "RteSwComponentType" ) ) #>
+<#
+    SwcTypeCalEnClass data = new SwcTypeCalEnClass();
+    
+    data.SwcName = LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "RteComponentTypeRef" ) );
+    data.CalSupEn = ValueOf( Xp.ValueAtDefRefTo( "RteComponentTypeCalibration/RteCalibrationSupportEnabled" ) );
+    SwcTypeCalEnList.Add(data);
+#>
+<# !ENDLOOP #>
+<# /*--------------------------------------------------------------------------------------------------------------*/ #>
+<# /* Loop through the Component SwcInstance to find if the component block has an NvM PIM.*/ #>
+<# !LOOP( Xp.ContainerAtDefRefTo( "RteSwComponentInstance" ) ) #>
+<#
+    int count = 0;
+    string SwcInstanceName = "";
+    SwcInstanceName = ValueOf( "ar:SHORT-NAME" );
+    
+    foreach (SwcTypeCalEnClass entry in SwcTypeCalEnList)
+    {
+        if ( ( entry.SwcName == LastValueSegmentOf( Xp.ValueRefAtDefRefTo( "RteSoftwareComponentInstanceRef" ) ) ) &&
+             ( entry.CalSupEn == true ) )
+        {
+            count = Count( Xp.ContainerAtDefRefTo( "RteNvRamAllocation" ) );
+
+            if (count > 0)
+            {
+#>
+<# !LOOP( Xp.ContainerAtDefRefTo("RteNvRamAllocation") ) #>
+<#
+                SwcInstanceCalEnClass InstanceData = new SwcInstanceCalEnClass();
+                InstanceData.SwcInstance = SwcInstanceName;
+                InstanceData.SwcName = entry.SwcName;
+                try
+                {
+                    InstanceData.RomName = ValueOf( Xp.ValueAtDefRefTo( "RteNvmRomBlockLocationSymbol" ) );
+                }
+                catch
+                {
+                    InstanceData.RomName = "NULL_PTR";
+                }
+                SwcInstanceList.Add(InstanceData);
+#>
+<# !ENDLOOP #>
+<#
+            }
+        }
+    }
+#>
+<# !ENDLOOP #>
+<# /*--------------------------------------------------------------------------------------------------------------*/ #>
+<# /*--------------------------------------------------------------------------------------------------------------*/ #>
+<#
+    string SwcEntryName = "";
+    foreach (SwcInstanceCalEnClass entry in SwcInstanceList)
+    {
+        if ( entry.RomName != "NULL_PTR" )
+        {
+            if (SwcEntryName != entry.SwcName)
+            {
+                SwcEntryName = entry.SwcName;
+#>
+
+/* SWC: <#= entry.SwcName #> */
+<#
+            }
+#>
+extern CONST(Rte_Calprm_<#= entry.SwcName #>_DEFAULT_RTE_CDATA_GROUP_Type, RTE_CONST_DEFAULT_RTE_CDATA_GROUP) Rte_CalprmRom_<#= entry.SwcName #>_DEFAULT_RTE_CDATA_GROUP;
+<#
+        }
+    }
+#>
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif /* CDD_NVMPROXYDFTDATAGROUP_H */
+
+<#+
+    public class SwcTypeCalEnClass
+    {
+        public string SwcName;
+        public bool CalSupEn;
+    }
+    
+    public class SwcInstanceCalEnClass
+    {
+        public string SwcName;
+        public string SwcInstance;
+        public string RomName;
+    }
+#>

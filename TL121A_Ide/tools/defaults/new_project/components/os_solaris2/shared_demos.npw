@@ -1,0 +1,20 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+# Define capabilities for this OS.
+%define SUPPORTS_FORK
+%define SUPPORTS_EXEC
+%define SUPPORTS_MEMLEAK
+%define SUPPORTS_RTEC
+%define SUPPORTS_UNIX_PROFILING
+
+# Include the shared demos.
+%include "${__SHARED_PY_DIR__}/shared_demos.udb"
+
+component.basic_debug_demo.attributes.tf_ProjectName.actions.add.standard {
+    16 += { "defineLocal RC_SCRIPT_NAME linked_list_no_io.rc" }
+}
+
+# the linkMap attributes in all of the demos/examples will not exist unless we
+# define a type for it.  See os_standalone/templates.npw for an example
+
+%endif

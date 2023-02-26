@@ -1,0 +1,137 @@
+Nexteer Manufacturing ODX Development Guide
+========================================================================================================================
+Supported Service Types
+------------------------------------------------------------------------------------------------------------------------
+### Supported Common Component Service Types ###########################################################################
+This complete list of services are supported by the Nexteer manufacturing services component:
+
+- 0x10: Session Control
+- 0x11: Reset
+- 0x27: Security Access
+- 0x22: Read by ID
+- 0x2E: Write by ID
+- 0x2F: Input/Output Control
+- 0x31: Routine Control
+- 0x3E: Tester Present
+
+The services are supported in the following ranges:
+
+| Title                | Supported Services     | Start (Inclusive) | End (Inclusive) |
+|:-------------------- |:---------------------- | -----------------:| ---------------:|
+| Identification       | 0x22                   | 0xF1F0            | 0xF1FF          |
+| Routine              | 0x31                   | 0xF000            | 0xFCFF          |
+| Data Identifiers     | 0x22, 0x2E, 0x2F, 0x31 | 0xFD00            | 0xFED0          |
+
+    
+### Supported Program Specific Component Service Types #################################################################
+The following limited set of service types are supported within the program specific component:
+
+- 0x22: Read by ID
+- 0x2E: Write by ID
+- 0x2F: Input/Output Control
+- 0x31: Routine Control
+
+All customer specific services are valid in the following range of IDs:
+
+| Title                | Supported Services     | Start (Inclusive) | End (Inclusive) |
+|:-------------------- |:---------------------- | -----------------:| ---------------:|
+| Customer Identifiers | 0x22, 0x2E, 0x2F, 0x31 | 0xFED0            | 0xFEFF          |
+
+
+
+CANdela Studio and ODXStudio Nuances
+------------------------------------------------------------------------------------------------------------------------
+The Vector tools force a few conventions into the structure of ODX files that don't perfectly align with all of the
+Nexteer services.  Namely, CANdela was used in the original ODX file creation by using a Generic template for ISO 14229.
+As a result, Default Session (10 01) and Tester Present (3E 00) are required and the tool does not allow deleting them.
+These services are handled by the common component and cannot be added as part of the program specific ODX file.  As
+such, even tough they are present in the ODX file for the program specific component, they are ignored during
+generation.
+
+Another limitation of these tools is the requirement to provide a type 22 read for every 2E write.  This is valid for
+most circumstances, but sometimes it is desirable to not provide a read function.  For example, a seed/key write may
+not support reading for security reasons and there are instances where a write it broken apart into multiple services
+with a common read on a separate ID (because the data structure is unique).  In this case, the preferred approach is to
+add the read service, and return a negative response from the service handler routine.
+
+
+
+Service Organization
+------------------------------------------------------------------------------------------------------------------------
+CANdela Studio and ODXStudio automatically organize services based upon their type such as stored data (0x22/0x2E),
+Routine (0x31), Tester Present (0x3E), etc.  This structure is not the most useful for manufacturing services where a
+routine is used to clear a trim and a 22/2E pair is used to read and write that trim.  The structure in the Vector tools
+segregates those services despite their adjacent IDs.
+
+To resolve this issue within Nexteer's Controller Interface the SEMANTIC field in the Diagnostic Service definition in
+the ODX is used to group services.  The field is freeform text which allows Nexteer to set the standards for it's use.
+As such, the string is hyphen-delimited, for example:
+
+    System Function - SF013A | Pull Compensation Active
+
+The first element, "System Function" in this example determines the tab that the service will be sorted into.  The
+second portion determines the section heading to group the service under within the tab.  This system allows grouping
+of different service types into separate tabs and sections.
+
+The currently used semantics at the time of this document creation are listed below.  Please note that these fields
+are free-form text and a simple typo can accidentally create a new tab or section.  The semantics should be considered
+case-sensitive.
+
+- SESSION
+- TESTERPRESENT
+- System Identifiers
+- Manufacturing Data
+- General Services
+- Nexteer Diagnostics
+- Handwheel Angle - Sensor 0
+- Handwheel Angle - Sensor 1
+- Handwheel Torque - Sensor 0
+- Handwheel Torque - Sensor 1
+- Handwheel Torque - Sensor 2
+- Handwheel Torque - Sensor 3
+- Motor Angle
+- Motor Angle - Sensor 0
+- Motor Angle - Sensor 1
+- Motor Angle - Sensor 2
+- Motor Current
+- Motor Parameters
+- Control Services
+- Manufacturing Clears
+- Manufacturing Defeats - Recordable
+- Manufacturing Defeats - Unrecordable
+- Manufacturing Defeats - Management
+- System Function - SF013A | Pull Compensation Active
+- Program Specific
+
+
+
+OdxTest Configuration
+------------------------------------------------------------------------------------------------------------------------
+OdxTest is a test that is run after integration and flashing code to a controller.  The test provides basic insight
+regarding gross configuration errors.  The tool itself is generic and simply tests each service based solely upon it's
+type.  As a result, some assumption are made such that all services that are enabled and fully functional under all
+circumstances and that all write services support a read as well.  While there are true most of the times, there are
+some special cases such as services that are only enabled under special conditions (like the PSR information service)
+or that don't allow reads, such as a seed/key NvM write.
+
+A framework has been setup to support limited configuration of the OdxTest tool to clean up these tests.  The available
+options are listed below.
+
+- WriteOnly: Turning on this option will alter the test for a 0x2E service (does not attempt a 0x22 read).  Useful for
+             testing things like seed/key writes where the corresponding read returns a negative response.
+- Ignore:    Do not run any tests on this service.
+
+To set one of these options, a Special Data Group (SDG) needs to be added to the diagnostic service.  An SI member is
+set to one of the available options above and the value is set to yes, true, on, or 1 to enable the feature.  All text
+is treated as case-insensitive.
+
+
+#### Example Configuration ####
+The configuration section below should be added to the SDGS for a service withing the "DIAG-SERVICE" section of the ODX.
+
+    <SDG>
+      <SDG-CAPTION ID="_EPS_1870">
+        <SHORT-NAME>OdxTestConfiguration</SHORT-NAME>
+      </SDG-CAPTION>
+      <SD SI="Ignore">yes</SD>
+    </SDG>

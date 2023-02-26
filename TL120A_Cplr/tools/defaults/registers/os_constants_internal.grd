@@ -1,0 +1,1379 @@
+# os_constants.grd
+#
+# This file contains constants for use in GRD files that describe the values
+# of the following system special variables.
+#    _TARGET			- ID for the target(with family and minor info)
+#    _TARGET_FAMILY		- ID for the target family
+#    _TARGET_MINOR		- Target cpu minor ID
+#    _TARGET_SERIES		- Target series ID
+#    _TARGET_COPROCESSOR	- Target coprocessor ID
+#    _TARGET_OS
+#    _TARGET_MINOR_OS
+#
+#    _TARGET_OS			- ID for the OS running on the target
+#    _TARGET_MINOR_OS		- Minor ID for the OS running on the target
+#
+# The following macros are also available to .grd files:
+#    _TARGET_IS_BIGENDIAN	- 1/0: target is big/little endian
+#    _TARGET_SHORTNAME		- A string for CPU name (the one used in
+#				  compiler's "-cpu" option). The macro is
+#				  for GHS internal use only, and is not
+#				  guaranteed to be defined for each target.
+#
+#    _TIMEMACHINE		- 1/0: target is/not for timemachine
+#
+#    _GHS_MAJOR_VERSION		- MULTI IDE major version, like 6 for
+#				  MULTI 6.1.0
+#    _MULTI_MAJOR_VERSION	- Same as _GHS_MAJOR_VERSION
+#    _GHS_MINOR_VERSION		- MULTI IDE minor version, like 1 for
+#				  MULTI 6.1.0
+#    _MULTI_MINOR_VERSION	- Same as _GHS_MINOR_VERSION
+#    _GHS_MICRO_VERSION		- MULTI IDE major version, like 0 for
+#				  MULTI 6.1.0
+#    _MULTI_MICRO_VERSION	- Same as _GHS_MICRO_VERSION
+#
+# Note that the _HOSTOS is the deprecated equivalent of _TARGET_OS.
+#
+# 8/20/02
+#
+
+# Here are the information how the MULTI variables are composed:
+# _TARGET = (CpuMinorType<<16) | CpuFamilyType
+
+##############################################################################
+#
+# PROCESSORS
+#
+##############################################################################
+
+#
+# SPARC family
+#
+
+# Major types
+%define Sparc			0x0006
+
+#
+# PowerPC family
+#
+
+# PowerPC Series
+%define PPC4xx_SERIES		1
+%define PPC5xx_SERIES		2
+%define PPC6xx_SERIES		3
+%define PPC7xx_SERIES		4
+%define PPC8xx_SERIES		5
+
+# PowerPC Chips
+#PPC Major types
+%define PPC32		0x0010
+%define PPC64		0x002d
+
+#PPC Major + Minor, Minor_
+%define PPC_POWER	16		# generic POWER RS6000 instruction set chip
+%define PPC601		0x00010010	# MPC601 or PPC601
+%define PPC601_		0x0001		# MPC601 or PPC601
+%define PPCRMCU500	0x00020010	# RMCU 500
+%define PPCRMCU500_	0x0002		# RMCU 500
+%define PPC403		0x00030010
+%define PPC403_		0x0003	
+%define PPC603		0x00040010
+%define PPC603_		0x0004	
+%define PPC604		0x00050010
+%define PPC604_		0x0005	
+%define PPC602		0x00060010	# MPC602/PPC602
+%define PPC602_		0x0006		# MPC602/PPC602
+%define PPC821		0x00070010
+%define PPC821_		0x0007	
+%define PPC860		0x00080010
+%define PPC860_		0x0008
+%define PPC740		0x00090010	# Arthur
+%define PPC740_		0x0009	# Arthur
+%define PPC750		0x000a0010	# Arthur
+%define PPC750_		0x000a		# Arthur
+%define PPC603e		0x000b0010
+%define PPC603e_	0x000b	
+%define PPC604e		0x000c0010
+%define PPC604e_	0x000c	
+%define PPC8260		0x000d0010	# PowerQUICC II
+%define PPC8260_	0x000d		# PowerQUICC II
+%define PPC8240		0x000e0010 	# Kahlua
+%define PPC8240_	0x000e 		# Kahlua
+%define PPC405		0x000f0010
+%define PPC405_		0x000f	
+%define PPC555		0x00100010	# Golden Oak
+%define PPC555_		0x0010		# Golden Oak
+%define PPC755		0x00110010
+%define PPC755_		0x0011	
+%define PPC7400		0x00120010
+%define PPC7400_	0x0012	
+%define PPCec603e	0x00130010
+%define PPCec603e_	0x0013	
+%define PPC440		0x00140010
+%define PPC440_		0x0014	
+%define PPC850		0x00150010
+%define PPC850_		0x0015	
+%define PPC855T		0x00160010
+%define PPC855T_	0x0016	
+%define PPC505		0x00170010
+%define PPC505_		0x0017	
+%define PPC509		0x00180010
+%define PPC509_		0x0018	
+%define PPC401		0x00190010
+%define PPC401_		0x0019	
+%define PPC823		0x001a0010
+%define PPC823_		0x001a	
+%define PPC745		0x00210010
+%define PPC745_		0x0021	
+%define PPC7410		0x001b0010
+%define PPC7410_	0x001b	
+%define PPC7450		0x001c0010
+%define PPC7450_	0x001c	
+%define PPC8245		0x001d0010
+%define PPC8245_	0x001d	
+%define PPC823e		0x001e0010
+%define PPC823e_	0x001e	
+%define PPC857T		0x001f0010
+%define PPC857T_	0x001f	
+%define PPC862		0x00200010
+%define PPC862_		0x0020	
+%define PPC7440		0x00220010
+%define PPC7440_	0x0022	
+%define PPC8255		0x00230010
+%define PPC8255_	0x0023	
+%define PPC8264		0x00240010
+%define PPC8264_	0x0024	
+%define PPC8265		0x00250010
+%define PPC8265_	0x0025	
+%define PPC8266		0x00260010
+%define PPC8266_	0x0026	
+%define PPC8540		0x00270010
+%define PPC8540_	0x0027	
+%define PPC7441		0x00280010
+%define PPC7441_	0x0028	
+%define PPC7445		0x00290010
+%define PPC7445_	0x0029	
+%define PPC7451		0x002a0010
+%define PPC7451_	0x002a	
+%define PPC7455		0x002b0010
+%define PPC7455_	0x002b	
+%define PPC8560		0x002c0010	# PowerQUICC III
+%define PPC8560_	0x002c		# PowerQUICC III
+%define PPC556		0x002d0010
+%define PPC556_		0x002d	
+%define PPC561		0x002e0010
+%define PPC561_		0x002e	
+%define PPC562		0x002f0010
+%define PPC562_		0x002f	
+%define PPC563		0x00300010
+%define PPC563_		0x0030	
+%define PPC564		0x00310010
+%define PPC564_		0x0031	
+%define PPC565		0x00320010
+%define PPC565_		0x0032	
+%define PPC566		0x00330010
+%define PPC566_		0x0033	
+%define PPC8241		0x00340010
+%define PPC8241_	0x0034	
+%define PPC8250		0x00350010
+%define PPC8250_	0x0035	
+%define PPC857DSL	0x00360010
+%define PPC857DSL_	0x0036	
+%define PPCMGT560	0x00370010
+%define PPCMGT560_	0x0037	
+%define PPC852T		0x00380010
+%define PPC852T_	0x0038	
+%define PPC859T		0x00390010
+%define PPC859T_	0x0039	
+%define PPC859DSL	0x003a0010
+%define PPC859DSL_	0x003a	
+%define PPC866P		0x003b0010
+%define PPC866P_	0x003b	
+%define PPC866T		0x003c0010
+%define PPC866T_	0x003c	
+%define PPC8270		0x003d0010
+%define PPC8270_	0x003d	
+%define PPC8275		0x003e0010
+%define PPC8275_	0x003e	
+%define PPC8280		0x003f0010
+%define PPC8280_	0x003f	
+%define PPC7447		0x00400010
+%define PPC7447_	0x0040	
+%define PPC7457		0x00410010
+%define PPC7457_	0x0041	
+%define PPC5554		0x00420010
+%define PPC5554_	0x0042	
+%define PPC533		0x00430010
+%define PPC533_		0x0043	
+%define PPC534		0x00440010
+%define PPC534_		0x0044	
+%define PPC535		0x00450010
+%define PPC535_		0x0045	
+%define PPC536		0x00460010
+%define PPC536_		0x0046	
+%define PPC440GX	0x00470010
+%define PPC440GX_	0x0047	
+%define PPC5200         0x00480010
+%define PPC5200_        0x0048	
+%define PPC440EP        0x00490010
+%define PPC440EP_       0x0049	
+%define PPC970          0x004a0010
+%define PPC970_         0x004a	
+%define PPC970FX        0x004a0010
+%define PPC970FX_       0x004a	
+%define PPC970_64       0x004a002d
+%define PPC970FX_64     0x004a002d
+%define PPC885          0x004b0010	
+%define PPC885_         0x004b	
+%define PPC880          0x004c0010
+%define PPC880_         0x004c	
+%define PPC875          0x004d0010
+%define PPC875_         0x004d	
+%define PPC870          0x004e0010
+%define PPC870_         0x004e	
+%define PPC8247         0x004f0010
+%define PPC8247_        0x004f	
+%define PPC8248         0x00500010
+%define PPC8248_        0x0050	
+%define PPC8271         0x00510010
+%define PPC8271_        0x0051	
+%define PPC8272         0x00520010
+%define PPC8272_        0x0052	
+%define PPC5532         0x00530010
+%define PPC5532_        0x0053	
+%define PPC5534         0x00540010
+%define PPC5534_        0x0054	
+%define PPC5553         0x00550010
+%define PPC5553_        0x0055	
+%define PPC7448         0x00560010
+%define PPC7448_        0x0056	
+%define PPC8343         0x00570010
+%define PPC8343_        0x0057	
+%define PPC8347         0x00580010
+%define PPC8347_        0x0058	
+%define PPC8349         0x00590010
+%define PPC8349_        0x0059	
+%define PPC8541         0x005a0010
+%define PPC8541_        0x005a	
+%define PPC8543         0x005b0010
+%define PPC8543_        0x005b	
+%define PPC8545         0x005c0010
+%define PPC8545_        0x005c	
+%define PPC8547         0x005d0010
+%define PPC8547_        0x005d	
+%define PPC8548         0x005e0010
+%define PPC8548_        0x005e	
+%define PPC8555         0x005f0010
+%define PPC8555_        0x005f	
+%define PPC8321         0x00600010
+%define PPC8321_        0x0060	
+%define PPC8323         0x00610010
+%define PPC8323_        0x0061	
+%define PPC8358         0x00620010
+%define PPC8358_        0x0062	
+%define PPC8360         0x00630010
+%define PPC8360_        0x0063	
+%define PPC8641         0x00640010
+%define PPC8641_        0x0064	
+%define PPC5533         0x00650010
+%define PPC5533_        0x0065	
+%define PPC5565         0x00660010
+%define PPC5565_        0x0066	
+%define PPC5566         0x00670010
+%define PPC5566_        0x0067	
+%define PPC5567         0x00680010
+%define PPC5567_        0x0068	
+%define PPC5514         0x00690010
+%define PPC5514_        0x0069	
+%define PPC5516         0x006a0010
+%define PPC5516_        0x006a	
+%define PPC8313         0x006b0010
+%define PPC8313_        0x006b	
+%define PPC5561         0x006c0010
+%define PPC5561_        0x006c	
+%define PPC8533         0x006d0010
+%define PPC8533_        0x006d	
+%define PPC8568         0x006e0010
+%define PPC8568_        0x006e
+%define PPC8314         0x006f0010
+%define PPC8314_        0x006f
+%define PPC8315         0x00700010
+%define PPC8315_        0x0070
+%define PPC8377         0x00710010
+%define PPC8377_        0x0071
+%define PPC8378         0x00720010
+%define PPC8378_        0x0072
+%define PPC8379         0x00730010
+%define PPC8379_        0x0073
+%define PPC440X5        0x00740010
+%define PPC440X5_       0x0074
+%define PPC5121         0x00750010
+%define PPC5121_        0x0075
+%define PPC8544         0x00760010
+%define PPC8544_        0x0076
+%define PPC8567         0x00770010
+%define PPC8567_        0x0077
+%define PPC8572         0x00780010
+%define PPC8572_        0x0078
+%define PPCPA6T         0x00790010
+%define PPCPA6T_        0x0079
+%define PPC5123         0x007a0010
+%define PPC5123_        0x007a
+%define PPC8610         0x007b0010
+%define PPC8610_        0x007b
+%define PPC5515         0x007c0010
+%define PPC5515_        0x007c
+%define PPC5517         0x007d0010
+%define PPC5517_        0x007d
+%define PPCP4080	0x007f0010
+%define PPCP4080_	0x007f
+%define PPC560xB       0x00800010
+%define PPC560xB_      0x0080
+%define PPC560xP       0x00810010
+%define PPC560xP_      0x0081
+%define PPC560xS       0x00820010
+%define PPC560xS_      0x0082
+%define PPC563xM       0x00830010
+%define PPC563xM_      0x0083
+%define PPC440EPx       0x00840010      
+%define PPC440EPx_      0x0084      
+%define PPC440GRx       0x00850010      
+%define PPC440GRx_      0x0085      
+%define PPC440SP        0x00860010      
+%define PPC440SP_       0x0086      
+%define PPC440SPe       0x00870010      
+%define PPC440SPe_      0x0087      
+%define PPC460EX        0x00880010      
+%define PPC460EX_       0x0088      
+%define PPC460GT        0x00890010      
+%define PPC460GT_       0x0089      
+%define PPC460GTx       0x008a0010      
+%define PPC460GTx_      0x008a      
+%define PPC460SX        0x008b0010      
+%define PPC460SX_       0x008b      
+%define PPC5668         0x008c0010      
+%define PPC5668_        0x008c      
+%define PPC8536         0x008d0010      
+%define PPC8536_        0x008d      
+%define PPC8569         0x008e0010      
+%define PPC8569_        0x008e      
+%define PPC8640         0x008f0010      
+%define PPC8640_        0x008f      
+%define PPCP1010        0x00900010      
+%define PPCP1010_       0x0090      
+%define PPCP1011        0x00910010      
+%define PPCP1011_       0x0091      
+%define PPCP1020        0x00920010      
+%define PPCP1020_       0x0092      
+%define PPCP1021        0x00930010      
+%define PPCP1021_       0x0093      
+%define PPCP2010        0x00940010      
+%define PPCP2010_       0x0094      
+%define PPCP2020        0x00950010      
+%define PPCP2020_       0x0095      
+%define PPC5668z0       0x00960010      
+%define PPC5668z0_      0x0096
+%define PPC5646		0x00970010
+%define PPC5646_	0x0097
+%define PPC564xA	0x00980010
+%define PPC564xA_	0x0098
+%define PPC5674M	0x00990010
+%define PPC5674M_	0x0099
+%define PPC476FP	0x009a0010
+%define PPC476FP_	0x009a
+%define PPC567xF	0x009b0010
+%define PPC567xF_	0x009b
+%define PPC567xK	0x009c0010
+%define PPC567xK_	0x009c
+%define PPC564xL	0x009d0010
+%define PPC564xL_	0x009d
+%define PPC440GR        0x009f0010
+%define PPC440GR_       0x009f
+%define APM80186        0x00a00010
+%define APM80186_       0x00a0
+%define APM80187        0x00a10010
+%define APM80187_       0x00a1
+%define APM82181        0x00a20010
+%define APM82181_       0x00a2
+%define PPCP1012        0x00a30010
+%define PPCP1012_       0x00a3
+%define PPCP1013        0x00a40010
+%define PPCP1013_       0x00a4
+%define PPCP1014        0x00a50010
+%define PPCP1014_       0x00a5
+%define PPCP1017        0x00a60010
+%define PPCP1017_       0x00a6
+%define PPCP1022        0x00a70010
+%define PPCP1022_       0x00a7
+%define PPCP1023        0x00a80010
+%define PPCP1023_       0x00a8
+%define PPCP2040        0x00a90010
+%define PPCP2040_       0x00a9
+%define PPCP3041        0x00aa0010
+%define PPCP3041_       0x00aa
+%define PPCP4040        0x00ab0010
+%define PPCP4040_       0x00ab
+%define PPCP5010        0x00ac0010
+%define PPCP5010_       0x00ac
+%define PPCP5020        0x00ad0010
+%define PPCP5020_       0x00ad
+%define PPC564xS	0x00ae0010
+%define PPC564xS_	0x00ae
+%define PPC5125         0x00af0010
+%define PPC5125_        0x00af
+%define PPCE300C4_GENERIC	0x00b00010
+%define PPCE300C4_GENERIC_	0x00b0
+%define PPCE500V1_GENERIC	0x00b10010
+%define PPCE500V1_GENERIC_	0x00b1
+%define PPCE500V2_GENERIC	0x00b20010
+%define PPCE500V2_GENERIC_	0x00b2
+%define PPCE600_GENERIC		0x00b30010
+%define PPCE600_GENERIC_	0x00b3
+%define PPC405_GENERIC		0x00b40010
+%define PPC405_GENERIC_		0x00b4
+%define PPC440X4_GENERIC	0x00b50010
+%define PPC440X4_GENERIC_	0x00b5
+%define PPC440X5_GENERIC	0x00b60010
+%define PPC440X5_GENERIC_	0x00b6
+%define PPC440X5_FPU_GENERIC	0x00b70010
+%define PPC440X5_FPU_GENERIC_	0x00b7
+%define PPC464_GENERIC		0x00b80010
+%define PPC464_GENERIC_		0x00b8
+%define PPC464_FPU_GENERIC	0x00b90010
+%define PPC464_FPU_GENERIC_	0x00b9
+%define PPC476FP_GENERIC	0x00ba0010
+%define PPC476FP_GENERIC_	0x00ba
+%define PPCE200Z1_GENERIC	0x00bb0010
+%define PPCE200Z1_GENERIC_	0x00bb
+%define PPCE200Z3_GENERIC	0x00bc0010
+%define PPCE200Z3_GENERIC_	0x00bc
+%define	PPCE200Z6_GENERIC	0x00bd0010
+%define	PPCE200Z6_GENERIC_	0x00bd
+%define PPCE200Z0_GENERIC	0x00bf0010
+%define PPCE200Z0_GENERIC_	0x00bf
+%define PPCE200Z4D_GENERIC	0x00c00010
+%define PPCE200Z4D_GENERIC_	0x00c0
+%define PPCE200Z7_GENERIC	0x00c10010
+%define PPCE200Z7_GENERIC_	0x00c1
+%define	PPCE300C3_GENERIC	0x00c20010
+%define	PPCE300C3_GENERIC_	0x00c2
+%define PPCE300C1_GENERIC	0x00c30010
+%define PPCE300C1_GENERIC_	0x00c3
+%define	PPCE300C2_GENERIC	0x00c40010
+%define	PPCE300C2_GENERIC_	0x00c4
+%define PPC970_GENERIC		0x00c50010
+%define PPC970_GENERIC_		0x00c5
+%define PPC750_GENERIC		0x00c60010
+%define PPC750_GENERIC_		0x00c6
+%define PPCE500MC_GENERIC	0x00c70010
+%define PPCE500MC_GENERIC_	0x00c7
+%define PPCE500MC_64_GENERIC	0x00c80010
+%define PPCE500MC_64_GENERIC_	0x00c8
+%define PPC440X6_FPU_GENERIC	0x00c90010
+%define PPC440X6_FPU_GENERIC_	0x00c9
+%define PPCE200Z335_GENERIC	0x00ca0010
+%define PPCE200Z335_GENERIC_	0x00ca
+%define PPC560xE	0x00cc0010
+%define PPC560xE_	0x00cc
+%define PPC564xB	0x00cd0010
+%define PPC564xB_	0x00cd
+%define PPC564xC	0x00ce0010
+%define PPC564xC_	0x00ce
+%define PPC564xCz0	0x00cf0010
+%define PPC564xCz0_	0x00cf
+%define PPC567xR	0x00d00010
+%define PPC567xR_	0x00d0
+%define PPC560xC	0x00d10010
+%define PPC560xC_	0x00d1
+%define PPC560xD	0x00d20010
+%define PPC560xD_	0x00d2
+%define PPCP2041	0x00d30010
+%define PPCP2041_	0x00d3
+%define PXS20		0x00d40010
+%define PXS20_		0x00d4
+%define PXD20		0x00d50010
+%define PXD20_		0x00d5
+%define PXD10		0x00d60010
+%define PXD10_		0x00d6
+%define PXN20		0x00d70010
+%define PXN20_		0x00d7
+%define PXR40		0x00d80010
+%define PXR40_		0x00d8
+%define PXS30		0x00d90010
+%define PXS30_		0x00d9
+%define PXN20z0		0x00da0010
+%define PXN20z0_	0x00da
+%define PPC8306		0x00db0010
+%define PPC8306_	0x00db
+%define PPC8308		0x00dc0010
+%define PPC8308_	0x00dc
+%define PPC8309		0x00dd0010
+%define PPC8309_	0x00dd
+%define APM86190	0x00de0010
+%define APM86190_	0x00de
+%define APM86290	0x00df0010
+%define APM86290_	0x00df
+%define PPCT4240	0x00e00010
+%define PPCT4240_	0x00e0
+%define PPC465_GENERIC	0x00e10010
+%define PPC465_GENERIC_	0x00e1
+%define PPCE6500_GENERIC	0x00e20010
+%define PPCE6500_GENERIC_	0x00e2
+%define PPC5746Mz425	0x00e30010
+%define PPC5746Mz425_	0x00e3
+%define PPC5746Mz420	0x00e40010
+%define PPC5746Mz420_	0x00e4
+%define PPC5746Mz0	0x00e50010
+%define PPC5746Mz0_	0x00e5
+%define PPC5744Kz420	0x00e60010
+%define PPC5744Kz420_	0x00e6
+%define PPC5744Kz225	0x00e70010
+%define PPC5744Kz225_	0x00e7
+%define PPC5744P	0x00e80010
+%define PPC5744P_	0x00e8
+%define PPC5777Mz720	0x00e90010
+%define PPC5777Mz720_	0x00e9
+%define PPC5777Mz425	0x00ea0010
+%define PPC5777Mz425_	0x00ea
+%define PPC5777Mz0	0x00eb0010
+%define PPC5777Mz0_	0x00eb
+%define PPC5726L	0x00ec0010
+%define PPC5726L_	0x00ec
+%define PPCE200Z215_GENERIC	0x00ed0010
+%define PPCE200Z215_GENERIC_	0x00ed
+%define PPCE200Z225_GENERIC	0x00ee0010
+%define PPCE200Z225_GENERIC_	0x00ee
+%define PPCE200Z420_GENERIC	0x00ef0010
+%define PPCE200Z420_GENERIC_	0x00ef
+%define PPCE200Z425_GENERIC	0x00f00010
+%define PPCE200Z425_GENERIC_	0x00f0
+%define PPCE200Z720_GENERIC	0x00f10010
+%define PPCE200Z720_GENERIC_	0x00f1
+%define APM86491	0x00f20010
+%define APM86491_	0x00f2
+%define APM86791	0x00f30010
+%define APM86791_	0x00f3
+%define APM86691	0x00f40010
+%define APM86691_	0x00f4
+%define APM86692	0x00f50010
+%define APM86692_	0x00f5
+%define PPCP5040	0x00f60010
+%define PPCP5040_	0x00f6
+%define PPC5514z0       0x00f70010
+%define PPC5514z0_      0x00f7	
+%define PPC5515z0       0x00f80010
+%define PPC5515z0_      0x00f8	
+%define PPC5516z0       0x00f90010
+%define PPC5516z0_      0x00f9	
+%define PPC5517z0       0x00fa0010
+%define PPC5517z0_      0x00fa
+%define PPC5748Gz210          0x00fb0010
+%define PPC5748Gz210_         0x00fb
+%define PPC5748Gz4204         0x00fc0010
+%define PPC5748Gz4204_        0x00fc
+%define PPC5746R              0x00fd0010
+%define PPC5746R_             0x00fd
+%define PPCT4160              0x00fe0010
+%define PPCT4160_             0x00fe
+%define PPC5775Kz4201         0x00ff0010
+%define PPC5775Kz4201_        0x00ff
+%define PPC5775Kz7260         0x01000010
+%define PPC5775Kz7260_        0x0100
+%define PPCE200Z420S_GENERIC  0x01010010
+%define PPCE200Z420S_GENERIC_ 0x0101
+%define PPCE200Z425S_GENERIC  0x01020010
+%define PPCE200Z425S_GENERIC_ 0x0102
+%define PPCE200Z720S_GENERIC  0x01030010
+%define PPCE200Z720S_GENERIC_ 0x0103
+%define PPCE200Z420D_GENERIC  0x01040010
+%define PPCE200Z420D_GENERIC_ 0x0104
+%define PPCE200Z425D_GENERIC  0x01050010
+%define PPCE200Z425D_GENERIC_ 0x0105
+%define PPCE200Z720D_GENERIC  0x01060010
+%define PPCE200Z720D_GENERIC_ 0x0106
+%define PPCE200Z210_GENERIC   0x01070010
+%define PPCE200Z210_GENERIC_  0x0107
+%define PPCE200Z4201_GENERIC  0x01080010
+%define PPCE200Z4201_GENERIC_ 0x0108
+%define PPCE200Z4204_GENERIC  0x01090010
+%define PPCE200Z4204_GENERIC_ 0x0109
+%define PPCE200Z7260_GENERIC  0x010a0010
+%define PPCE200Z7260_GENERIC_ 0x010a
+%define PPC5777C	      0x010b0010
+%define PPC5777C_	      0x010b
+%define PPC5744Kz410          0x010c0010
+%define PPC5744Kz410_         0x010c
+%define PPC5746Mz410          0x010d0010
+%define PPC5746Mz410_         0x010d
+%define PPC5744Pz425          0x010e0010
+%define PPC5744Pz425_         0x010e
+%define PPC5777Mz710          0x010f0010
+%define PPC5777Mz710_         0x010f
+%define PPCT1020	      0x01100010
+%define PPCT1020_	      0x0110
+%define PPCT1022	      0x01110010
+%define PPCT1022_	      0x0111
+%define PPCT1040	      0x01120010
+%define PPCT1040_	      0x0112
+%define PPCT1042	      0x01130010
+%define PPCT1042_	      0x0113
+%define PPCT2080	      0x01140010
+%define PPCT2080_	      0x0114
+%define PPC460S		      0x01150010
+%define PPC460S_	      0x0115
+%define PPC460S_FPU	      0x01160010
+%define PPC460S_FPU_	      0x0116
+%define PPC574xB	      0x01170010
+%define PPC574xB_	      0x0117
+%define PPC574xCz4204	      0x01180010
+%define PPC574xCz4204_	      0x0118
+%define PPC574xCz210	      0x01190010
+%define PPC574xCz210_	      0x0119
+%define PPC574xGz4204	      0x011a0010
+%define PPC574xGz4204_	      0x011a
+%define PPC574xGz210	      0x011b0010
+%define PPC574xGz210_	      0x011b
+%define PPC577xKz4201	      0x011c0010
+%define PPC577xKz4201_	      0x011c
+%define PPC577xKz7260	      0x011d0010
+%define PPC577xKz7260_	      0x011d
+
+# PowerPC FPU coprocessors
+%define FP_PPC_FORCE_FPU	1
+%define FP_PPC_FORCE_NO_FPU	2
+
+# PowerPC cores
+%define PPC_CORE_E500V1		1
+%define PPC_CORE_E500V2		2
+%define PPC_CORE_E600		3
+%define PPC_CORE_405		4
+%define PPC_CORE_440X4		5
+%define	PPC_CORE_440X5		6
+%define PPC_CORE_440X5_FPU	7
+%define PPC_CORE_464		8
+%define PPC_CORE_464_FPU	9
+%define PPC_CORE_476FP		10
+%define	PPC_CORE_E200Z1		11
+%define PPC_CORE_E200Z3		12
+%define PPC_CORE_E200Z6		13
+%define PPC_CORE_E200Z0		15
+%define PPC_CORE_E200Z4D	16
+%define PPC_CORE_E200Z7		17
+%define PPC_CORE_E300C3		18
+%define	PPC_CORE_E300C1		19
+%define	PPC_CORE_E300C2		20
+%define PPC_CORE_970		21
+%define PPC_CORE_750		22
+%define PPC_CORE_E500MC		23
+%define	PPC_CORE_E500MC_64	24
+%define PPC_CORE_440X6_FPU	25
+%define PPC_CORE_E200Z335	26
+%define PPC_CORE_E300C4		27
+%define PPC_CORE_465		28
+%define PPC_CORE_E6500		29
+%define PPC_CORE_E200Z215	30
+%define PPC_CORE_E200Z225	31
+%define PPC_CORE_E200Z420	32
+%define PPC_CORE_E200Z425	33
+%define PPC_CORE_E200Z720	34
+%define PPC_CORE_E200Z420S	35
+%define PPC_CORE_E200Z425S	36
+%define PPC_CORE_E200Z720S	37
+%define PPC_CORE_E200Z420D	38
+%define PPC_CORE_E200Z425D	39
+%define PPC_CORE_E200Z720D	40
+%define PPC_CORE_E200Z210	41
+%define PPC_CORE_E200Z4201	42
+%define PPC_CORE_E200Z4204	43
+%define PPC_CORE_E200Z7260	44
+
+
+#
+# ARM family
+#
+
+%define ARM_7		0x00000018
+%define ARM_7M		0x00010018
+%define ARM_7TM		0x00020018
+%define ARM_8		0x00030018
+%define ARM_SA1		0x00040018
+%define ARM_6		0x00050018
+%define ARM_9		0x00060018
+%define ARM_10		0x00070018
+%define ARM_VE		0x00080018
+%define ARM_XSCALE	0x00090018
+%define ARM_11		0x000A0018
+%define ARM_9E		0x000B0018
+%define ARM_720		0x000C0018
+%define ARM_920		0x000D0018
+%define ARM_925		0x000E0018
+%define ARM_926		0x000F0018
+%define ARM_940		0x00100018
+%define ARM_946		0x00110018
+%define ARM_966		0x00120018
+%define ARM_1020	0x00130018
+%define XSCALE_80200	0x00140018
+%define XSCALE_IOP321	0x00150018
+%define XSCALE_PXA210	0x00160018
+%define XSCALE_PXA250	0x00170018
+%define XSCALE_IXP425	0x00180018
+%define ARM_MAC7101	0x00190018
+%define ARM_MAC7111	0x001a0018
+%define ARM_MAC7121	0x001b0018
+%define ARM_MAC7131	0x001c0018
+%define ARM_MAC7141	0x001d0018
+%define SIGMA_STMP36XX  0x001e0018
+%define ARM_11T2	0x001f0018
+%define ARM_1136	0x00200018
+%define XSCALE_IXP2350	0x00210018
+%define XSCALE_IXP2400	0x00220018
+%define XSCALE_IXP2800	0x00230018
+%define XSCALE_PXA270	0x00240018
+%define ARM_CORTEXM3	0x00250018
+%define XSCALE_80219	0x00260018
+%define XSCALE_80321	0x00270018
+%define XSCALE_80331	0x00280018
+%define ARM_FEROCEON	0x00290018
+%define ARM_7TDMI_S	0x002a0018
+%define XSCALE_PXA255	0x002b0018
+%define ARM_CORTEXA8	0x002c0018
+%define ARM_CORTEXR4	0x002d0018
+%if defined(_TARGET) || defined(_MULTI_MAJOR_VERSION) && _MULTI_MAJOR_VERSION >= 6
+%define ARM_1176JZFS	0x002e0018
+%define ARM_1176JZS	0x002f0018
+%define ARM_CORTEXA9	0x00300018
+%define ARM_CORTEXM0	0x00310018
+%define ARM_CORTEXM1	0x00320018
+%endif
+%if defined(_TARGET) || (defined(_MULTI_MAJOR_VERSION) && \
+	(_MULTI_MAJOR_VERSION >= 6 || \
+	 (_MULTI_MAJOR_VERSION == 5 && _MULTI_MINOR_VERSION >= 1)))
+%define ARM_PJ4		0x00330018
+%define ARM_PJ4V6	0x00340018
+%endif
+%if defined(_TARGET) || defined(_MULTI_MAJOR_VERSION) && _MULTI_MAJOR_VERSION >= 6
+%define ARM_11MP	0x00350018
+%define ARM_CORTEXM4	0x00360018
+%define ARM_CORTEXA5	0x00370018
+%define ARM_CORTEXA15	0x00380018
+%define ARM_V6M		0x00390018
+%define ARM_CORTEXA	0x003a0018
+%define ARM_V4		0x003b0018
+%define ARM_V4T		0x003c0018
+%define ARM_V5		0x003d0018
+%define ARM_CORTEXR	0x003f0018
+%define ARM_CORTEXR5	0x00400018
+%define ARM_CORTEXR7	0x00410018
+%define ARM_CORTEXA7	0x00420018
+%define ARM_CORTEXM0PLUS 0x00430018
+%define ARM_CORTEXM4F	0x00440018
+%define ARM_CORTEXR4F	0x00450018
+%define ARM_CORTEXA12	0x00460018
+%define ARM_CORTEXA17	0x00470018
+%define ARM_CORTEXAV8	0x00480018
+%define ARM_CORTEXA53	0x00490018
+%define ARM_CORTEXA57	0x004a0018
+%define ARM_CORTEXR5F	0x004b0018
+%define ARM_CORTEXM7	0x004c0018
+%endif
+
+#
+# ARM Core IDs
+#
+%define ARM_CORE_ARM7TM 	1
+%define ARM_CORE_ARM8		2
+%define ARM_CORE_ARM9		3
+%define ARM_CORE_ARM9E		4
+%define ARM_CORE_ARM10		5
+%define ARM_CORE_STRONGARM	6
+%define ARM_CORE_XSCALE		7
+%define ARM_CORE_ARM11		8
+%define ARM_CORE_ARM11T2	9
+%define ARM_CORE_CORTEXM0	10
+%define ARM_CORE_CORTEXM1	11
+%define ARM_CORE_CORTEXM3	12
+%define ARM_CORE_CORTEXM4	13
+%define ARM_CORE_CORTEXR4	14
+%define ARM_CORE_CORTEXA5	15
+%define ARM_CORE_CORTEXA8	16
+%define ARM_CORE_CORTEXA9	17
+%define ARM_CORE_CORTEXA15	18
+%define ARM_CORE_FEROCEON	19
+%define ARM_CORE_PJ4		20
+%define ARM_CORE_PJ4V6		21
+%define ARM_CORE_ARMV6M		22
+%define ARM_CORE_CORTEXA	23
+%define ARM_CORE_ARMV4		24
+%define ARM_CORE_ARMV4T		25
+%define ARM_CORE_ARMV5		26
+%define ARM_CORE_CORTEXR	27
+%define ARM_CORE_CORTEXR5	28
+%define ARM_CORE_CORTEXR7	29
+%define ARM_CORE_CORTEXA7	30
+%define ARM_CORE_CORTEXM0PLUS	31
+%define ARM_CORE_CORTEXM4F	32
+%define ARM_CORE_CORTEXR4F	33
+%define ARM_CORE_CORTEXA12	34
+%define ARM_CORE_CORTEXA17	35
+%define ARM_CORE_CORTEXAV8	36
+%define ARM_CORE_CORTEXA53	37
+%define ARM_CORE_CORTEXA57	38
+%define ARM_CORE_CORTEXR5F	39
+
+
+#
+# V800 family
+#
+
+%define V810		0x00000008
+%define V810U		0x00050008
+%define V820		0x00060008
+%define V830		0x00010008
+%define V850		0x0002000e
+%define V850E		0x0003000e
+%define V850E1F		0x0007000e
+%define V850E2		0x0008000e
+%define V850E2R		0x0009000e
+%define V850E2RV3	0x000a000e
+%define V850E3V5	0x000d000e
+%define RH850G3M	0x000f000e
+%define RH850G3H	0x0010000e
+%define RH850G3K	0x0011000e
+
+#
+# V800/RH850 Coprocessors
+#
+
+%define RH850_FPU	1
+%define RH850_SIMD	2
+%define RH850_MMU	4
+%define RH850_MPU	8
+%define RH850_FPSIMD	16
+
+#
+# MIPS Series
+#
+
+%define MIPSPROC32		0
+%define MIPSLE64		1
+%define MIPSBE64		2
+
+#
+# MIPS "Coprocessors"
+#
+
+%define COP_REV2		4
+%define COP_CPU32FPU64		2	
+
+#
+# MIPS family
+#
+
+%define R3000		0x0000000a
+%define R4000		0x0001000a
+%define R4000_64	0x0002000a
+%define R3900		0x0003000a
+%define R4650		0x0004000a
+%define R4200		0x0005000a
+%define R4300		0x0006000a
+%define R4100		0x0007000a
+%define R3750		0x0008000a
+%define R3900e		0x0009000a
+%define R5000		0x000a000a
+%define MIPX		0x000b000a
+%define TRW		0x000c000a
+%define MMA		0x000d000a
+%define R4600		0x000e000a
+%define R4700		0x000f000a
+%define RC32364		0x0010000a
+%define R4400		0x0011000a
+%define MIPS16		0x0012000a
+%define R4500		0x0013000a
+%define CW400x		0x0014000a
+%define CW401x		0x0015000a
+%define R1900		0x0016000a
+%define R5400		0x0017000a
+%define MP3		0x0018000a
+%define R4320		0x0019000a
+%define R4121		0x001a000a
+%define MIPS32_4Kc	0x0023000a
+%define MIPS32_4Kp	0x0024000a
+%define MIPS32_4Km	0x0025000a
+%define R4900		0x0026000a
+%define SR1GX		0x0027000a
+%define MIPS32		0x0028000a
+%define MIPS64		0x0029000a
+%define MIPS64_5Kc	0x002a000a
+%define R4900_GE	0x0031000a
+%define R3927		0x0032000a
+%define R3904		0x0033000a
+%define R5500		0x0034000a
+%define MIPS64_20Kc	0x0035000a
+%define MIPS64_5Kf	0x0038000a
+%define MIPS32_4KEc	0x0039000a
+%define MIPS32_4KEp	0x003a000a
+%define MIPS32_4KEm	0x003b000a
+%define MIPS32_4KSc	0x003c000a
+%define LSI4021		0x003d000a
+%define BCM1250		0x003e000a
+%define FASTMATH	0x003f000a
+%define MIPS32_M4K      0x0040000a
+%define MIPS32_4KSd     0x0041000a
+%define MIPS64_5KEc     0x0042000a
+%define MIPS64_5KEf     0x0043000a
+%define MIPS64_25Kf     0x0044000a
+%define R1900a		0x0045000a
+%if defined(_TARGET) || defined(_MULTI_MAJOR_VERSION) && _MULTI_MAJOR_VERSION >= 6
+%define R9721		0x0046000a
+%define E9000		0x0047000a
+%endif
+%define MIPS32_74Kc	0x0048000a
+%define MIPS32_74Kf	0x0049000a
+%if defined(_TARGET) || defined(_MULTI_MAJOR_VERSION) && _MULTI_MAJOR_VERSION >= 6
+%define MIPS32_24Kc	0x004a000a
+%define MIPS32_24Kf	0x004b000a
+%define MIPS32_34Kc	0x004c000a
+%define MIPS32_34Kf	0x004d000a
+%define CNMIPS		0x004e000a
+%define R7965		0x004f000a
+%define CNMIPS2		0x0052000a
+%define R3700		0x0054000a
+%define R4131		0x0055000a
+%define MIPS32_24KEc	0x0056000a
+%define MIPS32_24KEf	0x0057000a
+%endif
+%if defined(_TARGET) || (defined(_MULTI_MAJOR_VERSION) && \
+	(_MULTI_MAJOR_VERSION >= 6 || \
+	 (_MULTI_MAJOR_VERSION == 5 && _MULTI_MINOR_VERSION >= 1)))
+%define MIPS32_1004Kc	0x0050000a
+%define MIPS32_1004Kf	0x0051000a
+%endif
+
+#
+# Lexra family
+#
+
+%define LX4180		0x001b000a
+%define LX4180m		0x001c000a
+%define LX4189		0x001d000a
+%define LX4189m		0x001e000a
+%define LX4280		0x001f000a
+%define LX4280m		0x0020000a
+%define LX5180		0x0021000a
+%define LX5280		0x0022000a
+%define LX8000		0x002b000a
+%define LX8000m		0x002c000a
+%define LX4180i		0x002d000a
+%define LX4180mi	0x002e000a
+%define LX4380		0x0036000a
+%define LX4380m		0x0037000a
+
+#
+# MIPS Core IDs
+#
+%define MIPS_CORE_MIPS32	1
+%define MIPS_CORE_MIPS32_4KEc	2
+%define MIPS_CORE_MIPS32_4KEm	3
+%define MIPS_CORE_MIPS32_4KEp	4
+%define MIPS_CORE_MIPS32_M4K	5
+%define MIPS_CORE_MIPS32_4KSc	6
+%define MIPS_CORE_MIPS32_4KSd	7
+%define MIPS_CORE_MIPS32_4Kc	8
+%define MIPS_CORE_MIPS32_4Km	9
+%define MIPS_CORE_MIPS32_4Kp	10
+%define MIPS_CORE_MIPS32_24Kc	11
+%define MIPS_CORE_MIPS32_24Kf	12
+%define MIPS_CORE_MIPS32_24KEc	13
+%define MIPS_CORE_MIPS32_24KEf	14
+%define MIPS_CORE_MIPS32_34Kc	15
+%define MIPS_CORE_MIPS32_34Kf	16
+%define MIPS_CORE_MIPS32_74Kc	17
+%define MIPS_CORE_MIPS32_74Kf	18
+%define MIPS_CORE_MIPS32_1004Kc	19
+%define MIPS_CORE_MIPS32_1004Kf	20
+%define MIPS_CORE_MIPS64	21
+%define MIPS_CORE_MIPS64_5Kc	22
+%define MIPS_CORE_MIPS64_5Kf	23
+%define MIPS_CORE_MIPS64_5KEc	24
+%define MIPS_CORE_MIPS64_5KEf	25
+%define MIPS_CORE_MIPS64_25Kc	26
+%define MIPS_CORE_MIPS64_25Kf	27
+%define MIPS_CORE_CNMIPS	28
+%define MIPS_CORE_CNMIPS2	29
+
+#
+# x86 family
+#
+
+%define X86_386		0x00000004
+%define X86_486		0x00010004
+%define X86_PENTIUM	0x00020004
+%define X86_PENTIUMPRO	0x00030004
+%define X86_64		0x00040004
+%define X86_64_WIN64	0x00050004
+%define X86_PENTIUM2	0x00060004
+%define X86_PENTIUM3	0x00070004
+%define X86_PENTIUM4	0x00080004
+%define X86_80386_GENERIC	0x00090004
+%define X86_80486_GENERIC	0x000a0004
+%define X86_PENTIUM_GENERIC	0x000b0004
+%define X86_PENTIUMPRO_GENERIC	0x000c0004
+%define X86_ATOM		0x000e0004
+%define X86_CORE2		0x000f0004
+%define X86_COREI		0x00100004
+%define X86_SISKIYOU_PEAK	0x00130004
+%define X86_SISKIYOU_PEAK_GENERIC 0x00140004
+
+# x86 cores
+%define X86_CORE_80386		1
+%define X86_CORE_80486		2
+%define X86_CORE_PENTIUM	3
+%define X86_CORE_PENTIUMPRO	4
+%define X86_CORE_SISKIYOU_PEAK	6
+
+
+#
+# TriCore family
+#
+
+%define TRI_A			0x00000019
+%define TRI_TC1V12		0x00010019
+%define TRI_TC10GP		0x00010019
+%define TRI_TC1775		0x00020019
+%define TRI_TC1V13		0x00030019
+%define TRI_TC1766		0x00040019
+%define TRI_TC1796		0x00050019
+%define TRI_TC1V131		0x00060019
+%define TRI_TC1V16		0x00070019
+%define TRI_TC1793		0x00080019
+%define TRI_TC1797		0x00090019
+%define TRI_TC1782		0x000a0019
+%define TRI_TC1V16P		0x000b0019
+%define TRI_TC27X		0x000c0019
+%define TRI_TC29X		0x000d0019
+
+#
+# 68k/ColdFire family
+#
+
+%define M68_68000		0x00000003
+%define M68_68302		0x00010003
+%define M68_68010		0x00020003
+%define M68_CPU32		0x00030003
+%define M68_68020		0x00040003
+%define M68_68030		0x00050003
+%define M68_68040		0x00060003
+%define M68_68060		0x00070003
+%define M68_CF5202		0x00080003
+%define M68_CF5204		0x00090003
+%define M68_CF5300		0x000a0003
+%define M68_CF5407		0x000b0003
+%define M68_CF5249		0x000c0003
+%define M68_CFV2		0x000d0003
+%define M68_CF5206e		0x000e0003
+%define M68_CF5272		0x000f0003
+%define M68_CFV3		0x00100003
+%define M68_CFV4		0x00110003
+%define M68_CFV4e		0x00120003
+%define M68_CF5282		0x00130003
+%define M68_CFV5		0x00140003
+%define M68_CF5232		0x00150003
+%define M68_CF5233		0x00160003
+%define M68_CF5234		0x00170003
+%define M68_CF5235		0x00180003
+%define M68_CF5270		0x00190003
+%define M68_CF5271		0x001a0003
+%define M68_CF5274L		0x001b0003
+%define M68_CF5274		0x001c0003
+%define M68_CF5275L		0x001d0003
+%define M68_CF5275		0x001e0003
+%define M68_CF5470		0x001f0003
+%define M68_CF5471		0x00200003
+%define M68_CF5472		0x00210003
+%define M68_CF5473		0x00220003
+%define M68_CF5474		0x00230003
+%define M68_CF5475		0x00240003
+%define M68_CF5480		0x00250003
+%define M68_CF5481		0x00260003
+%define M68_CF5482		0x00270003
+%define M68_CF5483		0x00280003
+%define M68_CF5484		0x00290003
+%define M68_CF5485		0x002a0003
+%define M68_CF5211		0x002b0003
+%define M68_CF5212		0x002c0003
+%define M68_CF5213		0x002d0003
+%define M68_CF5207		0x002e0003
+%define M68_CF5208		0x002f0003
+%define M68_CF5327		0x00300003
+%define M68_CF5328		0x00310003
+%define M68_CF5329		0x00320003
+%define M68_CF5372L		0x00330003
+%define M68_CF5372		0x00340003
+%define M68_CF5373L		0x00350003
+%define M68_CF5373		0x00360003
+%define M68_CF5221		0x00370003
+%define M68_CF5222		0x00380003
+%define M68_CF5223		0x00390003
+%define M68_CF5251		0x003a0003
+%define M68_CF5253		0x003b0003
+%define M68_CF5445x		0x003c0003
+%define M68_V2_GENERIC			0x003d0003
+%define M68_V3_GENERIC			0x003e0003
+%define M68_V3_PLUS_GENERIC		0x003f0003
+%define M68_V3_EMAC_GENERIC		0x00400003
+%define M68_V3_EMAC_PLUS_GENERIC	0x00410003
+%define M68_V4_GENERIC			0x00420003
+%define M68_V4_EMAC_MMU_GENERIC		0x00430003
+%define M68_V4_EMAC_FPU_GENERIC		0x00440003
+%define M68_V4_EMAC_FPU_MMU_GENERIC	0x00450003
+%define M68_V5_GENERIC			0x00460003
+%define M68_68LC040		0x00470003
+%define M68_68EC040		0x00480003
+%define M68_68LC060		0x00490003
+%define M68_68EC060		0x004a0003
+%define M68_68340		0x004b0003
+%define M68_68360		0x004c0003
+%define M68_CF5102		0x004d0003
+%define M68_CF5203		0x004e0003
+%define M68_CF5206		0x004f0003
+%define M68_CF521x		0x00500003
+%define M68_CF521xx		0x00510003
+%define M68_CF5222x		0x00520003
+%define M68_CF5223x		0x00530003
+%define M68_CF5227x		0x00540003
+%define M68_CF523x		0x00550003
+%define M68_CF527x		0x00560003
+%define M68_CF532x		0x00570003
+%define M68_CF537x		0x00580003
+%define M68_CF5407E		0x00590003
+%define M68_CF547x		0x005a0003
+%define M68_CF548x		0x005b0003
+%define M68_CF5221x		0x005c0003
+%define M68_CF5225x		0x005d0003
+%define M68_CF5301x		0x005e0003
+%define M68_CF5441x		0x005f0003
+
+# 68k/ColdFire FPU coprocessors
+%define M68_NOFPU		0
+%define M68_881			1
+%define M68_882			2
+%define M68_LC040		3
+%define M68_EC040		4
+%define M68_68360		5
+%define M68_LC060		6
+%define M68_EC060		7
+%define M68_CFFPU		8
+
+# ColdFire cores
+%define M68_CORE_V2			 1
+%define M68_CORE_V3			 2
+%define M68_CORE_V3_PLUS		 3
+%define M68_CORE_V3_EMAC 	  	 4
+%define M68_CORE_V3_EMAC_PLUS		 5
+%define M68_CORE_V4			 6
+%define M68_CORE_V4_EMAC_MMU		 7
+%define M68_CORE_V4_EMAC_FPU		 8
+%define M68_CORE_V4_EMAC_FPU_MMU	 9
+%define M68_CORE_V5			 10
+
+#
+# StarCore family
+#
+
+%define MSC_8101		0x0000001e
+%define MSC_8102		0x0001001e
+%define SC1400			0x0002001e
+%define SC1200			0x0003001e
+%define SC2400			0x0004001e
+%define SC2200			0x0005001e
+%define SC3400			0x0006001e
+%define SC3200			0x0007001e
+%define MSC_8103		0x0008001e
+%define MSC_8122		0x0009001e
+%define MSC_711X		0x000a001e
+
+#
+# Blackfin family
+#
+
+%define BF_ADI_532		0x00000024
+%define BF_GHS_533		0x00010024
+%define BF_ADI_535		0x00020024
+%define BF_GHS_531		0x00030024
+%define BF_GHS_532		0x00040024
+%define BF_GHS_535		0x00050024
+%define BF_GHS_561		0x00060024
+%define BF_GHS_534		0x00070024
+%define BF_GHS_536		0x00080024
+%define BF_GHS_537		0x00090024
+%define BF_GHS_539		0x000a0024
+%define BF_GHS_566		0x000b0024
+%define BF_GHS_538		0x000c0024
+%define BF_GHS_542		0x000d0024
+%define BF_GHS_544		0x000e0024
+%define BF_GHS_548		0x000f0024
+%define BF_GHS_549		0x00100024
+%define BF_GHS_522		0x00110024
+%define BF_GHS_525		0x00120024
+%define BF_GHS_527		0x00130024
+%define BF_GHS_512		0x00140024
+%define BF_GHS_514		0x00150024
+%define BF_GHS_516		0x00160024
+%define BF_GHS_518		0x00170024
+
+#
+# SH family
+#
+
+%define SH_1			0x00000011
+%define SH_2			0x00010011
+%define SH_2A			0x00070011
+%define SH_2DSP			0x00030011
+%define SH_3			0x00020011
+%define SH_3DSP			0x00060011
+%define SH_3E			0x00040011
+%define SH_4			0x00050011
+%define SH_4A			0x00080011
+
+# M32R family
+%define M32R_COP_FPU		1
+
+#
+# ARC family
+#
+
+%define ARC_A4			0x00000027
+%define ARC_A5			0x00010027
+%define ARC_A600		0x00020027
+%define ARC_A700		0x00030027
+
+#
+# C6000 family
+#
+
+%define C6200			0x00000029
+%define C6400			0x00010029
+%define C6400PLUS		0x00020029
+%define C6700			0x00030029
+
+#
+# FR family
+#
+%define FR20			0x00000015
+
+%if defined(_TARGET) || defined(_MULTI_MAJOR_VERSION) && _MULTI_MAJOR_VERSION >= 6
+#
+# PIC30 family
+#
+
+%define PIC24			0x00000030
+%define DSPIC30			0x00010030
+
+#
+# FireFly family
+#
+
+%define FireFly32		0x0000002e
+%define FireFly64		0x0001002e
+%define FireFly16		0x0002002e
+%define FireFly_LUZ32		0x0003002e
+%define FireFly64_A32		0x0004002e
+
+#
+# Nano family
+#
+
+%define NANO32			0x00000031
+%define NANO16			0x00010031
+%endif
+
+#
+# ARM64 family
+#
+%if defined(_TARGET) || (defined(_MULTI_MAJOR_VERSION) && \
+	(_MULTI_MAJOR_VERSION > 6 || \
+	 (_MULTI_MAJOR_VERSION == 6 && _MULTI_MINOR_VERSION >= 1)))
+%define	ARM64_V8		0x00000032
+%endif
+
+
+##############################################################################
+#
+# OPERATING SYSTEMS
+#
+##############################################################################
+
+#
+# OS types
+#
+
+%define OS_NULL			0
+%define OS_VXWORKS		1
+# OS_CHORUS is deprecated.
+%define OS_CHORUS		2
+%define OS_NUCLEUS		3
+%define OS_OSE			4
+%define OS_INTEGRITY		5
+%define OS_THREADX		6
+%define OS_WINDOWS		7
+%define OS_UNIX			8
+%define OS_MERCURY		9
+# A very general one
+%define OS_MULTICORE		10
+%define OS_ALPHA		11
+# OS_DICOS is deprecated.
+%define OS_DICOS		12
+%define OS_9K			13
+%define OS_UVELOSITY		14
+# An OS we don't distinguish
+%define OS_GENERIC		255
+
+#
+# OS minor types
+#
+
+%define OS_MINOR_NUL			0
+%define OS_MINOR_OSE_CELLO		1
+%define OS_MINOR_UNIX_LINUX		1
+%define OS_MINOR_UNIX_LYNXOS		2
+
+##############################################################################
+#
+# Memory Spaces
+#
+##############################################################################
+
+%define MSPACE_DEFAULT			0
+
+%define MSPACE_TEXT_DEFAULT		32
+%define MSPACE_DATA_DEFAULT		64
+
+%define MSPACE_TEXT_PHYSICAL		63
+%define MSPACE_DATA_PHYSICAL 		95
+
+%define MSPACE_DATA_RAWMEMORY		94
+
+##############################################################################
+#
+# File Address Modes
+#
+##############################################################################
+
+%define ADDR_MODE_UNKNOWN      -1
+%define ADDR_MODE_16BIT         0
+%define ADDR_MODE_16BIT_16SEG   1
+%define ADDR_MODE_32BIT         2
+%define ADDR_MODE_64BIT         3
+
+##############################################################################
+#
+# Common Derived Variables
+#
+##############################################################################
+%if defined(_TARGET_OS)
+%  eval _IS_STOP_MODE ((_TARGET_OS == OS_NULL) || (_TARGET_OS == OS_MULTICORE))
+%  eval _IS_RUN_MODE  ((_TARGET_OS != OS_NULL) && (_TARGET_OS != OS_MULTICORE))
+%endif
+%if defined(_TARGET_COPROCESSOR)
+%  eval _HAS_FPU      (_TARGET_COPROCESSOR != 0)
+%endif

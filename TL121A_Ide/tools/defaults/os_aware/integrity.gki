@@ -1,0 +1,515 @@
+# The file defines INTEGRITY kernel information for OSA
+version = 1
+
+%if defined(__TOOLS_DEFAULTS_DIR__)
+% include "${__TOOLS_DEFAULTS_DIR__}/registers/os_constants.grd"
+%else
+% include "${__MULTI_DEFAULTS_DIR__}/registers/os_constants.grd"
+%endif
+
+# In addition to the constants defined in "os_constants.grd", the following
+# constants are provided by the loader of the file:
+#     _TARGET
+#     _TARGET_OS   (is 0 right now)
+#     _INT_SMALL_KERNEL                 (1 if MIN_API is defined, 0 otherwise)
+#     _INT_WITH_ERROR_CHECKING          (1 if NO_ERROR_CHECKING is not defined,
+#                                        0 otherwise)
+#     _INT_OSA_MAJOR_VERSION
+#     _INT_OSA_MINOR_VERSION
+#     _INT_OSA_KSOCKEMU                 (1 if KSOCKEMU is defined, 0 otherwise)
+#     _INT_OSA_MEV                      (1 if MEV is defined, 0 otherwise)
+#     _INT_OSA_PROCESS_DEBUGGING        (1 if PROCESS_DEBUGGING is defined,
+#                                        0 otherwise)
+#     _INT_OSA_PROCESS_DEBUGGING_USING_INDRT2
+#                                       (1 if PROCESS_DEBUGGING_USING_INDRT2
+#                                        is defined, 0 otherwise)
+#     _INT_OSA_NO_PER_TASK_CALLBACKS    (1 if NO_PER_TASK_CALLBACKS is defined,
+#                                        0 otherwise)
+#     _INT_OSA_REMOVE_STATUS_CHANGE_RECURSION
+#                                       (1 if REMOVE_STATUS_CHANGE_RECURSION
+#                                        is defined, 0 otherwise)
+
+%eval _TARGET_FAMILY 		(_TARGET & 0xffff)
+
+%include "integrity_error_code.gki"
+%include "integrity_status_code.gki"
+
+# In the new INTEGRITY kernels (4.0 and 5.0), the register mapping table
+# is available from the kernel itself if the kernel is not compiled with
+# MIN_API defined.
+#
+# The register mapping configuration is useful for min kernel, but it is
+# not accurate for all chips and compilation flags. We need to cleanup
+# it sometime later if kernel verions with MIN_API on need to be debugged
+# properly.
+%include "integrity_register.gki"
+
+#                   OSA kernel major version specification
+#
+# Version 1-3:	Support INTEGRITY 5.0
+#
+# Version 4:	Support PIC and PID (modification in INTEGRITY 5.0)
+#
+# Version :	Support changes for Activity object status (in INTEGRITY 6.0,
+#		the development branch, unfortunately, RTOS guy did not bump
+#		the version in INTEGRITY OSA Kernel version.
+#
+# Version 5:    Reserved for INTEGRITY 5.0
+#
+# Version 6:	(1) Replace ObjectDriver field in Object with ObjectKind.
+#		ObjectKind field is an enumerated type (see kernel/object.h).
+#
+#		The ObjectKind is used to index to the ObjectDriverTable so
+#		you can tell the type of an Object.
+#		(2) Squeeze ObjectKind and ObjectIndex into one word(6:26), 
+#		and leave the other word for something else.
+#
+# Version 7: 	Change the registers on PPC to keep the current xframe.
+#		See MULTI-20624.
+#
+# Version 8:	Change the location of CurrentXFrame on x86.
+#
+# Version 9:    Change "ResourceInfo.Resource" field from "Buffer" to
+#		"Buffer *".
+OsaMajorVersion = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1100}
+
+# Note that in INTEGRITY 10.0, the structure offsets are found from debug info
+# embedded in the kernel, so the offsets in this file aren't needed then
+# (except for ResourceInfo which is a non-kernel module).
+
+# First kernel virtual address: with the exact name used in INTEGRITY kernel
+FIRST_KERNEL_VIRTUAL_ADDRESS = 0x40000000
+
+%if (_TARGET_FAMILY == X86_386)
+# The constant defines the normal number of registers kept in Task context.
+# We use the number to check out the special INTEGRITY version with extra
+# registers.
+ASP_NumberOfRegisters = 172
+%endif
+
+# Object driver indexes
+ObjectDrivers {
+    intActivityDriver 		{ value = 0 }
+    intAddressSpaceDriver 	{ value = 1 }
+    intClockDriver 		{ value = 2 }
+    intConnectionDriver 	{ value = 3 }
+    intIODeviceDriver 		{ value = 4 }
+    intLinkDriver 		{ value = 5 }
+    intMemoryRegionDriver 	{ value = 6 }
+    intTaskDriver 		{ value = 7 }
+    intSemaphoreDriver 		{ value = 8 }
+    intAnyDriver 		{ value = 9 }
+}
+
+%if ((_TARGET_FAMILY == PPC_POWER && defined(_CPU_ADDRESS_SIZE) && _CPU_ADDRESS_SIZE == 8) || _TARGET == X86_64)
+# 64-bit addresses
+%define OffsetScale	2
+%define AdrSize		8
+%else
+%define OffsetScale	1
+%define AdrSize		4
+%endif
+
+# We only list the fields which are used in OSA INTEGRITY plugin, but
+# not expose the whole structures.
+
+# General Object
+Object {
+    NextInList			{ offset = 0x0; }
+
+    # Before OSAKernelVersion 6
+    ObjectDriver 		{ offset = "0x8 * ${OffsetScale}"; }
+    ObjectIndex 		{ offset = "0xc * ${OffsetScale}"; }
+    # From OSAKernelVersion 6
+    ObjectKind			{ offset = "0x8 * ${OffsetScale}"; bit_offset = 0; bit_length = 6; }
+    ObjectIndex6		{ offset = "0x8 * ${OffsetScale}"; bit_offset = 6;
+				  bit_length = "32 * ${OffsetScale} - 6"; }
+
+    Links	 		{ offset = "0x10 * ${OffsetScale}"; }
+    MessageList 		{ offset = "0x18 * ${OffsetScale}"; }
+}
+
+# Domain
+Domain {
+    AddressSpace 		{ offset = 0x0; }
+    IsVirtual	 		{ offset = "0x8 * ${OffsetScale}"; }
+    TaskContextList		{ offset = "0xc * ${OffsetScale}"; }
+    MemoryRegionList		{ offset = "0x10 * ${OffsetScale}"; }
+    PageTableBase		{ offset = "0x20 * ${OffsetScale}"; }
+    AddressSpaceId		{ offset = "0x28 * ${OffsetScale}"; }
+    NumberOfObjects		{ offset = "0x40 * ${OffsetScale}"; }
+    InitialObjects		{ offset = "0x44 * ${OffsetScale}"; }
+    InitialObjectsCount		{ offset = "0x48 * ${OffsetScale}"; }
+    ObjectBTree			{ offset = "0x4c * ${OffsetScale}"; }
+    NextInMasterList		{ offset = "0x60 * ${OffsetScale}"; }
+%if (_TARGET_FAMILY == R3000 || _TARGET_FAMILY == M68_68000)
+    Level1PageTableEntries	{ offset = "0x68 * ${OffsetScale}"; }
+%elif (_TARGET_FAMILY == ARM_7)
+    Level1PageTableEntries	{ offset = "0x6c * ${OffsetScale}"; }
+%elif (_TARGET_FAMILY == BF_ADI_532)
+    Level1PageTableEntries	{ offset = "0x74 * ${OffsetScale}"; }
+%endif
+}
+
+# Task
+Task {
+    TaskContext			{ offset = "0x20 * ${OffsetScale}"; }
+}
+
+# TaskContext
+#%define		TaskContextFldExpr	"return ${_ASP_NumberOfRegisters}*4"
+TaskContext {
+    # The offset is after the register table.
+    # Negative value means that the field does not exist
+    ThisTask			{ offset = 0x0; }
+    Domain			{ offset = "0x4 * ${OffsetScale}"; }
+    NextInTaskContextList	{ offset = "0x8 * ${OffsetScale}"; }
+%if (_INT_SMALL_KERNEL)
+    Priority			{ offset = "0x10 * ${OffsetScale}"; }
+    MaximumPriority		{ offset = "0x14 * ${OffsetScale}"; }
+    Weight			{ offset = "0x18 * ${OffsetScale}"; }
+    MaximumWeight		{ offset = "0x1c * ${OffsetScale}"; }
+    Name			{ offset = "0x20 * ${OffsetScale}"; }
+
+#    ExecutableFile		{ offset = -1; }
+
+    InterruptStack		{ offset = "0x38 * ${OffsetScale}"; }
+    OtherActivities		{ offset = "0x3c * ${OffsetScale}"; }
+    Identification		{ offset = "0x48 * ${OffsetScale}"; }
+    Status			{ offset = "0x50 * ${OffsetScale}"; }
+    StackStart			{ offset = "0x88 * ${OffsetScale}"; }
+    StackEnd			{ offset = "0x8c * ${OffsetScale}"; }
+    HLSemaphoreStack		{ offset = "0x90 * ${OffsetScale}"; }
+    BinarySemaphoreHeap		{ offset = "0x94 * ${OffsetScale}"; }
+
+    # No support for relocatable in MIN_API.
+    BaseAddrs                   { offset = -4; }
+
+%else
+
+    Priority			{ offset = "0x14 * ${OffsetScale}"; }
+    MaximumPriority		{ offset = "0x18 * ${OffsetScale}"; }
+    Weight			{ offset = "0x1c * ${OffsetScale}"; }
+    MaximumWeight		{ offset = "0x20 * ${OffsetScale}"; }
+    Name			{ offset = "0x24 * ${OffsetScale}"; }
+
+    ExecutableFile		{ offset = "0x30 * ${OffsetScale}"; }
+
+    InterruptStack		{ offset = "0x84 * ${OffsetScale}"; }
+    OtherActivities		{ offset = "0x88 * ${OffsetScale}"; }
+
+%if (OffsetScale == 2)
+    Identification		{ offset = 0x138; }
+    Status			{ offset = 0x148; }
+    StackStart			{ offset = 0x1b8; }
+    StackEnd			{ offset = 0x1c0; }
+    HLSemaphoreStack		{ offset = 0x1c8; }
+    BinarySemaphoreHeap		{ offset = 0x1d0; }
+%else
+    Identification		{ offset = 0xa0; }
+    Status			{ offset = 0xa8; }
+    StackStart			{ offset = 0xe0; }
+    StackEnd			{ offset = 0xe4; }
+    HLSemaphoreStack		{ offset = 0xe8; }
+    BinarySemaphoreHeap		{ offset = 0xec; }
+%endif
+
+# The adjustments are based on the situation that
+#    rtserv is on (so rtserv2 is off)
+#    MEV is on
+#    KSOCKEMU is on
+#    NO_PER_TASK_CALLBACKS is off
+#    REMOVE_STATUS_CHANGE_RECURSION in off
+
+%if (_INT_OSA_PROCESS_DEBUGGING)
+%define BaseAddrsAdjForRtserv   0            
+%else
+# sizeof(DBGPROC)+sizeof(TaskContext)
+%if (OffsetScale == 2)
+%define BaseAddrsAdjForRtserv   -0x8c0
+%else
+%define BaseAddrsAdjForRtserv   -0x498
+%endif
+%endif
+
+%if (_INT_OSA_PROCESS_DEBUGGING_USING_INDRT2)
+# sizeof(INDRT_Entity *)      
+%define BaseAddrsAdjForRtserv2          (4 * ${OffsetScale})
+%else
+%define BaseAddrsAdjForRtserv2          0
+%endif
+
+%if (_INT_OSA_KSOCKEMU)
+%define BaseAddrsAdjForKSockEmu         0            
+%else
+# sizeof(Value)
+%define BaseAddrsAdjForKSockEmu         (-4 * ${OffsetScale})
+%endif
+
+%if (_INT_OSA_MEV)
+%define BaseAddrsAdjForMev              0            
+%else
+# 2*sizeof(UINT4)
+%define BaseAddrsAdjForMev              -8
+%endif
+
+%if (_INT_OSA_NO_PER_TASK_CALLBACKS)
+# sizeof(CALL *)+sizeof(CALL)+sizeof(ListStruct)*2+sizeof(CALL)+sizeof(TaskContext)
+%define BaseAddrsAdjForPerTaskCb        (-0x38 * ${OffsetScale})
+%else
+%define BaseAddrsAdjForPerTaskCb        0
+%endif
+
+%if (_INT_OSA_REMOVE_STATUS_CHANGE_RECURSION)
+# sizeof(CALL)
+%define BaseAddrsAdjForStatusChangeRec  (20 * ${OffsetScale})
+%else
+%define BaseAddrsAdjForStatusChangeRec  0
+%endif
+
+%if ((_TARGET_FAMILY == PPC_POWER) && defined(_CPU_ADDRESS_SIZE) && (_CPU_ADDRESS_SIZE != 8))
+%define DftBaseAddrs                    0x60c
+%elif ((_TARGET_FAMILY == PPC_POWER) && defined(_CPU_ADDRESS_SIZE) && (_CPU_ADDRESS_SIZE == 8))
+%define DftBaseAddrs                    0xb98
+%elif (_TARGET_FAMILY == R3000)
+%define DftBaseAddrs                    0x60c
+%elif (_TARGET_FAMILY == ARM_7)
+%define DftBaseAddrs                    0x614
+%elif (_TARGET_FAMILY == M68_68000)
+%define DftBaseAddrs                    0x618
+%elif (_TARGET_FAMILY == BF_ADI_532)
+%define DftBaseAddrs                    0x614
+%elif (_TARGET_FAMILY == X86_386)
+%define DftBaseAddrs                    0x614
+%else 
+%define DftBaseAddrs                    -0x10000
+%endif
+
+%if ((_TARGET_FAMILY == PPC_POWER) || (_TARGET_FAMILY == R3000) || \
+     (_TARGET_FAMILY == ARM_7) || (_TARGET_FAMILY == M68_68000) || \
+     (_TARGET_FAMILY == BF_ADI_532) || (_TARGET_FAMILY == X86_386))
+    BaseAddrs                   { offset = "${DftBaseAddrs}+(${BaseAddrsAdjForRtserv})+(${BaseAddrsAdjForRtserv2})+(${BaseAddrsAdjForKSockEmu})+(${BaseAddrsAdjForMev})+(${BaseAddrsAdjForPerTaskCb})+(${BaseAddrsAdjForStatusChangeRec})"; }
+%else
+    BaseAddrs 			{ offset = -4; }
+%endif
+
+%endif # _INT_SMALL_KERNEL
+}
+
+# Connection
+Connection {
+    OtherEnd 			{ offset = "0x20 * ${OffsetScale}"; }
+}
+
+# Clock
+Clock {
+    TimerDriver			{ offset = "0x34 * ${OffsetScale}"; }
+}
+# Timer
+Timer {
+    Next			{ offset = "0x14 * ${OffsetScale}"; }
+    Name			{ offset = "0x1c * ${OffsetScale}"; }
+}
+
+# IODevice
+IODevice {
+    TheIODeviceVector		{ offset = "0x20 * ${OffsetScale}"; }
+}
+# IODeviceVector
+IODeviceVector {
+    Name			{ offset = "0x40 * ${OffsetScale}"; }
+    Next			{ offset = "0x48 * ${OffsetScale}"; }
+}
+
+# Activity
+Activity {
+%if _INT_OSA_MAJOR_VERSION >= 6
+    Interrupt			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 6; bit_length = 1; }
+    OnTheRunList		{ offset = "0x1c * ${OffsetScale}"; bit_offset = 7; bit_length = 1; }
+    Status			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 8; bit_length = 8; }
+    NotRestartable              { offset = "0x1c * ${OffsetScale}"; bit_offset = 16; bit_length = 1; }
+    InterruptStatus             { offset = "0x1c * ${OffsetScale}"; bit_offset = 18; bit_length = 6; }
+    Waiting			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 24; bit_length = 1; }
+    UserSuspended		{ offset = "0x1c * ${OffsetScale}"; bit_offset = 27; bit_length = 1; }
+%else
+    Interrupt			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 6; bit_length = 1; }
+    OnTheRunList		{ offset = "0x1c * ${OffsetScale}"; bit_offset = 7; bit_length = 1; }
+    Status			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 8; bit_length = 8; }
+    InterruptStatus             { offset = "0x1c * ${OffsetScale}"; bit_offset = 16; bit_length = 8; }
+    Waiting			{ offset = "0x1c * ${OffsetScale}"; bit_offset = 26; bit_length = 1; }
+    UserSuspended		{ offset = "0x1c * ${OffsetScale}"; bit_offset = 27; bit_length = 1; }
+    NotRestartable              { offset = "0x1c * ${OffsetScale}"; bit_offset = 28; bit_length = 1; }
+%endif
+
+%if (AdrSize == 4)
+    TaskContextPointer		{ offset = 0x20; }
+%else
+    TaskContextPointer		{ offset = 0x40; ; bit_offset = 0; bit_length = 52; }
+%endif
+    OtherEnd			{ offset = "0x28 * ${OffsetScale}"; }
+    Priority			{ offset = "0x2c * ${OffsetScale}"; }
+
+%if (OffsetScale == 2)
+    Identification		{ offset = 0x60; }
+    PriorityList		{ offset = 0x78; }
+%else
+    Identification		{ offset = 0x30; }
+    PriorityList		{ offset = 0x3c; }
+%endif
+}
+
+# Link
+Link {
+    TheObject			{ offset = "0x20 * ${OffsetScale}"; }
+}
+
+# MemoryRegion
+MemoryRegion {
+    First			{ offset = "0x20 * ${OffsetScale}"; }
+    Last			{ offset = "0x24 * ${OffsetScale}"; }
+    Domain			{ offset = "0x28 * ${OffsetScale}"; }
+%if (_INT_OSA_MAJOR_VERSION == 2)
+    # Special case for 178B
+    Physical			{ offset = "0x2c * ${OffsetScale}"; }
+%elif (1 || _INT_WITH_ERROR_CHECKING)
+    # On 2005/03/31, agriffin removed !defined (NO_ERROR_CHECKING) checking
+    # around ObjectDomain.
+    # Fri Oct 28 13:06:29 2005  Disable Object domain because DanH will reuse
+    # it for something else soon.
+#    ObjectDomain		{ offset = 0x2c; }
+    Physical			{ offset = "0x30 * ${OffsetScale}"; }
+%else
+    Physical			{ offset = "0x2c * ${OffsetScale}"; }
+%endif
+}
+
+# Semaphore
+Semaphore {
+%if (OffsetScale == 2)
+    BinarySemaphore		{ offset = 0x3c; }
+    TheValue			{ offset = 0x40; }
+    Owner			{ offset = 0x48; }
+    Priority			{ offset = 0x50; }
+    Left			{ offset = 0x58; }
+    Right			{ offset = 0x60; }
+%else
+    BinarySemaphore		{ offset = 0x20; }
+    TheValue			{ offset = 0x24; }
+    Owner			{ offset = 0x28; }
+    Priority			{ offset = 0x2c; }
+    Left			{ offset = 0x34; }
+    Right			{ offset = 0x38; }
+%endif
+}
+
+# ObjectBTree
+ObjectBTree {
+    BTreeLevels			{ offset = "0x4 * ${OffsetScale}"; }
+    InitialShift		{ offset = "0x10 * ${OffsetScale}"; }
+}
+
+# KernelState
+KernelState {
+    KernelDomain		{ offset = "2 * ${AdrSize}"; }
+}
+
+# Buffer
+Buffer {
+    BufferType			{ offset = 0x0; }
+    TheAddress			{ offset = "0x4 * ${OffsetScale}"; }
+    Length			{ offset = "0x8 * ${OffsetScale}"; }
+    Transferred			{ offset = "0xc * ${OffsetScale}"; }
+}
+
+# ResourceInfo
+%if _INT_OSA_MAJOR_VERSION >= 9
+# Resource field is changed from Buffer to a pointer to Buffer.
+ResourceInfo {
+    ResourceName		{ offset = 0x0; length = 256; }
+    PassWord			{ offset = 0x100; length = 32; }
+    Resource			{ offset = 0x120; length = "${AdrSize}"; }
+    Linkable			{ offset = "0x120 + ${AdrSize}"; }
+    Next			{ offset = "0x124 + ${AdrSize}"; }
+}
+%else
+ResourceInfo {
+    ResourceName		{ offset = 0x0; length = 256; }
+    PassWord			{ offset = 0x100; length = 32; }
+    Resource			{ offset = 0x120; length = "16 * ${OffsetScale}"; }
+    Linkable			{ offset = "0x120 + 16 * ${OffsetScale}"; }
+    Next			{ offset = "0x124 + 16 * ${OffsetScale}"; }
+}
+%endif
+
+# These Objects are only used when "_INT_OSA_MAJOR_VERSION < 3".
+%if 1
+# GlobalTable
+GlobalTable {
+    NumberOfAddressSpaces	{ offset = 0x0; }
+    AddressSpaceInfo		{ offset = 0x4; }
+}
+
+# AddressSpaceInfo
+AddressSpaceInfo {
+    NumberOfSegments		{ offset = 0x4; }
+    SegmentTable		{ offset = 0x8; }
+    TheAddressSpace		{ offset = 0x18; }
+}
+
+# SegmentInfo
+SegmentInfo {
+    TheSegmentType		{ offset = 0x0 }
+    First			{ offset = 0x8 }
+    Length			{ offset = 0xc }
+    PhysicalSegmentNumber	{ offset = 0x10 }
+    Union			{ offset = 0x14 }
+}
+
+# LoadInfo
+LoadInfo {
+    LoadTable			{ offset = 0x0; }
+    LoadTableLen		{ offset = 0x4; }
+    next			{ offset = 0x8; }
+    prev			{ offset = 0xc; }
+}
+%endif
+
+# xframe
+xframe {
+%if (_TARGET == PPC8540 || _TARGET == PPC8560 || _TARGET == PPC5554 || \
+     _TARGET == PPC5553 || _TARGET == PPC5532 || _TARGET == PPC5534 || \
+     _TARGET == PPC8541 || _TARGET == PPC8543 || _TARGET == PPC8545 || \
+     _TARGET == PPC5668 || \
+     _TARGET == PPC8547 || _TARGET == PPC8548 || _TARGET == PPC8555 || \
+     _TARGET == PPCP1010 || _TARGET == PPCP1011 || \
+     _TARGET == PPCP1012 || _TARGET == PPCP1013 || \
+     _TARGET == PPCP1014 || _TARGET == PPCP1017 || \
+     _TARGET == PPCP1020 || _TARGET == PPCP1021 || \
+     _TARGET == PPCP1022 || _TARGET == PPCP1023 || \
+     _TARGET == PPCP2010 || _TARGET == PPCP2020 || \
+     _TARGET == PPCP2040 || _TARGET == PPCP3041 || \
+     _TARGET == PPCP4040 || _TARGET == PPCP4080 || \
+     _TARGET == PPCP5010 || _TARGET == PPCP5020)
+     # PPC E500 CPUs
+    deep			{ offset = 12; } # 3*4
+%elif (_TARGET_FAMILY == PPC_POWER && defined(_CPU_ADDRESS_SIZE) && _CPU_ADDRESS_SIZE != 8)
+    deep			{ offset = 8; } # 2*4
+%elif (_TARGET_FAMILY == PPC_POWER && defined(_CPU_ADDRESS_SIZE) && _CPU_ADDRESS_SIZE == 8)
+    deep			{ offset = 16; } # 2*8
+%elif (_TARGET_FAMILY == R3000)
+    deep			{ offset = 8; } # 2*4
+%elif (_TARGET_FAMILY == ARM_7)
+    deep			{ offset = 44; } # 11*4
+%elif (_TARGET_FAMILY == M68_68000)
+    deep			{ offset = 12; } # 3*4
+%elif (_TARGET_FAMILY == BF_ADI_532)
+    deep			{ offset = 8; } # 2*4
+%elif (_TARGET_FAMILY == X86_386)
+    deep			{ offset = 8; } # 2*4
+%elif (_TARGET_FAMILY == SH_1)
+    deep			{ offset = 0x38; } # 14*4: 12 Value and 2 ptrs
+%else 
+    deep			{ offset = 8; } # 2*4
+%endif
+}
+

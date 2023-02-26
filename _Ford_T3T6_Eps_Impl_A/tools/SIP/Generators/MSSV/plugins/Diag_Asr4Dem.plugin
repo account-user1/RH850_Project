@@ -1,0 +1,785 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  Diag_Asr4Dem.plugin
+*  Module     :  Elisa
+*  Description:  Entry point of Elisa Core.
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Matthias Heil                 vismhe        Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  01.00.00   2016-08-18    vismhe   ESCAN00089386    FEAT-1734: SafeBSW Step 5
+*  01.00.01   2016-09-13    vismhe   ESCAN00091855    Component version updated to 07.01.xx
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+  reg.SetVersion(0x110101)
+  reg.SetPackageName("Diag_Asr4Dem")
+  reg.SetInputFiles(["Dem_Lcfg.c", "Dem_PBcfg.c"])
+  return reg
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : Elisa_core calls this function to allow the plugin a version check against the BSW sources.
+**********************************************************************************************************************/
+def CheckVersions()
+{
+  AssertDefineEquals("DEM_SW_MAJOR_VERSION", "(11U)")
+  AssertDefineEquals("DEM_SW_MINOR_VERSION", "(1U)")
+  AssertDefineEquals("DEM_SW_PATCH_VERSION", "(1U)")
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the MSSV plugin. Main calls all rule functions to check the configuration.
+*                This function is mandatory.
+* Requirements : N/A
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check QM only features are deactivated", CheckQMDefines)
+  InvokeRule("CM_DEM_M_ENABLE_RUNTIME_CHECKS", CM_DEM_M_ENABLE_RUNTIME_CHECKS)
+  InvokeRule("CM_DEM_M_SIZEOF_STATUSDATA_EVENTSTATUS", CM_DEM_M_SIZEOF_STATUSDATA_EVENTSTATUS)
+  InvokeRule("CM_DEM_M_SIZEOF_STATUSDATA_TRIPCOUNT", CM_DEM_M_SIZEOF_STATUSDATA_TRIPCOUNT)
+  InvokeRule("CM_DEM_M_SIZEOF_EVENTAVAILABLEDATA", CM_DEM_M_SIZEOF_EVENTAVAILABLEDATA)
+  InvokeRule("CM_DEM_M_SIZEOF_ADMINDATA_CYCLECOUNTER", CM_DEM_M_SIZEOF_ADMINDATA_CYCLECOUNTER)
+  InvokeRule("CM_DEM_M_SIZEOF_DEBOUNCEDATA", CM_DEM_M_SIZEOF_DEBOUNCEDATA)
+  InvokeRule("CM_DEM_M_SIZEOF_PRESTORAGEINDEX", CM_DEM_M_SIZEOF_PRESTORAGEINDEX)
+  InvokeRule("CM_DEM_M_SIZEOF_PRESTORAGE", CM_DEM_M_SIZEOF_PRESTORAGE)
+  InvokeRule("CM_DEM_M_SIZEOF_PRIMARYCHRONOLOGY", CM_DEM_M_SIZEOF_PRIMARYCHRONOLOGY)
+  InvokeRule("CM_DEM_M_SIZEOF_SECONDARYCHRONOLOGY", CM_DEM_M_SIZEOF_SECONDARYCHRONOLOGY)
+  InvokeRule("CM_DEM_M_SIZEOF_TIMESERIES_CHRONOLOGY", CM_DEM_M_SIZEOF_TIMESERIES_CHRONOLOGY)
+  InvokeRule("CM_DEM_M_SIZEOF_INDICATORCONTINUOUS", CM_DEM_M_SIZEOF_INDICATORCONTINUOUS)
+  InvokeRule("CM_DEM_M_SIZEOF_INDICATORBLINKING", CM_DEM_M_SIZEOF_INDICATORBLINKING)
+  InvokeRule("CM_DEM_M_SIZEOF_MEMORYSTATUS", CM_DEM_M_SIZEOF_MEMORYSTATUS)
+  InvokeRule("CM_DEM_M_SIZEOF_MEMORYCOMMITNUMBER", CM_DEM_M_SIZEOF_MEMORYCOMMITNUMBER)
+  InvokeRule("CM_DEM_M_SIZEOF_MEMORYDATAPTR", CM_DEM_M_SIZEOF_MEMORYDATAPTR)
+  InvokeRule("CM_DEM_M_MEMORYINDEX_LIMITS", CM_DEM_M_MEMORYINDEX_LIMITS)
+  InvokeRule("CM_DEM_M_SIZEOF_MISSINGTIMESERIESNORMALRATE", CM_DEM_M_SIZEOF_MISSINGTIMESERIESNORMALRATE)
+  InvokeRule("CM_DEM_M_SIZEOF_MISSINGTIMESERIESFASTRATE", CM_DEM_M_SIZEOF_MISSINGTIMESERIESFASTRATE)
+  InvokeRule("CM_DEM_M_TIMESERIESINDEX_LIMITS", CM_DEM_M_TIMESERIESINDEX_LIMITS)
+  InvokeRule("CM_DEM_M_SIZEOF_EVENTQUEUE", CM_DEM_M_SIZEOF_EVENTQUEUE)
+  InvokeRule("CM_DEM_M_SIZEOF_PRESTORED_SNAPSHOT", CM_DEM_M_SIZEOF_PRESTORED_SNAPSHOT)
+  InvokeRule("CM_DEM_M_SIZEOF_MEMORYENTRY_EXTENDEDDATA", CM_DEM_M_SIZEOF_MEMORYENTRY_EXTENDEDDATA)
+  InvokeRule("CM_DEM_M_SIZEOF_MEMORYENTRY_SNAPSHOTDATA", CM_DEM_M_SIZEOF_MEMORYENTRY_SNAPSHOTDATA)
+  InvokeRule("CM_DEM_M_SIZEOF_FAST_RATE_RINGBUFFER", CM_DEM_M_SIZEOF_FAST_RATE_RINGBUFFER)
+  InvokeRule("CM_DEM_M_SIZEOF_NORMAL_RATE_RINGBUFFER", CM_DEM_M_SIZEOF_NORMAL_RATE_RINGBUFFER)
+  InvokeRule("CM_DEM_M_SIZEOF_SERIESENTRY_FAST_SNAPSHOTDATA", CM_DEM_M_SIZEOF_SERIESENTRY_FAST_SNAPSHOTDATA)
+  InvokeRule("CM_DEM_M_SIZEOF_SERIESENTRY_NORMAL_SNAPSHOTDATA", CM_DEM_M_SIZEOF_SERIESENTRY_NORMAL_SNAPSHOTDATA)
+}
+
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : This rule checks the setting of QM-related preprocessor defines.
+*                Typically it checks that QM features are inactive in safety context.
+* Requirements : N/A
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_MIRROR")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_OBDII")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_WWHOBD")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_IUMPR")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_DELAY_WUC_TO_DCY")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_OBDII_FREEZEFRAME_IN_SVC19")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_OBD_HIDE_OCCURRENCES")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_OBD_PTO")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_CYCLE_IGNITION_HYBRID")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_RESTART_DCY_ON_CLEAR_DTC")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PENDING_DISPLACE_FREEZE_FRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PENDING_STORAGE_FREEZE_FRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PENDING_UPDATE_FREEZE_FRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_CONFIRMED_STORAGE_FREEZE_FRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_CONFIRMED_VISIBLE_FREEZE_FRAME")
+  
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PERMANENT")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PERMANENTDTC_ACTIVATION_DISTANCE")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PERMANENT_CONDITION_DCY")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PERMANENT_MANDATORY_PFC")
+  
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID01")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID1C")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID21")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID30")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID31")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID41")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID4D")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID4E")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PID91")
+  
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_VID08")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_VID0B")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_DTR")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_MIDS")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_DLT")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939")
+  AssertDefineIsStdOff("DEM_CFG_HAS_J1939_NODE")
+
+  AssertDefineIsStdOff("DEM_CFG_NOTIFY_J1939DCM")
+  AssertDefineIsStdOff("DEM_CFG_NOTIFY_J1939DTC_STATUS")
+  
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_MIL")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_MIL_GROUP")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_AWL")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_PL")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_RSL")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_CLEAR_DTC")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_DM31")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_EXPANDED_FREEZEFRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_FREEZEFRAME")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_NODES")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_RATIO")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_READINESS1")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_READINESS2")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_READINESS3")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_J1939_READ_DTC")
+
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_AGINGCYCLE_STATE_API")
+  AssertDefineIsStdOff("DEM_CFG_SUPPORT_AGINGCYCLE_COUNTER_API")
+  AssertDefineIsStdOff("DEM_CFG_USE_OHDS")
+
+  if (IsDefined("DEM_CFG_DATA_DAG_EXTENDED_ENV_DATA"))
+  {
+    AssertDefineIsStdOff("DEM_CFG_DATA_DAG_EXTENDED_ENV_DATA")
+  }
+
+  AssertDefineIsStdOn("DEM_DEV_ERROR_DETECT")
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_ENABLE_RUNTIME_CHECKS
+* Parameter    : None
+* Return value : None
+* Description  : Verify DEM_CFG_SAFE_BSW_MODE is enabled
+* Requirements : The switch must be enabled so that run-time checks are active
+**********************************************************************************************************************/
+def CM_DEM_M_ENABLE_RUNTIME_CHECKS()
+{
+  AssertDefineIsStdOn("DEM_CFG_SAFE_BSW_MODE")
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_ADMINDATA_CYCLECOUNTER
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_AdminData.CycleCounter[] is defined for each id in range [0..DEM_CFG_GLOBAL_CYCLE_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_ADMINDATA_CYCLECOUNTER()
+{
+  var Dem_Cfg_AdminData = Struct("Dem_Cfg_AdminData")
+  var Dem_Cfg_AdminData_CycleCounter = Dem_Cfg_AdminData.GetMemberAsArray("CycleCounter")
+  var DEM_CFG_GLOBAL_CYCLE_COUNT = Define("DEM_CFG_GLOBAL_CYCLE_COUNT")
+
+  AssertArraySize(Dem_Cfg_AdminData_CycleCounter, Equal, DEM_CFG_GLOBAL_CYCLE_COUNT)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_DEBOUNCEDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_DebounceData[] is defined for each id in range [0..DEM_CFG_GLOBAL_DEBOUNCE_STORAGE_EVENT_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_DEBOUNCEDATA()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_DEBOUNCE_NV"))
+  {
+    var Dem_Cfg_DebounceData = Array("Dem_Cfg_DebounceData")
+    var DEM_CFG_GLOBAL_DEBOUNCE_STORAGE_EVENT_COUNT = Define("DEM_CFG_GLOBAL_DEBOUNCE_STORAGE_EVENT_COUNT")
+
+    AssertArraySize(Dem_Cfg_DebounceData, Equal, DEM_CFG_GLOBAL_DEBOUNCE_STORAGE_EVENT_COUNT)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_PRESTORAGEINDEX
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_PrestorageIndex[] is defined for each id in range [0..DEM_G_GLOBAL_PRESTORED_EVENT_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_PRESTORAGEINDEX()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_PRESTORED_FF"))
+  {
+    var Dem_Cfg_PrestorageIndex = Array("Dem_Cfg_PrestorageIndex")
+    var DEM_G_GLOBAL_PRESTORED_EVENT_COUNT = Define("DEM_G_GLOBAL_PRESTORED_EVENT_COUNT")
+
+    AssertArraySize(Dem_Cfg_PrestorageIndex, Equal, DEM_G_GLOBAL_PRESTORED_EVENT_COUNT)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_PRESTORAGE
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_Prestorage[] is defined for each id in range [0..DEM_CFG_GLOBAL_PRESTORED_FF_SIZE]
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_PRESTORAGE()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_PRESTORED_FF"))
+  {
+    var Dem_Cfg_Prestorage = Array("Dem_Cfg_Prestorage")
+    var DEM_CFG_GLOBAL_PRESTORED_FF_SIZE = Define("DEM_CFG_GLOBAL_PRESTORED_FF_SIZE")
+
+    AssertArraySize(Dem_Cfg_Prestorage, Equal, DEM_CFG_GLOBAL_PRESTORED_FF_SIZE.GetValueAsNumber() + 1)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_PRIMARYCHRONOLOGY
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_PrimaryChronology[] is defined for each id in range [0..DEM_CFG_GLOBAL_PRIMARY_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_PRIMARYCHRONOLOGY()
+{
+  var Dem_Cfg_PrimaryChronology = Array("Dem_Cfg_PrimaryChronology")
+  var DEM_CFG_GLOBAL_PRIMARY_SIZE = Define("DEM_CFG_GLOBAL_PRIMARY_SIZE")
+
+  AssertArraySize(Dem_Cfg_PrimaryChronology, Equal, DEM_CFG_GLOBAL_PRIMARY_SIZE)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_SECONDARYCHRONOLOGY
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_SecondaryChronology[] is defined for each id in range [0..DEM_CFG_GLOBAL_SECONDARY_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_SECONDARYCHRONOLOGY()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_SECONDARY"))
+  {
+    var Dem_Cfg_SecondaryChronology = Array("Dem_Cfg_SecondaryChronology")
+    var DEM_CFG_GLOBAL_SECONDARY_SIZE = Define("DEM_CFG_GLOBAL_SECONDARY_SIZE")
+
+    AssertArraySize(Dem_Cfg_SecondaryChronology, Equal, DEM_CFG_GLOBAL_SECONDARY_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_TIMESERIES_CHRONOLOGY
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_TimeSeriesChronology[] is defined for each id in range [0..DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_TIMESERIES_CHRONOLOGY()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_FAST") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_FAST") )
+  {
+    var Dem_Cfg_TimeSeriesChronology = Array("Dem_Cfg_TimeSeriesChronology")
+    var DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE = Define("DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE")
+
+    AssertArraySize(Dem_Cfg_TimeSeriesChronology, Equal, DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_INDICATORCONTINUOUS
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_IndicatorContinuous[][] is defined for each id in range
+*                [0..max(1, DEM_G_MAX_NUMBER_J1939_NODES)[,[0..DEM_CFG_GLOBAL_INDICATOR_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_INDICATORCONTINUOUS()
+{
+  if (IsStdOn("DEM_CFG_INDICATORCONTINUOUS"))
+  {
+    var Dem_Cfg_IndicatorContinuous = Array("Dem_Cfg_IndicatorContinuous")
+    var DEM_CFG_GLOBAL_INDICATOR_COUNT = Define("DEM_CFG_GLOBAL_INDICATOR_COUNT")
+    var DEM_G_MAX_NUMBER_J1939_NODES = Define("DEM_G_MAX_NUMBER_J1939_NODES")
+
+    AssertArraySize(Dem_Cfg_IndicatorContinuous, Equal, DEM_CFG_GLOBAL_INDICATOR_COUNT)
+    var InnerArray = Dem_Cfg_IndicatorContinuous.GetElemAsArray(0)
+
+    if (DEM_G_MAX_NUMBER_J1939_NODES.GetValueAsNumber() > 0)
+    {
+      AssertArraySize(InnerArray, Equal, DEM_G_MAX_NUMBER_J1939_NODES)
+    }
+    else
+    {
+      AssertArraySize(InnerArray, Equal, 1)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_INDICATORBLINKING
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_IndicatorBlinking[][] is defined for each id in range
+*                [0..max(1, DEM_G_MAX_NUMBER_J1939_NODES)[, [0..DEM_CFG_GLOBAL_INDICATOR_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_INDICATORBLINKING()
+{
+  if (IsStdOn("DEM_CFG_INDICATORBLINKING"))
+  {
+    var Dem_Cfg_IndicatorBlinking = Array("Dem_Cfg_IndicatorBlinking")
+    var DEM_CFG_GLOBAL_INDICATOR_COUNT = Define("DEM_CFG_GLOBAL_INDICATOR_COUNT")
+    var DEM_G_MAX_NUMBER_J1939_NODES = Define("DEM_G_MAX_NUMBER_J1939_NODES")
+
+    AssertArraySize(Dem_Cfg_IndicatorBlinking, Equal, DEM_CFG_GLOBAL_INDICATOR_COUNT)
+    var InnerArray = Dem_Cfg_IndicatorBlinking.GetElemAsArray(0)
+
+    if (DEM_G_MAX_NUMBER_J1939_NODES.GetValueAsNumber() > 0)
+    {
+      AssertArraySize(InnerArray, Equal, DEM_G_MAX_NUMBER_J1939_NODES)
+    }
+    else
+    {
+      AssertArraySize(InnerArray, Equal, 1)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MEMORYSTATUS
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_MemoryStatus[] is defined for each id in range [0..DEM_CFG_GLOBAL_NV_BLOCK_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MEMORYSTATUS()
+{
+  var Dem_Cfg_MemoryStatus = Array("Dem_Cfg_MemoryStatus")
+  var DEM_CFG_GLOBAL_NV_BLOCK_COUNT = Define("DEM_CFG_GLOBAL_NV_BLOCK_COUNT")
+
+  AssertArraySize(Dem_Cfg_MemoryStatus, Equal, DEM_CFG_GLOBAL_NV_BLOCK_COUNT)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MEMORYCOMMITNUMBER
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_MemoryCommitNumber[] is defined for each id in range [0..DEM_CFG_GLOBAL_NV_BLOCK_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MEMORYCOMMITNUMBER()
+{
+  var Dem_Cfg_MemoryCommitNumber = Array("Dem_Cfg_MemoryCommitNumber")
+  var DEM_CFG_GLOBAL_NV_BLOCK_COUNT = Define("DEM_CFG_GLOBAL_NV_BLOCK_COUNT")
+
+  AssertArraySize(Dem_Cfg_MemoryCommitNumber, Equal, DEM_CFG_GLOBAL_NV_BLOCK_COUNT)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MEMORYDATAPTR
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_MemoryDataPtr[] is defined for each id in range [0..DEM_CFG_GLOBAL_NV_BLOCK_COUNT[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MEMORYDATAPTR()
+{
+  var Dem_Cfg_MemoryDataPtr = Array("Dem_Cfg_MemoryDataPtr")
+  var DEM_CFG_GLOBAL_NV_BLOCK_COUNT = Define("DEM_CFG_GLOBAL_NV_BLOCK_COUNT")
+
+  AssertArraySize(Dem_Cfg_MemoryDataPtr, Equal, DEM_CFG_GLOBAL_NV_BLOCK_COUNT)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_MEMORYINDEX_LIMITS
+* Parameter    : None
+* Return value : None
+* Description  : Verify DEM_CFG_MEMORY_PRIMARY_INDEX + DEM_CFG_GLOBAL_PRIMARY_SIZE + DEM_CFG_GLOBAL_SECONDARY_SIZE <= DEM_CFG_GLOBAL_NV_BLOCK_COUNT
+*                and DEM_CFG_GLOBAL_PRIMARY_SIZE > 0
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_MEMORYINDEX_LIMITS()
+{
+  var DEM_CFG_MEMORY_PRIMARY_INDEX = Define("DEM_CFG_MEMORY_PRIMARY_INDEX")
+  var DEM_CFG_GLOBAL_PRIMARY_SIZE = Define("DEM_CFG_GLOBAL_PRIMARY_SIZE")
+  var DEM_CFG_GLOBAL_SECONDARY_SIZE = Define("DEM_CFG_GLOBAL_SECONDARY_SIZE")
+  var DEM_CFG_GLOBAL_NV_BLOCK_COUNT = Define("DEM_CFG_GLOBAL_NV_BLOCK_COUNT")
+  var TargetCount = DEM_CFG_MEMORY_PRIMARY_INDEX.GetValueAsNumber() + DEM_CFG_GLOBAL_PRIMARY_SIZE.GetValueAsNumber() + DEM_CFG_GLOBAL_SECONDARY_SIZE.GetValueAsNumber()
+
+  Assert(DEM_CFG_GLOBAL_PRIMARY_SIZE, GreaterThan, 0)
+  Assert(TargetCount, LessEqual, DEM_CFG_GLOBAL_NV_BLOCK_COUNT)
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MISSINGTIMESERIESNORMALRATE
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_MissingTimeSeriesNormalRate[] is defined for each id in range [0..DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MISSINGTIMESERIESNORMALRATE()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_NORMAL"))
+  {
+    var Dem_Cfg_MissingTimeSeriesNormalRate = Array("Dem_Cfg_MissingTimeSeriesNormalRate")
+    var DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE = Define("DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE")
+
+    AssertArraySize(Dem_Cfg_MissingTimeSeriesNormalRate, Equal, DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MISSINGTIMESERIESFASTRATE
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_MissingTimeSeriesFastRate[] is defined for each id in range [0..DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MISSINGTIMESERIESFASTRATE()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_FAST") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_FAST"))
+  {
+    var Dem_Cfg_MissingTimeSeriesFastRate = Array("Dem_Cfg_MissingTimeSeriesFastRate")
+    var DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE = Define("DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE")
+
+    AssertArraySize(Dem_Cfg_MissingTimeSeriesFastRate, Equal, DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_TIMESERIESINDEX_LIMITS
+* Parameter    : None
+* Return value : None
+* Description  : Verify DEM_CFG_MEMORY_TIME_SERIES_INDEX + DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE <= DEM_CFG_GLOBAL_NV_BLOCK_COUNT
+*                and DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE > 0
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_TIMESERIESINDEX_LIMITS()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_FAST") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_FAST") )
+  {
+    var DEM_CFG_MEMORY_TIME_SERIES_INDEX = Define("DEM_CFG_MEMORY_TIME_SERIES_INDEX")
+    var DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE = Define("DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE")
+    var DEM_CFG_GLOBAL_NV_BLOCK_COUNT = Define("DEM_CFG_GLOBAL_NV_BLOCK_COUNT")
+    var TargetCount = DEM_CFG_MEMORY_TIME_SERIES_INDEX.GetValueAsNumber() + DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE.GetValueAsNumber()
+
+    Assert(DEM_CFG_GLOBAL_TIMESERIES_SNAPSHOTS_SIZE, GreaterThan, 0)
+    Assert(TargetCount, LessEqual, DEM_CFG_GLOBAL_NV_BLOCK_COUNT)
+ }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_EVENTQUEUE
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_EventQueue[] is defined for each id in range [0..DEM_CFG_BSW_ERROR_BUFFER_SIZE[
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_EVENTQUEUE()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_EVENT_QUEUE"))
+  {
+    var Dem_Cfg_EventQueue = Array("Dem_Cfg_EventQueue")
+    var DEM_CFG_BSW_ERROR_BUFFER_SIZE = Define("DEM_CFG_BSW_ERROR_BUFFER_SIZE")
+
+    AssertArraySize(Dem_Cfg_EventQueue, Equal, DEM_CFG_BSW_ERROR_BUFFER_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_PRESTORED_SNAPSHOT
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_PrestorageEntryType.SnapshotData[] has at least DEM_CFG_MAX_SIZE_SNAPSHOT elements
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_PRESTORED_SNAPSHOT()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_PRESTORED_FF"))
+  {
+    var Dem_Cfg_Prestorage = Array("Dem_Cfg_Prestorage")
+    var DEM_CFG_MAX_SIZE_SNAPSHOT = Define("DEM_CFG_MAX_SIZE_SNAPSHOT")
+
+    var Dem_Cfg_PrestorageEntry = Dem_Cfg_Prestorage.GetElemAsStruct(0)
+    var Dem_Cfg_PrestorageEntry_SnapshotData = Dem_Cfg_PrestorageEntry.GetMemberAsArray("SnapshotData")
+
+    AssertArraySize(Dem_Cfg_PrestorageEntry_SnapshotData, Equal, DEM_CFG_MAX_SIZE_SNAPSHOT)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MEMORYENTRY_EXTENDEDDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_PrimaryEntryType.ExtendedData[] is valid for values in range [0..DEM_CFG_MAX_NUM_EXT_RECORDS[
+*                Verify that Dem_Cfg_PrimaryEntryType.ExtendedData[][] has at least DEM_CFG_MAX_SIZE_EXT_RECORD elements
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MEMORYENTRY_EXTENDEDDATA()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_USER_ERECS"))
+  {
+    var DEM_CFG_MAX_NUM_EXT_RECORDS = Define("DEM_CFG_MAX_NUM_EXT_RECORDS")
+    var DEM_CFG_MAX_SIZE_EXT_RECORD = Define("DEM_CFG_MAX_SIZE_EXT_RECORD")
+    var MemoryEntries := FindVariablesSymbol("Dem_Cfg_(Primary|Secondary)Entry_[[:digit:]]+")
+
+    for (var Index = 0; Index < MemoryEntries.size(); ++Index)
+    {
+      var Dem_MemoryEntry = Struct(MemoryEntries[Index].GetSymbolName())
+      var Dem_MemoryEntry_ExtendedData = Dem_MemoryEntry.GetMemberAsArray("ExtendedData")
+      var InnerArray = Dem_MemoryEntry_ExtendedData.GetElemAsArray(0)
+
+      AssertArraySize(Dem_MemoryEntry_ExtendedData, Equal, DEM_CFG_MAX_NUM_EXT_RECORDS)
+      AssertArraySize(InnerArray, Equal, DEM_CFG_MAX_SIZE_EXT_RECORD)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_MEMORYENTRY_SNAPSHOTDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_PrimaryEntryType.SnapshotData[] is valid for values in range [0..DEM_CFG_MAX_NUM_SNAPSHOTS[
+*                Verify that Dem_Cfg_PrimaryEntryType.SnapshotData[][] has at least DEM_CFG_MAX_SIZE_SNAPSHOT elements
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_MEMORYENTRY_SNAPSHOTDATA()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_SRECS"))
+  {
+    var DEM_CFG_MAX_NUM_SNAPSHOTS = Define("DEM_CFG_MAX_NUM_SNAPSHOTS")
+    var DEM_CFG_MAX_SIZE_SNAPSHOT = Define("DEM_CFG_MAX_SIZE_SNAPSHOT")
+    var MemoryEntries := FindVariablesSymbol("Dem_Cfg_(Primary|Secondary)Entry_[[:digit:]]+")
+
+    for (var Index = 0; Index < MemoryEntries.size(); ++Index)
+    {
+      var Dem_MemoryEntry = Struct(MemoryEntries[Index].GetSymbolName())
+      var Dem_MemoryEntry_SnapshotData = Dem_MemoryEntry.GetMemberAsArray("SnapshotData")
+      var InnerArray = Dem_MemoryEntry_SnapshotData.GetElemAsArray(0)
+
+      AssertArraySize(Dem_MemoryEntry_SnapshotData, Equal, DEM_CFG_MAX_NUM_SNAPSHOTS)
+      AssertArraySize(InnerArray, Equal, DEM_CFG_MAX_SIZE_SNAPSHOT)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_NORMAL_RATE_RINGBUFFER
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_RingBufferNormalRateType.Buffer[] is valid for indices in range [0..max(1, DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES)[ 
+*                Verify that Dem_Cfg_RingBufferNormalRateType.Buffer[][] is valid for indices in range [0..DEM_CFG_TIMESERIES_NORMAL_BUFFER_SIZE[ 
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_NORMAL_RATE_RINGBUFFER()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_NORMAL"))
+  {
+    var DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES = Define("DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES")
+    var DEM_CFG_TIMESERIES_NORMAL_BUFFER_SIZE = Define("DEM_CFG_TIMESERIES_NORMAL_BUFFER_SIZE")
+    var Dem_Cfg_RingBufferNormalRate = Struct("Dem_Cfg_RingBufferNormalRate")
+    var Dem_Cfg_RingBufferNormalRate_Buffer = Dem_Cfg_RingBufferNormalRate.GetMemberAsArray("Buffer")
+    var InnerArray = Dem_Cfg_RingBufferNormalRate_Buffer.GetElemAsArray(0)
+
+    if (DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES.GetValueAsNumber() == 0)
+    {
+      AssertArraySize(Dem_Cfg_RingBufferNormalRate_Buffer, Equal, 1)
+    }
+    else
+    {
+      AssertArraySize(Dem_Cfg_RingBufferNormalRate_Buffer, Equal, DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES)
+    }
+    AssertArraySize(InnerArray, Equal, DEM_CFG_TIMESERIES_NORMAL_BUFFER_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_FAST_RATE_RINGBUFFER
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_RingBufferFastRateType.Buffer[] is valid for indices in range [0..max(1, DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES)[ 
+*                Verify that Dem_Cfg_RingBufferFastRateType.Buffer[][] is valid for indices in range [0..DEM_CFG_TIMESERIES_FAST_BUFFER_SIZE[ 
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_FAST_RATE_RINGBUFFER()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_FAST"))
+  {
+    var DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES = Define("DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES")
+    var DEM_CFG_TIMESERIES_FAST_BUFFER_SIZE = Define("DEM_CFG_TIMESERIES_FAST_BUFFER_SIZE")
+    var Dem_Cfg_RingBufferFastRate = Struct("Dem_Cfg_RingBufferFastRate")
+    var Dem_Cfg_RingBufferFastRate_Buffer = Dem_Cfg_RingBufferFastRate.GetMemberAsArray("Buffer")
+    var InnerArray = Dem_Cfg_RingBufferFastRate_Buffer.GetElemAsArray(0)
+
+    if (DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES.GetValueAsNumber() == 0)
+    {
+      AssertArraySize(Dem_Cfg_RingBufferFastRate_Buffer, Equal, 1)
+    }
+    else
+    {
+      AssertArraySize(Dem_Cfg_RingBufferFastRate_Buffer, Equal, DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES)
+    }
+    AssertArraySize(InnerArray, Equal, DEM_CFG_TIMESERIES_FAST_BUFFER_SIZE)
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_SERIESENTRY_NORMAL_SNAPSHOTDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_TimeSeriesEntryType.SnapshotData_NormalRate[] is valid for values in range [0..(DEM_CFG_TIMESERIES_NORMAL_FUTURE_SAMPLES + DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES)[
+*                Verify that Dem_Cfg_TimeSeriesEntryType.SnapshotData_NormalRate[][] has at least DEM_CFG_MAX_SIZE_SNAPSHOT elements
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_SERIESENTRY_NORMAL_SNAPSHOTDATA()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_NORMAL") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_NORMAL"))
+  {
+    var DEM_CFG_TIMESERIES_NORMAL_FUTURE_SAMPLES = Define("DEM_CFG_TIMESERIES_NORMAL_FUTURE_SAMPLES")
+    var DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES = Define("DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES")
+    var TotalSize = DEM_CFG_TIMESERIES_NORMAL_FUTURE_SAMPLES.GetValueAsNumber() + DEM_CFG_TIMESERIES_NORMAL_PAST_SAMPLES.GetValueAsNumber()
+    var DEM_CFG_MAX_SIZE_SNAPSHOT = Define("DEM_CFG_MAX_SIZE_SNAPSHOT")
+    var TimeSeriesEntries := FindVariablesSymbol("Dem_Cfg_TimeSeriesEntry_[[:digit:]]+")
+
+    for (var Index = 0; Index < TimeSeriesEntries.size(); ++Index)
+    {
+      var Dem_TimeSeriesEntry = Struct(TimeSeriesEntries[Index].GetSymbolName())
+      var Dem_TimeSeriesEntry_NormalRate = Dem_TimeSeriesEntry.GetMemberAsArray("SnapshotData_NormalRate")
+      var InnerArray = Dem_TimeSeriesEntry_NormalRate.GetElemAsArray(0)
+
+      AssertArraySize(Dem_TimeSeriesEntry_NormalRate, Equal, TotalSize)
+      AssertArraySize(InnerArray, Equal, DEM_CFG_MAX_SIZE_SNAPSHOT)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_SERIESENTRY_FAST_SNAPSHOTDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify that Dem_Cfg_TimeSeriesEntryType.SnapshotData_FastRate[] is valid for values in range [0..(DEM_CFG_TIMESERIES_FAST_FUTURE_SAMPLES + DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES)[
+*                Verify that Dem_Cfg_TimeSeriesEntryType.SnapshotData_FastRate[][] has at least DEM_CFG_MAX_SIZE_SNAPSHOT elements
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_SERIESENTRY_FAST_SNAPSHOTDATA()
+{
+  if (IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_PAST_FAST") || IsStdOn("DEM_CFG_SUPPORT_TIME_SERIES_FUTURE_FAST"))
+  {
+    var DEM_CFG_TIMESERIES_FAST_FUTURE_SAMPLES = Define("DEM_CFG_TIMESERIES_FAST_FUTURE_SAMPLES")
+    var DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES = Define("DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES")
+    var TotalSize = DEM_CFG_TIMESERIES_FAST_FUTURE_SAMPLES.GetValueAsNumber() + DEM_CFG_TIMESERIES_FAST_PAST_SAMPLES.GetValueAsNumber()
+    var DEM_CFG_MAX_SIZE_SNAPSHOT = Define("DEM_CFG_MAX_SIZE_SNAPSHOT")
+    var TimeSeriesEntries := FindVariablesSymbol("Dem_Cfg_TimeSeriesEntry_[[:digit:]]+")
+
+    for (var Index = 0; Index < TimeSeriesEntries.size(); ++Index)
+    {
+      var Dem_TimeSeriesEntry = Struct(TimeSeriesEntries[Index].GetSymbolName())
+      var Dem_TimeSeriesEntry_FastRate = Dem_TimeSeriesEntry.GetMemberAsArray("SnapshotData_FastRate")
+      var InnerArray = Dem_TimeSeriesEntry_FastRate.GetElemAsArray(0)
+
+      AssertArraySize(Dem_TimeSeriesEntry_FastRate, Equal, TotalSize)
+      AssertArraySize(InnerArray, Equal, DEM_CFG_MAX_SIZE_SNAPSHOT)
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_STATUSDATA_EVENTSTATUS
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_StatusData.EventStatus[] is defined for each index in the event table.
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_STATUSDATA_EVENTSTATUS()
+{
+  var Dem_Cfg_StatusData = Struct("Dem_Cfg_StatusData")
+  var EventStatus = Dem_Cfg_StatusData.GetMemberAsArray("EventStatus")
+  var EventTables := FindConstSymbol("Dem_Cfg_EventTable.*")
+  Assert(EventTables.size(), GreaterThan, 0)
+  for (var Index = 0; Index < EventTables.size(); ++Index)
+  {
+    var EventTable = Array(EventTables[Index].GetSymbolName())
+    AssertArraySize(EventTable, Equal, EventStatus.GetSize())
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_STATUSDATA_TRIPCOUNT
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_StatusData.TripCount[] is defined for each index in the event table.
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_STATUSDATA_TRIPCOUNT()
+{
+  var Dem_Cfg_StatusData = Struct("Dem_Cfg_StatusData")
+  if (Dem_Cfg_StatusData.HasMember("TripCount"))
+  {
+    var TripCount = Dem_Cfg_StatusData.GetMemberAsArray("TripCount")
+    var EventTables := FindConstSymbol("Dem_Cfg_EventTable.*")
+    Assert(EventTables.size(), GreaterThan, 0)
+    for (var Index = 0; Index < EventTables.size(); ++Index)
+    {
+      var EventTable = Array(EventTables[Index].GetSymbolName())
+      AssertArraySize(EventTable, Equal, TripCount.GetSize())
+    }
+  }
+}
+
+/**********************************************************************************************************************
+* Name         : CM_DEM_M_SIZEOF_EVENTAVAILABLEDATA
+* Parameter    : None
+* Return value : None
+* Description  : Verify Dem_Cfg_EventAvailableData[] is defined for each index in range [0..ceil(size of event table / 8)[ .
+* Requirements :
+**********************************************************************************************************************/
+def CM_DEM_M_SIZEOF_EVENTAVAILABLEDATA()
+{
+  if (SymbolExists("Dem_Cfg_EventAvailableData"))
+  {
+    var Dem_Cfg_EventAvailableData = Array("Dem_Cfg_EventAvailableData")
+    var EventTables := FindConstSymbol("Dem_Cfg_EventTable.*")
+    Assert(EventTables.size(), GreaterThan, 0)
+    for (var Index = 0; Index < EventTables.size(); ++Index)
+    {
+      var EventTable = Array(EventTables[Index].GetSymbolName())
+      var TargetSize = (EventTable.GetSize() + 7) / 8
+      AssertArraySize(Dem_Cfg_EventAvailableData, Equal, TargetSize)
+    }
+  }
+}
+

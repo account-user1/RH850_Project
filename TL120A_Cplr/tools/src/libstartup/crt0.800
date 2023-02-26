@@ -1,0 +1,260 @@
+
+--
+--	V850 Language Independent Library
+--
+--	Copyright (C) 1983-2012 by Green Hills Software Inc.
+--
+--	This program is the property of Green Hills Software, Inc,
+--	its contents are proprietary information and no part of it
+--	is to be disclosed to anyone except employees of Green Hills
+--	Software, Inc., or as agreed in writing signed by the President
+--	of Green Hills Software, Inc.
+--
+-- Initial C runtime startup file
+
+#ifdef EMBEDDED
+
+#include "indsyscl.h"
+#include "ind_800.h"
+
+	.file	"crt0.800"
+	.text
+
+	.weak	___ghsbegin_sdabase
+	.weak   ___ghsbegin_sda_start
+	.weak	___ghsbegin_sda_end
+	.weak	___ghsbegin_robase
+	.weak	__ghs_v800_sda_model
+	.weak   ___ghs_board_memory_init
+	.weak   ___ghs_initial_dotsyscall
+
+	.globl	__start
+#ifdef __V850
+..lxtdaG.__start=:0
+#endif
+__start:
+	.need	_exit
+	.need 	___dotsyscall
+	mov	0, r28		-- Clear FP (to terminate stack traces).
+	CALL(localpic)
+localpic:
+	mov	lp,r29		-- Set up local PIC register r29.
+
+	mov	r8,r9		-- Shift args down by 1.
+	mov	r7,r8
+	mov	r6,r7
+
+	-- Do a trial system call to see if there is a debug server watching us.
+	cmp	1, r0		-- Set carry flag to pretend we got an error
+	mov	0, r10		--	with errno == 0.
+				-- Now, try to invoke system call service.
+	movea	SYSCALL_HELLO,zero,r6	-- "syscall hello" is > 15; use movea.
+	CALL(___ghs_initial_dotsyscall)
+	-- This won't trash the condcode, so do this here before the bnc to noerr
+	-- to save us from having to do it twice later
+	-- Detect which SDA model is in use. If __ghs_v800_sda_model==0(default),
+	-- it is .sdabase, otherwise it is .sda_start/.sda_end.
+	movea	lo(__ghs_v800_sda_model),zero,r5
+	bnc	noerr		-- If no error, skip over register set-up.
+				-- Else set up registers.
+
+	MOV32(___ghsend_stack, sp)
+	mov	0, r7		-- clear argc if debugger is not present
+	mov	0, r8		-- clear argv
+	mov	0, r9		-- clear envp
+	mov	-4,r1		-- Align to 4-byte boundary.
+	and	r1,sp
+
+	-- Use .sdabase by default
+	MOV32(___ghsbegin_sdabase, gp)
+	cmp	zero,r5
+	be	got_sdabase		
+	-- Use .sda_start/.sda_end 
+	MOV32(___ghsbegin_sda_start, gp)
+noerr:
+	cmp	zero,r5
+	be	got_sdabase
+	-- Use .sda_start/.sda_end. Add the linker-time offset of __gp from
+	-- .sda_start to gp
+	MOV32(__gp, r10)
+	MOV32(___ghsbegin_sda_start, r5)
+	sub	r5,r10
+	add	r10,gp
+	jr	gp_done
+got_sdabase:
+	addi	0x4000,gp,gp	-- Point gp 32K past SDA start
+	addi	0x4000,gp,gp
+gp_done:
+	-- initialize RAM if we're running from flash
+	movhi	HI(___ghs_board_memory_init),zero,r6
+	addi	lo(___ghs_board_memory_init),r6,r6	-- Use addi to set zero flag.
+	be memory_init_done
+	CALL(___ghs_board_memory_init)
+memory_init_done:
+
+	-- even under a debug server, we initialize r5
+	MOV32(__tp, r5)
+
+#ifdef __V850
+	movhi	HI(__ep),zero,r1
+	addi	lo(__ep),r1,r1	-- Use addi to set zero flag.
+	je	no_ep		-- If (__ep == 0), don't touch ep
+	mov	r1, ep		-- Else set ep to __ep.
+no_ep:
+#endif
+
+#if defined(__V850E)
+	.weak	___ghs_call_table
+	MOV32(___ghs_call_table-localpic, r10)
+	MOV32(___ghs_rombootcodestart, r11)
+	mov	r29,r12
+	cmp	zero,r11
+	be 	no_crom
+	MOV32(localpic, r12)
+no_crom:
+	add 	r12,r10
+
+	ldsr	r10,CTBP	-- initialize CTBP to beginning of CALLT table
+#endif
+
+	-- Initialize r20-r24 if weak symbols were set by the linker.
+	-- This is used for -r20has255, -r21has65535 and -additional_sda_reg=n
+	.weak	__ghs_v800_r20_initializer  --    = 255 under -r20has255
+	.weak	__ghs_v800_r21_initializer  --  = 65535 under -r21has65535
+	.weak	__ghs_v800_r22_initializer
+	.weak	__ghs_v800_r23_initializer
+	.weak	__ghs_v800_r24_initializer
+	
+	MOV32(__ghs_v800_r20_initializer, r20)
+	MOV32(__ghs_v800_r21_initializer, r21)
+	MOV32(__ghs_v800_r22_initializer, r22)
+	MOV32(__ghs_v800_r23_initializer, r23)
+	MOV32(__ghs_v800_r24_initializer, r24)
+
+#if defined(__RH850)
+	-- Initialize co-processors (FPU and SIMD)
+	stsr	5, r6, 0 	-- r6 = PSW
+	mov	0x00030000, r11
+	or	r11,r6		-- PSW.CU0 = 1 , PSW.CU1 = 1
+	-- Attempt to enable coprocessors.  If they don't exist, this
+	-- should not causes any problemse.  The appropraite bits in PSW will 
+	-- simply remain fixed to zero
+	ldsr	r6, 5, 0 
+
+	-- The linker will set __ghs_rh850_misalign to 1 if this program was
+	-- built with -misalign_pack support, otherwise this symbol will be zero
+	.weak	__ghs_rh850_misalign
+	addi	lo(__ghs_rh850_misalign),zero,r11
+	bz 	nomisalign
+	stsr	5,r6,1
+	-- enable MCTL.MA to tell the processor to support misaligned accesses
+	ori	2,r6,r6
+	ldsr	r6,5,1
+nomisalign:
+#endif
+
+	mov	0,r25		-- Zero out other potential global registers.
+	mov	0,r26
+	movhi	HI(baseptrs-localpic),r29,r6
+	movea	lo(baseptrs-localpic),r6,r6
+	CALL(___ghs_ind_crt0)
+hang:
+	jbr	hang
+	.fsize 0
+	.scall ___dotsyscall
+	.scall ___ghs_ind_crt0
+	.scall ___ghs_board_memory_init
+	.type __start,@function
+	.size __start,.-__start
+
+#if defined(__V850) && __PTR_BIT==16
+-- For V850E 16-bit data pointer mode.  The debug server set up argv and envp
+-- assuming that data pointers are 32-bits, so we need to "compress" the
+-- arrays if pointers are really 16-bits.
+___v850_compress_array:
+	mov     r22, r23
+ca_loop:
+	ld.w    0[r22], r24
+	add     4, r22
+	SYNC
+#ifdef VRAM_FIXES
+	ld.w	0[gp],zero
+#endif
+	st.h    r24, 0[r23]
+	add     2, r23
+	cmp     zero, r24	-- NULL-terminated array; want to copy the NULL
+	bne     ca_loop
+	jmp	[lp]
+	.type ___v850_compress_array,@function
+	.size ___v850_compress_array,.-___v850_compress_array
+#endif
+
+	.weak	___ghsbegin_picbase
+	.weak	___ghsbegin_robase
+	.weak	___ghsbegin_pidbase
+	.weak   ___ghs_rambootcodestart
+	.weak   ___ghs_rambootcodeend
+	.weak   ___ghs_rombootcodestart
+	.weak   ___ghs_rombootcodeend
+	.align	4
+baseptrs:
+	.word   1 		-- baseptrs version number
+	.word	___ghsbegin_picbase
+	.word	___ghsbegin_robase
+	.word	___ghsbegin_pidbase
+	.word	___ghs_rambootcodestart
+	.word	___ghs_rambootcodeend
+	.word	___ghs_rombootcodestart
+	.word	___ghs_rombootcodeend
+	.type baseptrs, @object
+	.size baseptrs, .-baseptrs
+--	.globl	___gh_set_errno
+--	.word	___gh_set_errno	-- drag this in early for ind_call.800
+
+#if defined(__V850) && defined(__COFF)
+-- .scl 2 for a function means "global"
+        .def __start;	.val __start;	.scl 2;		.type 36; 	.endef
+        .def .bf;	.val .;		.scl 101;	.line 2;	.endef
+        .def _.RSM;	.scl 1;		.val 0;		.endef
+        .def _.FRAMES;	.scl 1;		.val 0; 	.endef
+        .def .ef;	.val .; 	.scl 101; 	.line 3;	.endef
+#endif
+
+#if defined(__RH850)
+	.weak   ___ghs_multicore_init_flag
+    -- This function writes a zero to the multicore_init section and then
+    -- waits for it to be non-zero.  All cores except for the one that will
+    -- actual perform the initialization (including clearing BSS and copying
+    -- ROM) will wait until initialization is complete before proceding
+    .global ___ghs_multicore_wait_for_init
+___ghs_multicore_wait_for_init:
+	movhi	HI(___ghs_multicore_init_flag),zero,r10
+	addi	lo(___ghs_multicore_init_flag),r10,r10	-- Use addi to set zero flag.
+	be .mc_wait_done
+	
+	st.w	zero,0[r10]
+
+	-- Now wait until the value changes
+.mc_init_not_done:
+	-- Check the flag to see if initialization is complete.  If you have
+	-- a data cache, you will need to invalidate it before each load
+	ld.w	0[r10],r11
+	cmp	zero,r11
+	be	.mc_init_not_done
+
+.mc_wait_done:
+	jmp	[lp]
+	.fsize 0
+	.scall __leaf__
+	.type ___ghs_multicore_wait_for_init,@function
+	.size ___ghs_multicore_wait_for_init,.-___ghs_multicore_wait_for_init
+
+#endif
+
+#ifdef __COFF
+	.section ".secinfo",.text
+#else
+	.section ".secinfo","a"
+#endif
+
+#endif	/* EMBEDDED */

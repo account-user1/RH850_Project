@@ -1,0 +1,20 @@
+// cassert standard header
+#if defined(__ghs) || defined(__SC3__)
+#if !defined assert
+extern "C" void assert(int);
+#if defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS)
+namespace std { using ::assert; }
+#endif // __NAMESPACES
+#endif
+
+#include <assert.h>
+#else /* !__ghs */
+
+#include <yvals.h>
+#include <assert.h>
+
+#endif /* !__ghs */
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

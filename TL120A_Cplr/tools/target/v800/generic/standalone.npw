@@ -1,0 +1,29 @@
+%include "../standalone.npw"
+exports {
+    GCORES_SUPPORT="1"
+%if !defined(__CPU_NAME__)
+%elif streq(__CPU_NAME__,"v850e3v5", "rh850g3m", "rh850g3h")
+    RH850HT_SUPPORT="1"
+%endif
+}
+
+%if !defined(__CPU_NAME__)
+%elif streq(__CPU_NAME__,"rh850","v850e3", "rh850g3m")
+target_connection {
+    simrh850 {
+	required_args="-cpu=rh850g3m"
+    }
+}
+%elif streq(__CPU_NAME__,"rh850g3h")
+target_connection {
+    simrh850 {
+	required_args="-cpu=rh850g3h"
+    }
+}
+%elif streq(__CPU_NAME__,"rh850g3k")
+target_connection {
+    simrh850 {
+	required_args="-cpu=rh850g3k"
+    }
+}
+%endif

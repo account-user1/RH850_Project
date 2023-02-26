@@ -1,0 +1,87 @@
+# Converted with command: rdf2grd.pl -c -srs -sa 800_default.rdf
+
+##############################################################################
+#
+# This file contains the fundamental description of V800 registers.
+#
+# Take care when modifying this file, especially if you are not familiar with
+# the register description file format.
+#
+##############################################################################
+
+# General information
+general {
+    version = 1
+}
+
+# Register definitions
+register {
+    r0 {address=0; permission="write/none"}
+    zero {access="synonym"; address="r0"; hide=true}
+    r1 {address=1}
+    r2 {address=2}
+    r3 {sn="sp"; address=3}
+    sp {access="synonym"; address="r3"; hide=true}
+    r4 {sn="gp"; address=4}
+    gp {access="synonym"; address="r4"; hide=true}
+    r5 {sn="tp"; address=5}
+    tp {access="synonym"; address="r5"; hide=true}
+    r6 {address=6}
+    r7 {address=7}
+    r8 {address=8}
+    r9 {address=9}
+    r10 {address=10}
+    result {access="synonym"; address="r10"; hide=true}
+    r11 {address=11}
+    r12 {address=12}
+    r13 {address=13}
+    r14 {address=14}
+    r15 {address=15}
+    r16 {address=16}
+    r17 {address=17}
+    r18 {address=18}
+    r19 {address=19}
+    r20 {address=20}
+    r21 {address=21}
+    r22 {address=22}
+    r23 {address=23}
+    r24 {address=24}
+    r25 {address=25}
+    r26 {address=26}
+    r27 {address=27}
+    r28 {address=28}
+    r29 {address=29}
+%if (_TARGET == V810 || _TARGET == V810U || _TARGET == V820 || _TARGET == V830)
+    r30 {address=30}
+%else
+    r30 {sn="ep"; address=30}
+    ep {access="synonym"; address="r30"; hide=true}
+%endif
+    r31 {sn="lp"; address=31}
+    lp {access="synonym"; address="r31"; type="code *"; hide=true}
+    pc {address=32; type="code *"}
+}
+
+# Group definitions
+group {
+    general {
+        sn = "General"
+        ln = "General Registers"
+	top_level_index = 10
+	register += {"r0", "r1", "r2", "r3", "r4", "r5"}
+        register += {"r6", "r7", "r8", "r9", "r10", "r11"}
+        register += {"r12", "r13", "r14", "r15", "r16", "r17"}
+        register += {"r18", "r19", "r20", "r21", "r22", "r23"}
+        register += {"r24", "r25", "r26", "r27", "r28", "r29"}
+        register += {"r30", "r31"}
+    }
+}
+
+%if ((_TARGET == V810) || (_TARGET == V810U) || (_TARGET == V820))
+%include "810_creg.grd"
+%elif ( _TARGET == V830 )
+%include "830_creg.grd"
+%else
+%include "850_creg.grd"
+%endif
+

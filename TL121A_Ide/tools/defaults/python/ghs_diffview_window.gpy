@@ -1,0 +1,209 @@
+import ghs_window;
+#import ghs_constants;
+import ghs_winreg;
+import ghs_misc;
+
+class GHS_DiffViewWindow(ghs_window.GHS_Window):
+    """ Describe MULTI DiffView window information. """
+    #
+    # Initialize object
+    #
+    # GHS: Validated 
+    #
+    def __init__(self, compName="", wn="", wid="0", className="",
+		 regSvcName="", service=""):
+	ghs_window.GHS_Window.__init__(self, compName, wn, wid, className,
+				       regSvcName, service);
+
+
+    #
+    # Open diff.
+    # Opens a window to let you specify files to compare. When you click
+    # Diff button in the window, the current MULTI DifffView window will be
+    # reused to compare the files you specified.
+    #
+    # Return an object of GHS_Window for the window which is for you to choose
+    # two files to diff.
+    #
+    # GHS: Validated 
+    #
+    def OpenDiff(self):
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	if not self.SelectMenu("&File", "&Open Diff..."):
+	    return None;
+	obj = winreg.WaitForWindow(oldWinList,
+				   self.maxSecToWaitForNewWindow);
+	return obj;
+    # Define some aliases for the function.
+    opendiff = OpenDiff;
+    #
+    # Open new diff.
+    # Opens a window to let you specify files to compare. When you click
+    # Diff button in the window, a new MULTI DifffView window will be created
+    # to compare the files you specified
+    #
+    # Return an object of GHS_Window for the window which is for you to choose
+    # two files to diff.
+    #
+    # GHS: Validated 
+    #
+    def OpenNewDiff(self):
+	winreg = ghs_misc.GetGlobal("winreg");
+	if not winreg:
+	    winreg = ghs_winreg.GHS_WindowRegister();
+	    ghs_misc.SetGlobal("winreg", winreg);
+
+	oldWinList = winreg.GetWindowList(False);
+	if not self.SelectMenu("&File", "Open &New Diff..."):
+	    return None;
+	obj = winreg.WaitForWindow(oldWinList,
+				   self.maxSecToWaitForNewWindow);
+	return obj;
+    # Define some aliases for the function.
+    opennewdiff = OpenNewDiff;
+    #
+    # Show the cursor for the current difference in the MULTI DifffView window.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ShowCurrentDiff(self):
+	return self.SelectMenu("&File", "&Show Current Diff");
+    # Define some aliases for the function.
+    showcurrentdiff = ShowCurrentDiff;
+    ShowCurDiff = ShowCurrentDiff;
+    showcurdiff = ShowCurrentDiff;
+
+
+    #
+    # Toggle the flag for ingoring whitespace amount.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleIgnoreWhiteSpaceAmount(self):
+	return self.SelectMenu("&View", "Ignore Whitespace &Amount");
+    # Define some aliases for the function.
+    toggleignorewhitespaceamount = ToggleIgnoreWhiteSpaceAmount;
+    IgnoreSpaceAmount = ToggleIgnoreWhiteSpaceAmount;
+    ignorespaceamount = ToggleIgnoreWhiteSpaceAmount;
+    #
+    # Toggle the flag for ingoring whitespace for C.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleIgnoreCWhiteSpace(self):
+	return self.SelectMenu("&View", "Ignore Whitespace for &C");
+    # Define some aliases for the function.
+    toggleignorecwhitespace = ToggleIgnoreCWhiteSpace;
+    IgnoreCSpace = ToggleIgnoreCWhiteSpace;
+    ignorecspace = ToggleIgnoreCWhiteSpace;
+    #
+    # Toggle the flag for ingoring all whitespace.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleIgnoreAllWhiteSpace(self):
+	return self.SelectMenu("&View", "Ignore All &Whitespace");
+    # Define some aliases for the function.
+    toggleignoreallwhitespace = ToggleIgnoreAllWhiteSpace;
+    IgnoreAllSpace = ToggleIgnoreAllWhiteSpace;
+    ignoreallspace = ToggleIgnoreAllWhiteSpace;
+
+
+    #
+    # Toggle the flag for case sensitivity.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleCaseSensitive(self):
+	return self.SelectMenu("&View", "Case &Insensitive");
+    # Define some aliases for the function.
+    togglecasesensitive = ToggleCaseSensitive;
+    Case = ToggleCaseSensitive;
+    case = ToggleCaseSensitive;
+
+
+    #
+    # Toggle the flag for displaying character changes.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleCharDiff(self):
+	return self.SelectMenu("&View", "Display Changes With&in Lines");
+    # Define some aliases for the function.
+    togglechardiff = ToggleCharDiff;
+    CharDiff = ToggleCharDiff;
+    chardiff = ToggleCharDiff;
+    #
+    # Toggle the flag for displaying word changes.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleWordDiff(self):
+	return self.SelectMenu("&View",
+				"Display Changes &Word by Word Within Lines");
+    # Define some aliases for the function.
+    toggleworddiff = ToggleWordDiff;
+    WordDiff = ToggleWordDiff;
+    worddiff = ToggleWordDiff;
+
+
+    #
+    # Toggle the flag for lining up columns for changes within lines.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleLineupColumns(self):
+	return self.SelectMenu("&View",
+				"&Line up Columns for Changes Within Lines");
+    # Define some aliases for the function.
+    togglelineupcolumns = ToggleLineupColumns;
+    LineupCol = ToggleLineupColumns;
+    lineupcol = ToggleLineupColumns;
+    #
+    # Toggle the flag for ignoring number changes.
+    #
+    # Return True (on success) or False (on failure).
+    #
+    # GHS: Validated 
+    #
+    def ToggleNumber(self):
+	return self.SelectMenu("&View",
+				"Ignore Changes in &Numbers (0-9)");
+    # Define some aliases for the function.
+    togglenumber = ToggleNumber;
+    ToggleNum = ToggleNumber;
+    togglenum = ToggleNumber;
+    NumDiff = ToggleNumber;
+    numdiff = ToggleNumber;
+    
+
+
+    ##########################################################################
+    #
+    # More APIs......
+    #
+    ##########################################################################
+
+# Define some aliases for the class
+#ghs_diffviewwindow = GHS_DiffViewWindow;

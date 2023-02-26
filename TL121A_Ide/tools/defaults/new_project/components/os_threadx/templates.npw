@@ -1,0 +1,141 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.libstartup.disabled = false
+component.libsys.disabled = false
+component.stdlib_startup.disabled = false
+component.stdlib_sys.disabled = false
+
+component_template.ProgramT {
+# For all ThreadX targets, include common threadx files and
+# event analyzer support.
+	attributes {
+	    tf_ProjectName {
+		actions.add {
+		    intermediate {
+%if defined(THREADX_ILL5_FILE)
+			20 += { "defineLocal TX_ILL5_FILE ${THREADX_ILL5_FILE}" }
+%endif
+%if defined(THREADX_DEMO_ILL_FILE)
+			20 += { "defineLocal TX_DEMO_ILL_FILE ${THREADX_DEMO_ILL_FILE}" }
+%endif
+%if notempty(THREADX_DEMO_RESET_FILE)
+			20 += { "defineLocal TX_DEMO_RESET_FILE ${THREADX_DEMO_RESET_FILE}" }
+%endif
+		    }
+		    standard {
+		        # Add special ThreadX files.
+                    	21 += { "python ${__DIR__}/threadx_common.py add_tx_files_to_project" }
+		    }
+		}
+	    }
+
+	    event_analyzer {
+	        name = "EventAnalyzer support"
+	        type = "bool"
+
+	        build_file_setting = "option id:ThreadX_EventLogging"
+%if !streq(__TOOLCHAIN__, "GREEN_HILLS")
+	    	dlg_info {
+		    add {
+		    	cmd_str = "AddThreadXOptions"
+		    	dlg_filelist =  "${__DIR__}/threadx_common.plc" 
+		        dlg_namelist = "OsThreadXNPWDlg"
+		    }
+		    edit {
+		    	cmd_str = "ChangeThreadXOptions"
+		    	dlg_filelist =  "${__DIR__}/threadx_common.plc" 
+		        dlg_namelist = "OsThreadXNPWDlg"
+		    }
+	        }
+
+
+%endif
+	        choices {
+	            off {
+		        default = true
+		        display_name = "-no_event_logging"
+		        actions {
+		            add.standard {
+			        25 += { "python ${__DIR__}/threadx_common.py set_no_eventanalyzer" }
+			    }
+			    edit.standard {
+			        25 += { "python ${__DIR__}/threadx_common.py set_no_eventanalyzer" }
+			    }
+		        }
+		    }
+		    on {
+		        display_name = "-event_logging"
+		        actions {
+		            add.standard {
+			        25 += { "python ${__DIR__}/threadx_common.py set_eventanalyzer" }
+			    }
+			    edit.standard {
+			        25 += { "python ${__DIR__}/threadx_common.py set_eventanalyzer" }
+			    }
+		        }
+		    }
+	        }
+	    }
+	}
+
+
+
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+# For targets using the Green Hills toolchain, add linkmaps and customizable
+# startup, system, and initialization libraries.
+	dlg_info {
+	    add.dlg_cmdlist = {"SetProgramProperties","AddLinkMap"}
+	    edit {
+		cmd_str = "EditProgram"
+		dlg_cmdlist = {"ChangeLinkMap"}
+	    }
+	}
+
+	attributes {
+	    tf_ProjectName {
+	        dlg_info.add.same_object_dialogs = {"AddLinkMap"}
+	        dlg_info.edit.same_object_dialogs = {"AddLinkMap"}
+		actions.add.standard {
+		    # Add the linkmap to the program.
+ 		    101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap" }
+		}
+	    }
+	
+	    linkMap {
+		type = "string"
+		default = "threadx_ram.ld"
+		defaults = { "threadx_ram.ld", "threadx_romrun.ld", "threadx_romcopy.ld" }
+		pre_populate_action = "python ${__SHARED_PY_DIR__}/projects.py populate_linkmap_list"
+		actions {
+		    add.standard {
+			100 += { "defineLocal LINKMAP $linkMap" }
+		    }
+		    edit.standard {
+			100 += { "defineLocal LINKMAP $linkMap" }
+   	 	        101 += { "python ${__SHARED_PY_DIR__}/projects.py insert_linkmap"}
+		    }
+		}
+	        refreshNode = false
+	    	dlg_info {
+		    add {
+		    	cmd_str = "AddLinkMap"
+		    	dlg_filelist =  "${__DIR__}/threadx_common.plc" 
+		        dlg_namelist = "ProjectWizardTxLinkMapLibraries"
+		    }
+		    edit {
+		    	cmd_str = "ChangeLinkMap"
+		    	dlg_filelist =  "${__DIR__}/threadx_common.plc" 
+		        dlg_namelist = "ProjectWizardTxLinkMapLibraries"
+		    }
+	        }
+	    }
+	    
+	    std_libraries {
+	        type = "childlist"
+		tags = "STD_LIBRARY"
+	    }
+	}
+%endif
+}
+
+%endif

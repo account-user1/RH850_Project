@@ -1,0 +1,93 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>/**********************************************************************************************************************
+* Copyright 2017 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   EcuTMeas_Cfg_private.c
+* Module Description: Configurable Parameter definitions for EcuTMeas component
+* Project           : CBD
+* Author            : Shruthi Raghavan
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:           1 %
+* %derived_by:        nz2554 %
+*---------------------------------------------------------------------------------------------------------------------
+* Date         Rev     Author    Change Description                                                            SCR#
+* ---------  ------   ---------   ------------------------------------------------------------------------- ----------
+* 08/07/17  	1      Shruthi   Initial Version                                                            EA4#12359
+* 09/26/17      2      BRB       Updated float32 to fixed point conversion logic                            
+**********************************************************************************************************************/
+
+<#
+    ChangeContext(Xp.ModuleConfAtDefRefTo("EcuTMeas"));
+    float Param_DftTemp           = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasGeneral/DftTemp" ));
+    float Param_FilTau            = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasGeneral/FilTau"  ));
+    int   Param_Ntc0x045FailStep  = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasDiagc/Ntc0x045FailStep" ));
+    int   Param_Ntc0x045PassStep  = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasDiagc/Ntc0x045PassStep" ));
+    float Param_MaxTLim           = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasDiagc/MaxTLim" ));
+    float Param_MinTLim           = ValueOf( Xp.ValueAtDefRefTo("EcuTMeasDiagc/MinTLim" ));
+
+    int   NumXYPairsForSnsrApprox = Count(Xp.ValueAtDefRefTo("EcuTMeasConversionTables/EcuTx"));
+    int   itercnt = 0;
+
+    float FloatToP13Sca = 8192; /*(1<<13)*/
+    float FloatToP7Sca  = 128; /*(1<<7)*/
+    
+    ushort CurrElem_u3p13; 
+    short CurrElem_s8p7;
+    
+    float TmpCurrElem_u16_f32;
+    float TmpCurrElem_s16_f32;
+#>
+
+#include "EcuTMeas_Cfg_private.h"
+
+/* MISRA-C:2004 Rule 19.1  [NXTRDEV 19.1.1 ]: AUTOSAR requires deviation from this rule for Memory Mapping include statements */
+
+#define EcuTMeas_START_SEC_CODE
+#include "EcuTMeas_MemMap.h"
+
+CONST(float32, EcuTMeas_CODE) ECUTMEAS_DFTT_DEGCGRD_F32 = (<#=Param_DftTemp.ToString("F4")#>F);
+CONST(float32, EcuTMeas_CODE) ECUTMEAS_FILTAU_HZ_F32    = (<#=Param_FilTau.ToString("F4")#>F);
+
+CONST(float32, EcuTMeas_CODE) ECUTMEAS_RNGDIAGCMAX_DEGCGRD_F32  = (<#=Param_MaxTLim.ToString("F4")#>F);
+CONST(float32, EcuTMeas_CODE) ECUTMEAS_RNGDIAGCMIN_DEGCGRD_F32  = (<#=Param_MinTLim.ToString("F4")#>F);
+
+CONST(uint16 , EcuTMeas_CODE) ECUTMEAS_NTC0X045FAILSTEP_CNT_U16 = <#=Param_Ntc0x045FailStep.ToString()#>U;
+CONST(uint16 , EcuTMeas_CODE) ECUTMEAS_NTC0X045PASSSTEP_CNT_U16 = <#=Param_Ntc0x045PassStep.ToString()#>U;
+
+CONST(uint16 , EcuTMeas_CODE) ECUTMEAS_ECUTX_VOLT_U3P13[NROFSNSRXYPT_CNT_U08] = {<#
+!LOOP( Xp.ValueAtDefRefTo("EcuTMeas/EcuTMeasConversionTables/EcuTx") ) #><#
+    itercnt++;
+    TmpCurrElem_u16_f32 = ValueOf( "." )*FloatToP13Sca; /*Cannot overflow : Min/Max values limited to DataDict.m limits in bswmd.arxml file */
+    CurrElem_u3p13 = Convert.ToUInt16(Math.Truncate(TmpCurrElem_u16_f32));
+    if(itercnt == NumXYPairsForSnsrApprox)
+    { #> <#=CurrElem_u3p13.ToString()#>U};<#
+    }
+    else
+    { #> <#=CurrElem_u3p13.ToString()#>U,<#
+    }
+#>
+<# !ENDLOOP #>
+
+CONST(sint16 , EcuTMeas_CODE) ECUTMEAS_ECUTY_DEGCGRD_S8P7[NROFSNSRXYPT_CNT_U08] = {<# itercnt = 0;#><#
+!LOOP( Xp.ValueAtDefRefTo("EcuTMeas/EcuTMeasConversionTables/EcuTy") ) #><#
+    itercnt++;
+    TmpCurrElem_s16_f32 = ValueOf( "." )*FloatToP7Sca; /*Cannot overflow : Min/Max values limited to DataDict.m limits in the bswmd.arxml file */
+    CurrElem_s8p7 = Convert.ToInt16(Math.Truncate(TmpCurrElem_s16_f32));
+    if(itercnt == NumXYPairsForSnsrApprox)
+    { #> <#=CurrElem_s8p7.ToString()#>};<#
+    }
+    else
+    { #> <#=CurrElem_s8p7.ToString()#>,<#
+    }
+#>
+<# !ENDLOOP #>
+
+
+#define EcuTMeas_STOP_SEC_CODE
+#include "EcuTMeas_MemMap.h"

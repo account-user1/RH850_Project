@@ -1,0 +1,346 @@
+#
+#                       Builder Rules
+#
+# This file specifies the rules for colorizing output using 'gcolor'
+#
+# The format is:
+#   <type>: <regular expression>
+#   <type> is one of:
+#     none: do not colorize this
+#     previous: colorize this the same as the previous line
+#     next: colorize this the same as the next line
+#     info: colorize this as per information
+#     warning: colorize this as per warnings
+#     error: colorize this as per errors
+#     before: colorize as per before text
+#     after: colorize as per after text
+#   <regular expression> is any standard regular expression
+
+
+# Catch lines already colorized; first char is a literal ESC
+none: \[[[:digit:]]+(;[[:digit:]]+)+m
+
+# Builder
+info: ^Cleaning before starting build\.\.\.$
+info: ^Creating lock file "[[:file:]]+"$
+info: ^Removing lock file: [[:file:]]+$
+info: ^[A-Z][^ \t]+ing [^\t#]+( because .+)?$
+info: ^Generating headers from [[:file:]]+( because .+)?$
+info: ^Linking [[:file:]]+ because -link was specified$
+info: ^Converting project [[:file:]]+( because .+)?$
+info: ^Commands to prepare for [[:file:]]+$
+info: ^Incrementally Linking [[:file:]]+$
+info: ^Updating library [[:file:]]+$
+info: ^Creating single file library [[:file:]]+( because .+)?$
+info: ^Instantiating templates for [[:file:]]+$
+info: ^Translating symbols for [[:file:]]+$
+info: ^Creating single file library "[[:file:]]+"$
+info: ^Commands to process output from [[:file:]]+$
+info: ^Done$
+warning: ^Ignoring ([[:file:]])+ because there is no custom processor command set$
+warning: ^build: Warning: file '([[:file:]]+)' ignored with these options$
+warning: ^[[:file:]]+: Warning: option '-.+' ignored with processor=.+$
+warning: ^Warning: Cannot open library [[:file:]]+$
+warning: ^Warning: Cannot open library [[:file:]]+ or [[:file:]]+$
+warning: ^Warning: Not translating symbols for [[:file:]]+, because '[[:file:]]+' missing from distribution$
+warning: ^Warning: attempt to set unknown variable .+ to value .+$
+warning: ^Warning: attempt to set variable .+ to unknown value .+$
+warning: ^Warning: file "[[:file:]]+" will be deleted from archive "[[:file:]]+"$
+warning: ^Warning: [[:file:]]+: Instead of putting .+ into File Options->Driver Options,$
+warning: ^Warning: No matching extension found in select one project:.*$
+warning: ^Warning: Unable to resolve reference:.*$
+warning: ^"([[:file:]]+)", line ([[:digit:]]+): Warning: .*$
+warning: ^Warning: .*$
+
+error: ^build: Error: Unrecognized switch: .+$
+error: ^build: Error: Illegal use of variable .+ after initialization$
+error: ^Error: .+ not supported with .+$
+error: ^Error: default file "target.def" is missing$
+error: ^Error: cannot find project "[[:file:]]+"( used in project "[[:file:]]+")?$
+error: ^Error: Unrecognized project type ".+" for file ".+"$
+error: ^Error: No type specified for file ".+" in project "[[:file:]]+"$
+error: ^Error: Could not find specifed target \([[:file:]]+\) starting at \([[:file:]]+\)$
+error: ^Error: source file "[[:file:]]+" doesn't exist$
+error: ^Error: Program '[[:file:]]+' does not exist in this distribution$
+error: ^Error: can't figure out how to build "[[:file:]]+" in project "[[:file:]]+"$
+error: ^Error: can't find project "[[:file:]]+"$
+error: ^Error: Binary data in project file "[[:file:]]+"$
+error: ^Error: output file: "[[:file:]]+" is not a valid object file name$
+error: ^Error: Cannot open library [[:file:]]+$
+error: ^Error: command returned error status [[:digit:]]+$
+error: ^Command terminated by "(Segmentation violation|IOT instruction)"(\(core dumped\))? in [[:file:]]+$
+error: ^Error: Cannot touch symbol file '[[:file:]]+'$
+error: ^Error: build failed$
+error: ^(?:build: )?Build terminated$
+error: ^Build target failed\.$
+error: ^Error: Matching extension required but not found in select one project:.*$
+error: ^Error: Unable to resolve reference:.*$
+error: ^Error: Cycle created by references involving.*$
+error: ^Error: .*$
+error: ^.*cannot execute binary file$
+
+# Compiler (Ada)
+warning: ^([[:file:]]+): Warning: line ([[:digit:]]+) col ([[:digit:]]+) .*$
+error: ^([[:file:]]+): Error: line ([[:digit:]]+) col ([[:digit:]]+) .*$
+
+# Compiler (ECOM)
+warning: ^"([[:file:]]*)"(?:, (?:line ([[:digit:]]+)|At end of source))?: warning(?: #[[:digit:]]+-D)?: .*$
+warning: ^"([[:file:]]*)", line ([[:digit:]]+) \(col\. [[:digit:]]+\): warning:
+warning: ^"([[:file:]]+)", line ([[:digit:]]+) - "[[:file:]]+", line [[:digit:]]+: warning:
+warning: ^At end of source: warning: .*$
+warning: ^([[:file:]]+): warning: <libst>: .*$
+# the remarks below are treated as warnings - probably will want to turn them
+# into a new type eventually
+warning: ^"([[:file:]]*)", (?:line ([[:digit:]]+)|At end of source): remark(?: #[[:digit:]]+-D)?: .*$
+warning: ^"([[:file:]]*)", line ([[:digit:]]+) \(col\. [[:digit:]]+\): remark:
+warning: ^"([[:file:]]+)", line ([[:digit:]]+) - "[[:file:]]+", line [[:digit:]]+: remark:
+warning: ^At end of source: remark: .*$
+error: ^"([[:file:]]+)"(?:, (?:line ([[:digit:]]+)(?: \(col\. [[:digit:]]+\))?|At end of source))?:( catastrophic)? error( #[[:digit:]]+(-D)?)?: .*$
+error: ^"([[:file:]]+)", line ([[:digit:]]+):$
+error: ^"([[:file:]]+)", line ([[:digit:]]+) - "[[:file:]]+", line [[:digit:]]+:$
+error: ^"([[:file:]]+)", line ([[:digit:]]+): Internal$
+error: ^At end of source: (catastrophic )?error: .*$
+error: ^Illegal option: .+$
+error: ^C/C\+\+ front end internal command-line error: .*$
+error: ^Write failed: file system full\?$
+error: ^Out of memory in compiler$
+error: ^[[:file:]]+: error: <libst>: .*$
+error: ^[[:file:]]+: fatal: Incompatible inline files removed, please rebuild$
+error: ^\S.*: Internal Compiler Error.*$
+error: ^\S.*: Inconsistency in inliner intermediate code files.*$
+error: ^Fatal error #[[:digit:]]+: .*$
+warning: ^Warning #[[:digit:]]+-D: .*$
+
+# Compiler (source analysis)
+warning: ^"([[:file:]]+)", line ([[:digit:]]+): source analysis warning #[[:digit:]]+: .*$
+error: ^"([[:file:]]+)", line ([[:digit:]]+): source analysis error #[[:digit:]]+: .*$
+warning: ^source analysis warning #[[:digit:]]+: .*$
+error: ^source analysis error #[[:digit:]]+: .*$
+previous: ^ "([[:file:]]+)", line ([[:digit:]]+): .*$
+
+# Compiler (MSVC)
+warning: ^([[:file:]]+)[(]([[:digit:]]+)[)].+: warning C[[:digit:]]+:.*$
+error: ^([[:file:]]+)[(]([[:digit:]]+)[)].+: error C[[:digit:]]+:.*$
+
+# Linker (ELXR)
+error: ^\[elxr\] \(warning\) bad argument types for function: declared as .+ in [[:file:]]+\([[:file:]]+\), called as .+ in [[:file:]]+\([[:file:]]+\)$
+error: ^\[elxr\] \(warning #[[:digit:]]+\) bad argument types for function: declared as .+ in [[:file:]]+\([[:file:]]+\), called as .+ in [[:file:]]+\([[:file:]]+\)$
+error: ^\[elxr\] \(assertion\) .+$
+error: ^elxr: assertion: .+$
+info: ^\[elxr\] \(error\) errors during processing$
+error: ^\[elxr\] \(error\) "([[:file:]]+)", line ([[:digit:]]+): .+$
+error: ^\[elxr\] \(error #[[:digit:]]+\) "([[:file:]]+)", line ([[:digit:]]+): .+$
+error: ^\[elxr\] \(error\) .+$
+error: ^\[elxr\] \(error #[[:digit:]]+\) .+$
+error: ^elxr: fatal: Out of memory.*$
+warning: ^\[elxr\] \(warning\) "([[:file:]]+)", line ([[:digit:]]+): .+$
+warning: ^\[elxr\] \(warning #[[:digit:]]+\) "([[:file:]]+)", line ([[:digit:]]+): .+$
+warning: ^\[elxr\] \(warning\) .+$
+warning: ^\[elxr\] \(warning #[[:digit:]]+\) .+$
+
+# Intex
+#error: ^intex: (*+)rror.*$
+error: ^intex: (?:error:|"([[:file:]]+)": line ([[:digit:]]+): Error:).*$
+previous: ^    intex: (?:error:|"([[:file:]]+)": line ([[:digit:]]+): Error:).*$
+warning: ^intex: (?:warning:|"([[:file:]]+)": line ([[:digit:]]+): Warning:).*$
+
+# Licensing debugging output
+#   execname: yyyy-mm-dd hh:mm:ss: message
+info: ^[[:file:]]+: [[:digit:]]+-[[:digit:]]+-[[:digit:]]+ [[:digit:]]+:[[:digit:]]+:[[:digit:]]+: .*$
+# MULTI 5.0 format
+#   execname: <HexPID> yyyy-mm-dd hh:mm:ss: message
+info: ^[[:file:]]+: <[[:digit:]a-fA-F]+> [[:digit:]]+-[[:digit:]]+-[[:digit:]]+ [[:digit:]]+:[[:digit:]]+:[[:digit:]]+: .*$
+# MULTI 6.0 format
+#   execname: DDMMYY hh:mm:ss: message
+info: ^[[:file:]]+: [[:digit:]]+[[:word:]]+[[:digit:]]+ [[:digit:]]+:[[:digit:]]+:[[:digit:]]+: .*$
+
+# Compiler (ADI)
+warning: ^"([[:file:]]+)", line ([[:digit:]]+): .*: .*warning: .*$
+warning: ^"([[:file:]]+)", line ([[:digit:]]+): .*: .*remark: .*$
+error: ^([[:file:]]+): fatal error:.*$
+
+# Compiler (CCOM/PCOM)
+warning: ^"([[:file:]]+)", line ([[:digit:]]+): warning: .*$
+error: ^"([[:file:]]+)", line ([[:digit:]]+): .*$
+
+# Compiler (GNU)
+warning: ^([[:file:]]+):([[:digit:]]+):[[:digit:]]+: warning: .*$
+warning: ^([[:file:]]+):([[:digit:]]+): warning: .*$
+error: ^([[:file:]]+):([[:digit:]]+):[[:digit:]]+: .*$
+error: ^([[:file:]]+):([[:digit:]]+): .*$
+info: ^([[:file:]]+): At global scope:$
+info: ^([[:file:]]+): In member function .*$
+info: ^([[:file:]]+): In function .*$
+
+# Compiler (MetaWare)
+info: ^-- In .* at "([[:file:]]+)",L([[:digit:]]+).*$
+error: ^E "([[:file:]]+)",L([[:digit:]]+).*$
+warning: ^w "([[:file:]]+)",L([[:digit:]]+).*$
+warning: ^\(.+:\) Unknown option .+ will be passed to the linker\.$
+previous: ^REPAIR\:[[:blank:]].*$
+previous: ^\|[[:blank:]]
+
+# Compiler (FORTRAN)
+error: ^Error on line ([[:digit:]]+) of ([[:file:]]+).*: .*$
+warning: ^Warning on line ([[:digit:]]+) of ([[:file:]]+).*: .*$
+
+# -----------------------------------------------------------------------------
+# Assembler (EASE)
+# -----------------------------------------------------------------------------
+# This line must go first because it would otherwise be caught by the
+# more-generic rules below.
+info: ^\[(?:[[:file:]]+)\] \(error\) errors during processing$
+# --
+# Diagnostic (error or warning), with optional diagnostic number, but mandatory
+# filename and line number.
+error: ^\[[[:file:]]+\] \(error(?: #[[:digit:]]+)?\) ([[:file:]]+) ([[:digit:]]+): .*$
+warning: ^\[[[:file:]]+\] \(warning(?: #[[:digit:]]+)?\) ([[:file:]]+) ([[:digit:]]+): .*$
+# --
+# For command line diagnostics (e.g. bad options) that don't have a filename or
+# line number.
+error: ^\[[[:file:]]+\] \(error(?: #[[:digit:]]+)?\) .*$
+warning: ^\[[[:file:]]+\] \(warning(?: #[[:digit:]]+)?\) .*$
+# --
+previous: ^-*\^$
+error: ^Command-line error.*$
+# -----------------------------------------------------------------------------
+
+# Assembler (MetaWare)
+warning: ^\[(?:[[:file:]]+)\] "([[:file:]]+)",Line ([[:digit:]]+): warning.*$
+warning: ^\[(?:[[:file:]]+)\] "([[:file:]]+)",Line ([[:digit:]]+): \(warning\).*$
+error: ^\[(?:[[:file:]]+)\] "([[:file:]]+)",Line ([[:digit:]]+): .*$
+
+# -----------------------------------------------------------------------------
+# Assembler (as)
+# -----------------------------------------------------------------------------
+# --
+# For command line errors (which don't have file names or line numbers).  The
+# error number is optional.
+#   Example: asppc: error: (#9) diagnostic 13 cannot be demoted to a warning
+#   Example: asppc: error: (#10) 2082 is an invalid diagnostic number
+error: ^[[:file:]]+: error: (?:\(#[[:digit:]]+\) )?.*$
+# --
+error: ^(\S[[:file:]]*) ([[:digit:]]+): error: .+$
+error: ^(\S[[:file:]]*) ([[:digit:]]+): error #([[:digit:]]+): .+$
+warning: ^(\S[[:file:]]*) ([[:digit:]]+): warning: .+$
+warning: ^(\S[[:file:]]*) ([[:digit:]]+): warning #([[:digit:]]+): .+$
+next: ^(\S[[:file:]]*) ([[:digit:]]+): .+$
+error: ^(?:error #[[:digit:]]+:  )?(?:definition of|reference to) blacklisted symbol:.*$
+warning: ^warning(?: #[[:digit:]]+)?:  (?:definition of|reference to) blacklisted symbol:.*$
+# This might need to be an 'error:' instead of 'info:' because 'as' assembler
+# diagnostics are particularly non-uniform when diagnostic numbers are
+# disabled.  The 'next' rule will catch almost everything and sometimes we need
+# the 'next' lines to bind directly to the "errors detected: X" line at the end
+#of the output.
+error: ^errors detected: [[:digit:]]+$
+# -----------------------------------------------------------------------------
+
+# Assembler (Linux Native)
+error: ^([[:file:]]+): Assembler messages:$
+error: ^([[:file:]]+): No space left on device$
+error: ^([[:file:]]+):([[:digit:]]+): Error: bad register name \('.+'\)$
+error: ^([[:file:]]+):([[:digit:]]+): FATAL: Can't close [[:file:]]+$
+error: ^([[:file:]]+):([[:digit:]]+): FATAL: Can't write [[:file:]]+: No space left on device$
+
+# Archiver (ax)
+error: ^ax: fatal: Unable to open ([[:file:]]+) for input:  : No such file or directory$
+error: ^ax: fatal: Error copying ('[[:file:]]+') to archive '[[:file:]]+' : No space left on device$
+error: ^ax: fatal: Error reading from ('[[:file:]]+')$
+error: ^ax: fatal: File '[[:file:]]+' is not an archive$
+error: ^ax: error: Offset after writing toc is -?[[:digit:]]+, not [[:digit:]]+$
+error: ^ax: error: Multiple symbols named.*$
+
+# Archiver (Linux Native)
+error: ^[[:file:]]+: [[:file:]]+: No such file or directory$
+error: ^/usr/bin/ar: [[:file:]]+: No space left on device$
+
+# gnm
+error: ^gnm: fatal: [[:file:]]+: unknown file format$
+error: ^gnm: fatal: unable to open input file '[[:file:]]+'$
+error: ^gnm: fatal: Write error on stdout$
+
+# Prelinker
+info: ^C\+\+ prelinker: .+ (assigned to|adopted by) file [[:file:]]+$
+info: ^C\+\+ prelinker: .+ no longer needed in [[:file:]]+$
+warning: ^C\+\+ prelinker: warning: one instance object file is missing \(primary file, instance file\): \([[:file:]]+, [[:file:]]+\)$
+error: ^C\+\+ prelinker: error: .*$
+error: ^Error: C\+\+ prelink operation failed\.$
+error: ^library "[[:file:]]+" does not exist in the specified library directories$
+error: ^C\+\+ prelinker: error: nm returned a nonzero error status$
+error: ^nm command: '.+'$
+error: ^sh: [[:file:]]+: No such file or directory$
+error: ^C\+\+ prelinker: warning: no output produced by nm -- possible configuration problem$
+
+# Linker (Linux Native)
+# this one is used for both warnings and errors:
+warning: ^[[:file:]]+: In function `.+':$
+warning: ^[[:file:]]+\(.+\): the `gets' function is dangerous and should not be used\.$
+warning: ^[[:file:]]+\(.+\): the use of `(tmpnam|tempnam|mktemp)' is dangerous, better use `mkstemp'$
+warning: ^[[:file:]]+\(.+\): warning: getcontext is not implemented and will always fail$
+warning: ^[[:file:]]+: Warning: size of symbol `.+' changed from [[:digit:]]+ to [[:digit:]]+ in [[:file:]]+$
+error: ^[[:file:]]+\(.+\): undefined reference to `.+'$
+error: ^[[:file:]]+\(.+\): more undefined references to `.+' follow$
+error: ^[[:file:]]+\(.+\): multiple definition of `.+'$
+error: ^[[:file:]]+\(.+\): first defined here$
+error: ^ld: fatal: Symbol referencing errors\. No output written to [[:file:]]+$
+error: ^/usr/bin/ld: cannot open -l[[:file:]]+: No such file or directory$
+error: ^[[:file:]]+: cannot open -l[[:file:]]+: No such file or directory$
+error: ^[[:file:]]+: file not recognized: File truncated$
+error: ^/usr/bin/ld: final link failed: No space left on device$
+error: ^[[:file:]]+: final link failed: No space left on device$
+error: ^[[:file:]]+: cannot find -l[[:file:]]+$
+
+# Linker (Solaris Native)
+warning: ^ld: warning: Symbol referencing errors$
+warning: ^ld: warning: file [[:file:]]+: attempted multiple inclusion of file$
+warning: ^ld: warning: option -zdefs/nodefs appears more than once, first setting taken$
+error: ^Undefined			first referenced$
+error: ^ld: fatal: library -l[[:file:]]+: not found$
+error: ^ld: fatal: symbol `.+' is multiply defined:$
+error: ^ld: fatal: File processing errors. No output written to [[:file:]]+$
+error: ^ld: fatal: file [[:file:]]+: cannot mmap file: Resource temporarily unavailable$
+
+# Linker (Metaware)
+error: ^\[ldac\] Can't open file [[:file:]]+$
+error: ^\[ldac\] (?:Unrecognized|Invalid) command-line option: .+$
+error: ^\[ldac\] ".+" is multiply defined in .+ and .+$
+error: ^\[ldac\] Library not found: .+$
+warning: ^\[ldac\] \(Warning\) .+$
+previous: ^Link with -Xtimer0 or -Xtimer1 if a timer is desired$
+
+# Cxxmunch
+error: ^cxxmunch: invalid input format$
+
+# Dblink
+warning: ^dblink: WARNING: [[:digit:]]+ problems were encountered while processing debug information, see "([[:file:]]+)" for details.$
+warning: ^dblink: WARNING: .*$
+warning: ^.+"\. Source level debugging will not be available for this object\.$
+warning: ^Use the "-warn_dbo_not_found_max=" option to control this threshold\.$
+error: ^dblink: ERROR: .*$
+
+# gsrcanalyzer
+warning: ^ThreadSafe warning: .*$
+
+# Licensing errors
+error: ^[[:file:]]+: error: license request failed.*$
+error: ^[[:file:]]+: error: Unable to get license for.*$
+
+# Licensing warnings
+warning: ^[[:file:]]+: warning: secondary license obtained.*$
+
+# dwarf2dbo
+warning: ^dwarf2dbo: WARNING: .*$
+error: ^dwarf2dbo: ERROR: .*$
+
+# Catch warnings and errors from the driver and from ECOM.
+warning: ^[[:file:]]+: Warning: .*$
+error: ^[[:file:]]+: Error: .*$
+
+# gcores
+warning: ^gcores: warning:.*$
+error: ^gcores: fatal:.*$
+error: ^gcores: error:.*$
+
+# this should remain at the end of the file.
+# Catch continued errors/warnings
+previous: ^[[:blank:]]

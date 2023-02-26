@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+============================================================================
+   Copyright (c) 2009 by Vector Informatik GmbH.    All rights reserved.
+
+   This software is copyright protected and proprietary to Vector Informatik GmbH.
+   Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+   All other rights remain with Vector Informatik GmbH.
+
+============================================================================
+
+    This file is needed for internal use by DaVinci Configurator.
+    Please do not modify this file, otherwise the software may behave in unexpected way.
+
+============================================================================
+-->
+<ViewScheme GroupVersion="x.x.x" CS="2782134322">
+	<Frame Name="PageFolder">
+		<Panel Name="Top" Height="50">
+			<Control Name="_Board_General_Image" Index="10" Type="Image" Left="10" Line="1.0"/>
+			<Control Name="_Board_General_Label" Label="These parameters describe %CONTROLLER% settings and are used for data validation or generation." Type="Label" Left="30" Line="0.5" Width="500"/>
+		</Panel>
+		<Panel Name="Mid">
+			<Page Name="Hardware">
+				<Frame Name="4Panel">
+					<Panel Name="Right" Label="Board Settings">
+						<Control Data="_BOARD_OSCILLATOR" Type="FloatEdit" LabelLeft="10" Left="150" Line="1.3" Width="80" Label="Oscillator Frequency (MHz)"/>
+<!--
+-->
+					</Panel>
+				</Frame>
+			</Page>
+			<Page Name="OS Services">
+				<Frame Name="4Panel">
+					<Panel Name="Right" Label="Critical Section Handling">
+						<Frame Name="4Panel">
+							<Panel Name="Top" Height="30">
+								<Control Data="_BOARD_USE_SCHM" Type="CheckBox" Left="10" Line="0.2" Width="200" Label="Use BSW Scheduler (SchM)">
+									<Affect Name="FunctionSet_Name" OnState="Off"/>
+									<Affect Name="FunctionSet_Suspend" OnState="Off"/>
+									<Affect Name="FunctionSet_Restore" OnState="Off"/>
+									<Affect Name="FunctionSet_Includes" OnState="Off"/>
+									<Affect Name="ISR_Root_Label1a"/>
+									<Affect Name="ISR_Root_Label1b"/>
+									<Affect Name="ISR_Root_Label2a"/>
+									<Affect Name="ISR_Root_Label2b"/>
+								</Control>
+							</Panel>
+							<Panel Name="Right">
+        				<Frame Name="Tree">
+          				<!-- Tree panel -->
+          				<Panel Name="Tree" Group="_Board" Width="200">
+            				<PopupMenu>
+              				<MenuItem Name="Append" Label="Append %ContainerName%"/>
+              				<MenuItem Name="Delete" Label="Delete %ContainerName%"/>
+              				<MenuItem Name="-"/>
+              				<MenuItem Name="Rename" Label="Rename %ContainerName%"/>
+            				</PopupMenu>
+            				<Node Name="InterruptFunctionality" Image="0" Page="RootPage">
+                  		<Node ContainerClass="InterruptFunctionSet" ContainerType="ctSpecial" Image="11" Page="FunctionSet">
+												<ActionList Control="FunctionSet_Name" Type="UpdateView"/>
+											</Node>
+            				</Node>
+          				</Panel>
+          				<!-- Tree-content panel -->
+          				<Panel Name="Mid">
+            				<Page Name="RootPage">
+              				<Frame Name="4Panel">
+                				<Panel Name="Right">
+													<Control Name="ISR_Root_Image1"  Type="Image" Index="3" Left="5" Line="0.9"/>
+
+													<Control Name="ISR_Root_Label1a"  Type="Label" Label="Please select InterruptFunctionSet" Left="35" Line="0.4" Width="250">
+														<Visible>
+															<Condition Data="%_BOARD_USE_SCHM%" Op="=" Value="False"/>
+														</Visible>
+													</Control>
+													<Control Name="ISR_Root_Label1b"  Type="Label" Label="to modify according settings"       Left="35" Line="1" Width="250">
+														<Visible>
+															<Condition Data="%_BOARD_USE_SCHM%" Op="=" Value="False"/>
+														</Visible>
+													</Control>
+													<Control Name="ISR_Root_Label2a"  Type="Label" Label="Handling of InterruptFunctionality" Left="35" Line="0.4" Width="250">
+														<Visible>
+															<Condition Data="%_BOARD_USE_SCHM%" Op="!=" Value="False"/>
+														</Visible>
+													</Control>
+													<Control Name="ISR_Root_Label2b"  Type="Label" Label="is done by Schedule Manager"        Left="35" Line="1" Width="250">
+														<Visible>
+															<Condition Data="%_BOARD_USE_SCHM%" Op="!=" Value="False"/>
+														</Visible>
+													</Control>
+                				</Panel>
+              				</Frame>
+            				</Page>
+            				<Page Name="FunctionSet">
+              				<Frame Name="4Panel">
+                				<Panel Name="Right">
+													<Control Name="FunctionSet_Name"     Data="_BOARD_INTERRUPTFUNCTIONSET_CLASSNAME" Type="Edit" LabelLeft="15" Left="180" Line="0.5" Width="150" Label="Settings for InterruptFunctionSet" ReadOnly="Yes"/>
+													<Control Name="FunctionSet_Suspend"  Data="_BOARD_GLOBAL_SUSPEND" Type="Edit" LabelLeft="15" Left="180" Line="1.5" Width="150" Label="Global Suspend Function"/>
+													<Control Name="FunctionSet_Restore"  Data="_BOARD_GLOBAL_RESTORE" Type="Edit" LabelLeft="15" Left="180" Line="2.5" Width="150" Label="Global Restore Function"/>
+													<Control Name="FunctionSet_Includes" Data="_BOARD_INCLUDE_FILE"   Type="List" Left="15" Line="3.5" Width="200" Label="Include File(s)"/>
+                				</Panel>
+              				</Frame>
+            				</Page>
+          				</Panel>
+								</Frame>
+							</Panel>
+						</Frame>
+					</Panel>
+					<Panel Name="Bottom" Label="Default ISR Settings" Height="124">
+						<Control Data="_BOARD_GLOBAL_RE_ENABLE_CAT_1" Type="Edit" LabelLeft="10" Left="150" Line="1.0" Width="453" Label="Global ReEnable (CAT1)"/>
+						<Control Data="_BOARD_GLOBAL_RE_ENABLE_CAT_2" Type="Edit" LabelLeft="10" Left="150" Line="2.0" Width="453" Label="Global ReEnable (CAT2)"/>
+						<Control Data="_BOARD_INCLUDE_ISR_LIST"   Type="FileEdit" LabelLeft="10" Left="200" Line="3.5" Width="380" Label="Include File for ISR-Macro"/>
+					</Panel>
+				</Frame>
+			</Page>
+			<Page Name="Compiler and Platform Settings">
+				<Frame Name="4Panel">
+					<Panel Name="Left" Label="PostBuild Settings" Width="355">
+						<Control Data="_BOARD_WIDTH_OF_POINTER"               Type="MultiEdit"    LabelLeft="10" Left="190" Line="1.0"  Width="80"  Label="Width of Pointer"/>
+						<Control Data="_BOARD_STRUCT_ALIGNMENT"               Type="MultiEdit"    LabelLeft="10" Left="190" Line="2.0"  Width="80"  Label="Alignment of Struct"/>
+						<Control Data="_BOARD_ARRAY_ALIGNMENT"                Type="MultiEdit"    LabelLeft="10" Left="190" Line="3.0"  Width="80"  Label="Alignment of Array"/>
+						<Control Data="_BOARD_STRUCT_IN_ARRAY_ALIGNMENT"      Type="MultiEdit"    LabelLeft="10" Left="190" Line="4.0"  Width="80"  Label="Alignment of Struct in Array"/>
+						<Control Data="_BOARD_ALIGNMENT_FILL_PATTERN"         Type="MultiEdit"    LabelLeft="10" Left="190" Line="5.0"  Width="80"  Label="Alignment Fill Pattern"/>
+						<Control Data="_BOARD_SIZE_OF_PDU_ID_TYPE"            Type="MultiEdit"    LabelLeft="10" Left="190" Line="6.0"  Width="80"  Label="Size of PduIdType"/>
+						<Control Data="_BOARD_SIZE_OF_PDU_LENGTH_TYPE"        Type="MultiEdit"    LabelLeft="10" Left="190" Line="7.0"  Width="80"  Label="Size of PduLengthType"/>
+						<Control Data="_BOARD_SIZE_OF_ENUM"                   Type="MultiEdit"    LabelLeft="10" Left="190" Line="8.0"  Width="80"  Label="Size of Enum"/>
+						<Control Data="_BOARD_SIZE_OF_ID_TYPE"                Type="MultiEdit"    LabelLeft="10" Left="190" Line="9.0"  Width="80"  Label="Size of IdType"/>
+						<Control Data="_BOARD_SIZE_OF_BOOLEAN"                Type="MultiEdit"    LabelLeft="10" Left="190" Line="10.0" Width="80"  Label="Size of Boolean"/>
+						<Control Data="_BOARD_MIN_OBJECT_SIZE"                Type="MultiEdit"    LabelLeft="10" Left="190" Line="11.0" Width="80"  Label="Minimum Object Size"/>
+						<Control Data="_BOARD_GLOBAL_G_PAGE_BEHAVIOUR"        Type="MultiEdit"    LabelLeft="10" Left="190" Line="12.0" Width="80"  Label="Global GPage Behaviour"/>
+						<Control Data="_BOARD_USE_EXTENDED_ASR_VERSION_CHECK" Type="MultiEdit"    LabelLeft="10" Left="190" Line="13.0" Width="80"  Label="Use Extended ASR Version Check"/>
+						<Control Data="_BOARD_PC_AND_LTCRC_CHECK"             Type="MultiEdit"    LabelLeft="10" Left="190" Line="14.0" Width="80"  Label="PC and LT CRC Check"/>
+						<Control Data="_BOARD_CPU_TYPE"                       Type="MultiEdit"    LabelLeft="10" Left="190" Line="15.0" Width="80"  Label="CPU Type"/>
+						<Control Data="_BOARD_BYTE_ORDER"                     Type="MultiEdit"    LabelLeft="10" Left="190" Line="16.0" Width="80"  Label="Byte Order"/>
+						<Control Data="_BOARD_BIT_ORDER"                      Type="MultiEdit"    LabelLeft="10" Left="190" Line="17.0" Width="80"  Label="Bit Order"/>
+					</Panel>
+					<Panel Name="Right" Label="Optimization">
+						<Control Data="_BOARD_ATOMIC_BIT_ACCESS_IN_BITFIELD"   Type="MultiEdit"    LabelLeft="10" Left="190" Line="1.0"  Width="80"  Label="Enable Atomic Bit Access in Bitfields">
+							<Affect Name="SilentCheck" OnState="True"/>
+						</Control>
+						<Control Data="_BOARD_SILENT_CHECK" Name="SilentCheck" Type="MultiEdit"    LabelLeft="27" Left="190" Line="2.0"  Width="80"  Label="Silent Check"/>
+						<Control Data="_BOARD_ATOMIC_VARIABLE_ACCESS"          Type="MultiEdit"    LabelLeft="10" Left="190" Line="3.0"  Width="80"  Label="Bit size for atomic read/write access"/>
+						<Control Data="_BOARD_DUMMY_FUNCTION"                  Type="Checkbox"                    Left="10"  Line="4.0"  Width="180" Label="Use Dummy Functions"/>
+						<Control Data="_BOARD_DUMMY_STATEMENT"                 Type="Checkbox"                    Left="10"  Line="5.0"  Width="180" Label="Use Dummy Statements"/>
+					</Panel>
+					<Panel Name="Bottom" Label="Important Note">
+						<Control Name="_Board_Communication_Image" Index="2" Type="Image" Left="10" Line="1.5"/>
+						<Control Name="_Board_Communication_Label" Label="The PostBuild Settings only influence PostBuild modules. For PreCompile modules these settings can be ignored." Type="Label" Left="30" Line="1.0" Width="600"/>
+					</Panel>
+				</Frame>
+			</Page>
+			<Page Name="System Information">
+				<Frame Name="4Panel">
+					<Panel Name="Left" Label="SystemExtract" Width="250">
+						<Control Data="_BOARD_SYSTEM_VERSION"                 Type="Edit"         LabelLeft="10" Left="150" Line="1.0"  Width="80"  Label="systemVersion"/>
+						<Control Data="_BOARD_ECU_EXTRACT_VERSION"            Type="Edit"         LabelLeft="10" Left="150" Line="2.0"  Width="80"  Label="ecuExtractVersion"/>
+					</Panel>
+					<Panel Name="Right" Label="General">
+						<Control Data="_BOARD_OS_TYPE"                        Type="DropDownList" LabelLeft="10" Left="150" Line="1.0"  Width="80"  Label="Os Type"/>
+						<Control Data="_BOARD_CONDITIONAL_GENERATING"         Type="Checkbox"                    Left="10"  Line="2.0"  Width="150" Label="Generate only changed files"/>
+					</Panel>
+				</Frame>
+			</Page>
+		</Panel>
+	</Frame>
+</ViewScheme>

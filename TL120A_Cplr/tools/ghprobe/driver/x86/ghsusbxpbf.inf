@@ -1,0 +1,65 @@
+;
+;
+; USB Driver Installation inf for the Green Hills 
+; Microprocessor Debug Devices
+;
+; (c) Copyright 2003-2008 Green Hills Software, Inc
+;
+
+[Version]
+Signature="$Windows NT$"
+Class=USB
+ClassGUID={36FC9E60-C465-11CF-8056-444553540000}
+provider=%MfgName%
+DriverVer=08/14/2008,2.1
+
+[SourceDisksNames]
+1=%GHSDISK%,,,
+
+[SourceDisksFiles]
+ghsusbxpbf.sys = 1
+
+[Manufacturer]
+%MfgName%=GreenHills
+
+[GreenHills]
+%GHSPROBE%=ghsusbDev, USB\VID_0E1E&PID_0101, USB\VID_0E1E&PID_0201, USB\VID_0E1E&PID_0401, USB\VID_0E1E&PID_0301
+
+[DestinationDirs]
+ghsusb.Files.Ext = 12
+
+; *****************************************************************************
+[ghsusbDev.NT]
+CopyFiles=ghsusb.Files.Ext
+AddReg=ghsusb.AddReg
+
+[DefaultInstall]
+CopyFiles=ghsusb.Files.Ext
+AddReg=ghsusb.AddReg
+Copyinf=ghsusbxpbf.inf
+
+[ghsusbDev.NT.Services]
+Addservice=ghsusb, 0x00000002, ghsusb.AddService
+
+[ghsusb.AddService]
+DisplayName    = %ghsusb.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\ghsusbxpbf.sys
+LoadOrderGroup = Base
+
+[ghsusb.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,ghsusbxpbf.sys
+
+[ghsusb.Files.Ext]
+ghsusbxpbf.sys
+
+; *****************************************************************************
+[Strings]
+MfgName="Green Hills Software, Inc"
+GHSPROBE="Green Hills Microprocessor Debug Device (bugfix driver)"
+GHSDISK="GREEN_HILLS"
+
+ghsusb.SvcDesc="USB Driver for Green Hills Microprocessor Debug Devices"

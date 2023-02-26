@@ -1,0 +1,181 @@
+// OSA Configuration File for ThreadX
+// Copyright (C) 2000-2001 Green Hills Software, Inc.
+
+// Configuration Settings Section
+// ==============================
+OSA_CONFIG:OSA_TASK_ALIAS:Thread
+OSA_CONFIG:OSA_MULTI_MENU:"ThreadX Explorer..."
+OSA_CONFIG:OSA_EXPLORER_TITLE:"ThreadX Kernel Object Information (MULTI target ID 0x%x)"
+//OSA_CONFIG:OSA_DEBUGGING_LOGFILE:"threadx.log"
+
+// Object Type List Section
+// ========================
+
+// Include threads, plus a number of other ThreadX components.
+// All objects except threads are hidden by default.
+OSA_OBJECT_TYPE:OSA_TASK:0:OSA_GLOBAL
+OSA_OBJECT_TYPE:"Timer":1:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Semaphore":2:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Queue":3:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Event Flags Group":4:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Block Pool":5:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Byte Pool":6:OSA_NOT_GLOBAL
+OSA_OBJECT_TYPE:"Mutex":7:OSA_NOT_GLOBAL
+
+// Task Window Format Section
+// ==========================
+
+// Column Line Format:  OSA_TASK:OSA_ATTRIBUTE_COLUMN:attribute name:attribute id:display:type
+//   Menu Line Format:  OSA_TASK:OSA_MENU:menu entry:menu command
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_NAME=Name:0:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_ID="Thread ID":1:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Run Count":2:OSA_NO_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:OSA_STATUS=State:3:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Suspended On":6:OSA_NO_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Priority:4:OSA_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:Stack Use:5:OSA_SHOW:string
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Excluded Cores":7:OSA_NO_SHOW:long
+OSA_TASK:OSA_ATTRIBUTE_COLUMN:"Core":8:OSA_NO_SHOW:long
+OSA_TASK:OSA_MENU:"Thread Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_THREAD_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Thread ID is invalid.\n";}
+OSA_TASK:OSA_MENU:"Thread Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_THREAD_STRUCT; \
+    substitute view (struct TX_THREAD_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Thread_Information TX_THREAD_STRUCT; } \
+    else {print "Thread ID is invalid.\n";}
+OSA_TASK:OSA_MENU:"Debug Thread":if ($_OSA_OBJ_ID) \
+    {osatask $_OSA_OBJ_ID} \
+    else {print "Thread ID is invalid.\n";}
+
+
+// Timer Format Section
+// ==========================
+Timer:OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+Timer:OSA_ATTRIBUTE_COLUMN:OSA_ID="Timer ID":1:OSA_SHOW:string
+Timer:OSA_ATTRIBUTE_COLUMN:"Ticks":2:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:"Initial Ticks":3:OSA_SHOW:long
+Timer:OSA_ATTRIBUTE_COLUMN:Callback:4:OSA_SHOW:string
+Timer:OSA_MENU:"Timer Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_TIMER_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Timer ID is invalid.\n";}
+Timer:OSA_MENU:Timer Control Block:if ($_OSA_OBJ_ID) \
+    {obr -delete TX_TIMER_STRUCT; \
+    substitute view (struct TX_TIMER_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr App_Timer_Info TX_TIMER_STRUCT} \
+    else {print "Timer ID is invalid.\n";}
+Timer:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_TIMER_STRUCT *)$_OSA_OBJ_ID;}
+
+// Semaphore Format Section
+// ==========================
+Semaphore:OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+Semaphore:OSA_ATTRIBUTE_COLUMN:OSA_ID="Semaphore ID":1:OSA_SHOW:string
+Semaphore:OSA_ATTRIBUTE_COLUMN:Count:2:OSA_SHOW:long
+Semaphore:OSA_ATTRIBUTE_COLUMN:"Suspended Threads":3:OSA_SHOW:long
+Semaphore:OSA_MENU:"Semaphore Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_SEMAPHORE_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_MENU:"Semaphore Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_SEMAPHORE_STRUCT; \
+    substitute view (struct TX_SEMAPHORE_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Semaphore_Information TX_SEMAPHORE_STRUCT} \
+    else {print "Semaphore ID is invalid.\n";}
+Semaphore:OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_SEMAPHORE_STRUCT *)$_OSA_OBJ_ID;}
+//Semaphore:OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"
+
+
+// Queue Format Section
+// ==========================
+"Queue":OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+"Queue":OSA_ATTRIBUTE_COLUMN:OSA_ID="Queue ID":1:OSA_SHOW:string
+"Queue":OSA_ATTRIBUTE_COLUMN:Size:2:OSA_SHOW:long
+"Queue":OSA_ATTRIBUTE_COLUMN:Full:3:OSA_SHOW:long
+"Queue":OSA_ATTRIBUTE_COLUMN:"Suspended Threads":4:OSA_SHOW:long
+"Queue":OSA_MENU:"Queue Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_QUEUE_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Queue ID is invalid.\n";}
+"Queue":OSA_MENU:"Queue Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_QUEUE_STRUCT; \
+    substitute view (struct TX_QUEUE_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Queue_Information TX_QUEUE_STRUCT} \
+    else {print "Queue ID is invalid.\n";}
+"Queue":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_QUEUE_STRUCT *)$_OSA_OBJ_ID;}
+//"Queue":OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"
+
+
+// Event Flags Group Format Section
+// =================================
+"Event Flags Group":OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+"Event Flags Group":OSA_ATTRIBUTE_COLUMN:OSA_ID="Event Flags ID":1:OSA_SHOW:string
+"Event Flags Group":OSA_ATTRIBUTE_COLUMN:Flags:2:OSA_SHOW:string
+"Event Flags Group":OSA_ATTRIBUTE_COLUMN:"Suspended Threads":3:OSA_SHOW:long
+"Event Flags Group":OSA_MENU:"Event Flags Group Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Event Flags ID is invalid.\n";}
+"Event Flags Group":OSA_MENU:"Event Flags Group Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_EVENT_FLAGS_GROUP_STRUCT; \
+    substitute view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Event_Flags_Info TX_EVENT_FLAGS_GROUP_STRUCT} \
+    else {print "Event Flags ID is invalid.\n";}
+"Event Flags Group":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_EVENT_FLAGS_GROUP_STRUCT *)$_OSA_OBJ_ID;}
+//"Event Flags Group":OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"
+
+// Block Pool Format Section
+// ==========================
+"Block Pool":OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+"Block Pool":OSA_ATTRIBUTE_COLUMN:OSA_ID="Block Pool ID":1:OSA_SHOW:string
+"Block Pool":OSA_ATTRIBUTE_COLUMN:"Block Size":2:OSA_SHOW:long
+"Block Pool":OSA_ATTRIBUTE_COLUMN:Full:3:OSA_SHOW:string
+"Block Pool":OSA_ATTRIBUTE_COLUMN:"Suspended Threads":4:OSA_SHOW:long
+"Block Pool":OSA_MENU:"Block Pool Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_BLOCK_POOL_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Block Pool ID is invalid.\n";}
+"Block Pool":OSA_MENU:"Block Pool Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_BLOCK_POOL_STRUCT; \
+    substitute view (struct TX_BLOCK_POOL_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Block_Pool_Info TX_BLOCK_POOL_STRUCT} \
+    else {print "Block Pool ID is invalid.\n";}
+"Block Pool":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_BLOCK_POOL_STRUCT *)$_OSA_OBJ_ID;}
+//"Block Pool":OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"
+
+// Byte Pool Format Section
+// ==========================
+"Byte Pool":OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+"Byte Pool":OSA_ATTRIBUTE_COLUMN:OSA_ID="Byte Pool ID":1:OSA_SHOW:string
+"Byte Pool":OSA_ATTRIBUTE_COLUMN:Full:2:OSA_SHOW:string
+"Byte Pool":OSA_ATTRIBUTE_COLUMN:"Suspended Threads":3:OSA_SHOW:long
+"Byte Pool":OSA_MENU:"Byte Pool Information":if ($_OSA_OBJ_ID) \
+    {view (struct TX_BYTE_POOL_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Byte Pool ID is invalid.\n";}
+"Byte Pool":OSA_MENU:"Byte Pool Control Block":if ($_OSA_OBJ_ID) \
+    {obr -delete TX_BYTE_POOL_STRUCT; \
+    substitute view (struct TX_BYTE_POOL_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Byte_Pool_Info TX_BYTE_POOL_STRUCT} \
+    else {print "Byte Pool ID is invalid.\n";}
+"Byte Pool":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_BYTE_POOL_STRUCT *)$_OSA_OBJ_ID;}
+//"Byte Pool":OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"
+
+// Mutex Format Section
+// ==========================
+"Mutex":OSA_ATTRIBUTE_COLUMN:OSA_NAME="Name":0:OSA_SHOW:string
+"Mutex":OSA_ATTRIBUTE_COLUMN:OSA_ID="Mutex ID":1:OSA_SHOW:string
+"Mutex":OSA_ATTRIBUTE_COLUMN:"Orig. Priority (PT)":2:OSA_SHOW:string
+"Mutex":OSA_ATTRIBUTE_COLUMN:Count:3:OSA_SHOW:long
+"Mutex":OSA_ATTRIBUTE_COLUMN:"Suspended Threads":4:OSA_SHOW:long
+"Mutex":OSA_MENU:Mutex Information:if ($_OSA_OBJ_ID) \
+    {view (struct TX_MUTEX_STRUCT *)$_OSA_OBJ_ID;} \
+    else {print "Mutex ID is invalid.\n";}
+"Mutex":OSA_MENU:Mutex Control Block:if ($_OSA_OBJ_ID) \
+    {obr -delete TX_MUTEX_STRUCT; \
+    substitute view (struct TX_MUTEX_STRUCT *)%EVAL{print /x $_OSA_OBJ_ID}; \
+    obr Mutex_Information TX_MUTEX_STRUCT;} \
+    else {print "Mutex ID is invalid.\n";}
+"Mutex":OSA_DOUBLE_CLICK:if ($_OSA_OBJ_ID) \
+    {view (struct TX_MUTEX_STRUCT *)$_OSA_OBJ_ID;}
+//"Mutex":OSA_REFERENCE_LIST:OSA_TASK:0:"Suspended Threads"

@@ -1,0 +1,51 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2018 Nexteer
+* Nexteer Confidential
+*
+* Module File Name:   HwTq9Meas_Cfg.h
+* Module Description: Configuration Header file for HwTq9Meas
+* Project           : CBD
+* Author            : Krishna Anne
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          1 %
+* %derived_by:       nz4qtt %
+*---------------------------------------------------------------------------------------------------------------------
+* Date      Rev     Author  Change Description                                                              SCR #
+* --------  ------- ------- ---------------------------------------------------------------------------     ----------
+* 01/04/18  1       KK      Initial version of the HwTq9Meas header template                                EA4#15171
+**********************************************************************************************************************/
+
+/******************************************* Multiple Include Protection *********************************************/
+#ifndef HwTq9MEAS_CFG_H	/* Multiple include preventer */
+#define HwTq9MEAS_CFG_H
+
+/************************************************ Include Statements *************************************************/
+#include "Std_Types.h"
+#include "Rte_HwTq9Meas.h"
+/******************************************** File Level Rule Deviations *********************************************/
+
+/****************************************************** Macros *******************************************************/
+<# ChangeContext( Xp.ModuleConfAtDefRefTo( "HwTq9Meas" ) ); #>
+
+<# string Param_HwTq9MfgFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTq9MeasGeneral/NTC_HwTq9MfgFlt" ) ); #>
+<# string Param_HwTq9PrtclFlt = ValueOf( Xp.ValueAtDefRefTo( "HwTq9MeasGeneral/NTC_HwTq9PrtclFlt" ) ); #>
+
+
+
+
+#define HwTq9MEAS_HwTq9MFGNTCNR_CNT_ENUM              <#=Param_HwTq9MfgFlt#>
+#define HwTq9MEAS_HwTq9PRTCLFLTNTCNR_CNT_ENUM               <#=Param_HwTq9PrtclFlt#>
+
+
+/*********************************************** Exported Declarations ***********************************************/
+
+/**************************************** End Of Multiple Include Protection *****************************************/
+#endif /* HwTq9MEAS_CFG_H */
+

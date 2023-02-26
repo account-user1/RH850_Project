@@ -1,0 +1,11 @@
+# This is just a wrapper around os_constants_internal.grd for backwards
+# compatibility with INTEGRITY which expect to find os_constants.grd in the
+# ide installation.
+
+%if defined(__TOOLS_DEFAULTS_DIR__)
+% include "${__TOOLS_DEFAULTS_DIR__}/registers/os_constants_internal.grd"
+%elsif file_exists("${__DIR__}/os_constants_internal.grd")
+% include "${__DIR__}/os_constants_internal.grd"
+%else
+% error "Unable to find os_constants_internal.grd"
+%endif

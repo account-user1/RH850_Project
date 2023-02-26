@@ -1,0 +1,807 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+component.startup2 {
+	description = "set project info"
+
+	use_template = "startup2"
+
+	dlg_info {
+	    add {
+		dlg_filelist = "${__DIR__}/common.plc"
+		dlg_namelist = "ProjectWizardDirName"
+	    }
+	}
+
+	attributes {
+	    tx_lang {
+		type = "string"
+		show_gui_item = true
+	    }
+	    pd_lang {
+		type = "choice"
+		display_name="Language:"
+		show_gui_item = true
+		
+		choices {
+%if defined(__PREFERS_ADA__)
+		    ada {
+			default = true;
+			display_name = "Ada"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_ADA Ada" }
+				}
+			    }
+			}
+		    }
+%endif
+		    c {
+%if !defined(__PREFERS_ADA__)
+			default = true
+%endif
+			display_name = "C"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_C C" }
+				}
+			    }
+			}
+		    }
+
+		    cxx {
+			display_name="C++"
+			actions {
+			    add {
+				intermediate {
+				    2 += { "defineGlobal LANG_CXX C++" }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	visible = false
+}
+
+component_template.startup2 {
+	use_template = "Commentable"
+
+	tags = { "STARTUP2" }
+	
+	dlg_info {
+	    add {
+#	    	menu_str = "Add Pro&ject..."
+		cmd_str = "SetProjInfo"
+#		dlg_filelist = "${__DIR__}/common.plc"
+#		dlg_namelist = "ProjectWizardDirName"
+	    }
+	}
+	attributes {
+
+	    tf_ProjectDir {
+		type = "string"
+		host_filename = true;
+		default = "$ABS_BASE_PROJ_DIR/src"
+		build_file_setting = "filedir $build_file_directory"
+		pre_populate_action = "python ${__DIR__}/common.py newproj_find_next_dir" 
+		sanity_check_action = "python ${__DIR__}/common.py newproj_sanity_check" 
+		actions {
+		    add {
+			intermediate {
+			    1 += { "defineLocal PARENT_PROJ_DIR $PROJ_DIR" }
+			    2 += { "defineGlobal PROJ_DIR $tf_ProjectDir" }
+			    # this must be local, not Project, because startup2 template is used for subproject too
+			    2 += { "defineLocal PROJ_DIR $tf_ProjectDir" }
+			    3 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+			    3 += { "localCalculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+			    4 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+			    10 += { "localCalculateAbsolutePath ABS_PARENT_PROJ_DIR $PARENT_PROJ_DIR" }
+			    11 += { "localCalculateRelativePath REL_TO_PARENT_PROJ_DIR \"$ABS_PARENT_PROJ_DIR\" \"$ABS_BASE_PROJ_DIR\" " }
+			}
+			standard {
+			    #3 += { "system mkdir $ABS_PROJ_DIR" }
+			    # use python for makedirs
+			    3 += { "python ${__DIR__}/common.py make_project_dir"}
+			}
+		    }
+		    readin {
+			standard {			
+			    1 += { "defineLocal PARENT_PROJ_DIR $PROJ_DIR" }
+			    2 += { "defineGlobal PROJ_DIR $tf_ProjectDir" }
+			    # this must be local, not Project, because startup2 template is used for subproject too
+			    2 += { "defineLocal PROJ_DIR $tf_ProjectDir" }
+			    3 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+			    3 += { "localCalculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+			    4 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+			    10 += { "localCalculateAbsolutePath ABS_PARENT_PROJ_DIR $PARENT_PROJ_DIR" }
+			    11 += { "localCalculateRelativePath REL_TO_PARENT_PROJ_DIR \"$ABS_PARENT_PROJ_DIR\" \"$ABS_BASE_PROJ_DIR\" " }
+			}
+		    }
+		}
+	    }
+	    tf_ProjectName {
+		type = "string"
+		default="myproject"
+		sanity_check_action = "python ${__DIR__}/common.py common_projname_sanity_check" 
+		actions {
+		    add {
+			intermediate {
+			    1 += { "defineGlobal BASE_PROJ_NAME $tf_ProjectName" }
+			    1 += { "defineLocal BASE_PROJ_NAME $tf_ProjectName" } 
+			}
+		    }
+		    readin {
+			standard {
+			    1 += { "defineLocal BASE_PROJ_NAME $tf_ProjectName" } 
+			}
+		    }
+		}
+	    }
+	}
+	actions {
+	    copy_local {
+		standard {
+		    10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		    11 += { "defineLocal COPY_FILENAME $filename" }
+		    12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		    13 += { "undefineLocal MY_GPJ_COOKIE"}
+		    14 += { "undefineLocal MY_ITEM_COOKIE"}
+		    14 += { "undefineLocal PROJ_DIR"}
+		    14 += { "undefineLocal ABS_PROJ_DIR"}
+		    14 += { "undefineLocal BASE_PROJ_DIR"}
+		    15 += { "python ${__DIR__}/common.py project_copy_local_std"}
+		}
+	    }
+	    paste_parent_local {
+		standard {
+		    10 += { "python ${__DIR__}/common.py project_paste_parent_local_std" }
+		}
+	    }	
+	}
+}
+
+component.common_choices {
+	description = "common choice dialog"
+
+	dlg_info {
+		#menu_command {
+		cmd_str = "DoChoice"
+		#}
+		dlg_filelist = { "${__DIR__}/common.plc" }
+		dlg_namelist = { "npw2_choices" }
+
+		pd_opts {
+			
+		}
+	}
+}
+
+component.top_level_project {
+    display_type_name = "Top Project"
+    #visible = false
+    top_file_type = "Project"
+    
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.top_project" }
+    
+    icon_name = "project"
+
+    context_types = { "TopProject", "OuterProject", "AnyProject", "Container" }
+
+    dlg_info {
+	edit {
+	    menu_str = "Retarget Top Project"
+	    cmd_str = "RetargetTopLevelFile"
+	    dlg_filelist = "${__DIR__}/common.plc"
+	    dlg_namelist = "BuildNewProjectWizardRetarget"
+	    # figure out how to generate this after whole db is read in
+	    #right_click_list = { "AddINTMono", "AddINTDD", "AddINTKStandalone", "AddINTReloc", "AddUVELApp" }
+	}
+    }
+    attributes {
+	tf_rtosdir {
+	    type = "string"
+	    #default = "/home/jabba/amyb/rtos-test"
+	    build_file_setting = "option id:OsDir respath:true"
+	    host_filename = true
+	    actions {
+#		add {
+#		    intermediate {
+#			1 += { "defineGlobal RTOS_DIR $tf_rtosdir" }
+#		    }
+#		    standard {	
+#			1000000 += { "defineGlobal LAST_RTOS_DIR $tf_rtosdir" }
+#		    }
+#		}
+#		edit {
+#		    intermediate {
+#			1 += { "defineGlobal RTOS_DIR $tf_rtosdir" }
+#		    }
+#		    standard {
+#			10 += { "python ${__DIR__}/common.py top_tf_rtosdir_edit_std" }
+#			1000000 += { "defineGlobal LAST_RTOS_DIR $tf_rtosdir" }
+#		    }
+#		}
+		readin {
+		    standard {
+			1 += { "defineGlobal RTOS_DIR $tf_rtosdir" }
+			1000000 += { "defineGlobal LAST_RTOS_DIR $tf_rtosdir" }
+		    }
+		}
+	    }
+	}	   
+	tf_bsp {
+	    type = "string"
+	    default = "sim800"
+	    build_file_setting = "option id:TargetBoard respath:false"
+	    actions {
+#		add {
+#		    intermediate {
+#			1 += { "defineGlobal BSP_NAME $tf_bsp" }
+#		    }
+#		    standard {	
+#			1000000 += { "defineGlobal LAST_BSP_NAME $tf_bsp" }
+#		    }
+#		}
+#		edit {
+#		    intermediate {
+#			1 += { "defineGlobal BSP_NAME $tf_bsp" }
+#		    }
+#		    standard {
+#			10 += { "python ${__DIR__}/common.py top_tf_bsp_edit_std" } 
+#			1000000 += { "defineGlobal LAST_BSP_NAME $tf_bsp" }
+#		    }
+#		}
+		readin {
+		    standard {
+			1 += { "defineGlobal BSP_NAME $tf_bsp" }
+			1000000 += { "defineGlobal LAST_BSP_NAME $tf_bsp" }
+		    }
+		}
+	    }
+	}
+	tf_ProjectDir {
+	    type = "string"
+	    default = "/tmp/proj2"
+	    build_file_setting = "filedir $build_file_directory"	    
+	    host_filename = true
+	    actions {
+		add {
+		    intermediate {
+			1 += { "addguinodes default.gpj" }
+			1 += { "defineGlobal BASE_PROJ_DIR $tf_ProjectDir" }
+			1 += { "defineGlobal TOP_PROJ_DIR $tf_ProjectDir" }
+			2 += { "calculateAbsolutePath ABS_TOP_PROJ_DIR $TOP_PROJ_DIR" }
+			2 += { "calculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+		    }
+		}
+		readin {
+		    standard {
+			1 += { "defineGlobal BASE_PROJ_DIR $tf_ProjectDir" }
+			1 += { "defineGlobal TOP_PROJ_DIR $tf_ProjectDir" }
+			2 += { "calculateAbsolutePath ABS_TOP_PROJ_DIR $TOP_PROJ_DIR" }
+			2 += { "calculateAbsolutePath ABS_BASE_PROJ_DIR $BASE_PROJ_DIR" }
+		    }
+		}
+	    }
+	}
+	projIsOutsideRtosDir {
+	    type = "string"
+	    default = "1"
+	    build_file_setting = "is_outside_rtos_dir"
+	}	
+
+	primary_target {
+	    type = "string"
+	    build_file_setting = "target_info $primary"
+	    actions {
+	        add.intermediate {
+   	            1 += { "defineGlobal TARGET $primary_target" }
+		}
+	        readin.standard {
+   	            1 += { "defineGlobal TARGET $primary_target" }
+		}
+	    }
+	}
+    }
+    actions {
+	add {
+	    standard {
+		# Add actions which are run after the top-level project is
+		# created here.
+%if 0 && !defined(__VALIDATION_MODE__)
+		1 += { "python ${__DIR__}/common.py create_workspace_file" }
+%endif
+%if defined(TOO_SMALL_FOR_STD_CXX) && streq(__TOOLCHAIN__, "GREEN_HILLS")
+		# For boards which are too small to handle standard C++,
+		# switch to Extended Embedded C++ by default.
+		20 += { "message WARNING: The default configuration for this board does not have sufficient memory\nto run Standard C++ executables.  Any C++ projects you create will default to using\nthe Extended Embedded C++ dialect.\n\nIf you have additional memory, you may set the C++ version to Standard C++ and\nmodify the included linker directive (.ld) file after this project is created.\n\nFor additional information on the .ld files included in your project, see \nresource_readme.txt in resource.gpj." }
+      	        21 += { "defineLocal OPTION_STRING --ee" }
+		22 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_top_project" }
+%endif
+	    }
+	}
+	edit {
+	    standard {
+		1 += { "defineGlobal RTOS_DIR $tf_rtosdir" }
+		1 += { "defineGlobal BSP_NAME $tf_bsp" }
+		10 += { "python ${__DIR__}/common.py top_edit_std" } 
+	    }
+	}
+	readin {
+	    standard {
+		1 += {"defineGlobal copyResources 0"}
+		# Make the version number available to python methods, too.
+		1 += {"defineGlobal __MPROJMGR_VER__ ${__MPROJMGR_VER__}"}
+		1 += {"defineGlobal __MPROJMGR_MINOR_VER__ ${__MPROJMGR_MINOR_VER__}"}
+	    }
+	}
+    }
+}
+
+
+component_template.target_resourcesT {
+    display_type_name = "Target Resources"
+    top_file_type = "Project"
+
+    parent_context_types = { "TopProject" }
+    context_types = { "AnyProject", "Container" }
+
+    filters = { "Resources" }
+    icon_name = "project"
+
+    use_template = "Commentable"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.target_resources" }
+
+    dlg_info.add.auto_import = false;
+
+    attributes {
+        name {
+	    type = "string"
+	    build_file_setting = "filename $build_file_origname"
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "filename $build_file_diskname"
+	}   
+    }
+
+    actions {
+	readin {
+	    standard {
+	    	1 += { "defineGlobal LAST_RES_FILE $name" }
+		1 += { "defineGlobal copyResources 1" }
+		2 += { "calculateAbsolutePath LAST_RES_FILE_ABS $LAST_RES_FILE" }
+	    }
+	}
+#	copy_local {
+#	    standard {
+#		10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+#	    }
+#	}
+#	paste_local {
+#	    standard {
+#		10 += { "python ${__DIR__}/common.py target_resources_paste_local_std" }
+#	    }
+#	}
+    }
+}
+
+
+
+component.target_resources {
+    use_template = "target_resourcesT"
+    actions.readin.standard {
+	3 += { "defineGlobal OLD_RES_FILE_FMT 0" }
+    }
+}
+
+
+component.target_resources_pre5 {
+    use_template = "target_resourcesT"
+    actions.readin.standard {
+	1 += { "defineGlobal OLD_RES_FILE_FMT 1" }
+    }
+}
+
+
+component_template.rootProjectT {
+    display_type_name = "Project"
+    top_file_type = "Project"
+
+    description = "A container for grouping files."
+
+    filters =  { "Projects" }
+    icon_name = "project"
+
+    use_template = "startup2"
+
+    dlg_info.add {
+#        menu_str = "Add Pro&ject"
+	cmd_str = "AddProject"
+	dlg_cmdlist = { "SetProjectInfo" }
+    }
+    dlg_info.paste_local {
+        menu_str = "Paste Pro&ject"
+	cmd_str = "PasteProject"
+	dlg_cmdlist = { "SetProjectInfoP" }
+    }
+    attributes {
+	tf_ProjectName {
+   	    dlg_info {
+		add {
+		    cmd_str = "SetProjectInfo"
+		    dlg_filelist =  "${__DIR__}/common.plc" 
+		    dlg_namelist =  "ProjectWizardDirName"
+		}
+		paste_local {
+		    cmd_str = "SetProjectInfoP"
+		    dlg_filelist =  "${__DIR__}/common.plc" 
+		    dlg_namelist =  "ProjectWizardDirName"
+		}
+	    }
+
+	    refreshNode = true
+	    build_file_setting = "filename $build_file_basename"
+	}
+	
+	filename {
+	    type = "string"
+	    
+	    display_name = true
+	    refreshNode = true
+	    build_file_setting = "filename $build_file_basename"
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "filename $build_file_diskname"
+	}
+        tx_lang {
+	    type = "string"
+	    show_gui_item = false
+	}
+	pd_lang {
+	    type = "string"
+	    show_gui_item = false
+	}
+    }
+	
+    actions {
+    	add {
+	    standard {
+		1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+  	        10 += { "python ${__DIR__}/projects.py create_project_file" }
+	    }
+	}
+	readin {
+	    standard {
+		1 += { "defineLocal REAL_PARENT_AT_FULL_PATH @$tf_ProjectName" }
+		1 += { "defineLocal BASE_PROJ_DIR $tf_ProjectDir" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+		11 += { "undefineLocal MY_GPJ_COOKIE"}
+		11 += { "undefineLocal MY_ITEM_COOKIE"}
+	    }
+	}
+
+	paste_link {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_paste_link_std" }
+	    }
+	}
+	paste_local {
+	    standard {
+	    
+		1 += { "defineLocal PROJ_DIR $(tf_ProjectDir)" }
+		#1 += { "defineLocal BASE_PROJ_NAME $LAST_BASE_PROJ_NAME" }
+		1 += { "overrideAttribute filename $(tf_ProjectName)" }
+		2 += { "localCalculateAbsolutePath ABS_PROJ_DIR $PROJ_DIR" }
+		3 += { "localCalculateRelativePath REL_PROJ_DIR \"$ABS_BASE_PROJ_DIR\" \"$ABS_PROJ_DIR\"" }
+		10 += { "python ${__DIR__}/common.py project_paste_local_std" }
+	    }
+	}
+	
+        remove {
+	    standard {
+	        10 += { "python ${__DIR__}/projects.py proj_remove_std" }
+	    }
+	}
+    }
+}
+
+component_template.projectT {
+    use_template = "rootProjectT";
+    context_types = { "AnyProject", "Container" }
+}
+
+
+component.project {
+    use_template = "projectT"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.project" }
+    
+    context_types += { "OuterProject" }
+    parent_context_types = { "OuterProject" }
+
+    default_for_filetypes = { "Project" }
+
+    actions.add.standard {
+	9 += { "defineLocal PROJ_TYPE Project" }
+    }
+
+    attributes.tf_ProjectDir.sanity_check_action = ""
+}
+
+
+component.subproject {
+    use_template = "projectT"
+    display_type_name = "Subproject"
+    
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.project" }
+
+    parent_context_types = { "Debuggable", "subproject", "IntegrityDebuggable" }
+
+    top_file_type = "Subproject"
+    default_for_filetypes = { "Subproject" }
+
+    dlg_info.add {
+#	menu_str = "Add &Project..."
+	cmd_str = "AddSubProject"
+	dlg_cmdlist = { "SetProjInfo" }
+    }
+
+    attributes.tf_ProjectDir.sanity_check_action = ""
+    attributes.tf_ProjectDir.default = "$ABS_BASE_PROJ_DIR"
+}
+
+
+component.autoinclude {
+    use_template = "rootProjectT"
+    display_type_name = "Auto Include"
+
+    top_file_type = "Auto Include"
+    default_for_filetypes = { "Auto Include" }
+
+    dlg_info.add.auto_import = false
+
+    parent_context_types = { "AnyProject", "Container", "Debuggable", "subproject", "IntegrityDebuggable" }
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.autoinclude" }
+
+    dlg_info.add.cmd_str = ""
+}
+
+
+component.selectone {
+    use_template = "rootProjectT"
+    context_types += { "Container" }
+    display_type_name = "Select One"
+    parent_context_types = { "Debuggable", "subproject", "IntegrityDebuggable" }
+
+    top_file_type = "Select One"
+    default_for_filetypes = { "Select One" }
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.selectone" }
+
+    actions.add.intermediate {
+	10 += { "defineLocal PROJ_TYPE Select One" }
+	10 += { "defineLocal tf_name $tf_ProjectName" }
+    }
+
+    attributes.tf_ProjectDir.sanity_check_action = ""
+    attributes.tf_ProjectDir.default = "$ABS_BASE_PROJ_DIR"
+    attributes.tf_ProjectName.default = "myselected"
+}
+
+
+component_template.resource_file {
+#    parent_context_filetypes = { "Program", "Subproject", "INTEGRITY Kernel", "INTEGRITY VirtualAddressSpace", "uvelOSity Application" }
+#    parent_context_types = { "program", "integrity_kernel", "integrity_virtual_address_space", "uvelosity_application" }
+#    display_type_name = "Source File"
+#    top_file_type = "Program"    
+
+    bg_color="#ccccff"
+#    fg_color="#000000"
+    
+#    filters =  { "Source Files" }
+#    icon_name = "int_source"
+
+    parent_context_types = { "target_resources" }
+
+    use_template = "Commentable"
+    
+    attributes {
+	filename {
+	    type = "string"
+	    display_name = true
+	    refreshNode = true
+	    #default = "$LAST_FILENAME"
+	    build_file_setting = "item_filename $build_item_basename"
+	}
+	tf_diskname {
+	    type = "string"
+	    host_filename = true
+	    build_file_setting = "item_filename $build_item_diskname"
+	}
+	parent_projname {
+	    type = "string"
+	    actions {
+		edit {
+		    standard {
+			10 += { "python ${__DIR__}/common.py resource_parent_projname_edit_std" }
+		    }
+		}
+	    }
+	}	
+    }
+    actions {
+	remove {
+	    standard {
+		10 += { "python ${__DIR__}/source.py source_remove_std" }
+	    }
+	}    
+	delete {
+	    standard {
+		10 += { "python ${__DIR__}/common.py resource_delete_std" }
+	    }
+	}
+	readin {
+	    standard {
+		1000000 += { "defineLocal LAST_FILENAME $filename" }
+	    }
+	}
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $filename" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}	
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_DIR $(PROJ_DIR)" }
+		11 += { "defineLocal COPY_FILENAME $filename" }
+		12 += { "defineLocal COPY_DISKNAME $tf_diskname" }
+	    }
+	}
+	paste_link {
+	    standard {
+		10 += { "python ${__DIR__}/common.py resource_file_paste_link_std" }
+	    }
+	}	
+	paste_local {
+	    standard {
+		10 += { "python ${__DIR__}/common.py resource_file_paste_local_std" }
+	    }
+	}
+	paste_parent_local {
+	    standard {
+		10 += { "python ${__DIR__}/common.py resource_file_paste_parent_local_std" }
+	    }
+	}
+    }
+}
+
+component_template.linker_directives {
+    use_template = "resource_file"
+    
+    parent_context_filetypes = { "Program" }
+    parent_context_types = { "ExecutableProgram" }
+    display_type_name = "Linker Directives"
+    icon_name = "linker_directives_file"
+    bg_color = "#9ECEFF"
+
+    documentation_files =  { "${__DIR__}/shared_docs.gpd" }
+    doc_anchor_ids = { "multi.mpm.linker_directives" }
+    
+    top_file_type = "Linker Directives"
+    actions {
+	copy_link {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME Linker Directives" }
+	    }
+	}    
+	copy_local {
+	    standard {
+		10 += { "defineLocal COPY_TYPENAME Linker Directives" }
+	    }
+	}
+    }
+}
+
+
+#component.linker_directives_file {
+#    use_template = "linker_directives"
+#    default_for_filetypes = { "Linker Directives" }
+#
+#}
+
+
+component.program {
+    use_template = "ProgramT"
+
+    description = "A framework for creating your own program."
+
+    disabled = true
+
+    top_file_type = "Program"
+       
+    filters =  { "Projects" }
+
+    default_for_filetypes = { "Program" }
+
+    attributes.tf_ProjectDir.sanity_check_action = ""
+}
+
+
+
+component.library {
+    use_template = "LibraryT"
+
+    description = "A framework for creating your own library."
+
+    top_file_type = "Library"
+       
+    filters =  { "Projects" }
+
+    default_for_filetypes = { "Library" }
+
+    attributes.tf_ProjectDir.sanity_check_action = ""
+}
+
+
+
+component.component_selector {
+    display_type_name = "Component Selector"
+    display_object_name = "Component Selector"
+
+    #parent_context_types = { "integrity_dynamic_download", "integrity_monolith" }
+    #parent_context_filetypes = { "INTEGRITY Application" }
+
+    dlg_info {
+	add {
+	    menu_str = "Add &Component"
+	    cmd_str = "__GHS_AddComp__"
+	    dlg_filelist = "${__DIR__}/common.plc" 
+	    dlg_namelist = "ComponentSelectorDlg"
+	    auto_import = false
+	    allow_dim_next = false
+	    dlg_title = "Select Item to Add"
+	    #documentation_files =  { "${__DIR__}/docs/mpm_all.gpd" }
+	    #doc_anchor_ids = { "multi.mpm.pick_os_modules_dlg" }
+	
+	}
+    }
+
+    is_parent = false
+    attributes {
+	msl_components {
+	    type = "childlist_selectone"
+	    tags = "__GHS_COMPONENT_SELECTOR__"
+	    actions {
+		add {
+		    intermediate {
+			1 += { "runGuiOnNieceIfOneOnly $dlg_info_cmd_str" }
+		    }
+		}
+	    }
+	}
+    }
+}
+
+%endif

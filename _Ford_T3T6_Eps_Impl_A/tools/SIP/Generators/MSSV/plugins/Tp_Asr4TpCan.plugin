@@ -1,0 +1,117 @@
+/**********************************************************************************************************************
+*  COPYRIGHT
+*  -------------------------------------------------------------------------------------------------------------------
+*  Copyright (c) 2016 by Vector Informatik GmbH.                                                  All rights reserved.
+*
+*                This software is copyright protected and proprietary to Vector Informatik GmbH.
+*                Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+*                All other rights remain with Vector Informatik GmbH.
+*  -------------------------------------------------------------------------------------------------------------------
+*  FILE DESCRIPTION
+*  -------------------------------------------------------------------------------------------------------------------
+*  File       :  Tp_AsrTpCan_Elisa.plugin
+*  Module     :  Elisa
+*
+*  Description:  Entry point of Elisa Core.
+*
+*  -------------------------------------------------------------------------------------------------------------------
+*  AUTHOR IDENTITY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Name                          Initials      Company
+*  -------------------------------------------------------------------------------------------------------------------
+*  Patrick Markl                  visml        Vector Informatik GmbH
+*  Markus Groﬂ                    visgms       Vector Informatik GmbH
+*  Thomas Dedler                  visdth       Vector Informatik GmbH
+*  Anthony Thomas                 visath       Vector Informatik GmbH
+*  -------------------------------------------------------------------------------------------------------------------
+*  REVISION HISTORY
+*  -------------------------------------------------------------------------------------------------------------------
+*  Version    Date          Author   Change Id        Description
+*  -------------------------------------------------------------------------------------------------------------------
+*  00.01.00   2012-05-21    visml    -              Initial version
+*  00.02.00   2012-07-13    visgms   -              Updated to current API version
+*  00.03.00   2012-08-07    visml    -              Added field for requirements tracking.
+*  00.04.00   2012-09-11    visgms   -              Updated to current API version
+*  00.05.00   2014-04-17    visml    -              Added CheckVersions function
+*  01.00.00   2016-03-18    visdth   ESCAN00087799: FEAT-1688: SafeBSW Step 4
+*  01.00.01   2016-07-31    visath   -              Renamed PrecompileOptions to CheckQMDefines
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Mandatory Functions
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : RegisterPlugin
+* Return value : Reference to a structure which contains the registration information about the plugin
+* Description  : Elisa_core calls this function to query necessary information about the plugin.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def RegisterPlugin()
+{
+  var reg = ModulePluginRegistration()
+
+  reg.SetVersion(0x010001)
+  reg.SetPackageName("Tp_Asr4TpCan")
+  reg.SetInputFiles(["CanTp_Lcfg.c", "CanTp_PBcfg.c"])
+
+  return reg
+}
+
+/**********************************************************************************************************************
+* Name         : CheckVersions
+* Return value : -
+* Description  : Elisa_core calls this function to allow the plugin a version check against the BSW sources.
+**********************************************************************************************************************/
+def CheckVersions()
+{
+  AssertDefineEquals("CANTP_CFG_GEN_MAJOR_VERSION", "4U")
+  AssertDefineEquals("CANTP_CFG_GEN_MINOR_VERSION", "1U")
+}
+
+/**********************************************************************************************************************
+* Name         : main
+* Parameter    : None
+* Return value : None
+* Description  : This is the entry point of the Elisa plugin. main calls all rule functions to check the configuration.
+*                This function is mandatory.
+**********************************************************************************************************************/
+def main()
+{
+  InvokeRule("Check Restricted Precompile Options", CheckQMDefines)
+}
+
+
+/**********************************************************************************************************************
+* Rules
+**********************************************************************************************************************/
+
+/**********************************************************************************************************************
+* Name         : CheckQMDefines
+* Parameter    : None
+* Return value : None
+* Description  : Assert that restricted precompile options are set / not set as required.
+* Requirements :[CM_CANTP_PRECOMPILEOPTIONS]
+**********************************************************************************************************************/
+def CheckQMDefines()
+{
+  /* settings restricted to a certain value / range */
+  AssertDefineIsStdOn ("CANTP_DEV_ERROR_DETECT")
+  AssertDefineIsStdOff ("CANTP_SINGLE_RX_BUFFER_OPTIMIZED")
+  AssertDefineEquals  ("CANTP_PDUR_API_AR_VERSION", "0x412")
+  AssertDefineEquals  ("CANTP_TX_QUEUE_SIZE", "4")
+  var RxSduCount = Define("CANTP_NUM_RX_SDUS")
+  Assert(RxSduCount.GetValueAsNumber , GreaterThan, 0)
+  var TxSduCount = Define("CANTP_NUM_TX_SDUS")
+  Assert(TxSduCount.GetValueAsNumber , GreaterThan, 0)
+
+  /* prohibited precompile options */
+  AssertDefineIsNotSet("MSR_PDUR_API_AR_VERSION")
+  AssertDefineIsNotSet("CANTP_TX_FC_FROM_ISR")
+  AssertDefineIsNotSet("CANTP_RX_GET_BUFFER_FROM_ISR")
+  AssertDefineIsNotSet("CANTP_TX_GET_BUFFER_FROM_ISR")
+  AssertDefineIsNotSet("CANTP_IGNORE_FC_WITH_RES_STMIN")
+  AssertDefineIsNotSet("CANTP_IGNORE_CF_WITH_WRONG_SN")
+  AssertDefineIsNotSet("CANTP_IGNORE_FC_OVFL_INVALID_FS")
+  AssertDefineIsNotSet("CANTP_FAULT_TOLERANT_RXBUFFER")
+}

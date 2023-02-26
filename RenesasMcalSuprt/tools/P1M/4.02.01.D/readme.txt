@@ -1,0 +1,1 @@
+The files contained in this folder are the exact files delivered from Renesas for their MCAL.  These are for reference only for comparisons to what is used in integration projects.  The MCAL files cannot be directly used since these files are also delivered by the 3rd party BSW vendor.

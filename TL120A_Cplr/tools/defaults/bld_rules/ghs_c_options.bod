@@ -1,0 +1,6191 @@
+###############################################################################
+# ghs_c_options.bod
+#
+#
+#
+###############################################################################
+
+
+CommandOptions {
+    GhsCompilerOptions {
+    
+    ################# Preprocessor ########################
+    
+	    Defines {
+			    {
+				    name="-D"
+				    delimiter="Touching"
+			    }
+			    {
+				    name="-D"
+				    delimiter="Space"
+			    }
+			    {
+				    name="--define_macro"
+				    delimiter="Space"
+			    }
+			    {
+				    name="--define_macro"
+				    delimiter="Equal"
+			    }
+		    merge="Concat"
+		    optionType="List"
+		    guiLabel="Define Preprocessor Symbol"
+		    guiCategory="Preprocessor"
+		    commonLevel=1
+	    }
+    
+	    Undefines {
+			    {
+				    name="-U"
+				    delimiter="Touching"
+			    }
+			    {
+				    name="--undefine_macro"
+				    delimiter="Space"
+			    }		
+			    {
+				    name="--undefine_macro"
+				    delimiter="Equal"
+			    }		
+		    merge="Concat"
+		    optionType="List"
+		    guiLabel="Undefine Preprocessor Symbol"
+		    guiCategory="Preprocessor"
+		    commonLevel=101
+	    }
+	    TraceIncludes {
+		    {
+			    name="-H"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--trace_includes"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_trace_includes"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Display includes Preprocessor Directives Listing"
+		    guiCategory="Preprocessor"
+		    commonLevel=101
+	    }
+
+    ################### Advanced Preprocessor #####################
+
+	    IncludeFiles {
+		    {
+			    name="-include"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-include"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--include"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--include"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--preinclude"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--preinclude"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Files to Pre-Include"
+		    guiCategory="Preprocessor"
+	    }
+	    AsmIncludeFiles {
+		    {
+			    name="--preinclude_asm"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--preinclude_asm"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Assembly Files to Pre-Include"
+		    guiCategory="Preprocessor"
+	    }
+	    UseMidCpp {
+		    {
+			    name="-use_mid_cpp"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-usemidcpp"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-nouse_mid_cpp"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nousemidcpp"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Preprocess Intermediate Assembly"
+		    guiCategory="Preprocessor"
+	    }
+	    UndefAll {
+		    {
+			    name="-stddef"
+			    value=0
+			    enumLabel="Define"
+			    flags={"FAKEOPTION"}
+		    }
+		    {
+			    name="-nostddef"
+			    value=1
+			    enumLabel="Do Not Define"
+		    }
+		    {
+			    name="-U-"
+			    value=1
+			    enumLabel="Do Not Define"
+		    }
+		    {
+			    name="-undef"
+			    value=1
+			    enumLabel="Do Not Define"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Definition of Standard Symbols"
+		    guiCategory="Preprocessor"
+	    }
+	    UnsafePredefines {
+		    {
+			    name="--unsafe_predefines"
+			    value=0
+			    enumLabel="Define"
+		    }
+		    {
+			    name="--no_unsafe_predefines"
+			    value=1
+			    enumLabel="Do Not Define"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Definition of Unsafe Symbols"
+		    guiCategory="Preprocessor"
+	    }
+	    StripComments {
+		    {
+			    name="-C"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="--comments"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="-comments"
+			    value=0
+			    enumLabel="Retain"
+		    }
+		    {
+			    name="--no_comments"
+			    value=1
+			    enumLabel="Strip"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Retain Comments During Preprocessing"
+		    guiCategory="Preprocessor"
+	    }
+	    NoStdIncludeDirs {
+		    {
+			    name="-stdinc"
+			    value=0
+			    enumLabel="Search"
+		    }
+		    {
+			    name="-nostdinc"
+			    value=1
+			    enumLabel="Do Not Search"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    flags={"RELATIVEPATH"}
+		    guiLabel="Standard Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+	    }
+	    CIncludeDirs {
+		    {
+			    name="-c_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-c_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--c_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--c_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-YI,"
+			    delimiter="Touching"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    guiLabel="C Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+		    flags={"RELATIVEPATH"}
+		    valueIsDirname=true
+	    }
+	    CxxIncludeDirectories {
+		    {
+			    name="--cxx_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--cxx_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="-cxx_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-cxx_include_directory"
+			    delimiter="Equal"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    pass={"Depends","Compile"}
+		    flags={"RELATIVEPATH"}
+		    guiLabel="C++ Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+		    valueIsDirname=true
+		    hidden=true
+	    }
+	    StdCxxIncludeDirs {
+		    {
+			    name="-std_cxx_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-std_cxx_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--std_cxx_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--std_cxx_include_directory"
+			    delimiter="Equal"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    pass={"Depends","Compile"}
+		    guiLabel="C++ Standard Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+		    flags={"RELATIVEPATH"}
+		    valueIsDirname=true
+	    }
+	    SysIncludeDirs {
+		    {
+			    name="-sys_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-sys_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--sys_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--sys_include_directory"
+			    delimiter="Equal"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    guiLabel="System Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+		    flags={"RELATIVEPATH"}
+		    valueIsDirname=true
+	    }
+	    RtosIncludeDirs {
+		    {
+			    name="-rtos_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-rtos_include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--rtos_include_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--rtos_include_directory"
+			    delimiter="Equal"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    guiLabel="RTOS Include Directories"
+		    guiCategory="Preprocessor;Advanced Include Directories"
+                    disabled=true
+		    valueIsDirname=true
+	    }
+
+	    IncludeDirectories {
+		    {
+			    name="-I"
+			    delimiter="Touching"
+		    }
+		    {
+			    name="-I"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--include_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--include_directory"
+			    delimiter="Space"
+		    }
+		    {
+		    	    name="-I-"
+			    delimiter="NoArg"
+		    }
+		    merge="PreConcat"
+		    optionType="List"
+		    guiLabel="Include Directories"
+		    flags={"RELATIVEPATH"}
+		    guiCategory="Project"
+		    valueIsDirname=true
+		    commonLevel=1
+	    }
+	    LibDirs {
+		    flags={"RELATIVEPATH"}
+		    {
+			    name="-L"
+			    delimiter="Touching"
+		    }
+		    {
+			    name="--library_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--library_directory"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    valueIsDirname=true
+		    guiLabel="Library Directories"
+		    guiCategory="Project"
+		    commonLevel=1
+	    }
+	    RtosLibraryDirs {
+		    {
+			    name="-rtos_library_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-rtos_library_directory"
+			    delimiter="Equal"
+		    }
+		    {
+			    name="--rtos_library_directory"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--rtos_library_directory"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Link"}
+		    valueIsDirname=true
+		    guiLabel="RTOS Library Directories"
+                    disabled=true
+		    guiCategory="Project"
+		    commonLevel=1
+	    }
+	    Libraries {
+		    {
+			    name="-l"
+		    }
+		    {
+			    name="-B"
+		    }
+		    delimiter="Touching"
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    valueIsFilename=true
+		    guiLabel="Libraries"
+		    guiCategory="Project"
+		    commonLevel=1
+	    }
+
+    ################ C/C++ Compiler Options #######################
+
+	    CVersion {
+		    # -C99, -c99, -ANSI, -ansi, -gnu, -noansi, -k+r, K+R
+		    {
+			    name="-ANSI"
+			    value=2
+			    enumLabel="Strict ANSI C"
+		    }
+		    strict_c99 {
+		    # ecom only
+			    name="-C99"
+			    value=0
+			    enumLabel="Strict ISO C99"
+		    }
+		    c99 {
+		    # ecom only
+			    name="-c99"
+			    value=1
+			    enumLabel="ISO C99"
+		    }		    
+		    {
+			    name="-Xc"
+			    value=2
+			    enumLabel="Strict ANSI C"
+		    }
+		    {
+			    name="-ansi"
+			    value=3
+			    enumLabel="ANSI C"
+		    }
+		    {
+			    name="-Xa"
+			    value=3
+			    enumLabel="ANSI C"
+		    }
+		    {
+		    # ecom only
+			    name="-gcc"
+			    value=4
+			    enumLabel="GNU C"
+		    }
+		    {
+		    # ecom only
+			    name="-gnu"
+			    value=4
+			    enumLabel="GNU C"
+		    }
+		    {
+		    # ccom only - disabled
+			    name="-noansi"
+			    value=5
+			    disabled=true
+			    enumLabel="AT+T C Issue 5.0 Transition Mode"
+		    }
+		    {
+		    # ccom only - disabled
+			    name="-Xt"
+			    value=5
+			    disabled=true
+			    enumLabel="AT+T C Issue 5.0 Transition Mode"
+		    }
+		    kr1 {
+			    name="-k+r"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+		    kr2 {
+			    name="-K+R"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+		    kr3 {
+			    name="-K&R"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+		    kr4 {
+			    name="-k&r"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+		    kr5 {
+			    name="--kr"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+		    kr6 {
+			    name="-Xs"
+			    value=6
+			    enumLabel="K+R C"
+		    }
+                    gnu99 {
+                            name="-gnu99"
+                            value=7
+                            enumLabel="GNU C99"
+                    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C Language Dialect"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    JapaneseAutoC {
+		    {
+			    name="-japanese_automotive_c"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xjapanese_automotive_c"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_japanese_automotive_c"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C Japanese Automotive Extensions"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    Microsoft {
+		    # New Generation Only
+		    {
+			    name="--microsoft"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--microsoft_16"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_microsoft"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C Microsoft Compatibility Mode"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    MicrosoftBugs {
+		    # New Generation Only
+		    {
+			    name="--microsoft_bugs"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_microsoft_bugs"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C Microsoft Bugs"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    CxxVersion {
+		    {
+			    name="--STD"
+			    value=0
+			    enumLabel="Standard C++ (Violations Give Errors)"
+		    }
+		    {
+			    name="--strict"
+			    value=0
+			    enumLabel="Standard C++ (Violations Give Errors)"
+		    }
+		    {
+			    name="--std"
+			    value=1
+			    enumLabel="Standard C++ (Violations Give Warnings)"
+		    }
+		    {
+			    name="--strict_warnings"
+			    value=1
+			    enumLabel="Standard C++ (Violations Give Warnings)"
+		    }
+		    arm {
+			    name="--arm"
+			    value=2
+			    enumLabel="Standard C++ with ARM Extensions"
+		    }
+		    gnu {
+			    name="--g++"
+			    value=3
+			    enumLabel="GNU C++"
+		    }
+		    ee {
+			    name="--ee"
+			    value=4
+			    enumLabel="Extended Embedded C++"
+		    }
+		    e {
+			    name="--e"
+			    value=5
+			    enumLabel="Embedded C++"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Language Dialect"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    CxxLibrary {
+		    {
+			    name="--stdl"
+			    value=0
+			    enumLabel="Standard C++ Library without Exceptions"
+		    }
+		    {
+			    name="--stdle"
+			    value=1
+			    enumLabel="Standard C++ Library with Exceptions"
+		    }
+		    {
+			    name="--eel"
+			    value=2
+			    enumLabel="Extended Embedded C++ Library without Exceptions"
+		    }
+		    {
+			    name="--eele"
+			    value=3
+			    enumLabel="Extended Embedded C++ Library with Exceptions"
+		    }
+		    {
+			    name="--el"
+			    value=4
+			    enumLabel="Embedded C++ Library without Exceptions"
+		    }
+		    {
+			    name="--ele"
+			    value=5
+			    enumLabel="Embedded C++ Library with Exceptions"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Libraries"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    ExceptionHandling {
+		    {
+			    name="--exceptions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fexceptions"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_exceptions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-exceptions"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Exception Handling"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    TableDrivenExceptionHandling {
+		    {
+			    name="--tdeh"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_tdeh"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Table Driven Exception Handling"
+		    guiCategory="C/C++ Compiler"
+                    hidden=true
+		    disabled=true
+		    commonLevel=101
+	    }
+	    CxxInlining {
+		    {
+			    name="--max_inlining"
+			    value=0
+			    enumLabel="Maximum"
+		    }
+		    {
+			    name="--max_inlining_unless_debug"
+			    value=1
+			    enumLabel="Maximum Unless Debugging"
+		    }
+		    {
+			    name="--inlining"
+			    value=2
+			    enumLabel="Standard"
+		    }
+		    {
+			    name="--inlining_unless_debug"
+			    value=3
+			    enumLabel="Standard Unless Debugging"
+		    }
+		    {
+			    name="--no_inlining"
+			    value=4
+			    enumLabel="None"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Inlining Level"
+		    guiCategory="C/C++ Compiler"
+	    }
+            EmulatedGNUVersion {
+                    {
+                            name="--gnu_version=30300"
+                            value=0
+                            enumLabel="GNU 3.3"
+                    }
+                    {
+                            name="--gnu_version=40300"
+                            value=1
+                            enumLabel="GNU 4.3"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    pass={"All"}
+                    guiLabel="Emulated GNU Version"
+                    guiCategory="C/C++ Compiler"
+            }
+            GNU99Inlining {
+                    {
+                            name="-fno-gnu89-inline"
+                            value=0
+                            enumLabel="ISO C99 Inline Semantics"
+
+                    }
+                    {
+                            name="-fgnu89-inline"
+                            value=1
+                            enumLabel="GNU C89 Inline Semantics"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    pass={"All"}
+                    guiLabel="-gnu99 Inline Semantics"
+                    guiCategory="C/C++ Compiler"
+                    disabled=true
+            }
+	    SectionPrefix {
+		    {
+			    name="--section_prefix"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--section_prefix"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    guiLabel="Prepend String to Every Section Name"
+		    guiCategory="C/C++ Compiler"
+	    }
+	    SectionSuffix {
+		    {
+			    name="--section_suffix"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--section_suffix"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="String"
+		    pass={"All"}
+		    guiLabel="Append String to Every Section Name"
+		    guiCategory="C/C++ Compiler"
+	    }
+
+    ################### MISRA 2004#####################
+    
+	    Misra2004Rules {
+		    name="--misra_2004"
+		    subGroups {
+			{
+			    guiLabel="1 Environment"
+			    values={1,2,3,4,5}
+			}
+			{
+			    guiLabel="2 Language Extensions"
+			    values={6,7,8,9}
+			}
+			{
+			    guiLabel="3 Documentation"
+			    values={10,11,12,13,14,15}
+			}
+			{
+			    guiLabel="4 Character Sets"
+			    values={16,17}
+			}
+			{
+			    guiLabel="5 Identifiers"
+			    values={18,19,20,21,22,23,24}
+			}
+			{
+			    guiLabel="6 Types"
+			    values={25,26,27,28,29}
+			}
+			{
+			    guiLabel="7 Constants"
+			    values={30}
+			}
+			{
+			    guiLabel="8 Declarations and Definitions"
+			    values={31,32,33,34,35,36,37,38,39,40,41,42}
+			}
+			{
+			    guiLabel="9 Initialization"
+			    values={43,44,45}
+			}
+			{
+			    guiLabel="10 Arithmetic Type Conversions"
+			    values={46,47,48,49,50,51}
+			}
+			{
+			    guiLabel="11 Pointer Type Conversions"
+			    values={52,53,54,55,56}
+			}
+			{
+			    guiLabel="12 Expressions"
+			    values={57,58,59,60,61,62,63,64,65,66,67,68,69}
+			}
+			{
+			    guiLabel="13 Control Statement Expressions"
+			    values={70,71,72,73,74,75,76}
+			}
+			{
+			    guiLabel="14 Control Flow"
+			    values={77,78,79,80,81,82,83,84,85,86}
+			}
+			{
+			    guiLabel="15 Switch Statements"
+			    values={87,88,89,90,91}
+			}
+			{
+			    guiLabel="16 Functions"
+			    values={92,93,94,95,96,97,98,99,100,101}
+			}
+			{
+			    guiLabel="17 Pointers and Arrays"
+			    values={102,103,104,105,106,107}
+			}
+			{
+			    guiLabel="18 Structs and Unions"
+			    values={108,109,110,111}
+			}
+			{
+			    guiLabel="19 Preprocessing Directives"
+			    values={112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128}
+			}
+			{
+			    guiLabel="20 Standard Libraries"
+			    values={129,130,131,132,133,134,135,136,137,138,139,140}
+			}
+			{
+			    guiLabel="21 Run-time Failures"
+			    values={141}
+			}
+		    }
+		    enumList {
+###############################################################################
+#####				"Environment"				  #####
+###############################################################################
+			    {
+				    name="1.1"
+				    enumLabel="1.1 [R] ISO 9899:1990 C conformance w/o extensions"
+				    value=1
+			    }
+			    {
+				    name="-1.1"
+				    enumLabel=""
+				    value=1
+				    antonym=true
+			    }
+			    {
+				    name="1.2"
+				    enumLabel="1.2 [R] No dependencies can be placed on undefined or unspecified behavior"
+				    value=2
+			    }
+			    {
+				    name="-1.2"
+				    enumLabel=""
+				    value=2
+				    antonym=true
+			    }
+			    {
+				    name="1.3"
+				    enumLabel="1.3 [R] Code other than C must conform to the standard interface"
+				    value=3
+			    }
+			    {
+				    name="-1.3"
+				    enumLabel=""
+				    value=3
+				    antonym=true
+			    }
+			    {
+				    name="1.4"
+				    enumLabel="1.4 [R] Compiler and linker verified to support 31 significant case-sensitive characters for identifiers"
+				    value=4
+			    }
+			    {
+				    name="-1.4"
+				    enumLabel=""
+				    value=4
+				    antonym=true
+			    }
+			    {
+				    name="1.5"
+				    enumLabel="1.5 [A] Floating-point implementation is standard-compliant"
+				    value=5
+			    }
+			    {
+				    name="-1.5"
+				    enumLabel=""
+				    value=5
+				    antonym=true
+			    }
+###############################################################################
+#####				"Language Extensions"			  #####
+###############################################################################
+			    {
+				    name="2.1"
+				    enumLabel="2.1 [R] Inline assembly only in functions or macros with no other code"
+				    value=6
+			    }
+			    {
+				    name="-2.1"
+				    enumLabel=""
+				    value=6
+				    antonym=true
+			    }
+			    {
+				    name="2.2"
+				    enumLabel="2.2 [R] Use of /*...*/ comments only"
+				    value=7
+			    }
+			    {
+				    name="-2.2"
+				    enumLabel=""
+				    value=7
+				    antonym=true
+			    }
+			    {
+				    name="2.3"
+				    enumLabel="2.3 [R] No nested comments"
+				    value=8
+			    }
+			    {
+				    name="-2.3"
+				    enumLabel=""
+				    value=8
+				    antonym=true
+			    }
+			    {
+				    name="2.4"
+				    enumLabel="2.4 [A] No `commented out' sections of code"
+				    value=9
+			    }
+			    {
+				    name="-2.4"
+				    enumLabel=""
+				    value=9
+				    antonym=true
+			    }
+###############################################################################
+#####				"Documentation"				  #####
+###############################################################################
+			    {
+				    name="3.1"
+				    enumLabel="3.1 [R] Documentation of implementation-defined behavior required"
+				    value=10
+			    }
+			    {
+				    name="-3.1"
+				    enumLabel=""
+				    value=10
+				    antonym=true
+			    }
+			    {
+				    name="3.2"
+				    enumLabel="3.2 [R] Values of char types restricted to subset of ISO 10646-1"
+				    value=11
+			    }
+			    {
+				    name="-3.2"
+				    enumLabel=""
+				    value=11
+				    antonym=true
+			    }
+			    {
+				    name="3.3"
+				    enumLabel="3.3 [A] Implementation of integer division determined and documented"
+				    value=12
+			    }
+			    {
+				    name="-3.3"
+				    enumLabel=""
+				    value=12
+				    antonym=true
+			    }
+			    {
+				    name="3.4"
+				    enumLabel="3.4 [R] Uses of #pragma documented and explained"
+				    value=13
+			    }
+			    {
+				    name="-3.4"
+				    enumLabel=""
+				    value=13
+				    antonym=true
+			    }
+			    {
+				    name="3.5"
+				    enumLabel="3.5 [R] Documentation of implementation-defined behavior and packing of bitfields required"
+				    value=14
+			    }
+			    {
+				    name="-3.5"
+				    enumLabel=""
+				    value=14
+				    antonym=true
+			    }
+			    {
+				    name="3.6"
+				    enumLabel="3.6 [R] All library production code conforms to MISRA"
+				    value=15
+			    }
+			    {
+				    name="-3.6"
+				    enumLabel=""
+				    value=15
+				    antonym=true
+			    }
+###############################################################################
+#####				"Character Sets"			  #####
+###############################################################################
+			    {
+				    name="4.1"
+				    enumLabel="4.1 [R] Only ISO C escape sequences used"
+				    value=16
+			    }
+			    {
+				    name="-4.1"
+				    enumLabel=""
+				    value=16
+				    antonym=true
+			    }
+			    {
+				    name="4.2"
+				    enumLabel="4.2 [R] No trigraphs"
+				    value=17
+			    }
+			    {
+				    name="-4.2"
+				    enumLabel=""
+				    value=17
+				    antonym=true
+			    }
+###############################################################################
+#####				"Identifiers"				  #####
+###############################################################################
+{
+				    name="5.1"
+				    enumLabel="5.1 [R] No more than 31 chars to determine an identifier"
+				    value=18
+			    }
+			    {
+				    name="-5.1"
+				    enumLabel=""
+				    value=18
+				    antonym=true
+			    }
+			    {
+				    name="5.2"
+				    enumLabel="5.2 [R] No use of same id name in inner and outer scope"
+				    value=19
+			    }
+			    {
+				    name="-5.2"
+				    enumLabel=""
+				    value=19
+				    antonym=true
+			    }
+			    {
+				    name="5.3"
+				    enumLabel="5.3 [R] Each `typedef' must be a unique identifier"
+				    value=20
+			    }
+			    {
+				    name="-5.3"
+				    enumLabel=""
+				    value=20
+				    antonym=true
+			    }
+			    {
+				    name="5.4"
+				    enumLabel="5.4 [R] Tag names must be unique"
+				    value=21
+			    }
+			    {
+				    name="-5.4"
+				    enumLabel=""
+				    value=21
+				    antonym=true
+			    }
+			    {
+				    name="5.5"
+				    enumLabel="5.5 [R] No reuse of function or static object identifiers"
+				    value=22
+			    }
+			    {
+				    name="-5.5"
+				    enumLabel=""
+				    value=22
+				    antonym=true
+			    }
+			    {
+				    name="5.6"
+				    enumLabel="5.6 [A] No identifiers with the same name in different name spaces except for struct and union members"
+				    value=23
+			    }
+			    {
+				    name="-5.6"
+				    enumLabel=""
+				    value=23
+				    antonym=true
+			    }
+			    {
+				    name="5.7"
+				    enumLabel="5.7 [A] No reuse of identifiers"
+				    value=24
+			    }
+			    {
+				    name="-5.7"
+				    enumLabel=""
+				    value=24
+				    antonym=true
+			    }
+###############################################################################
+#####				"Types"				  #####
+###############################################################################
+			    {
+				    name="6.1"
+				    enumLabel="6.1 [R] `char' only used for storage and use of character values"
+				    value=25
+			    }
+			    {
+				    name="-6.1"
+				    enumLabel=""
+				    value=25
+				    antonym=true
+			    }
+			    {
+				    name="6.2"
+				    enumLabel="6.2 [R] `signed char' and `unsigned char' only used for storage and use of numeric values"
+				    value=26
+			    }
+			    {
+				    name="-6.2"
+				    enumLabel=""
+				    value=26
+				    antonym=true
+			    }
+			    {
+				    name="6.3"
+				    enumLabel="6.3 [A] Basic types used only in `typedef's and bitfields"
+				    value=27
+			    }
+			    {
+				    name="-6.3"
+				    enumLabel=""
+				    value=27
+				    antonym=true
+			    }
+			    {
+				    name="6.4"
+				    enumLabel="6.4 [R] Bitfields can only have `unsigned int' or `signed int' types"
+				    value=28
+			    }
+			    {
+				    name="-6.4"
+				    enumLabel=""
+				    value=28
+				    antonym=true
+			    }
+			    {
+				    name="6.5"
+				    enumLabel="6.5 [R] Signed bitfields must be least 2 bits long"
+				    value=29
+			    }
+			    {
+				    name="-6.5"
+				    enumLabel=""
+				    value=29
+				    antonym=true
+			    }
+###############################################################################
+#####				"Constants"				  #####
+###############################################################################
+			    {
+				    name="7.1"
+				    enumLabel="7.1 [R] No non-zero octal constants or octal escape sequences"
+				    value=30
+			    }
+			    {
+				    name="-7.1"
+				    enumLabel=""
+				    value=30
+				    antonym=true
+			    }
+###############################################################################
+#####				"Declarations and Definitions"		  #####
+###############################################################################
+			    {
+				    name="8.1"
+				    enumLabel="8.1 [R] Functions must always have prototype declarations"
+				    value=31
+			    }
+			    {
+				    name="-8.1"
+				    enumLabel=""
+				    value=31
+				    antonym=true
+			    }
+			    {
+				    name="8.2"
+				    enumLabel="8.2 [R] Every function must have an explicit return type"
+				    value=32
+			    }
+			    {
+				    name="-8.2"
+				    enumLabel=""
+				    value=32
+				    antonym=true
+			    }
+			    {
+				    name="8.3"
+				    enumLabel="8.3 [A] Function declaration and definition prototypes match"
+				    value=33
+			    }
+			    {
+				    name="-8.3"
+				    enumLabel=""
+				    value=33
+				    antonym=true
+			    }
+			    {
+				    name="8.4"
+				    enumLabel="8.4 [R] Multiple declarations of an object or function must be compatible"
+				    value=34
+			    }
+			    {
+				    name="-8.4"
+				    enumLabel=""
+				    value=34
+				    antonym=true
+			    }
+			    {
+				    name="8.5"
+				    enumLabel="8.5 [R] No object or function definitions in a header file"
+				    value=35
+			    }
+			    {
+				    name="-8.5"
+				    enumLabel=""
+				    value=35
+				    antonym=true
+			    }
+			    {
+				    name="8.6"
+				    enumLabel="8.6 [R] Functions always declared at file scope"
+				    value=36
+			    }
+			    {
+				    name="-8.6"
+				    enumLabel=""
+				    value=36
+				    antonym=true
+			    }
+			    {
+				    name="8.7"
+				    enumLabel="8.7 [R] Use function or block scope definitions for objects whenever possible"
+				    value=37
+			    }
+			    {
+				    name="-8.7"
+				    enumLabel=""
+				    value=37
+				    antonym=true
+			    }
+			    {
+				    name="8.8"
+				    enumLabel="8.8 [R] External objects and functions declared in no more than one file"
+				    value=38
+			    }
+			    {
+				    name="-8.8"
+				    enumLabel=""
+				    value=38
+				    antonym=true
+			    }
+			    {
+				    name="8.9"
+				    enumLabel="8.9 [R] Only one external definition for an external identifier"
+				    value=39
+			    }
+			    {
+				    name="-8.9"
+				    enumLabel=""
+				    value=39
+				    antonym=true
+			    }
+			    {
+				    name="8.10"
+				    enumLabel="8.10 [R] Static linkage of file scope declarations when possible"
+				    value=40
+			    }
+			    {
+				    name="-8.10"
+				    enumLabel=""
+				    value=40
+				    antonym=true
+			    }
+			    {
+				    name="8.11"
+				    enumLabel="8.11 [R] All objects and functions with internal linkage declared `static'"
+				    value=41
+			    }
+			    {
+				    name="-8.11"
+				    enumLabel=""
+				    value=41
+				    antonym=true
+			    }
+			    {
+				    name="8.12"
+				    enumLabel="8.12 [R] Arrays with external linkage must have known size at compile time"
+				    value=42
+			    }
+			    {
+				    name="-8.12"
+				    enumLabel=""
+				    value=42
+				    antonym=true
+			    }
+###############################################################################
+#####				"Initialization				  #####
+###############################################################################
+			    {
+				    name="9.1"
+				    enumLabel="9.1 [R] Automatic variables initialized before used"
+				    value=43
+			    }
+			    {
+				    name="-9.1"
+				    enumLabel=""
+				    value=43
+				    antonym=true
+			    }
+			    {
+				    name="9.2"
+				    enumLabel="9.2 [R] Braces used to match structure in initialization of arrays or structs"
+				    value=44
+			    }
+			    {
+				    name="-9.2"
+				    enumLabel=""
+				    value=44
+				    antonym=true
+			    }
+			    {
+				    name="9.3"
+				    enumLabel="9.3 [R] All or only first member of an enumeration may be explicitly initialized"
+				    value=45
+			    }
+			    {
+				    name="-9.3"
+				    enumLabel=""
+				    value=45
+				    antonym=true
+			    }
+###############################################################################
+#####				"Arithmetic Type Conversions"		  #####
+###############################################################################
+			    {
+				    name="10.1"
+				    enumLabel="10.1 [R] Restrict implicit conversions for integer type expressions"
+				    value=46
+			    }
+			    {
+				    name="-10.1"
+				    enumLabel=""
+				    value=46
+				    antonym=true
+			    }
+			    {
+				    name="10.2"
+				    enumLabel="10.2 [R] Restrict implicit conversions for floating type expressions"
+				    value=47
+			    }
+			    {
+				    name="-10.2"
+				    enumLabel=""
+				    value=47
+				    antonym=true
+			    }
+			    {
+				    name="10.3"
+				    enumLabel="10.3 [R] Restrict explicit casts for integer type expressions"
+				    value=48
+			    }
+			    {
+				    name="-10.3"
+				    enumLabel=""
+				    value=48
+				    antonym=true
+			    }
+			    {
+				    name="10.4"
+				    enumLabel="10.4 [R] Restrict explicit casts for floating type expressions"
+				    value=49
+			    }
+			    {
+				    name="-10.4"
+				    enumLabel=""
+				    value=49
+				    antonym=true
+			    }
+			    {
+				    name="10.5"
+				    enumLabel="10.5 [R] Bitwise `~' and `<<' expressions on unsigned char or unsigned short types must be cast to underlying type"
+				    value=50
+			    }
+			    {
+				    name="-10.5"
+				    enumLabel=""
+				    value=50
+				    antonym=true
+			    }
+			    {
+				    name="10.6"
+				    enumLabel="10.6 [R] Apply `U' suffix to all constants of `unsigned' type"
+				    value=51
+			    }
+			    {
+				    name="-10.6"
+				    enumLabel=""
+				    value=51
+				    antonym=true
+			    }
+###############################################################################
+#####				"Pointer Type Conversions"		  #####
+###############################################################################
+			    {
+				    name="11.1"
+				    enumLabel="11.1 [R] No conversions between pointer to function and non-integral types"
+				    value=52
+			    }
+			    {
+				    name="-11.1"
+				    enumLabel=""
+				    value=52
+				    antonym=true
+			    }
+			    {
+				    name="11.2"
+				    enumLabel="11.2 [R] No conversions between pointer to object and any type other than integral, pointer to object, or pointer to void"
+				    value=53
+			    }
+			    {
+				    name="-11.2"
+				    enumLabel=""
+				    value=53
+				    antonym=true
+			    }
+			    {
+				    name="11.3"
+				    enumLabel="11.3 [A] No casting between pointer and integral types"
+				    value=54
+			    }
+			    {
+				    name="-11.3"
+				    enumLabel=""
+				    value=54
+				    antonym=true
+			    }
+			    {
+				    name="11.4"
+				    enumLabel="11.4 [A] No casting between different pointer to object types"
+				    value=55
+			    }
+			    {
+				    name="-11.4"
+				    enumLabel=""
+				    value=55
+				    antonym=true
+			    }
+			    {
+				    name="11.5"
+				    enumLabel="11.5 [R] No casting that removes any `const' or `volatile' qualification from the type addressed by a pointer"
+				    value=56
+			    }
+			    {
+				    name="-11.5"
+				    enumLabel=""
+				    value=56
+				    antonym=true
+			    }
+###############################################################################
+#####				"Expressions"				  #####
+###############################################################################
+			    {
+				    name="12.1"
+				    enumLabel="12.1 [A] Limited dependence on C precedence rules"
+				    value=57
+			    }
+			    {
+				    name="-12.1"
+				    enumLabel=""
+				    value=57
+				    antonym=true
+			    }
+			    {
+				    name="12.2"
+				    enumLabel="12.2 [R] No expressions with values dependent on evaluation order"
+				    value=58
+			    }
+			    {
+				    name="-12.2"
+				    enumLabel=""
+				    value=58
+				    antonym=true
+			    }
+			    {
+				    name="12.3"
+				    enumLabel="12.3 [R] No side effects in the operand of `sizeof'"
+				    value=59
+			    }
+			    {
+				    name="-12.3"
+				    enumLabel=""
+				    value=59
+				    antonym=true
+			    }
+			    {
+				    name="12.4"
+				    enumLabel="12.4 [R] No side effects in the right hand operand of `&&' or `||'"
+				    value=60
+			    }
+			    {
+				    name="-12.4"
+				    enumLabel=""
+				    value=60
+				    antonym=true
+			    }
+			    {
+				    name="12.5"
+				    enumLabel="12.5 [R] Operands of `&&' and `||' must be primary expressions"
+				    value=61
+			    }
+			    {
+				    name="-12.5"
+				    enumLabel=""
+				    value=61
+				    antonym=true
+			    }
+			    {
+				    name="12.6"
+				    enumLabel="12.6 [A] Operands of logical operators must be boolean, and boolean expressions may not be used as operands of other operators"
+				    value=62
+			    }
+			    {
+				    name="-12.6"
+				    enumLabel=""
+				    value=62
+				    antonym=true
+			    }
+			    {
+				    name="12.7"
+				    enumLabel="12.7 [R] No bitwise operations on signed integer types"
+				    value=63
+			    }
+			    {
+				    name="-12.7"
+				    enumLabel=""
+				    value=63
+				    antonym=true
+			    }
+			    {
+				    name="12.8"
+				    enumLabel="12.8 [R] Value of right hand operand of a shift operator must be greater than zero and less than the size of the underlying type of the left hand operand"
+				    value=64
+			    }
+			    {
+				    name="-12.8"
+				    enumLabel=""
+				    value=64
+				    antonym=true
+			    }
+			    {
+				    name="12.9"
+				    enumLabel="12.9 [R] No unary minus on unsigned expressions"
+				    value=65
+			    }
+			    {
+				    name="-12.9"
+				    enumLabel=""
+				    value=65
+				    antonym=true
+			    }
+			    {
+				    name="12.10"
+				    enumLabel="12.10 [R] No comma operators"
+				    value=66
+			    }
+			    {
+				    name="-12.10"
+				    enumLabel=""
+				    value=66
+				    antonym=true
+			    }
+			    {
+				    name="12.11"
+				    enumLabel="12.11 [A] No wrap-around in constant unsigned expression evaluation"
+				    value=67
+			    }
+			    {
+				    name="-12.11"
+				    enumLabel=""
+				    value=67
+				    antonym=true
+			    }
+			    {
+				    name="12.12"
+				    enumLabel="12.12 [R] No use of underlying bit representation in floating point expressions"
+				    value=68
+			    }
+			    {
+				    name="-12.12"
+				    enumLabel=""
+				    value=68
+				    antonym=true
+			    }
+			    {
+				    name="12.13"
+				    enumLabel="12.13 [A] No mixing of increment (++) and decrement (--) operators with other operators"
+				    value=69
+			    }
+			    {
+				    name="-12.13"
+				    enumLabel=""
+				    value=69
+				    antonym=true
+			    }
+###############################################################################
+#####				"Control Statement Expressions"		  #####
+###############################################################################
+			    {
+				    name="13.1"
+				    enumLabel="13.1 [R] Assignment operators not used in boolean expressions"
+				    value=70
+			    }
+			    {
+				    name="-13.1"
+				    enumLabel=""
+				    value=70
+				    antonym=true
+			    }
+			    {
+				    name="13.2"
+				    enumLabel="13.2 [A] Explicit test of a value against zero unless the expression is boolean"
+				    value=71
+			    }
+			    {
+				    name="-13.2"
+				    enumLabel=""
+				    value=71
+				    antonym=true
+			    }
+			    {
+				    name="13.3"
+				    enumLabel="13.3 [R] Floating-point values not tested for (in)equality"
+				    value=72
+			    }
+			    {
+				    name="-13.3"
+				    enumLabel=""
+				    value=72
+				    antonym=true
+			    }
+			    {
+				    name="13.4"
+				    enumLabel="13.4 [R] No floating-point variables in `for' loop control expressions"
+				    value=73
+			    }
+			    {
+				    name="-13.4"
+				    enumLabel=""
+				    value=73
+				    antonym=true
+			    }
+			    {
+				    name="13.5"
+				    enumLabel="13.5 [R] Only loop control expressions in `for' statement header"
+				    value=74
+			    }
+			    {
+				    name="-13.5"
+				    enumLabel=""
+				    value=74
+				    antonym=true
+			    }
+			    {
+				    name="13.6"
+				    enumLabel="13.6 [R] No modification of numeric control variables in `for' loop body"
+				    value=75
+			    }
+			    {
+				    name="-13.6"
+				    enumLabel=""
+				    value=75
+				    antonym=true
+			    }
+			    {
+				    name="13.7"
+				    enumLabel="13.7 [R] No boolean operations with invariant results"
+				    value=76
+			    }
+			    {
+				    name="-13.7"
+				    enumLabel=""
+				    value=76
+				    antonym=true
+			    }
+###############################################################################
+#####				"Control Flow"				  #####
+###############################################################################
+			    {
+				    name="14.1"
+				    enumLabel="14.1 [R] No unreachable code"
+				    value=77
+			    }
+			    {
+				    name="-14.1"
+				    enumLabel=""
+				    value=77
+				    antonym=true
+			    }
+			    {
+				    name="14.2"
+				    enumLabel="14.2 [R] All non-null statements must have a side-effect"
+				    value=78
+			    }
+			    {
+				    name="-14.2"
+				    enumLabel=""
+				    value=78
+				    antonym=true
+			    }
+			    {
+				    name="14.3"
+				    enumLabel="14.3 [R] Null statement must occur on a line by itself"
+				    value=79
+			    }
+			    {
+				    name="-14.3"
+				    enumLabel=""
+				    value=79
+				    antonym=true
+			    }
+			    {
+				    name="14.4"
+				    enumLabel="14.4 [R] No `goto' statements"
+				    value=80
+			    }
+			    {
+				    name="-14.4"
+				    enumLabel=""
+				    value=80
+				    antonym=true
+			    }
+			    {
+				    name="14.5"
+				    enumLabel="14.5 [R] No `continue' statements"
+				    value=81
+			    }
+			    {
+				    name="-14.5"
+				    enumLabel=""
+				    value=81
+				    antonym=true
+			    }
+			    {
+				    name="14.6"
+				    enumLabel="14.6 [R] At most one break statement per iteration statement"
+				    value=82
+			    }
+			    {
+				    name="-14.6"
+				    enumLabel=""
+				    value=82
+				    antonym=true
+			    }
+			    {
+				    name="14.7"
+				    enumLabel="14.7 [R] Functions must have a single point of exit"
+				    value=83
+			    }
+			    {
+				    name="-14.7"
+				    enumLabel=""
+				    value=83
+				    antonym=true
+			    }
+			    {
+				    name="14.8"
+				    enumLabel="14.8 [R] Dependent statements of loop and switch statements must have braces"
+				    value=84
+			    }
+			    {
+				    name="-14.8"
+				    enumLabel=""
+				    value=84
+				    antonym=true
+			    }
+			    {
+				    name="14.9"
+				    enumLabel="14.9 [R] Dependent statements of if statements must have braces"
+				    value=85
+			    }
+			    {
+				    name="-14.9"
+				    enumLabel=""
+				    value=85
+				    antonym=true
+			    }
+			    {
+				    name="14.10"
+				    enumLabel="14.10 [R] All `if'...`else if' constructs must have an `else'"
+				    value=86
+			    }
+			    {
+				    name="-14.10"
+				    enumLabel=""
+				    value=86
+				    antonym=true
+			    }
+			    
+###############################################################################
+#####				"Switch Statements"			  #####
+###############################################################################
+			    {
+				    name="15.1"
+				    enumLabel="15.1 [R] Switch labels must be at top level compound statement of `switch' statement"
+				    value=87
+			    }
+			    {
+				    name="-15.1"
+				    enumLabel=""
+				    value=87
+				    antonym=true
+			    }
+			    {
+				    name="15.2"
+				    enumLabel="15.2 [R] Every non-empty switch clause terminates with an unconditional `break' statement"
+				    value=88
+			    }
+			    {
+				    name="-15.2"
+				    enumLabel=""
+				    value=88
+				    antonym=true
+			    }
+			    {
+				    name="15.3"
+				    enumLabel="15.3 [R] Every `switch' statement must contain a final `default' clause"
+				    value=89
+			    }
+			    {
+				    name="-15.3"
+				    enumLabel=""
+				    value=89
+				    antonym=true
+			    }
+			    {
+				    name="15.4"
+				    enumLabel="15.4 [R] No boolean values in `switch' expressions"
+				    value=90
+			    }
+			    {
+				    name="-15.4"
+				    enumLabel=""
+				    value=90
+				    antonym=true
+			    }
+			    {
+				    name="15.5"
+				    enumLabel="15.5 [R] `switch' statements must have at least one `case'"
+				    value=91
+			    }
+			    {
+				    name="-15.5"
+				    enumLabel=""
+				    value=91
+				    antonym=true
+			    }
+###############################################################################
+#####				"Functions"				  #####
+###############################################################################
+			    {
+				    name="16.1"
+				    enumLabel="16.1 [R] No variable argument function definitions"
+				    value=92
+			    }
+			    {
+				    name="-16.1"
+				    enumLabel=""
+				    value=92
+				    antonym=true
+			    }
+			    {
+				    name="16.2"
+				    enumLabel="16.2 [R] No direct or indirect recursion"
+				    value=93
+			    }
+			    {
+				    name="-16.2"
+				    enumLabel=""
+				    value=93
+				    antonym=true
+			    }
+			    {
+				    name="16.3"
+				    enumLabel="16.3 [R] Identifiers must be given for all function parameters"
+				    value=94
+			    }
+			    {
+				    name="-16.3"
+				    enumLabel=""
+				    value=94
+				    antonym=true
+			    }
+			    {
+				    name="16.4"
+				    enumLabel="16.4 [R] Parameter names in function declaration and definition must match"
+				    value=95
+			    }
+			    {
+				    name="-16.4"
+				    enumLabel=""
+				    value=95
+				    antonym=true
+			    }
+			    {
+				    name="16.5"
+				    enumLabel="16.5 [R] Declarations of functions with no parameters must have a `void' parameter"
+				    value=96
+			    }
+			    {
+				    name="-16.5"
+				    enumLabel=""
+				    value=96
+				    antonym=true
+			    }
+			    {
+				    name="16.6"
+				    enumLabel="16.6 [R] Number of arguments must match the function prototype"
+				    value=97
+			    }
+			    {
+				    name="-16.6"
+				    enumLabel=""
+				    value=97
+				    antonym=true
+			    }
+			    {
+				    name="16.7"
+				    enumLabel="16.7 [A] Pointer parameters to functions declared as pointer to `const' if possible"
+				    value=98
+			    }
+			    {
+				    name="-16.7"
+				    enumLabel=""
+				    value=98
+				    antonym=true
+			    }
+			    {
+				    name="16.8"
+				    enumLabel="16.8 [R] Return expression must match function type"
+				    value=99
+			    }
+			    {
+				    name="-16.8"
+				    enumLabel=""
+				    value=99
+				    antonym=true
+			    }
+			    {
+				    name="16.9"
+				    enumLabel="16.9 [R] Function identifiers may only be used for calls or with preceding `&' operator"
+				    value=100
+			    }
+			    {
+				    name="-16.9"
+				    enumLabel=""
+				    value=100
+				    antonym=true
+			    }
+			    {
+				    name="16.10"
+				    enumLabel="16.10 [R] If error information returned by a function, it must be tested"
+				    value=101
+			    }
+			    {
+				    name="-16.10"
+				    enumLabel=""
+				    value=101
+				    antonym=true
+			    }
+			    
+###############################################################################
+#####				"Pointers and Arrays"			  #####
+###############################################################################
+			    {
+				    name="17.1"
+				    enumLabel="17.1 [R] No pointer arithmetic on pointers that don't address an array element"
+				    value=102
+			    }
+			    {
+				    name="-17.1"
+				    enumLabel=""
+				    value=102
+				    antonym=true
+			    }
+			    {
+				    name="17.2"
+				    enumLabel="17.2 [R] No pointer subtraction on pointers that don't address elements of the same array"
+				    value=103
+			    }
+			    {
+				    name="-17.2"
+				    enumLabel=""
+				    value=103
+				    antonym=true
+			    }
+			    {
+				    name="17.3"
+				    enumLabel="17.3 [R] Relational operators not used on pointers that don't point to the same array"
+				    value=104
+			    }
+			    {
+				    name="-17.3"
+				    enumLabel=""
+				    value=104
+				    antonym=true
+			    }
+			    {
+				    name="17.4"
+				    enumLabel="17.4 [R] No pointer arithmetic other than array indexing"
+				    value=105
+			    }
+			    {
+				    name="-17.4"
+				    enumLabel=""
+				    value=105
+				    antonym=true
+			    }
+			    {
+				    name="17.5"
+				    enumLabel="17.5 [A] No more than 2 levels of pointer indirection in an object declaration"
+				    value=106
+			    }
+			    {
+				    name="-17.5"
+				    enumLabel=""
+				    value=106
+				    antonym=true
+			    }
+			    {
+				    name="17.6"
+				    enumLabel="17.6 [R] Addresss of automatic variable not used out of scope"
+				    value=107
+			    }
+			    {
+				    name="-17.6"
+				    enumLabel=""
+				    value=107
+				    antonym=true
+			    }
+			    
+###############################################################################
+#####				"Structs and Unions"			  #####
+###############################################################################
+			    {
+				    name="18.1"
+				    enumLabel="18.1 [R] No incomplete struct or union types at end of translation unit"
+				    value=108
+			    }
+			    {
+				    name="-18.1"
+				    enumLabel=""
+				    value=108
+				    antonym=true
+			    }
+			    {
+				    name="18.2"
+				    enumLabel="18.2 [R] No assignments between overlapping objects"
+				    value=109
+			    }
+			    {
+				    name="-18.2"
+				    enumLabel=""
+				    value=109
+				    antonym=true
+			    }
+			    {
+				    name="18.3"
+				    enumLabel="18.3 [R] No reuse of memory for unrelated purposes"
+				    value=110
+			    }
+			    {
+				    name="-18.3"
+				    enumLabel=""
+				    value=110
+				    antonym=true
+			    }
+			    {
+				    name="18.4"
+				    enumLabel="18.4 [R] Unions may not be used"
+				    value=111
+			    }
+			    {
+				    name="-18.4"
+				    enumLabel=""
+				    value=111
+				    antonym=true
+			    }
+			    
+###############################################################################
+#####				"Preprocessing Directives"		  #####
+###############################################################################
+			    {
+				    name="19.1"
+				    enumLabel="19.1 [A] Only preprocessing directives and comments before `#include'"
+				    value=112
+			    }
+			    {
+				    name="-19.1"
+				    enumLabel=""
+				    value=112
+				    antonym=true
+			    }
+			    {
+				    name="19.2"
+				    enumLabel="19.2 [A] Only standard characters in file names for `#inlcude'"
+				    value=113
+			    }
+			    {
+				    name="-19.2"
+				    enumLabel=""
+				    value=113
+				    antonym=true
+			    }
+			    {
+				    name="19.3"
+				    enumLabel="19.3 [R] `#include' directive only followed by <filename> or \"filename\""
+				    value=114
+			    }
+			    {
+				    name="-19.3"
+				    enumLabel=""
+				    value=114
+				    antonym=true
+			    }
+			    {
+				    name="19.4"
+				    enumLabel="19.4 [R] Restrict macro syntax"
+				    value=115
+			    }
+			    {
+				    name="-19.4"
+				    enumLabel=""
+				    value=115
+				    antonym=true
+			    }
+			    {
+				    name="19.5"
+				    enumLabel="19.5 [R] No `#define' or `#undef' within a block"
+				    value=116
+			    }
+			    {
+				    name="-19.5"
+				    enumLabel=""
+				    value=116
+				    antonym=true
+			    }
+			    {
+				    name="19.6"
+				    enumLabel="19.6 [R] `#undef' cannot be used"
+				    value=117
+			    }
+			    {
+				    name="-19.6"
+				    enumLabel=""
+				    value=117
+				    antonym=true
+			    }
+			    {
+				    name="19.7"
+				    enumLabel="19.7 [A] Function used instead of function-like macro when possible"
+				    value=118
+			    }
+			    {
+				    name="-19.7"
+				    enumLabel=""
+				    value=118
+				    antonym=true
+			    }
+			    {
+				    name="19.8"
+				    enumLabel="19.8 [R] Function-like macro must be called with all of its arguments"
+				    value=119
+			    }
+			    {
+				    name="-19.8"
+				    enumLabel=""
+				    value=119
+				    antonym=true
+			    }
+			    {
+				    name="19.9"
+				    enumLabel="19.9 [R] No preprocessing directives in function-like macros"
+				    value=120
+			    }
+			    {
+				    name="-19.9"
+				    enumLabel=""
+				    value=120
+				    antonym=true
+			    }
+			    {
+				    name="19.10"
+				    enumLabel="19.10 [R] In function-like macro definition, wrap each parameter reference in parentheses"
+				    value=121
+			    }
+			    {
+				    name="-19.10"
+				    enumLabel=""
+				    value=121
+				    antonym=true
+			    }
+			    {
+				    name="19.11"
+				    enumLabel="19.11 [R] Identifiers in preprocessing directives defined before used"
+				    value=122
+			    }
+			    {
+				    name="-19.11"
+				    enumLabel=""
+				    value=122
+				    antonym=true
+			    }
+			    {
+				    name="19.12"
+				    enumLabel="19.12 [R] At most one `#' or `##' operator in a macro"
+				    value=123
+			    }
+			    {
+				    name="-19.12"
+				    enumLabel=""
+				    value=123
+				    antonym=true
+			    }
+			    {
+				    name="19.13"
+				    enumLabel="19.13 [A] No `#' or `##' preprocessor operators"
+				    value=124
+			    }
+			    {
+				    name="-19.13"
+				    enumLabel=""
+				    value=124
+				    antonym=true
+			    }
+			    {
+				    name="19.14"
+				    enumLabel="19.14 [R] Correct use of `defined' preprocessor operator"
+				    value=125
+			    }
+			    {
+				    name="-19.14"
+				    enumLabel=""
+				    value=125
+				    antonym=true
+			    }
+			    {
+				    name="19.15"
+				    enumLabel="19.15 [R] Prevent contents of header files from being included more than once"
+				    value=126
+			    }
+			    {
+				    name="-19.15"
+				    enumLabel=""
+				    value=126
+				    antonym=true
+			    }
+			    {
+				    name="19.16"
+				    enumLabel="19.16 [R] Conditionally excluded preprocessor directives must be syntactically valid"
+				    value=127
+			    }
+			    {
+				    name="-19.16"
+				    enumLabel=""
+				    value=127
+				    antonym=true
+			    }
+			    {
+				    name="19.17"
+				    enumLabel="19.17 [R] All related conditional preprocessor directives must reside in the same file"
+				    value=128
+			    }
+			    {
+				    name="-19.17"
+				    enumLabel=""
+				    value=128
+				    antonym=true
+			    }
+###############################################################################
+#####				"Standard Libraries"			  #####
+###############################################################################
+			    {
+				    name="20.1"
+				    enumLabel="20.1 [R] No definition, redefinition, or undefinition of reserved words and standard library names"
+				    value=129
+			    }
+			    {
+				    name="-20.1"
+				    enumLabel=""
+				    value=129
+				    antonym=true
+			    }
+			    {
+				    name="20.2"
+				    enumLabel="20.2 [R] Standard library macro, object, and function names cannot be reused"
+				    value=130
+			    }
+			    {
+				    name="-20.2"
+				    enumLabel=""
+				    value=130
+				    antonym=true
+			    }
+			    {
+				    name="20.3"
+				    enumLabel="20.3 [R] Check validity of values passed to library functions"
+				    value=131
+			    }
+			    {
+				    name="-20.3"
+				    enumLabel=""
+				    value=131
+				    antonym=true
+			    }
+			    {
+				    name="20.4"
+				    enumLabel="20.4 [R] Dynamic heap memory allocation cannot be used"
+				    value=132
+			    }
+			    {
+				    name="-20.4"
+				    enumLabel=""
+				    value=132
+				    antonym=true
+			    }
+			    {
+				    name="20.5"
+				    enumLabel="20.5 [R] The error indicator `errno' cannot be used"
+				    value=133
+			    }
+			    {
+				    name="-20.5"
+				    enumLabel=""
+				    value=133
+				    antonym=true
+			    }
+			    {
+				    name="20.6"
+				    enumLabel="20.6 [R] Macro `offsetof' in <stddef.h> cannot be used"
+				    value=134
+			    }
+			    {
+				    name="-20.6"
+				    enumLabel=""
+				    value=134
+				    antonym=true
+			    }
+			    {
+				    name="20.7"
+				    enumLabel="20.7 [R] The `setjmp' and `longjmp' facilities cannot be used"
+				    value=135
+			    }
+			    {
+				    name="-20.7"
+				    enumLabel=""
+				    value=135
+				    antonym=true
+			    }
+			    {
+				    name="20.8"
+				    enumLabel="20.8 [R] The facilities of <signal.h> cannot be used"
+				    value=136
+			    }
+			    {
+				    name="-20.8"
+				    enumLabel=""
+				    value=136
+				    antonym=true
+			    }
+			    {
+				    name="20.9"
+				    enumLabel="20.9 [R] No use of <stdio.h> in production code"
+				    value=137
+			    }
+			    {
+				    name="-20.9"
+				    enumLabel=""
+				    value=137
+				    antonym=true
+			    }
+			    {
+				    name="20.10"
+				    enumLabel="20.10 [R] Functions `atof', `atoi', and `atol' are not used"
+				    value=138
+			    }
+			    {
+				    name="-20.10"
+				    enumLabel=""
+				    value=138
+				    antonym=true
+			    }
+			    {
+				    name="20.11"
+				    enumLabel="20.11 [R] Functions `abort', `exit', `getenv', and `system' are not used"
+				    value=139
+			    }
+			    {
+				    name="-20.11"
+				    enumLabel=""
+				    value=139
+				    antonym=true
+			    }
+			    {
+				    name="20.12"
+				    enumLabel="20.12 [R] The facilities of <time.h> cannot be used"
+				    value=140
+			    }
+			    {
+				    name="-20.12"
+				    enumLabel=""
+				    value=140
+				    antonym=true
+			    }
+###############################################################################
+#####				"Run-time Failures"			  #####
+###############################################################################
+			    {
+				    name="21.1"
+				    enumLabel="21.1 [R] Run-time checking"
+				    value=141
+			    }
+			    {
+				    name="-21.1"
+				    enumLabel=""
+				    value=141
+				    antonym=true
+			    }
+		    }
+		    delimiter="Equal"
+		    supportRanges=true
+		    enumAll="all"
+		    enumAllAntonyms="none"
+		    merge="Concat"
+		    optionType="EnumList"
+		    guiLabel="MISRA C 2004 Rules"
+		    guiCategory="C/C++ Compiler;MISRA C 2004"
+		    commonLevel=101
+	    }
+	    MISRAReqLevel {
+		    {
+			    name="--misra_req=error"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--misra_req=warn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--misra_req=silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="--saferc_req=error"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--saferc_req=warn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--saferc_req=silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="MISRA C - Required Rules Level"
+		    guiCategory="C/C++ Compiler;MISRA C 2004"
+		    commonLevel=101
+	    }
+	    MISRAAdvLevel {
+		    {
+			    name="--misra_adv=error"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--misra_adv=warn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--misra_adv=silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    {
+			    name="--saferc_adv=error"
+			    value=0
+			    enumLabel="Errors"
+		    }
+		    {
+			    name="--saferc_adv=warn"
+			    value=1
+			    enumLabel="Warnings"
+		    }
+		    {
+			    name="--saferc_adv=silent"
+			    value=2
+			    enumLabel="Silent"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="MISRA C - Advisory Rules Level"
+		    guiCategory="C/C++ Compiler;MISRA C 2004"
+		    commonLevel=101
+	    }
+	    MISRARuntime {
+		    {
+			    name="--misra_runtime"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_misra_runtime"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--saferc_runtime"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_saferc_runtime"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="MISRA C - Run-Time Checks"
+		    guiCategory="C/C++ Compiler;MISRA C 2004"
+		    commonLevel=101
+	    }
+
+    ################### MISRA 1998 #####################
+    
+	    MISRARules {
+		    name="--saferc"
+		    subGroups {
+			{
+			    guiLabel="Environment"
+			    values={1,2,3,4}
+			}
+			{
+			    guiLabel="Character Set"
+			    values={5,6,7,8}
+			}
+			{
+			    guiLabel="Comments"
+			    values={9,10}
+			}
+			{
+			    guiLabel="Identifiers"
+			    values={11,12}
+			}
+			{
+			    guiLabel="Types"
+			    values={13,14,15,16,17}
+			}
+			{
+			    guiLabel="Constants"
+			    values={18,19}
+			}
+			{
+			    guiLabel="Declarations and Definitions"
+			    values={20,21,22,23,24,25,26,27,28,29}
+			}
+			{
+			    guiLabel="Initialization"
+			    values={30,31,32}
+			}
+			{
+			    guiLabel="Operators"
+			    values={33,34,35,36,37,38,39,40,41,42}
+			}
+			{
+			    guiLabel="Conversions"
+			    values={43,44,45}
+			}
+			{
+			    guiLabel="Expressions"
+			    values={46,47,48,49,50,51}
+			}
+			{
+			    guiLabel="Control Flow"
+			    values={52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67}
+			}
+			{
+			    guiLabel="Functions"
+			    values={68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86}
+			}
+			{
+			    guiLabel="Preprocessor"
+			    values={87,88,89,90,91,92,93,94,95,96,97,98,99,100}
+			}
+			{
+			    guiLabel="Pointers and Arrays"
+			    values={101,102,103,104,105,106,107}
+			}
+			{
+			    guiLabel="Structs and Unions"
+			    values={108,109,110,111,112,113}
+			}
+			{
+			    guiLabel="Standard Library"
+			    values={114,115,116,117,118,119,120,121,122,123,124,125,126,127}
+			}
+		    }
+		    enumList {
+###############################################################################
+#####				"Environment"				  #####
+###############################################################################
+			    {
+				    name="1"
+				    enumLabel="1. [R] ISO 9899 C conformance w/o extensions"
+				    value=1
+			    }
+			    {
+				    name="-1"
+				    enumLabel=""
+				    value=1
+				    antonym=true
+			    }
+			    {
+				    name="2"
+				    enumLabel="2. [A] Code other than C must conform to standard interface"
+				    value=2
+			    }
+			    {
+				    name="-2"
+				    enumLabel=""
+				    value=2
+				    antonym=true
+			    }
+			    {
+				    name="3"
+				    enumLabel="3. [A] Inline assembly only in functions with no other code"
+				    value=3
+			    }
+			    {
+				    name="-3"
+				    enumLabel=""
+				    value=3
+				    antonym=true
+			    }
+			    {
+				    name="4"
+				    enumLabel="4. [A] Run-time checking"
+				    value=4
+			    }
+			    {
+				    name="-4"
+				    enumLabel=""
+				    value=4
+				    antonym=true
+			    }
+###############################################################################
+#####				"Character Set"				  #####
+###############################################################################
+			    {
+				    name="5"
+				    enumLabel="5. [R] Only ISO C characters and escape sequences used"
+				    value=5
+			    }
+			    {
+				    name="-5"
+				    enumLabel=""
+				    value=5
+				    antonym=true
+			    }
+			    {
+				    name="6"
+				    enumLabel="6. [R] Values of char types restricted to subset of ISO 10646-1"
+				    value=6
+			    }
+			    {
+				    name="-6"
+				    enumLabel=""
+				    value=6
+				    antonym=true
+			    }
+			    {
+				    name="7"
+				    enumLabel="7. [R] No trigraphs"
+				    value=7
+			    }
+			    {
+				    name="-7"
+				    enumLabel=""
+				    value=7
+				    antonym=true
+			    }
+			    {
+				    name="8"
+				    enumLabel="8. [R] No multibyte chars and wide strings"
+				    value=8
+			    }
+			    {
+				    name="-8"
+				    enumLabel=""
+				    value=8
+				    antonym=true
+			    }
+###############################################################################
+#####				"Comments"				  #####
+###############################################################################
+			    {
+				    name="9"
+				    enumLabel="9. [R] No nested comments"
+				    value=9
+			    }
+			    {
+				    name="-9"
+				    enumLabel=""
+				    value=9
+				    antonym=true
+			    }
+			    {
+				    name="10"
+				    enumLabel="10. [A] No 'commented out' sections of code"
+				    value=10
+			    }
+			    {
+				    name="-10"
+				    enumLabel=""
+				    value=10
+				    antonym=true
+			    }
+###############################################################################
+#####				"Identifiers"				  #####
+###############################################################################
+			    {
+				    name="11"
+				    enumLabel="11. [R] No more than 31 chars to determine an identifier"
+				    value=11
+			    }
+			    {
+				    name="-11"
+				    enumLabel=""
+				    value=11
+				    antonym=true
+			    }
+			    {
+				    name="12"
+				    enumLabel="12. [A] No identifiers with the same names in different namespaces"
+				    value=12
+			    }
+			    {
+				    name="-12"
+				    enumLabel=""
+				    value=12
+				    antonym=true
+			    }
+###############################################################################
+#####				"Types"					  #####
+###############################################################################
+			    {
+				    name="13"
+				    enumLabel="13. [A] Basic types used only in `typedef's"
+				    value=13
+			    }
+			    {
+				    name="-13"
+				    enumLabel=""
+				    value=13
+				    antonym=true
+			    }
+			    {
+				    name="14"
+				    enumLabel="14. [R] `char' always used as `signed char' or `unsigned char'"
+				    value=14
+			    }
+			    {
+				    name="-14"
+				    enumLabel=""
+				    value=14
+				    antonym=true
+			    }
+			    {
+				    name="15"
+				    enumLabel="15. [A] Floating point implementation complies to a standard"
+				    value=15
+			    }
+			    {
+				    name="-15"
+				    enumLabel=""
+				    value=15
+				    antonym=true
+			    }
+			    {
+				    name="16"
+				    enumLabel="16. [R] No underlying use of bits in floating point expressions"
+				    value=16
+			    }
+			    {
+				    name="-16"
+				    enumLabel=""
+				    value=16
+				    antonym=true
+			    }
+			    {
+				    name="17"
+				    enumLabel="17. [R] `typedef' names shall not be reused"
+				    value=17
+			    }
+			    {
+				    name="-17"
+				    enumLabel=""
+				    value=17
+				    antonym=true
+			    }
+###############################################################################
+#####				"Constants"				  #####
+###############################################################################
+			    {
+				    name="18"
+				    enumLabel="18. [A] Numeric constants need suffixes when appropriate"
+				    value=18
+			    }
+			    {
+				    name="-18"
+				    enumLabel=""
+				    value=18
+				    antonym=true
+			    }
+			    {
+				    name="19"
+				    enumLabel="19. [R] No octal constants (other than zero)"
+				    value=19
+			    }
+			    {
+				    name="-19"
+				    enumLabel=""
+				    value=19
+				    antonym=true
+			    }
+###############################################################################
+#####				"Declarations and Definitions"		  #####
+###############################################################################
+			    {
+				    name="20"
+				    enumLabel="20. [R] All objects and functions declared before used"
+				    value=20
+			    }
+			    {
+				    name="-20"
+				    enumLabel=""
+				    value=20
+				    antonym=true
+			    }
+			    {
+				    name="21"
+				    enumLabel="21. [R] No use of same id name in inner and outer scope"
+				    value=21
+			    }
+			    {
+				    name="-21"
+				    enumLabel=""
+				    value=21
+				    antonym=true
+			    }
+			    {
+				    name="22"
+				    enumLabel="22. [A] Function scope declarations whenever possible"
+				    value=22
+			    }
+			    {
+				    name="-22"
+				    enumLabel=""
+				    value=22
+				    antonym=true
+			    }
+			    {
+				    name="23"
+				    enumLabel="23. [A] Static linkage of file scope declarations when possible"
+				    value=23
+			    }
+			    {
+				    name="-23"
+				    enumLabel=""
+				    value=23
+				    antonym=true
+			    }
+			    {
+				    name="24"
+				    enumLabel="24. [R] No internal and external linkages of same identifiers"
+				    value=24
+			    }
+			    {
+				    name="-24"
+				    enumLabel=""
+				    value=24
+				    antonym=true
+			    }
+			    {
+				    name="25"
+				    enumLabel="25. [R] Only one external definition of external identifier"
+				    value=25
+			    }
+			    {
+				    name="-25"
+				    enumLabel=""
+				    value=25
+				    antonym=true
+			    }
+			    {
+				    name="26"
+				    enumLabel="26. [R] Compatible multiple declarations of the same object/function"
+				    value=26
+			    }
+			    {
+				    name="-26"
+				    enumLabel=""
+				    value=26
+				    antonym=true
+			    }
+			    {
+				    name="27"
+				    enumLabel="27. [A] External objects declared in no more than one file"
+				    value=27
+			    }
+			    {
+				    name="-27"
+				    enumLabel=""
+				    value=27
+				    antonym=true
+			    }
+			    {
+				    name="28"
+				    enumLabel="28. [A] The `register' storage class specifier should not be used"
+				    value=28
+			    }
+			    {
+				    name="-28"
+				    enumLabel=""
+				    value=28
+				    antonym=true
+			    }
+			    {
+				    name="29"
+				    enumLabel="29. [R] The use of tag shall agree with its declaration"
+				    value=29
+			    }
+			    {
+				    name="-29"
+				    enumLabel=""
+				    value=29
+				    antonym=true
+			    }
+###############################################################################
+#####				"Initialization"				  #####
+###############################################################################
+			    {
+				    name="30"
+				    enumLabel="30. [R] Automatic variables initialized before used"
+				    value=30
+			    }
+			    {
+				    name="-30"
+				    enumLabel=""
+				    value=30
+				    antonym=true
+			    }
+			    {
+				    name="31"
+				    enumLabel="31. [R] Braces used in non-zero initialization of arrays/structs"
+				    value=31
+			    }
+			    {
+				    name="-31"
+				    enumLabel=""
+				    value=31
+				    antonym=true
+			    }
+			    {
+				    name="32"
+				    enumLabel="32. [R] All or only first enumerator may be explicitly initialized"
+				    value=32
+			    }
+			    {
+				    name="-32"
+				    enumLabel=""
+				    value=32
+				    antonym=true
+			    }
+###############################################################################
+#####				"Operators"				  #####
+###############################################################################
+			    {
+				    name="33"
+				    enumLabel="33. [R] No side effects in right hand operand of `&&' or `||'"
+				    value=33
+			    }
+			    {
+				    name="-33"
+				    enumLabel=""
+				    value=33
+				    antonym=true
+			    }
+			    {
+				    name="34"
+				    enumLabel="34. [R] Operands of `&&' and `||' shall be primary expressions"
+				    value=34
+			    }
+			    {
+				    name="-34"
+				    enumLabel=""
+				    value=34
+				    antonym=true
+			    }
+			    {
+				    name="35"
+				    enumLabel="35. [R] Assignment operators not used in boolean expressions"
+				    value=35
+			    }
+			    {
+				    name="-35"
+				    enumLabel=""
+				    value=35
+				    antonym=true
+			    }
+			    {
+				    name="36"
+				    enumLabel="36. [A] Logical and bitwise operators should not be confused"
+				    value=36
+			    }
+			    {
+				    name="-36"
+				    enumLabel=""
+				    value=36
+				    antonym=true
+			    }
+			    {
+				    name="37"
+				    enumLabel="37. [R] No bitwise operations on signed integer types"
+				    value=37
+			    }
+			    {
+				    name="-37"
+				    enumLabel=""
+				    value=37
+				    antonym=true
+			    }
+			    {
+				    name="38"
+				    enumLabel="38. [R] Right hand value of shift operand must be in range"
+				    value=38
+			    }
+			    {
+				    name="-38"
+				    enumLabel=""
+				    value=38
+				    antonym=true
+			    }
+			    {
+				    name="39"
+				    enumLabel="39. [R] No unary minus operand on unsigned expressions"
+				    value=39
+			    }
+			    {
+				    name="-39"
+				    enumLabel=""
+				    value=39
+				    antonym=true
+			    }
+			    {
+				    name="40"
+				    enumLabel="40. [A] No side effects in the `sizeof' operand"
+				    value=40
+			    }
+			    {
+				    name="-40"
+				    enumLabel=""
+				    value=40
+				    antonym=true
+			    }
+			    {
+				    name="41"
+				    enumLabel="41. [A] Implementation of division determined and documented"
+				    value=41
+			    }
+			    {
+				    name="-41"
+				    enumLabel=""
+				    value=41
+				    antonym=true
+			    }
+			    {
+				    name="42"
+				    enumLabel="42. [R] No comma operators except in control expression of `for' loops"
+				    value=42
+			    }
+			    {
+				    name="-42"
+				    enumLabel=""
+				    value=42
+				    antonym=true
+			    }
+###############################################################################
+#####				"Conversions"				  #####
+###############################################################################
+			    {
+				    name="43"
+				    enumLabel="43. [R] No implicit conversions which might lose information"
+				    value=43
+			    }
+			    {
+				    name="-43"
+				    enumLabel=""
+				    value=43
+				    antonym=true
+			    }
+			    {
+				    name="44"
+				    enumLabel="44. [A] Redundant explicit case should not be used"
+				    value=44
+			    }
+			    {
+				    name="-44"
+				    enumLabel=""
+				    value=44
+				    antonym=true
+			    }
+			    {
+				    name="45"
+				    enumLabel="45. [R] Type casting to or from pointers should not be used"
+				    value=45
+			    }
+			    {
+				    name="-45"
+				    enumLabel=""
+				    value=45
+				    antonym=true
+			    }
+###############################################################################
+#####				"Expressions"				  #####
+###############################################################################
+			    {
+				    name="46"
+				    enumLabel="46. [R] No expression with values dependent on evaluation order"
+				    value=46
+			    }
+			    {
+				    name="-46"
+				    enumLabel=""
+				    value=46
+				    antonym=true
+			    }
+			    {
+				    name="47"
+				    enumLabel="47. [A] No dependence placed on C precedence rules"
+				    value=47
+			    }
+			    {
+				    name="-47"
+				    enumLabel=""
+				    value=47
+				    antonym=true
+			    }
+			    {
+				    name="48"
+				    enumLabel="48. [A] Mixed precision arithmetic must use explicit casting"
+				    value=48
+			    }
+			    {
+				    name="-48"
+				    enumLabel=""
+				    value=48
+				    antonym=true
+			    }
+			    {
+				    name="49"
+				    enumLabel="49. [A] Test value against zero unless expression boolean"
+				    value=49
+			    }
+			    {
+				    name="-49"
+				    enumLabel=""
+				    value=49
+				    antonym=true
+			    }
+			    {
+				    name="50"
+				    enumLabel="50. [R] Floating point values not tested for (in)equality"
+				    value=50
+			    }
+			    {
+				    name="-50"
+				    enumLabel=""
+				    value=50
+				    antonym=true
+			    }
+			    {
+				    name="51"
+				    enumLabel="51. [A] No wraparound in constant unsigned expressions"
+				    value=51
+			    }
+			    {
+				    name="-51"
+				    enumLabel=""
+				    value=51
+				    antonym=true
+			    }
+###############################################################################
+#####				"Control Flow"				  #####
+###############################################################################
+			    {
+				    name="52"
+				    enumLabel="52. [R] There shall be no unreachable code"
+				    value=52
+			    }
+			    {
+				    name="-52"
+				    enumLabel=""
+				    value=52
+				    antonym=true
+			    }
+			    {
+				    name="53"
+				    enumLabel="53. [R] All non-null statements shall have a side-effect"
+				    value=53
+			    }
+			    {
+				    name="-53"
+				    enumLabel=""
+				    value=53
+				    antonym=true
+			    }
+			    {
+				    name="54"
+				    enumLabel="54. [R] Null statement must occur on line by itself"
+				    value=54
+			    }
+			    {
+				    name="-54"
+				    enumLabel=""
+				    value=54
+				    antonym=true
+			    }
+			    {
+				    name="55"
+				    enumLabel="55. [A] No labels except in `switch' statements"
+				    value=55
+			    }
+			    {
+				    name="-55"
+				    enumLabel=""
+				    value=55
+				    antonym=true
+			    }
+			    {
+				    name="56"
+				    enumLabel="56. [R] The `goto' statement shall not be used"
+				    value=56
+			    }
+			    {
+				    name="-56"
+				    enumLabel=""
+				    value=56
+				    antonym=true
+			    }
+			    {
+				    name="57"
+				    enumLabel="57. [R] The `continue' statement shall not be used"
+				    value=57
+			    }
+			    {
+				    name="-57"
+				    enumLabel=""
+				    value=57
+				    antonym=true
+			    }
+			    {
+				    name="58"
+				    enumLabel="58. [R] No `break' statement except in `switch'"
+				    value=58
+			    }
+			    {
+				    name="-58"
+				    enumLabel=""
+				    value=58
+				    antonym=true
+			    }
+			    {
+				    name="59"
+				    enumLabel="59. [R] Dependent statements always enclosed in braces"
+				    value=59
+			    }
+			    {
+				    name="-59"
+				    enumLabel=""
+				    value=59
+				    antonym=true
+			    }
+			    {
+				    name="60"
+				    enumLabel="60. [A] All `if' and `else if' constructs must have an `else'"
+				    value=60
+			    }
+			    {
+				    name="-60"
+				    enumLabel=""
+				    value=60
+				    antonym=true
+			    }
+			    {
+				    name="61"
+				    enumLabel="61. [R] Every non-empty `case' clause terminated with `break'"
+				    value=61
+			    }
+			    {
+				    name="-61"
+				    enumLabel=""
+				    value=61
+				    antonym=true
+			    }
+			    {
+				    name="62"
+				    enumLabel="62. [R] All `switch' statements should contain a `default' clause"
+				    value=62
+			    }
+			    {
+				    name="-62"
+				    enumLabel=""
+				    value=62
+				    antonym=true
+			    }
+			    {
+				    name="63"
+				    enumLabel="63. [A] No boolean values in `switch' expressions"
+				    value=63
+			    }
+			    {
+				    name="-63"
+				    enumLabel=""
+				    value=63
+				    antonym=true
+			    }
+			    {
+				    name="64"
+				    enumLabel="64. [R] `switch' statements need at least one `case'"
+				    value=64
+			    }
+			    {
+				    name="-64"
+				    enumLabel=""
+				    value=64
+				    antonym=true
+			    }
+			    {
+				    name="65"
+				    enumLabel="65. [R] No floating-point variables in loop counters"
+				    value=65
+			    }
+			    {
+				    name="-65"
+				    enumLabel=""
+				    value=65
+				    antonym=true
+			    }
+			    {
+				    name="66"
+				    enumLabel="66. [A] Only loop control expression in `for' statement header"
+				    value=66
+			    }
+			    {
+				    name="-66"
+				    enumLabel=""
+				    value=66
+				    antonym=true
+			    }
+			    {
+				    name="67"
+				    enumLabel="67. [A] No modification of control variables in `for' loop body"
+				    value=67
+			    }
+			    {
+				    name="-67"
+				    enumLabel=""
+				    value=67
+				    antonym=true
+			    }
+###############################################################################
+#####				"Functions"				  #####
+###############################################################################
+			    {
+				    name="68"
+				    enumLabel="68. [R] Functions always declared at file scope"
+				    value=68
+			    }
+			    {
+				    name="-68"
+				    enumLabel=""
+				    value=68
+				    antonym=true
+			    }
+			    {
+				    name="69"
+				    enumLabel="69. [R] No variable argument functions"
+				    value=69
+			    }
+			    {
+				    name="-69"
+				    enumLabel=""
+				    value=69
+				    antonym=true
+			    }
+			    {
+				    name="70"
+				    enumLabel="70. [R] No direct or indirect recursion"
+				    value=70
+			    }
+			    {
+				    name="-70"
+				    enumLabel=""
+				    value=70
+				    antonym=true
+			    }
+			    {
+				    name="71"
+				    enumLabel="71. [R] Functions always have prototype declarations"
+				    value=71
+			    }
+			    {
+				    name="-71"
+				    enumLabel=""
+				    value=71
+				    antonym=true
+			    }
+			    {
+				    name="72"
+				    enumLabel="72. [R] Function declaration and definition match prototypes"
+				    value=72
+			    }
+			    {
+				    name="-72"
+				    enumLabel=""
+				    value=72
+				    antonym=true
+			    }
+			    {
+				    name="73"
+				    enumLabel="73. [R] Identifiers given for all or none of function parameters"
+				    value=73
+			    }
+			    {
+				    name="-73"
+				    enumLabel=""
+				    value=73
+				    antonym=true
+			    }
+			    {
+				    name="74"
+				    enumLabel="74. [R] Declaration and definition match parameter names"
+				    value=74
+			    }
+			    {
+				    name="-74"
+				    enumLabel=""
+				    value=74
+				    antonym=true
+			    }
+			    {
+				    name="75"
+				    enumLabel="75. [R] Every function shall have an explicit return type"
+				    value=75
+			    }
+			    {
+				    name="-75"
+				    enumLabel=""
+				    value=75
+				    antonym=true
+			    }
+			    {
+				    name="76"
+				    enumLabel="76. [R] Functions with no parameters should have `void' parameter"
+				    value=76
+			    }
+			    {
+				    name="-76"
+				    enumLabel=""
+				    value=76
+				    antonym=true
+			    }
+			    {
+				    name="77"
+				    enumLabel="77. [R] Unqualified arguments of callee and caller compatible"
+				    value=77
+			    }
+			    {
+				    name="-77"
+				    enumLabel=""
+				    value=77
+				    antonym=true
+			    }
+			    {
+				    name="78"
+				    enumLabel="78. [R] Number of arguments matches the function prototype"
+				    value=78
+			    }
+			    {
+				    name="-78"
+				    enumLabel=""
+				    value=78
+				    antonym=true
+			    }
+			    {
+				    name="79"
+				    enumLabel="79. [R] Values returned by `void' functions not used"
+				    value=79
+			    }
+			    {
+				    name="-79"
+				    enumLabel=""
+				    value=79
+				    antonym=true
+			    }
+			    {
+				    name="80"
+				    enumLabel="80. [R] No void expressions passed as parameters"
+				    value=80
+			    }
+			    {
+				    name="-80"
+				    enumLabel=""
+				    value=80
+				    antonym=true
+			    }
+			    {
+				    name="81"
+				    enumLabel="81. [A] `const' present when needed on reference parameters"
+				    value=81
+			    }
+			    {
+				    name="-81"
+				    enumLabel=""
+				    value=81
+				    antonym=true
+			    }
+			    {
+				    name="82"
+				    enumLabel="82. [A] A function should have a single point of exit"
+				    value=82
+			    }
+			    {
+				    name="-82"
+				    enumLabel=""
+				    value=82
+				    antonym=true
+			    }
+			    {
+				    name="83"
+				    enumLabel="83. [R] Return expression matches function type"
+				    value=83
+			    }
+			    {
+				    name="-83"
+				    enumLabel=""
+				    value=83
+				    antonym=true
+			    }
+			    {
+				    name="84"
+				    enumLabel="84. [R] No expressions returned from `void' functions"
+				    value=84
+			    }
+			    {
+				    name="-84"
+				    enumLabel=""
+				    value=84
+				    antonym=true
+			    }
+			    {
+				    name="85"
+				    enumLabel="85. [A] Functions called with empty () if no parameters"
+				    value=85
+			    }
+			    {
+				    name="-85"
+				    enumLabel=""
+				    value=85
+				    antonym=true
+			    }
+			    {
+				    name="86"
+				    enumLabel="86. [A] If error information returned, it should be tested"
+				    value=86
+			    }
+			    {
+				    name="-86"
+				    enumLabel=""
+				    value=86
+				    antonym=true
+			    }
+###############################################################################
+#####				"Pre-processor"				  #####
+###############################################################################
+			    {
+				    name="87"
+				    enumLabel="87. [R] Only preprocessing directives before #include"
+				    value=87
+			    }
+			    {
+				    name="-87"
+				    enumLabel=""
+				    value=87
+				    antonym=true
+			    }
+			    {
+				    name="88"
+				    enumLabel="88. [R] Only standard characters in file names for #include"
+				    value=88
+			    }
+			    {
+				    name="-88"
+				    enumLabel=""
+				    value=88
+				    antonym=true
+			    }
+			    {
+				    name="89"
+				    enumLabel="89. [R] #include directive followed by <filename> or \'filename\'"
+				    value=89
+			    }
+			    {
+				    name="-89"
+				    enumLabel=""
+				    value=89
+				    antonym=true
+			    }
+			    {
+				    name="90"
+				    enumLabel="90. [R] C macros only as constant, function-like, or specifier/qualifier"
+				    value=90
+			    }
+			    {
+				    name="-90"
+				    enumLabel=""
+				    value=90
+				    antonym=true
+			    }
+			    {
+				    name="91"
+				    enumLabel="91. [R] Macros not `#define'd or `#undef'd within a block"
+				    value=91
+			    }
+			    {
+				    name="-91"
+				    enumLabel=""
+				    value=91
+				    antonym=true
+			    }
+			    {
+				    name="92"
+				    enumLabel="92. [A] #undef should not be used"
+				    value=92
+			    }
+			    {
+				    name="-92"
+				    enumLabel=""
+				    value=92
+				    antonym=true
+			    }
+			    {
+				    name="93"
+				    enumLabel="93. [A] Function used instead of function-like macro when possible"
+				    value=93
+			    }
+			    {
+				    name="-93"
+				    enumLabel=""
+				    value=93
+				    antonym=true
+			    }
+			    {
+				    name="94"
+				    enumLabel="94. [R] Function-like macro called with all of its arguments"
+				    value=94
+			    }
+			    {
+				    name="-94"
+				    enumLabel=""
+				    value=94
+				    antonym=true
+			    }
+			    {
+				    name="95"
+				    enumLabel="95. [R] No preprocessing directives in function-like macros"
+				    value=95
+			    }
+			    {
+				    name="-95"
+				    enumLabel=""
+				    value=95
+				    antonym=true
+			    }
+			    {
+				    name="96"
+				    enumLabel="96. [R] Use of parentheses in function-like macros"
+				    value=96
+			    }
+			    {
+				    name="-96"
+				    enumLabel=""
+				    value=96
+				    antonym=true
+			    }
+			    {
+				    name="97"
+				    enumLabel="97. [A] Identifiers in preprocessing directives defined before used"
+				    value=97
+			    }
+			    {
+				    name="-97"
+				    enumLabel=""
+				    value=97
+				    antonym=true
+			    }
+			    {
+				    name="98"
+				    enumLabel="98. [R] Only one use of `#' or `##' operator in any one macro"
+				    value=98
+			    }
+			    {
+				    name="-98"
+				    enumLabel=""
+				    value=98
+				    antonym=true
+			    }
+			    {
+				    name="99"
+				    enumLabel="99. [R] Uses of #pragmas documented and explained"
+				    value=99
+			    }
+			    {
+				    name="-99"
+				    enumLabel=""
+				    value=99
+				    antonym=true
+			    }
+			    {
+				    name="100"
+				    enumLabel="100. [R] Correct use of `defined' preprocessor operator"
+				    value=100
+			    }
+			    {
+				    name="-100"
+				    enumLabel=""
+				    value=100
+				    antonym=true
+			    }
+###############################################################################
+#####				"Pointers and Arrays"			  #####
+###############################################################################
+			    {
+				    name="101"
+				    enumLabel="101. [A] Pointer arithmetic should not be used"
+				    value=101
+			    }
+			    {
+				    name="-101"
+				    enumLabel=""
+				    value=101
+				    antonym=true
+			    }
+			    {
+				    name="102"
+				    enumLabel="102. [A] No more than 2 levels of pointer indirection"
+				    value=102
+			    }
+			    {
+				    name="-102"
+				    enumLabel=""
+				    value=102
+				    antonym=true
+			    }
+			    {
+				    name="103"
+				    enumLabel="103. [R] Relational operators not used except on same object"
+				    value=103
+			    }
+			    {
+				    name="-103"
+				    enumLabel=""
+				    value=103
+				    antonym=true
+			    }
+			    {
+				    name="104"
+				    enumLabel="104. [R] No non-constant pointers to functions"
+				    value=104
+			    }
+			    {
+				    name="-104"
+				    enumLabel=""
+				    value=104
+				    antonym=true
+			    }
+			    {
+				    name="105"
+				    enumLabel="105. [R] Function and a pointer to it match in prototypes"
+				    value=105
+			    }
+			    {
+				    name="-105"
+				    enumLabel=""
+				    value=105
+				    antonym=true
+			    }
+			    {
+				    name="106"
+				    enumLabel="106. [R] Address of automatic variable not used out of scope"
+				    value=106
+			    }
+			    {
+				    name="-106"
+				    enumLabel=""
+				    value=106
+				    antonym=true
+			    }
+			    {
+				    name="107"
+				    enumLabel="107. [R] The NULL pointer should not be dereferenced"
+				    value=107
+			    }
+			    {
+				    name="-107"
+				    enumLabel=""
+				    value=107
+				    antonym=true
+			    }
+###############################################################################
+#####				"Structs and Unions"			  #####
+###############################################################################
+			    {
+				    name="108"
+				    enumLabel="108. [R] All members of structures/union fully specified"
+				    value=108
+			    }
+			    {
+				    name="-108"
+				    enumLabel=""
+				    value=108
+				    antonym=true
+			    }
+			    {
+				    name="109"
+				    enumLabel="109. [R] Overlapping variable storage should not be used"
+				    value=109
+			    }
+			    {
+				    name="-109"
+				    enumLabel=""
+				    value=109
+				    antonym=true
+			    }
+			    {
+				    name="110"
+				    enumLabel="110. [R] Unions not used to access sub-parts of larger data types"
+				    value=110
+			    }
+			    {
+				    name="-110"
+				    enumLabel=""
+				    value=110
+				    antonym=true
+			    }
+			    {
+				    name="111"
+				    enumLabel="111. [R] Bit fields can only have `unsigned int' or `signed int' types"
+				    value=111
+			    }
+			    {
+				    name="-111"
+				    enumLabel=""
+				    value=111
+				    antonym=true
+			    }
+			    {
+				    name="112"
+				    enumLabel="112. [R] Bit fields of `signed int' type must be at least 2 bits long"
+				    value=112
+			    }
+			    {
+				    name="-112"
+				    enumLabel=""
+				    value=112
+				    antonym=true
+			    }
+			    {
+				    name="113"
+				    enumLabel="113. [R] All members can be accessed only through their name"
+				    value=113
+			    }
+			    {
+				    name="-113"
+				    enumLabel=""
+				    value=113
+				    antonym=true
+			    }
+###############################################################################
+#####				"Standard Library"			  #####
+###############################################################################
+			    {
+				    name="114"
+				    enumLabel="114. [R] No redefinition of reserved words and standard library names"
+				    value=114
+			    }
+			    {
+				    name="-114"
+				    enumLabel=""
+				    value=114
+				    antonym=true
+			    }
+			    {
+				    name="115"
+				    enumLabel="115. [R] Standard library function names shall not be reused"
+				    value=115
+			    }
+			    {
+				    name="-115"
+				    enumLabel=""
+				    value=115
+				    antonym=true
+			    }
+			    {
+				    name="116"
+				    enumLabel="116. [R] All library production code conforms to MISRA"
+				    value=116
+			    }
+			    {
+				    name="-116"
+				    enumLabel=""
+				    value=116
+				    antonym=true
+			    }
+			    {
+				    name="117"
+				    enumLabel="117. [R] Check validity of value passed to library functions"
+				    value=117
+			    }
+			    {
+				    name="-117"
+				    enumLabel=""
+				    value=117
+				    antonym=true
+			    }
+			    {
+				    name="118"
+				    enumLabel="118. [R] Dynamic heap memory allocation shall not be used"
+				    value=118
+			    }
+			    {
+				    name="-118"
+				    enumLabel=""
+				    value=118
+				    antonym=true
+			    }
+			    {
+				    name="119"
+				    enumLabel="119. [R] The error indicator `errno' shall not be used"
+				    value=119
+			    }
+			    {
+				    name="-119"
+				    enumLabel=""
+				    value=119
+				    antonym=true
+			    }
+			    {
+				    name="120"
+				    enumLabel="120. [R] Macro `offsetof' in <stddef.h> shall not be used"
+				    value=120
+			    }
+			    {
+				    name="-120"
+				    enumLabel=""
+				    value=120
+				    antonym=true
+			    }
+			    {
+				    name="121"
+				    enumLabel="121. [R] <locale.h> and `setlocale' function shall not be used"
+				    value=121
+			    }
+			    {
+				    name="-121"
+				    enumLabel=""
+				    value=121
+				    antonym=true
+			    }
+			    {
+				    name="122"
+				    enumLabel="122. [R] The `setjmp' and `longjmp' facilities shall not be used"
+				    value=122
+			    }
+			    {
+				    name="-122"
+				    enumLabel=""
+				    value=122
+				    antonym=true
+			    }
+			    {
+				    name="123"
+				    enumLabel="123. [R] The facilities of <signal.h> shall not be used"
+				    value=123
+			    }
+			    {
+				    name="-123"
+				    enumLabel=""
+				    value=123
+				    antonym=true
+			    }
+			    {
+				    name="124"
+				    enumLabel="124. [R] No use of <stdio.h> in production code"
+				    value=124
+			    }
+			    {
+				    name="-124"
+				    enumLabel=""
+				    value=124
+				    antonym=true
+			    }
+			    {
+				    name="125"
+				    enumLabel="125. [R] Functions `atof', `atoi', and `atol' not used"
+				    value=125
+			    }
+			    {
+				    name="-125"
+				    enumLabel=""
+				    value=125
+				    antonym=true
+			    }
+			    {
+				    name="126"
+				    enumLabel="126. [R] Functions `abort', `exit', `getenv', and `system' not used"
+				    value=126
+			    }
+			    {
+				    name="-126"
+				    enumLabel=""
+				    value=126
+				    antonym=true
+			    }
+			    {
+				    name="127"
+				    enumLabel="127. [R] The facilities of <time.h> shall not be used"
+				    value=127
+			    }
+			    {
+				    name="-127"
+				    enumLabel=""
+				    value=127
+				    antonym=true
+			    }
+		    }
+		    delimiter="Equal"
+		    supportRanges=true		    
+		    enumAll="all"
+		    enumAllAntonyms="none"
+		    merge="Concat"
+		    optionType="EnumList"
+		    guiLabel="MISRA C 1998 Rules"
+		    guiCategory="C/C++ Compiler;MISRA C 1998"
+		    commonLevel=101
+	    }
+    ################### DoubleCheck #####################
+    	    DoubleCheckLevel {
+	    	{
+			name="-double_check.level=none"
+			value=0
+			enumLabel="None"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-doublecheck.level=none"
+			value=0
+			enumLabel="None"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+		}
+		{
+			name="-double_check.level=low"
+			value=1
+			enumLabel="Low"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-doublecheck.level=low"
+			value=1
+			enumLabel="Low"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-double_check.level=medium"
+			value=2
+			enumLabel="Medium"
+			flags={"TWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-doublecheck.level=medium"
+			value=2
+			enumLabel="Medium"
+			flags={"TWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-double_check.level=high"
+			value=3
+			enumLabel="High"
+			flags={"TWOPASSDOUBLECHECK"}
+		}
+	    	{
+			name="-doublecheck.level=high"
+			value=3
+			enumLabel="High"
+			flags={"TWOPASSDOUBLECHECK"}
+		}
+		{
+			name="-double_check.level=medium_fast"
+			value=4
+			enumLabel="Medium (Fast)"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+                        hidden=true
+		}
+	    	{
+			name="-doublecheck.level=medium_fast"
+			value=4
+			enumLabel="Medium (Fast)"			
+			flags={"NOTWOPASSDOUBLECHECK"}
+                        hidden=true
+		}
+	    	{
+			name="-double_check.level=high_fast"
+			value=5
+			enumLabel="High (Fast)"
+			flags={"NOTWOPASSDOUBLECHECK","POSTMODIFY"}			
+	                hidden=true
+		}
+	        {
+			name="-doublecheck.level=high_fast"
+			value=5
+			enumLabel="High (Fast)"
+			flags={"NOTWOPASSDOUBLECHECK","POSTMODIFY"}			
+	                hidden=true
+		}
+	        delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		guiLabel="DoubleCheck Level"
+		guiCategory="DoubleCheck (C/C++)"
+		commonLevel=1
+	    }
+	    DoubleCheckReport {
+		{
+			name="-double_check.report"
+		}
+		{
+			name="-doublecheck.report"
+		}
+		delimiter="Equal"
+		merge="Replace"
+		optionType="String"
+	        flags={"RELATIVEPATH"}
+		pass={"All"}
+		reportFileOption=true
+	        valueIsFilename=true
+		guiLabel="DoubleCheck Report File"
+		guiCategory="DoubleCheck (C/C++)"
+		commonLevel=1
+	    }
+	    DoubleCheckConfig {
+		{
+			name="-double_check.config="
+		}
+		{
+			name="-doublecheck.config="
+		}
+		delimiter="Touching"
+		merge="Concat"
+		optionType="List"
+                flags={"RELATIVEPATH"}
+		pass={"All"}
+    	        valueIsFilename=true
+		guiLabel="DoubleCheck Config File"
+		guiCategory="DoubleCheck (C/C++)"
+		commonLevel=101		
+	    }
+	    DoubleCheckIgnore {
+	    	{
+			name="-double_check.ignore="
+		}
+	    	{
+			name="-doublecheck.ignore="
+		}
+		delimiter="Touching"
+		merge="Concat"
+		optionType="List"
+		pass={"All"}
+		guiLabel="DoubleCheck Errors to Ignore"
+		guiCategory="DoubleCheck (C/C++)"
+		commonLevel=101		
+	    }
+    	    DoubleCheckSeverity {
+	    	{
+			name="-double_check.stop_build=off"
+			value=0
+			enumLabel="Off"
+		}
+	    	{
+			name="-doublecheck.stop_build=off"
+			value=0
+			enumLabel="Off"
+		}
+	    	{
+			name="-double_check.stop_build=errors"
+			value=1
+			enumLabel="Errors Only"
+		}
+	    	{
+			name="-doublecheck.stop_build=errors"
+			value=1
+			enumLabel="Errors Only"
+		}
+		{
+			name="-double_check.stop_build=warnings"
+			value=2
+			enumLabel="Warnings and Errors"
+		}
+		{
+			name="-doublecheck.stop_build=warnings"
+			value=2
+			enumLabel="Warnings and Errors"
+		}
+	        delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		guiLabel="DoubleCheck Output that Stops Builds"
+		guiCategory="DoubleCheck (C/C++)"
+		commonLevel=101
+	    }
+	    
+	    DelayStaticAnalysis {
+		{
+			name="-static_analyze_at_link"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-nostatic_analyze_at_link"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Delay Static Analysis"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    StaticAnalysisWithoutLink {
+		{
+			name="-SA_without_link"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noSA_without_link"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Static Analyze Without Linking"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    StaticAnalysisBeforeLink {
+		{
+			name="-SA_before_link"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noSA_before_link"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Static Analyze Before Link"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    AnalyzeLibraries {
+		{
+			name="-analyze_libraries"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noanalyze_libraries"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Static Analyze Libraries"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    AnalyzeSharedObjects {
+		{
+			name="-analyze_shared_objects"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noanalyze_shared_objects"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Static Analyze Shared Objects"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    ShowStaticAnalysisSteps {
+		{
+			name="-show_static_analyzing"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noshow_static_analyzing"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Show Static Analysis Steps"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    InfDependencyAnalysis {
+		{
+			name="-inf_depends"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noinf_depends"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Perform .inf File Dependency Analysis"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    InfFrontEnd {
+		{
+			name="-inf_frontend"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noinf_frontend"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Perform .inf File Frontend"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    DistInfFrontEnd {
+		{
+			name="-dist_inf_frontend"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-nodist_inf_frontend"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Distribute .inf File Frontend"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    
+	    DistInfLog {
+	        name="-dist_inf_log"
+		delimiter="Equal"
+		merge="Replace"
+		optionType="String"
+		pass={"All"}
+		guiLabel="Distributed .inf Frontend Log File"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    DistNumInfsPer {
+	        name="-num_infs_per"
+		delimiter="Equal"
+		merge="Replace"
+		optionType="String"
+		pass={"All"}
+		guiLabel="Distributed .inf Files at a Time"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    DistInfsLocal {
+		{
+			name="-dist_inf_local"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-nodist_inf_local"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Distribute .inf Files Locally"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    DistInfDep {
+		{
+			name="-dist_inf_dep"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-nodist_inf_dep"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Use Dependency Information For Distributing"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+	    SkipBadInfs {
+		{
+			name="-skip_bad_infs"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-noskip_bad_infs"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Skip missing or incompatible .inf files"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+	    
+	    SaveIndDep {
+		{
+			name="-save_ind_dep"
+			value=0
+			enumLabel="On"
+		}
+		{
+			name="-nosave_ind_dep"
+			value=1
+			enumLabel="Off"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		pass={"All"}
+		disabled=false
+		guiLabel="Save .inf dependency files"
+		guiCategory="DoubleCheck (C/C++)"
+                hidden=true
+	    }
+
+    ################### Data Types #####################
+    
+	    CharIsSigned {
+		    {
+			    name="--signed_chars"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-signedchar"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-fsigned-char"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="--unsigned_chars"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-unsignedchar"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-funsigned-char"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Signedness of Char Type"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+	    }
+	    BitFieldsAreSigned {
+		    {
+			    name="--signed_fields"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-signedfield"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-fsigned-bitfields"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="--unsigned_fields"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-unsignedfield"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-funsigned-bitfields"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Signedness of Bitfields"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+	    }
+	    PointersAreSigned {
+		    {
+			    name="--signed_pointer"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-signedpointer"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="-signedptr"
+			    value=0
+			    enumLabel="Signed"
+		    }
+		    {
+			    name="--unsigned_pointer"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-unsignedpointer"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    {
+			    name="-unsignedptr"
+			    value=1
+			    enumLabel="Unsigned"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Signedness of Pointers"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+	    }
+	    ShortEnum {
+		    {
+			    name="--short_enum"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-shortenum"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fshort-enums"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_short_enum"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-noshortenum"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-short-enums"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Use Smallest Type Possible for Enum"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+	    }
+	    LongLong {
+	    #### 68k, arm, fp, fr, mips, ppc, sparc, sc, tri, v800, x86
+		    {
+			    name="--long_long"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_long_long"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Long Long Support"
+		    guiCategory="C/C++ Compiler;Data Types"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    Time64Bits {
+	    	{
+			name="-time32"
+			value=0
+			enumLabel="32 bits"
+		}
+		{
+			name="-time64"
+			value=1
+			enumLabel="64 bits"
+		}
+		delimiter="NoArg"
+		merge="Replace"
+		optionType="Enum"
+		guiLabel="Size of time_t"
+		guiCategory="C/C++ Compiler;Data Types"
+		commonLevel=101
+		disabled=true
+	    }
+	    WCharSize {
+		    {
+			name="-wchar_u16"
+			value = 0;
+			enumLabel="u16"
+		    }
+		    {
+			name="-wchar_s32"
+			value = 1;
+			enumLabel="s32"
+		    }
+		    {
+		    # no libraries supplied for u32 variant; completely unsupported.
+			name="-wchar_u32"
+			value = 2;
+			enumLabel="u32"
+			hidden=true
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="WChar Size"
+		    guiCategory="C/C++ Compiler"
+		    disabled=true
+	    }
+
+    ################### Alignment and Packing #####################
+    
+
+	    StructPacking {
+		    {
+			    name="-pack=none"
+			    enumLabel="None"
+			    value=0
+		    }
+#		    {
+#			    name="--pack_alignment none"
+#			    enumLabel="None"
+#			    value=0
+#		    }
+		    {
+			    name="--pack_alignment=none"
+			    enumLabel="None"
+			    value=0
+		    }
+		    {
+			    name="-pack=1"
+			    enumLabel="1-byte"
+			    value=1
+		    }
+#		    {
+#			    name="--pack_alignment 1"
+#			    enumLabel="1-byte"
+#			    value=1
+#		    }
+		    {
+			    name="--pack_alignment=1"
+			    enumLabel="1-byte"
+			    value=1
+		    }
+		    {
+			    name="-Zp1"
+			    enumLabel="1-byte"
+			    value=1
+		    }
+		    {
+			    name="-pack=2"
+			    enumLabel="2-byte"
+			    value=2
+		    }
+#		    {
+#			    name="--pack_alignment 2"
+#			    enumLabel="2-byte"
+#			    value=2
+#		    }
+		    {
+			    name="--pack_alignment=2"
+			    enumLabel="2-byte"
+			    value=2
+		    }
+		    {
+			    name="-Zp2"
+			    enumLabel="2-byte"
+			    value=2
+		    }
+		    {
+			    name="-pack=4"
+			    enumLabel="4-byte"
+			    value=3
+		    }
+#		    {
+#			    name="--pack_alignment 4"
+#			    enumLabel="4-byte"
+#			    value=3
+#		    }
+		    {
+			    name="--pack_alignment=4"
+			    enumLabel="4-byte"
+			    value=3
+		    }
+		    {
+			    name="-Zp4"
+			    enumLabel="4-byte"
+			    value=3
+		    }
+		    {
+			    name="-pack=8"
+			    enumLabel="8-byte"
+			    value=4
+		    }
+#		    {
+#			    name="--pack_alignment 8"
+#			    enumLabel="8-byte"
+#			    value=4
+#		    }
+		    {
+			    name="--pack_alignment=8"
+			    enumLabel="8-byte"
+			    value=4
+		    }
+		    {
+			    name="-Zp8"
+			    enumLabel="8-byte"
+			    value=4
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Packing (Maximum Structure Alignment)"
+		    guiCategory="C/C++ Compiler;Alignment and Packing"
+		    commonLevel=101
+	    }
+	    MisalignPack {
+	    #### v800, ARM
+		    {
+			    name="-misalign_pack"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_misalign_pack"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Misaligned Memory Access"
+		    guiCategory="C/C++ Compiler;Alignment and Packing"
+		    commonLevel=101
+	    }
+	    MisalignAccess {
+	    #### PPC
+		    {
+			    name="-misalign_access"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_misalign_access"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    disabled=true
+		    guiLabel="Misaligned Memory Access"
+		    guiCategory="C/C++ Compiler;Alignment and Packing"
+		    commonLevel=101
+	    }
+	    Target_Alignment {
+	    #### 68K, ARM
+		    align2 {
+			    name="-align2"
+			    value=0
+			    enumLabel="2-Byte Boundary"
+			    disabled=true
+		    }
+		    align4 {
+			    name="-align4"
+			    value=1
+			    enumLabel="4-Byte Boundary"
+		   	    disabled=true
+		    }
+		    align8 {
+			    name="-align8"
+			    value=2
+			    enumLabel="8-Byte Boundary"
+			    disabled=true
+		    }
+		    align16 {
+			    name="-align16"
+			    value=1
+			    enumLabel="16-Byte Boundary"
+		   	    disabled=true
+		    }
+		    align32 {
+			    name="-align32"
+			    value=2
+			    enumLabel="32-Byte Boundary"
+			    disabled=true
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    guiLabel="Data Alignment"
+		    guiCategory="C/C++ Compiler;Alignment and Packing"
+		    commonLevel=101
+	    }
+    
+    ################### Data Allocation #####################
+    
+	    NoCommons {
+		    # ecom only
+		    {
+			    name="--commons"
+			    value=0
+			    enumLabel="Treat as Common Data"
+		    }
+		    {
+			    name="-fcommon"
+			    value=0
+			    enumLabel="Treat as Common Data"
+		    }
+		    {
+			    name="--no_commons"
+			    value=1
+			    enumLabel="Treat as Unique Definitions"
+		    }
+		    {
+			    name="-fno-common"
+			    value=1
+			    enumLabel="Treat as Unique Definitions"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Allocation of Uninitialized Global Variables"
+		    guiCategory="C/C++ Compiler;C/C++ Data Allocation"
+		    commonLevel=101
+	    }
+	    UniqueStrings {
+		    {
+			    name="--unique_strings"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-uniquestrings"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_unique_strings"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-nouniquestrings"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Uniquely Allocate All Strings"
+		    guiCategory="C/C++ Compiler;C/C++ Data Allocation"
+		    commonLevel=101
+	    }
+	    KeepStaticSymbols {
+		    {
+			    name="--keep_static_symbols"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_keep_static_symbols"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Retain Symbols for Unused Statics"
+		    guiCategory="C/C++ Compiler;C/C++ Data Allocation"
+		    commonLevel=101
+	    }
+	    SupportVLAs {
+		    {
+			    name="--vla"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_vla"
+			    value=1
+			    enumLabel="Off"
+		    }	     
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Support Variable Length Arrays"
+		    guiCategory="C/C++ Compiler;C/C++ Data Allocation"
+		    commonLevel=101
+	    }
+
+    ################### Special Tokens #####################
+    
+	    AltTokens {
+		    # C++ and New Generation Only
+		    {
+			    name="--alternative_tokens"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_alternative_tokens"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Alternative Tokens"
+		    guiCategory="C/C++ Compiler;Special Tokens"
+		    commonLevel=101
+%if defined(__DISABLE_NEW_GEN__)
+#		    disabled=true
+%else
+#		    disabled=false
+%endif
+	    }
+	    Kanji {
+		    {
+			    name="-kanji=euc"
+			    value=0
+			    enumLabel="EUC-JP"
+		    }
+		    {
+			    name="-kanji=shiftjis"
+			    value=1
+			    enumLabel="Shift-JIS"
+		    }
+		    {
+			    name="-kanji=euc/shiftjis"
+			    value=2
+			    enumLabel="EUC-JP on Host and Shift-JIS on Target"
+		    }
+		    {
+			    name="-kanji=utf8"
+			    value=3
+			    enumLabel="UTF-8"
+		    }
+		    {
+			    name="-kanji=none"
+			    value=4
+			    enumLabel="No Multibyte Encoding"
+		    }
+		    {
+			    name="-kanji=shiftjis/utf8"
+			    value=5
+			    enumLabel="Shift-JIS on Host and UTF-8 on Target"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Host and Target Character Encoding"
+		    guiCategory="C/C++ Compiler;Special Tokens"
+		    commonLevel=101
+	    }
+    
+    
+    ################### Other C/C++ Options #####################
+    
+	    BF_Analog {
+	    #### BF only
+		    {
+			    name="-analog"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noanalog"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Analog Devices Extensions"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+		    disabled=true
+	    }
+
+	    SlashComment {
+		    {
+			    name="--slash_comment"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-slashcomment"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Xslashcomment"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_slash_comment"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-noslashcomment"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Zslashcomment"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Allow C++ Style Slash Comments in C"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    ANSIAliasing {
+		    {
+			    name="-ansi_alias"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-fstrict-aliasing"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_ansi_alias"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-strict-aliasing"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="ANSI Aliasing Rules"
+		    guiCategory="C/C++ Compiler"
+		    commonLevel=101
+	    }
+	    LongjmpLocals {
+		    {
+			    name="-locals_unchanged_by_longjmp"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-no_locals_unchanged_by_longjmp"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="longjmp() Does Not Restore Local Vars"
+		    guiCategory="C/C++ Compiler"
+	    }
+	    GnuAsm {
+		    {
+			    name="--gnu_asm"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_gnu_asm"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Accept GNU __asm__ statements"
+		    guiCategory="C/C++ Compiler"
+		    disabled=true
+	    }
+	    IdentifierInsertion {
+		    {
+			    name="-ident"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"Compile"}
+		    guiLabel="Identifier Definition"
+		    guiCategory="C/C++ Compiler"
+	    }
+	    IdentOutput {
+		    {
+			    name="-identoutput"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-Znoidentoutput"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-noidentoutput"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-Xnoidentoutput"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="enum"
+		    pass={"All"}
+		    guiLabel="Identifier Support"
+		    guiCategory="C/C++ Compiler"
+	    }	    
+ 	    ArrayAssignment {
+		    {
+			    name="--array_assignment"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_array_assignment"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Accept Array Assignments"
+		    guiCategory="C/C++ Compiler"
+		    hidden=true
+	    }   
+    ################### Namespaces #####################
+    
+	    Namespaces {
+		    {
+			    name="--namespaces"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_namespaces"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Namespace Support"
+		    guiCategory="C/C++ Compiler;C++;Namespaces"
+		    commonLevel=101
+	    }
+	    StdNamespace {
+		    {
+			    name="--using_std"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_using_std"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Implicit Use of 'std' Namespace"
+		    guiCategory="C/C++ Compiler;C++;Namespaces"
+		    commonLevel=101
+	    }
+    ################### Range-Based For Loops #####################
+    
+	    RangeBasedForLoops {
+		    {
+			    name="--range_based_for"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_range_based_for"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Range-Based For Loop Support"
+		    guiCategory="C/C++ Compiler;C++;Range-Based For Loops"
+		    commonLevel=101
+	    }
+
+    ################### Keyword Support #####################
+    
+	    BoolSupport {
+		    {
+			    name="--bool"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_bool"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Bool Type Support"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+	    RestrictSupport {
+		    {
+			    name="--restrict"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_restrict"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="restrict Keyword Support"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+	    NoInlineKeyword {
+		    {
+			    name="--enable_noinline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--__noinline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--disable_noinline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support __noinline Keyword for Templates"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+	    InstantiateExternInline {
+		    {
+			    name="--instantiate_extern_inline"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_instantiate_extern_inline"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Instantiate Extern Inline"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+	    NewStyleCasts {
+		    {
+			    name="--new_style_casts"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_new_style_casts"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="New-Style Cast Support"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+	    AutoTypeSupport {
+		    {
+			    name="--auto_type"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_auto_type"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="auto Type Keyword Support"
+		    guiCategory="C/C++ Compiler;C++;Keyword Support"
+		    commonLevel=101
+	    }
+    
+    ################### Constructors/Destructors #####################
+    
+	    CtorsDtors {
+		    {
+			    name="--enable_ctors_dtors"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_disable_ctors_dtors"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--disable_ctors_dtors"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Constructors/Destructors"
+		    guiCategory="C/C++ Compiler;C++;Constructors/Destructors"
+		    commonLevel=101
+	    }
+	    NewOutsideOfConstructor {
+		    Outside {
+			    name="--new_outside_of_constructor"
+			    value=0
+			    enumLabel="Outside"
+		    }
+		    Inside {
+			    name="--new_inside_of_constructor"
+			    value=1
+			    enumLabel="Inside"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Placement of Class Constructor Call to New"
+		    guiCategory="C/C++ Compiler;C++;Constructors/Destructors"
+		    commonLevel=101
+	    }
+    
+    ################### RTTI Support #####################
+    
+	    RttiSupport {
+		    {
+			    name="--rtti"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="-frtti"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_rtti"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="-fno-rtti"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Run-Time Type Information Support"
+		    guiCategory="C/C++ Compiler;C++;RTTI Support"
+		    commonLevel=101
+	    }
+	    ReadonlyTypeinfo {
+		    {
+			    name="--readonly_typeinfo"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_readonly_typeinfo"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Treatment of RTTI as const"
+		    guiCategory="C/C++ Compiler;C++;RTTI Support"
+		    commonLevel=101
+	    }	
+    
+    ################### Virtual Tables #####################
+    
+	    VirtualTables {
+		    {
+			    name="--force_vtbl"
+			    value=0
+			    enumLabel="Force"
+		    }
+		    {
+			    name="--standard_vtbl"
+			    value=1
+			    enumLabel="Standard"
+		    }
+		    {
+			    name="--suppress_vtbl"
+			    value=2
+			    enumLabel="Suppress"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Virtual Function Definition"
+		    guiCategory="C/C++ Compiler;C++;Virtual Tables"
+		    commonLevel=101
+	    }
+	    ReadonlyVirtualTables {
+		    {
+			    name="--readonly_virtual_tables"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_readonly_virtual_tables"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Treatment of Virtual Tables as 'const'"
+		    guiCategory="C/C++ Compiler;C++;Virtual Tables"
+		    commonLevel=101
+	    }
+	    LargeVirtualTableOffsets {
+		    On {
+			    name="--large_vtbl_offsets"
+			    value=0
+			    enumLabel="Size of Pointer"
+		    }
+		    Off {
+			    name="--no_large_vtbl_offsets"
+			    value=1
+			    enumLabel="Size of Unsigned Short"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    disabled=true
+		    guiLabel="Virtual Function Table Offset Size"
+		    guiCategory="C/C++ Compiler;C++;Virtual Tables"
+		    commonLevel=101
+	    }
+	    
+    
+    ################### Template Options #####################
+	    TemplateInstantiation {
+		    On {
+			    name="--link_once_templates"
+			    value=0
+			    enumLabel="On"
+		    }
+		    Off {
+			    name="--no_link_once_templates"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Link-Once Template Instantiation"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+		    disabled=true
+	    }
+	    GuidingDecls {
+		    {
+			    name="--guiding_decls"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_guiding_decls"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Guiding Declarations of Template Functions"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    ImplicitInclude {
+		    {
+			    name="--implicit_include"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_implicit_include"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Implicit Source File Inclusion"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    ImplicitTypename {
+		    {
+			    name="--implicit_typename"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_implicit_typename"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Implicit Typenames"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    OldSpecializations {
+		    {
+			    name="--old_specializations"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_old_specializations"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Old-Style Specializations"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    OneInstantiationPerObject {
+		    {
+			    name="--one_instantiation_per_object"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--hybrid_one_instantiation_per_object"
+			    value=1
+			    enumLabel="Hybrid"
+		    }
+		    {
+			    name="--no_one_instantiation_per_object"
+			    value=2
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--no_hybrid_one_instantiation_per_object"
+			    value=2
+			    enumLabel="Off"
+		    }		    
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="One Instantiation Per Object"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+%if (GHS_TOOLS_VERSION >= 40) 
+		    flags={"UPDATEEXTRAFILESINLIBRARY"}
+%else
+		    flags={"KEEPEXTRAFILESINLIBRARY"}
+%endif
+	    }	
+	    InstantiationDir {
+		    {
+			    name="--instantiation_dir"
+			    delimiter="Space"
+		    }
+		    {
+			    name="--instantiation_dir"
+			    delimiter="Equal"
+		    }
+		    merge="Replace"
+		    optionType="string"
+		    pass={"All"}
+		    guiLabel="Template Instantiation Output Directory"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+		    flags={"TEMPLATEDIR"}
+	    }
+	    PrelinkObjects {
+		    {
+			    name="--prelink_objects"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_prelink_objects"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Prelink with Instantiations"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+                    hidden=true
+		    commonLevel=101
+	    }
+	    DepName {
+		    {
+			    name="--dep_name"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_dep_name"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Dependent Name Processing"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    ParseTemplates {
+		    {
+			    name="--parse_templates"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_parse_templates"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Parse Templates in Generic Form"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    ExportTemplates {
+		    {
+			    name="--export"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_export"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Recognition of Exported Templates"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }	
+	    PreLinkAgainst{
+		    {
+			    name="-prelink_against"
+			    delimiter="Space"
+		    }
+		    {
+			    name="-prelink_against"
+			    delimiter="Equal"
+		    }
+		    merge="Concat"
+		    optionType="List"
+		    pass={"All"}
+		    guiLabel="Prelink File to Create Template Instances"
+		    guiCategory="C/C++ Compiler;C++;Templates"
+		    commonLevel=101
+	    }
+            DeferFunctionTemplates {
+                    {
+                            name="--defer_parse_function_templates"
+                            value=0
+                            enumLabel="On"
+                    }
+                    {
+                            name="--no_defer_parse_function_templates"
+                            value=1
+                            enumLabel="Off"
+                    }
+                    delimiter="NoArg"
+                    merge="Replace"
+                    optionType="Enum"
+                    pass={"All"}
+                    guiLabel="Deferral of Function Template Parsing"
+                    guiCategory="C/C++ Compiler;C++;Templates"
+                    commonLevel=101
+            }
+    
+
+    ################### C++;Other #####################
+
+	    LinkFilter {
+		    {
+			    name="--link_filter"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--linkfilter"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_link_filter"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    {
+			    name="--nolinkfilter"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Demangling of Names in Linker Messages"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+	    }	
+	    CxxLinkStyle{
+		    {
+			    name="--linker_link"
+			    value=0
+			    enumLabel="Use Linker"
+		    }
+		    {
+			    name="--munch"
+			    value=1
+			    enumLabel="Create Array of Static Constructors/Destructors for Post-Link Phase"
+		    }
+		    {
+			    name="--mkctors"
+			    value=1
+			    enumLabel="Create Array of Static Constructors/Destructors for Post-Link Phase"
+		    }
+		    {
+			    name="--patch_link"
+			    value=1
+			    enumLabel="Create Array of Static Constructors/Destructors for Post-Link Phase"
+		    }
+		    {
+			    name="--nocpp"
+			    value=2
+			    enumLabel="Do not Generate Constructors/Destructors"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="C++ Linking Method"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+	    }
+	    DistinctFunctions {
+		    {
+			    name="--c_and_cpp_functions_are_distinct"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_c_and_cpp_functions_are_distinct"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Distinct C and C++ Functions"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+	    }    
+	    ImplicitExternCTypeConversion {
+		    {
+			    name="--implicit_extern_c_type_conversion"
+			    value=0
+			    enumLabel="On"
+		    }
+		    {
+			    name="--no_implicit_extern_c_type_conversion"
+			    value=1
+			    enumLabel="Off"
+		    }
+		    delimiter="NoArg"
+		    merge="Replace"
+		    optionType="Enum"
+		    pass={"All"}
+		    guiLabel="Support for Implicit Extern C Type Conversion"
+		    guiCategory="C/C++ Compiler;Advanced C++ Options"
+	    }	
+    }
+}

@@ -1,0 +1,168 @@
+// cstdlib standard header
+#ifndef _CSTDLIB_
+#define _CSTDLIB_
+
+#if defined(__ghs) || defined(__SC3__)
+#include <stdlib.h>
+
+#if !defined(__VXWORKS) && !defined(__OSE)
+// These belong here and not in <stdlib.h>, according to ISO C++ standard
+#if !defined(__windows) || defined(_MSC_EXTENSIONS)
+inline long abs(long _X) 	    {return (labs(_X)); }
+#endif
+#if !defined (__MSVC_LIB_VERSION) || (__MSVC_LIB_VERSION < 9)
+inline ldiv_t div(long _X, long _Y) {return (ldiv(_X, _Y)); }
+#endif
+#if defined(__LLONG_BIT)
+inline long long abs(long long _X)  {return (llabs(_X)); }
+inline lldiv_t div(long long _X, long long _Y) {return (lldiv(_X, _Y)); }
+#endif
+#endif
+
+#if defined(__NAMESPACES) && !defined(__EMBEDDED_CXX_HEADERS)
+namespace std {
+    using ::size_t;
+    using ::div_t;
+    using ::ldiv_t;
+#if defined(__LLONG_BIT) && !defined(OSE_STDLIB_H)
+    using ::lldiv_t;
+    using ::llabs;
+    using ::lldiv;
+    using ::atoll;
+    using ::strtoll;
+    using ::strtoull;
+#endif
+    using ::abort;
+    using ::abs;
+    using ::atexit;
+    using ::atoi;
+    using ::atol;
+    using ::bsearch;
+    using ::calloc;
+    using ::div;
+    using ::exit;
+    using ::free;
+    using ::getenv;
+    using ::labs;
+    using ::ldiv;
+    using ::malloc;
+    using ::mbstowcs;
+    using ::qsort;
+    using ::rand;
+    using ::realloc;
+    using ::srand;
+    using ::strtol;
+    using ::strtoul;
+    using ::system;
+#if !defined(__NoFloat)
+    using ::atof;
+    using ::strtod;
+#if !defined(_WIN32) && !defined(OSE_STDLIB_H) && !defined(_MC_EXEC)
+    using ::strtof;
+#endif
+#endif	// __NoFloat
+    using ::mblen;
+    using ::mbtowc;
+    using ::wcstombs;
+    using ::wctomb;
+}
+#endif  // __NAMESPACES
+#else /* !__ghs */
+
+#include <yvals.h>
+
+#ifdef _STD_USING
+ #undef _STD_USING
+  #include <stdlib.h>
+ #define _STD_USING
+
+ #if defined(__GLIBC__)
+_STD_BEGIN
+		/* long OVERLOADS */
+inline long abs(long _Left)
+	{	// compute abs
+	return (labs(_Left));
+	}
+
+inline ldiv_t div(long _Left, long _Right)
+	{	// compute quotient and remainder
+	return (ldiv(_Left, _Right));
+	}
+_STD_END
+ #endif /* defined(__GNUC__) */
+
+#else /* _STD_USING */
+ #include <stdlib.h>
+
+ #ifdef _GLOBAL_USING
+
+ #if defined(__APPLE__)	/* compiler test */
+_C_STD_BEGIN
+_C_LIB_DECL
+_NO_RETURN(abort(void));
+_END_C_LIB_DECL
+_C_STD_END
+ #endif /* defined(__APPLE__) */
+
+ #if defined(__BORLANDC__)	/* compiler test */
+_C_STD_BEGIN
+using std::abs;
+_C_STD_END
+ #endif /* defined(__BORLANDC__) */
+
+_STD_BEGIN
+
+ #if defined(__SUNPRO_CC) && !defined(__sun)	/* compiler test */ \
+	|| defined(__GLIBC__) || defined(__BORLANDC__) \
+	|| defined(__MINGW32__) || defined(__APPLE__)
+		/* long OVERLOADS */
+inline long abs(long _Left)
+	{	// compute abs
+	return (labs(_Left));
+	}
+
+inline ldiv_t div(long _Left, long _Right)
+	{	// compute quotient and remainder
+	return (ldiv(_Left, _Right));
+	}
+ #endif /* defined(__SUNPRO_CC) etc. */
+
+using _CSTD size_t; using _CSTD div_t; using _CSTD ldiv_t;
+
+using _CSTD abort; using _CSTD abs; using _CSTD atexit;
+#if !(defined(__ghs) || defined(__SC3__)) || !defined(__NoFloat)
+using _CSTD atof; 
+#endif /* !__ghs || !__NoFloat */
+using _CSTD atoi; using _CSTD atol;
+using _CSTD bsearch; using _CSTD calloc; using _CSTD div;
+using _CSTD exit; using _CSTD free; using _CSTD getenv;
+using _CSTD labs; using _CSTD ldiv; using _CSTD malloc;
+using _CSTD mblen; using _CSTD mbstowcs; using _CSTD mbtowc;
+using _CSTD qsort; using _CSTD rand; using _CSTD realloc;
+using _CSTD srand; 
+#if !(defined(__ghs) || defined(__SC3__)) || !defined(__NoFloat)
+using _CSTD strtod; 
+#endif /* !__ghs || !__NoFloat */
+using _CSTD strtol;
+using _CSTD strtoul; using _CSTD system;
+using _CSTD wcstombs; using _CSTD wctomb;
+
+ #if _HAS_C9X
+using _CSTD atoll; using _CSTD llabs; using _CSTD lldiv;
+using _CSTD strtof; using _CSTD strtold;
+using _CSTD strtoll; using _CSTD strtoull;
+using _CSTD _Exit;
+ #endif /* _HAS_C9X */
+
+_STD_END
+ #endif /* _GLOBAL_USING */
+
+#endif /* _STD_USING */
+
+#endif /* !__ghs */
+#endif /* _CSTDLIB_ */
+
+/*
+ * Copyright (c) 1992-2003 by P.J. Plauger.  ALL RIGHTS RESERVED.
+ * Consult your license regarding permissions and restrictions.
+V4.02:0324 */

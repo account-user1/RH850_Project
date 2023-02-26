@@ -1,0 +1,37 @@
+<!-- Entities -->
+
+<!ENTITY ti.DataConstr     "DataConstr">
+<!ENTITY ti.Package        "Package">
+
+<!-- Elements -->
+
+<!ELEMENT DataConstr  (%C.DefAttr;, ATTRLink*, GenAttrList?)>
+
+<!ATTLIST DataConstr %A.ConfigItem; 
+          PhysSpecified        CDATA '0'
+          PhysLowerLimit       CDATA '0'
+          PhysUpperLimit       CDATA '255'
+          PhysLowerLimitClosed CDATA '0'
+          PhysUpperLimitClosed CDATA '0'
+          PhysLowerLimitInfinity CDATA '0'
+          PhysUpperLimitInfinity CDATA '0'
+          IntSpecified         CDATA '0'
+          IntLowerLimit        CDATA '0'
+          IntUpperLimit        CDATA '255'
+          IntLowerLimitClosed  CDATA '0'
+          IntUpperLimitClosed  CDATA '0'
+          IntLowerLimitInfinity CDATA '0'
+          IntUpperLimitInfinity CDATA '0'
+          PackageLink NMTOKEN #FIXED "&ti.Package;"
+>
+
+<!-- Links -->
+
+<!ELEMENT DataConstrLink EMPTY>
+
+<!ATTLIST DataConstrLink 
+          %A.LinkGUID;
+          %A.LinkChildGUID;
+          %A.LinkVersion;
+          %A.LinkType; "&ti.DataConstr;"
+>

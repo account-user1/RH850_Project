@@ -1,0 +1,909 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "IDE")
+
+%if file_exists("${__DIR__}/demo_basic_debug")
+component.basic_debug_demo {
+#	display_type_name = "Basic Debugging Demo (C)"
+	display_object_name = "Basic Debugging"
+#	display_group = "Demos"
+#	description  = "A small program used to demonstrate some of the basic "
+#	description += "debugging features of the MULTI IDE."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.basic_debug_demo" }
+
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddBasicDebugC"
+	    edit.cmd_str = "EditBasicDebugC"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_dbg"
+	    }
+  	    tf_ProjectName {
+		default="basic_dbg"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE basic_debug_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_basic_debug" }
+%if defined(SUPPRESS_WARNINGS)
+% if !defined(SUPPRESS_WARNINGS_OPTION)
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT -w" }
+% else
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT ${SUPPRESS_WARNINGS_OPTION}" }
+% endif
+%endif
+			15 += { "defineLocal RC_SCRIPT_NAME linked_list.rc" }
+			20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_basic_debug_demo" }
+		    }
+		}
+	    }
+	}
+
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_double_check")
+component.double_check_demo {
+	display_object_name = "DoubleCheck"
+#	description  = "This example demonstrates the capabilities of the "
+#	description += "MULTI source analysis tool, DoubleCheck.  A library of "
+#	description += "C and C++ functions containing real bugs from "
+#	description += "production code is built with DoubleCheck enabled.  "
+#	description += "The bugs are identified and can be viewed in a report."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.double_check_demo" }
+
+	use_template = "ExampleLibraryT"
+
+	is_nameable = true
+
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddDoubleCheckDemo"
+	    edit.cmd_str = "EditDoubleCheckDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_double_check"
+	    }
+  	    tf_ProjectName {
+		default="double_check"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE double_check_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_double_check" }
+			20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_double_check_demo" }
+		    }
+		}
+	    }
+	}
+
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_catalog")
+component.catalog_demo {
+#	display_type_name = "Catalog Demo (C/C++)"
+	display_object_name = "Advanced Debugging"
+#	display_group = "Demos"
+#	description  = "A small program with several files and classes "
+#	description += "written in C and C++.  This program demonstrates a "
+#	description += "variety of MULTI's capabilities including Host I/O, "
+#	description += "Runtime Error Checking, Mixed-Language Debugging, and "
+#	description += "Formatted Display of Variables."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.catalog_demo" }
+	
+	use_template = "ExampleProgramT"
+
+	is_nameable = true
+
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddCatalogCxx"
+	    edit.cmd_str = "EditCatalogCxx"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_catalog"
+	    }
+  	    tf_ProjectName {
+		default="catalog"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE catalog_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_catalog" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_catalog_demo" }
+%if defined(CATALOG_DEMO_EXTRA_OPT)
+			200 += { "defineLocal OPTION_STRING ${CATALOG_DEMO_EXTRA_OPT}" }
+	    	        201 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_editor_xref")
+component.editor_xref_demo {
+#	display_type_name = "Editor Cross-References Demo (C/C++)"
+	display_object_name = "Editor Cross-References"
+#	display_group = "Demos"
+#	description  = "This example demonstrates the cross-reference "
+#	description += "capabilities of the MULTI Editor including "
+#	description += "Function Autocompletion, Jump to Function Definition, "
+#	description += "and Accessing Complete Cross-Reference Information."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.editor_xref_demo" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddEditorXrefDemo"
+	    edit.cmd_str = "EditEditorXrefDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_xref"
+	    }
+  	    tf_ProjectName {
+		default="edit_xref"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE editor_xref_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_editor_xref" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_editor_xref_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_coverage")
+component.coverage_demo {
+#	display_type_name = "Code Coverage Demo (C)"
+	display_object_name = "Code Coverage"
+#	display_group = "Demos"
+#	description  = "This example demonstrates the code coverage analysis "
+#	description += "capabilities of the MULTI IDE."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.coverage_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddCodeCoverDemo"
+	    edit.cmd_str = "EditCodeCoverDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_covr"
+	    }
+  	    tf_ProjectName {
+		default="coverage"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE coverage_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_coverage" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_coverage_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_rtec")
+component.rtec_demo {
+#	display_type_name = "Run-Time Error Checking Demo (C)"
+	display_object_name = "Run-Time Error Checking"
+#	display_group = "Demos"
+#	description  = "This example demonstrates the built-in run-time error "
+#	description += "debugging capabilities of the MULTI IDE."
+
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.rtec_demo" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddRtecDemo"
+	    edit.cmd_str = "EditRtecDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_rtec"
+	    }
+  	    tf_ProjectName {
+		default="rtec"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE rtec_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_rtec" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_rtec_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_custom_rtec")
+component.custom_rtec_demo {
+#	display_type_name = "Custom Run-Time Error Checking Demo (C)"
+	display_object_name = "Custom Run-Time Error Checking"
+#	display_group = "Demos"
+#	description  = "This example demonstrates how to set up a custom "
+#	description += "run-time error handler so that programming bugs "
+#	description += "can be caught even when the MULTI Debugger is not "
+#	description += "connected."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.custom_rtec_demo" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddCustomRtecDemo"
+	    edit.cmd_str = "EditCustomRtecDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_rtec_cust"
+	    }
+  	    tf_ProjectName {
+		default="custom_rtec"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE custom_rtec_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_custom_rtec" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_custom_rtec_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_fork_debug")
+component.fork_debug_demo {
+#	display_type_name = "Fork Debugging Demo (C)"
+	display_object_name = "Fork Debugging"
+#	display_group = "Demos;Process Debugging"
+#	description  = "This example demonstrates using the MULTI Debugger to "
+#	description += "attach to and debug a child process immediately after "
+#	description += "it is created using the fork system call."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.fork_debug_demo" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddForkDebugDemo"
+	    edit.cmd_str = "EditForkDebugDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_fork"
+	    }
+  	    tf_ProjectName {
+		default="fork_dbg"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE fork_debug_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_fork_debug" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_fork_debug_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_exec_debug")
+component.exec_debug_demo {
+#	display_type_name = "Exec Debugging Demo (C)"
+	display_object_name = "Exec Debugging"
+#	display_group = "Demos;Process Debugging"
+#	description  = "This example demonstrates using the MULTI Debugger to "
+#	description += "attach to and debug a child process immediately after "
+#	description += "it is created using the exec system call."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.exec_debug_demo" }
+
+	use_template = "ExampleProjectT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddExecDebugDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_exec"
+	    }
+  	    tf_ProjectName {
+		default="exec_dbg"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE exec_debug_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_exec_debug" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_exec_debug_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_thread_debug")
+component.thread_debug_demo {
+#	display_type_name = "Thread Debugging Demo (C)"
+	display_object_name = "Thread Debugging"
+#	display_group = "Demos;Process Debugging"
+#	description  = "This example demonstrates using the MULTI Debugger to "
+#	description += "debug a multi-threaded program."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.thread_debug_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddThreadDebugDemo"
+	    edit.cmd_str = "EditThreadDebugDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_thread"
+	    }
+  	    tf_ProjectName {
+		default="thread_dbg"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE thread_debug_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_thread_debug" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_thread_debug_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_ddv")
+component.ddv_demo {
+#	display_type_name = "Graph Visualization Demo (C)"
+	display_object_name = "Data Graphing (C)"
+#	display_group = "Demos;Data Visualization"
+#	description  = "This C example demonstrates the data visualization "
+#	description += "capabilities of the MULTI Debugger."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.ddv_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddGraphDataVisDemo"
+	    edit.cmd_str = "EditGraphDataVisDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_vis"
+	    }
+  	    tf_ProjectName {
+		default="visualize"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE ddv_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_ddv" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_ddv_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_ddv_cxx")
+component.ddv_cxx_demo {
+#	display_type_name = "Graph Visualization Demo (C++)"
+	display_object_name = "Data Graphing (C++)"
+#	display_group = "Demos;Data Visualization"
+	description  = "This C++ example demonstrates the data visualization "
+	description += "capabilities of the MULTI Debugger."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.ddv_cxx_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddGraphDataVisCxxDemo"
+	    edit.cmd_str = "EditGraphDataVisCxxDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_vis_cc"
+	    }
+  	    tf_ProjectName {
+		default="visualize_cc"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE ddv_cxx_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_ddv_cxx" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_ddv_cxx_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_ddv_tree")
+component.ddv_tree_demo {
+#	display_type_name = "Tree Visualization Demo (C)"
+	display_object_name = "Data Tree Visualization"
+#	display_group = "Demos;Data Visualization"
+#	description  = "This example demonstrates the data visualization "
+#	description += "capabilities of the MULTI Debugger."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.ddv_tree_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddTreeDataVisDemo"
+	    edit.cmd_str = "EditTreeDataVisDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_treevis"
+	    }
+  	    tf_ProjectName {
+		default="visualize_tree"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE ddv_tree_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_ddv_tree" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_ddv_tree_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_stl_vis")
+component.stl_vis_demo {
+#	display_type_name = "STL Visualization Demo (C++)"
+	display_object_name = "STL Debugging"
+#	display_group = "Demos;Data Visualization"
+#	description  = "This example demonstrates the data visualization "
+#	description += "capabilities of the MULTI Debugger."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.stl_vis_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddSTLDataVisDemo"
+	    edit.cmd_str = "EditSTLDataVisDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_stlvis"
+	    }
+  	    tf_ProjectName {
+		default="visualize_stl"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE stl_vis_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_stl_vis" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_stl_vis_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_pathanalyzer")
+component.demo_pathanalyzer {
+	display_object_name = "PathAnalyzer"
+	
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.demo_pathanalyzer" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddPADemo"
+	    edit.cmd_str = "EditPADemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_pathanalyzer"
+	    }
+  	    tf_ProjectName {
+		default="pa_demo"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE pa_demo" }
+  	            }
+	            standard {
+%if defined(SUPPRESS_WARNINGS)
+% if !defined(SUPPRESS_WARNINGS_OPTION)
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT -w" }
+% else
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT ${SUPPRESS_WARNINGS_OPTION}" }
+% endif
+%endif
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_pathanalyzer" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_pa_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_pathanalyzer_advanced")
+component.demo_pathanalyzer_advanced {
+	display_object_name = "PathAnalyzer: Advanced Demo"
+	
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.demo_pathanalyzer_advanced" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddPADemo"
+	    edit.cmd_str = "EditPADemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_pathanalyzer_advanced"
+	    }
+  	    tf_ProjectName {
+		default="pa_demo_adv"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE pa_demo_adv" }
+  	            }
+	            standard {
+%if defined(SUPPRESS_WARNINGS)
+% if !defined(SUPPRESS_WARNINGS_OPTION)
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT -w" }
+% else
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT ${SUPPRESS_WARNINGS_OPTION}" }
+% endif
+%endif
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_pathanalyzer_advanced" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_pa_demo_adv" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_dsp")
+component.dsp_demo {
+#	display_type_name = "DSP Visualization Demo (C)"
+	display_object_name = "DSP Visualization with MATLAB"
+#	display_group = "Demos;Data Visualization"
+#	description  = "This example demonstrates integrating MATLAB "
+#	description += "and the MULTI IDE."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.dsp_demo" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddDSPVisDemo"
+	    edit.cmd_str = "EditDSPVisDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_dspvis"
+	    }
+  	    tf_ProjectName {
+		default="visualize_dsp"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE dsp_demo" }
+  	            }
+	            standard {
+%if defined(SUPPRESS_WARNINGS)
+% if !defined(SUPPRESS_WARNINGS_OPTION)
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT -w" }
+% else
+			15 += { "defineLocal SUPPRESS_WARNINGS_OPT ${SUPPRESS_WARNINGS_OPTION}" }
+% endif
+%endif
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_dsp" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_dsp_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_memleak")
+component.memleak_demo {
+#	display_type_name = "Memory Leak Detection Demo (C)"
+	display_object_name = "Memory Leak Detection"
+#	display_group = "Demos"
+#	description  = "This example demonstrates the memory leak detection "
+#	description += "capabilities of the MULTI IDE."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.memleak_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddMemLeakDemo"
+	    edit.cmd_str = "EditMemLeakDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_leak"
+	    }
+  	    tf_ProjectName {
+		default="memleak"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE memleak_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_memleak" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_memleak_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_profile")
+component.profile_demo {
+	#display_type_name = "Profiling Demo (C)"
+	display_object_name = "Profiling"
+#	display_group = "Demos"
+#	description  = "This example demonstrates the profiling capabilities "
+#	description += "of the MULTI IDE."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.profile_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddProfileDemo"
+	    edit.cmd_str = "EditProfileDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_prof"
+	    }
+  	    tf_ProjectName {
+		default="profile"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE profile_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_profile" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_profile_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_timing")
+component.timing_demo {
+#	display_type_name = "Performance Timing Demo (C)"
+	display_object_name = "Performance Timing"
+#	display_group = "Demos"
+	
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.timing_demo" }
+	
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddTimingDemo"
+	    edit.cmd_str = "EditTimingDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_perf"
+	    }
+  	    tf_ProjectName {
+		default="timing"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE timing_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_timing" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_timing_demo" }
+%if streq(__TOOLCHAIN__, "GREEN_HILLS")
+			200 += { "defineLocal OPTION_STRING -pg" }
+	    	        201 += { "python ${__SHARED_PY_DIR__}/utils.py set_option_in_self_project" }
+%endif
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%if file_exists("${__DIR__}/demo_custom_filetypes")
+component.custom_filetypes_demo {
+#	display_type_name = "Custom File Types Example (C)"
+	display_object_name = "Custom File Types"
+#	display_group = "Demos"
+#	description  = "This example project demonstrates the custom file "
+#	description += "type features of the MULTI Project Manager."
+
+	documentation_files = { "${__DIR__}/shared_docs.gpd" }
+	doc_anchor_ids = { "multi.mpm.demo_custom_filetypes" }
+
+	use_template = "ExampleProgramT"
+	is_nameable = true
+	disabled = true
+
+	dlg_info {
+	    add.cmd_str = "AddCustomFileTypeDemo"
+	    edit.cmd_str = "EditCustomFileTypeDemo"
+	}
+
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_filetype"
+	    }
+  	    tf_ProjectName {
+		default="custom_filetype"
+	        actions.add {
+	            intermediate {
+	                10 += { "defineLocal COMP_TYPE custom_filetypes_demo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_custom_filetypes" }
+	                20 += { "python ${__SHARED_PY_DIR__}/shared_demos.py copy_custom_filetypes_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+
+
+%endif

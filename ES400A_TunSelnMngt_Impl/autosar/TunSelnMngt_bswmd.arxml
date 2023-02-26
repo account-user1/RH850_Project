@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://autosar.org/schema/r4.0">
+    <AR-PACKAGES>
+        <AR-PACKAGE UUID="9c5cf824-7831-4a06-877a-49e2b3d79a3b">
+            <SHORT-NAME>Nexteer</SHORT-NAME>
+            <AR-PACKAGES>
+                <AR-PACKAGE UUID="">
+                    <SHORT-NAME>EcucDefs_TunSelnMngt</SHORT-NAME>
+                    <ELEMENTS>
+                        <ECUC-DEFINITION-COLLECTION UUID="ECUS:627c9111-ec39-446b-a5a8-48bdb7d3bcc8">
+                            <SHORT-NAME>NexteerParameterDefinition_TunSelnMngt</SHORT-NAME>
+                            <MODULE-REFS>
+                                <MODULE-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt</MODULE-REF>
+                            </MODULE-REFS>
+                        </ECUC-DEFINITION-COLLECTION>
+                        <ECUC-MODULE-DEF UUID="">
+                            <SHORT-NAME>TunSelnMngt</SHORT-NAME>
+                            <DESC>
+                                <L-2 L="EN">Calibration configuration and grouping for Tuning Selection Management.</L-2>
+                            </DESC>
+                            <CATEGORY>VENDOR_SPECIFIC_MODULE_DEFINITION</CATEGORY>
+                            <ADMIN-DATA>
+                                <DOC-REVISIONS>
+                                    <DOC-REVISION>
+                                        <REVISION-LABEL>1.0.0</REVISION-LABEL>
+                                        <STATE>released</STATE>
+                                        <ISSUED-BY>Nexteer</ISSUED-BY>
+                                        <DATE>2015-09-17</DATE>
+                                        <MODIFICATIONS>
+                                            <MODIFICATION>
+                                                <CHANGE>
+                                                    <L-2 L="EN">Initial Release</L-2>
+                                                </CHANGE>
+                                                <REASON>
+                                                    <L-2 L="EN"></L-2>
+                                                </REASON>
+                                            </MODIFICATION>
+                                        </MODIFICATIONS>
+                                    </DOC-REVISION>
+                                </DOC-REVISIONS>
+                            </ADMIN-DATA>
+                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                            <REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt</REFINED-MODULE-DEF-REF>
+                            <SUPPORTED-CONFIG-VARIANTS>
+                                <SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+                            </SUPPORTED-CONFIG-VARIANTS>
+                            <CONTAINERS>
+                                <!-- CONTAINER DEFINITION: TunSelnMngtCommon -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>TunSelnMngtCommon</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the common settings for Tuning Selection Management.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: TunSelnMngt Common: Online Calibration Ram Size -->
+                                        <ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+                                            <SHORT-NAME>OnlineCalibrationRamSize</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">This value sets the size of the RAM variable to hold the calibration components when online calibration is active. Size is in bytes, 0 will disable online calibration support.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES />
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                            <MAX>20480</MAX>
+                                            <MIN>0</MIN>
+                                        </ECUC-INTEGER-PARAM-DEF>
+                                        <!-- PARAMETER DEFINITION: TunSelnMngtCommon: Includes -->
+                                        <ECUC-STRING-PARAM-DEF UUID="">
+                                            <SHORT-NAME>TunSelnMngtIncludes</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">List of header files to be included.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <ORIGIN>Nexteer</ORIGIN>
+                                        </ECUC-STRING-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                <!-- CONTAINER DEFINITION: RamAcsCfg -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>XcpWriteAccess</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">Contains the settings for XCP Write Access.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: XcpWrRamAcs: Full RAM Access -->
+                                        <ECUC-ENUMERATION-PARAM-DEF UUID="">
+                                            <SHORT-NAME>EnableDevelopmentMode</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">If TRUE, XCP will have write access to the regions defined in both production and development . If FALSE, XCP write access will be limited to the regions defined for production only.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES>
+                                                <IMPLEMENTATION-CONFIG-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                                                </IMPLEMENTATION-CONFIG-CLASS>
+                                                <IMPLEMENTATION-CONFIG-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-LINK-TIME</CONFIG-VARIANT>
+                                                </IMPLEMENTATION-CONFIG-CLASS>
+                                                <IMPLEMENTATION-CONFIG-CLASS>
+                                                    <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                                                    <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                                                </IMPLEMENTATION-CONFIG-CLASS>
+                                            </IMPLEMENTATION-CONFIG-CLASSES>
+                                            <ORIGIN>Nexteer</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <DEFAULT-VALUE>STD_OFF</DEFAULT-VALUE>
+                                            <LITERALS>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>STD_OFF</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                                <ECUC-ENUMERATION-LITERAL-DEF UUID="">
+                                                    <SHORT-NAME>STD_ON</SHORT-NAME>
+                                                </ECUC-ENUMERATION-LITERAL-DEF>
+                                            </LITERALS>
+                                        </ECUC-ENUMERATION-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                    </REFERENCES>
+                                    <SUB-CONTAINERS>
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <!-- CONTAINER DEFINITION: XcpWrRamAcs: Ram Region -->
+                                            <SHORT-NAME>XcpWriteAccessRegions</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Container for XCP write access regions.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Starting Address -->
+                                                <ECUC-INTEGER-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>StartingAddress</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Starting Address of the RAM range.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES/>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                    <MAX>4294967296</MAX>
+                                                    <MIN>0</MIN>
+                                                </ECUC-INTEGER-PARAM-DEF>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Ending Address -->
+                                                <ECUC-INTEGER-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>EndingAddress</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Ending Address of the RAM range.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES/>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                    <MAX>4294967296</MAX>
+                                                    <MIN>0</MIN>
+                                                </ECUC-INTEGER-PARAM-DEF>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Use Symbol Name -->
+                                                <ECUC-BOOLEAN-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>UseSymbolName</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">If TRUE, symbol names for start and end address will be used. If FALSE, raw addresses will be used.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                </ECUC-BOOLEAN-PARAM-DEF>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Production Mode Only -->
+                                                <ECUC-BOOLEAN-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>ProductionModeOnly</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">If TRUE, region will only be used for production mode. If FALSE, region will be enabled for production and development modes.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                </ECUC-BOOLEAN-PARAM-DEF>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Starting Address Symbol-->
+                                                <ECUC-STRING-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>StartingAddressSymbol</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Symbol name for the starting address of RAM</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES />
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <ECUC-STRING-PARAM-DEF-VARIANTS>
+                                                        <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                                            <DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+                                                        </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                                    </ECUC-STRING-PARAM-DEF-VARIANTS>
+                                                </ECUC-STRING-PARAM-DEF>
+                                                <!-- PARAMETER DEFINITION: XcpWrRamAcs: Ram Region: Ending Address Symbol-->
+                                                <ECUC-STRING-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>EndingAddressSymbol</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Symbol name for the ending address of RAM</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES />
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <ECUC-STRING-PARAM-DEF-VARIANTS>
+                                                        <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                                            <DEFAULT-VALUE>NULL_PTR</DEFAULT-VALUE>
+                                                        </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                                                    </ECUC-STRING-PARAM-DEF-VARIANTS>
+                                                </ECUC-STRING-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                    </SUB-CONTAINERS>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                <!-- CONTAINER DEFINITION: Calibration Regions -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>CalRegions</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">A calibration region defines where the group of calibration components are located in flash memory.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                    </REFERENCES>
+                                    <SUB-CONTAINERS>
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <!-- CONTAINER DEFINITION: Calibration Regions: Common Component -->
+                                            <SHORT-NAME>CommonComponent</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Container for common calibration containers.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: Calibration Regions: Common Component: Component Part of Integration -->
+                                                <ECUC-BOOLEAN-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>ComponentPartOfIntegration</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Set to true if this component shall be connected to the application components in Developer and not the dummy components.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                    </ECUC-BOOLEAN-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                                <!-- REFERENCE DEFINITION: Calibration Regions: Common Component: Base Component Reference -->
+                                                <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                                    <SHORT-NAME>CommonComponentReference</SHORT-NAME>
+                                                    <LONG-NAME>Calibration Configuration: Common Component Reference</LONG-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Reference for calibrations within the common calibration configuration.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/CommonComponent</DESTINATION-REF>
+                                                </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <!-- CONTAINER DEFINITION: Calibration Regions: Initialization Component -->
+                                            <SHORT-NAME>InitializationComponent</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Container for initialization calibration containers.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: Calibration Regions: Initialization Component: Component Part of Integration -->
+                                                <ECUC-BOOLEAN-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>ComponentPartOfIntegration</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Set to true if this component shall be connected to the application components in Developer and not the dummy components.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                                                </ECUC-BOOLEAN-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                                <!-- REFERENCE DEFINITION: Calibration Regions: Initialization Component: Base Component Reference -->
+                                                <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                                    <SHORT-NAME>InitializationComponentReference</SHORT-NAME>
+                                                    <LONG-NAME>Calibration Configuration: Initialization Component Reference</LONG-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Reference for calibrations within the initialization calibration configuration.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/InitializationComponent</DESTINATION-REF>
+                                                </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                        <!-- CONTAINER DEFINITION: Calibration Regions: Runtime Component -->
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <SHORT-NAME>RuntimeComponent</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Container for supplier calibration containers.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: Calibration Regions: Runtime Component: Component Part of Integration -->
+                                                <ECUC-BOOLEAN-PARAM-DEF UUID="">
+                                                    <SHORT-NAME>ComponentPartOfIntegration</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Set to true if this component shall be connected to the application components in Developer and not the dummy components.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES />
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                </ECUC-BOOLEAN-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                                <!-- REFERENCE DEFINITION: Calibration Regions: Runtime Component: Component Reference -->
+                                                <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                                    <SHORT-NAME>RuntimeComponentReference</SHORT-NAME>
+                                                    <LONG-NAME>Calibration Configuration: Supplier Component Reference</LONG-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Reference for calibrations within the runtime calibration configuration.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/RuntimeComponent</DESTINATION-REF>
+                                                </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                    </SUB-CONTAINERS>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                <!-- CONTAINER DEFINITION: Calibration Configuration -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>CalibrationConfiguration</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">The following groups represent the calibration components used in each calibration configuration.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                    </REFERENCES>
+                                    <SUB-CONTAINERS>
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <SHORT-NAME>InitializationCalibrationConfiguration</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">The following groups represent the initialization calibration components for the given index.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: Initialization Calibration Configuration Component: Index -->
+                                                <ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+                                                    <SHORT-NAME>InitializationIndex</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Value represents the group of calibration components that will be activated when the desired initialization index is equal to this value.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES />
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <MAX>65535</MAX>
+                                                    <MIN>0</MIN>
+                                                </ECUC-INTEGER-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                                <!-- REFERENCE DEFINITION: Calibration Configuration: Initialization Component Reference -->
+                                                <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                                    <SHORT-NAME>InitializationComponentReference</SHORT-NAME>
+                                                    <LONG-NAME>Calibration Configuration: Initialization Component Reference</LONG-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Initialization component reference for calibrations within this calibration configuration.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/InitializationComponent</DESTINATION-REF>
+                                                </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                        <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                            <SHORT-NAME>RuntimeSelectableCalibrationConfiguration</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">The following groups represent the runtime selectable calibration components for the given index.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                            <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                            <PARAMETERS>
+                                                <!-- PARAMETER DEFINITION: Runtime Calibration Configuration Component: Index -->
+                                                <ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+                                                    <SHORT-NAME>RuntimeIndex</SHORT-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Value represents the group of calibration components that will be activated when the desired runtime selection index is equal to this value.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                                    <IMPLEMENTATION-CONFIG-CLASSES />
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                                    <MAX>65535</MAX>
+                                                    <MIN>0</MIN>
+                                                </ECUC-INTEGER-PARAM-DEF>
+                                            </PARAMETERS>
+                                            <REFERENCES>
+                                                <!-- REFERENCE DEFINITION: Calibration Configuration: Runtime Component Reference -->
+                                                <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                                    <SHORT-NAME>RuntimeComponentReference</SHORT-NAME>
+                                                    <LONG-NAME>Calibration Configuration: Runtime Component Reference</LONG-NAME>
+                                                    <DESC>
+                                                        <L-2 L="EN">Runtime component reference for calibrations within this calibration configuration.</L-2>
+                                                    </DESC>
+                                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                                    <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                                    <ORIGIN>NEXTEER</ORIGIN>
+                                                    <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/RuntimeComponent</DESTINATION-REF>
+                                                </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                            </REFERENCES>
+                                        </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                    </SUB-CONTAINERS>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                                <!-- Container Definition: Online Calibration Groups -->
+                                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="">
+                                    <SHORT-NAME>OnlineCalibrationGroup</SHORT-NAME>
+                                    <DESC>
+                                        <L-2 L="EN">The following groups represent the calibration components used in each online calibration configuration.</L-2>
+                                    </DESC>
+                                    <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                    <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                    <POST-BUILD-CHANGEABLE>false</POST-BUILD-CHANGEABLE>
+                                    <MULTIPLE-CONFIGURATION-CONTAINER>false</MULTIPLE-CONFIGURATION-CONTAINER>
+                                    <PARAMETERS>
+                                        <!-- PARAMETER DEFINITION: Online Calibration Group Component: Group Index -->
+                                        <ECUC-INTEGER-PARAM-DEF UUID="7e06e0fc-f057-4691-b9eb-a96179f25157">
+                                            <SHORT-NAME>GroupIndex</SHORT-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Value represents the group of calibration components that will be activated when the desired group (segment) index is equal to this value.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                                            <IMPLEMENTATION-CONFIG-CLASSES />
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                                            <MAX>65535</MAX>
+                                            <MIN>0</MIN>
+                                        </ECUC-INTEGER-PARAM-DEF>
+                                    </PARAMETERS>
+                                    <REFERENCES>
+                                        <!-- REFERENCE DEFINITION: Online Calibration Group: Common Component Reference -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>CommonComponentReference</SHORT-NAME>
+                                            <LONG-NAME>Calibration Configuration: Common Component Reference</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Common component reference for calibrations within this calibration configuration.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/CommonComponent</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                        <!-- REFERENCE DEFINITION: Online Calibration Group: Initialization Component Reference -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>InitializationComponentReference</SHORT-NAME>
+                                            <LONG-NAME>Calibration Configuration: Initialization Component Reference</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Initialization component reference for calibrations within this calibration configuration.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/InitializationComponent</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                        <!-- REFERENCE DEFINITION: Online Calibration Group: Runtime Component Reference -->
+                                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="">
+                                            <SHORT-NAME>RuntimeComponentReference</SHORT-NAME>
+                                            <LONG-NAME>Calibration Configuration: Runtime Component Reference</LONG-NAME>
+                                            <DESC>
+                                                <L-2 L="EN">Runtime component reference for calibrations within this calibration configuration.</L-2>
+                                            </DESC>
+                                            <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                                            <UPPER-MULTIPLICITY>65535</UPPER-MULTIPLICITY>
+                                            <ORIGIN>NEXTEER</ORIGIN>
+                                            <DESTINATION-REF DEST="PARAM-CONF-CONTAINER-DEF">/Nexteer/EcucDefs_TunSelnMngt/TunSelnMngt/CalRegions/RuntimeComponent</DESTINATION-REF>
+                                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                                    </REFERENCES>
+                                </ECUC-PARAM-CONF-CONTAINER-DEF>
+                            </CONTAINERS>
+                        </ECUC-MODULE-DEF>
+                    </ELEMENTS>
+                </AR-PACKAGE>
+            </AR-PACKAGES>
+        </AR-PACKAGE>
+    </AR-PACKAGES>
+</AUTOSAR>

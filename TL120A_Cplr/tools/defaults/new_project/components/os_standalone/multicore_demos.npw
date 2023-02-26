@@ -1,0 +1,240 @@
+%if !defined(__DISTRIBUTION_TYPE__) || streq(__DISTRIBUTION_TYPE__, "TOOLS")
+
+%if !defined(GHS_TOOLS_DIR) || (file_exists("${GHS_TOOLS_DIR}/gcores.exe") || file_exists("${GHS_TOOLS_DIR}/gcores"))
+
+%if defined(__SUPPORTS_C__) && defined(GCORES_SUPPORT)
+
+# Component definitions for generic Multi-Core Archive and child Cores /
+# Shared Memory.
+component.multicorearchive {
+    display_type_name = "Multi-Core Archive"
+    top_file_type = "MultiCoreArchive"
+    default_for_filetypes = { "MultiCoreArchive" }
+    use_template = "rootProjectT"
+    parent_context_types = { "OuterProject" }
+    context_types = { "MultiCoreArchive", "Container" }
+
+    description = "A project for grouping multiple executables to run together on a multi-core target."
+    icon_name = "generic_blue"
+
+    attributes.tf_ProjectName {
+	refreshNode = true
+        build_file_setting = "filename $build_file_basename"
+        dlg_info.add.cmd_str = "SetMCAProperties"
+	default = "mca"
+	actions.add.intermediate {
+            10 += { "defineLocal PROJ_TYPE MultiCoreArchive" }
+	}
+    }
+}
+
+component_template.mca_subT {
+    use_template = "startup2"
+
+    parent_context_types = { "MultiCoreArchive" }
+    context_types = { "Container", "AnyProject" }
+
+    attributes.tf_ProjectName {
+	refreshNode = true
+        build_file_setting = "filename $build_file_basename"
+	dlg_info.add {
+	    dlg_filelist = "${__SHARED_PY_DIR__}/common.plc" 
+	    dlg_namelist = "ProjectWizardDirName"
+	}
+    }
+    actions.add {
+        standard {
+            10 += { "python ${__SHARED_PY_DIR__}/projects.py create_project_file" }
+	}
+    }
+}
+
+component.mca_sharedmem {
+    display_type_name = "Shared Memory"
+    top_file_type = "SharedMemory"
+    use_template = "mca_subT"
+    default_for_filetypes = { "SharedMemory" }
+    icon_name = "os_module"
+    description = "Code and data that is in shared memory."
+
+    dlg_info.add {
+	cmd_str = "AddMCASharedMem"
+	dlg_cmdlist = {"SetSharedMemProperties"}
+    }
+    attributes.tf_ProjectName {
+        dlg_info.add.cmd_str = "SetSharedMemProperties"
+	default = "shared"
+	actions.add.intermediate {
+            10 += { "defineLocal PROJ_TYPE SharedMemory" }
+	}
+    }
+}
+
+component.mca_core {
+    display_type_name = "Core"
+    top_file_type = "Core"
+    use_template = "mca_subT"
+    default_for_filetypes = { "Core" }
+    icon_name = "integrity_kernel"
+    description = "Code and data that is assigned to a particular core."
+
+    dlg_info.add {
+	cmd_str = "AddMCACore"
+	dlg_cmdlist = {"SetCoreProperties"}
+    }
+    attributes.tf_ProjectName {
+        dlg_info.add.cmd_str = "SetCoreProperties"
+	default = "core"
+	actions.add.intermediate {
+            10 += { "defineLocal PROJ_TYPE Core" }
+	}
+    }
+}
+
+%if file_exists("${__DIR__}/demo_mca")
+component.std_mca_demo {
+	display_object_name = "MultiCore Archive"
+	description  = "This example demonstrates the creation of a multicore archive."
+	use_template = "ExampleProjectT"
+	is_nameable = true
+
+	%if !defined(GCORES_SUPPORT)
+	disabled = true
+	%endif
+
+	display_group = "Create New Demo Project ..."
+	top_file_type = "MultiCoreArchive"
+	dlg_info {
+	    add {
+		cmd_str = "AddMCADemo"
+		dlg_cmdlist = {"SetProjectInfo_MCADemo"}
+	    }
+	    edit.cmd_str = "EditMCADemo"
+	}
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src_mca"
+	    }
+	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProjectInfo_MCADemo"
+		    }
+		}
+		default="MCADemo"
+		actions.add {
+	            intermediate {
+			10 += { "defineLocal PROJ_TYPE MultiCoreArchive" }
+	                10 += { "defineLocal COMP_TYPE MCADemo" }
+  	            }
+	            standard {
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_mca" }
+			20 += { "python ${__DIR__}/multicore_demos.py copy_mca_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+%if file_exists("${__DIR__}/demo_mca_threads")
+component.std_mca_threads_demo {
+	display_object_name = "Hyper-threaded RH850 Demo"
+	description  = "This example demonstrates using hyperthreads on the RH850"
+	use_template = "ExampleProjectT"
+	is_nameable = true
+
+	%if !defined(GCORES_SUPPORT)
+	disabled = true
+	%endif
+	%if !defined(RH850HT_SUPPORT)
+	disabled = true
+	%endif
+
+	display_group = "Create New Demo Project ..."
+	top_file_type = "MultiCoreArchive"
+	dlg_info {
+	    add {
+		cmd_str = "AddMCATDemo"
+		dlg_cmdlist = {"SetProjectInfo_MCATDemo"}
+	    }
+	    edit.cmd_str = "EditMCATDemo"
+	}
+	attributes {
+	    tf_ProjectDir {
+	        default="$ABS_BASE_PROJ_DIR/src"
+	    }
+	    tf_ProjectName {
+		dlg_info {
+		    add {
+		    	cmd_str = "SetProjectInfo_MCATDemo"
+		    }
+		}
+		default="HyperthreadsDemo"
+		actions.add {
+	            intermediate {
+			10 += { "defineLocal PROJ_TYPE MultiCoreArchive" }
+	                10 += { "defineLocal COMP_TYPE MCATDemo" }
+  	            }
+	            standard {
+	                10 += { "defineLocal CUSTOM_LINKMAP threads.ld" }
+		        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_mca_threads" }
+			20 += { "python ${__DIR__}/multicore_demos.py copy_mca_threads_demo" }
+		    }
+		}
+	    }
+	}
+}
+%endif
+%if file_exists("${__DIR__}/demo_mca_threads")
+component.std_mca_threads_demo_imp {
+        display_object_name = "Hyper-threaded RH850 Demo (symbol-import control)"
+        description  = "This example demonstrates using hyperthreads on the RH850 and the symbol-import control features"
+        use_template = "ExampleProjectT"
+        is_nameable = true
+
+        %if !defined(GCORES_SUPPORT)
+        disabled = true
+        %endif
+        %if !defined(RH850HT_SUPPORT)
+        disabled = true
+        %endif
+
+        display_group = "Create New Demo Project ..."
+        top_file_type = "MultiCoreArchive"
+        dlg_info {
+            add {
+                cmd_str = "AddMCATDemoImp"
+                dlg_cmdlist = {"SetProjectInfo_MCATDemoImp"}
+            }
+            edit.cmd_str = "EditMCATDemoImp"
+        }
+        attributes {
+            tf_ProjectDir {
+                default="$ABS_BASE_PROJ_DIR/src"
+            }
+            tf_ProjectName {
+                dlg_info {
+                    add {
+                        cmd_str = "SetProjectInfo_MCATDemoImp"
+                    }
+                }
+                default="HyperthreadsDemoImportsControl"
+                actions.add {
+                    intermediate {
+                        10 += { "defineLocal PROJ_TYPE MultiCoreArchive" }
+                        10 += { "defineLocal COMP_TYPE MCATDemoImp" }
+                    }
+                    standard {
+                        10 += { "defineLocal CUSTOM_LINKMAP threads.ld" }
+                        15 += { "defineLocal ABS_PRJ_SRC_DIR ${__DIR__}/demo_mca_threads" }
+                        20 += { "python ${__DIR__}/multicore_demos.py copy_mca_threads_demo_imp" }
+                    }
+                }
+            }
+        }
+}
+%endif
+%endif
+
+%endif
+%endif

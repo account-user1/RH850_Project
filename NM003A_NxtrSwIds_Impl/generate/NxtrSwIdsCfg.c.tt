@@ -1,0 +1,66 @@
+<#@ AutosarXml processor="ArDirectiveProcessor" requires="arPrefix='ar';arNamespace='http://autosar.org/4.0.3'" #>
+<#@ template inherits="AutosarDirectiveProcessor.ArGtcBase" debug="true" #>
+<#@ output extension="" #>
+<#@ include file="Helper.tt" #>
+/**********************************************************************************************************************
+* Copyright 2015 Nexteer
+* Nexteer Confidential
+*
+* Module File Name  : NxtrSwIdsCfg.c
+* Module Description: Nexteer Software Identifiers
+* Project           : CBD
+* Author            : Jared Julien
+* Generator         : <#= GeneratorName #> <#= GeneratorVersion #>
+* Generation Time   : <#= DateTime.Now.ToString( "dd.MM.yyyy HH:mm:ss" ) #>
+***********************************************************************************************************************
+* Version Control:
+* %version:          %
+* %derived_by:       %
+*----------------------------------------------------------------------------------------------------------------------
+* Date      Rev      Author         Change Description                                                           SCR #
+* -------   -------  --------  ---------------------------------------------------------------------------     --------
+* 12/04/15  1        JWJ       Initial Template Version                                                        EA4#
+**********************************************************************************************************************/
+<#
+	ChangeContext( Xp.ModuleConfAtDefRefTo( "NxtrSwIdsGeneral" ) );
+	string SwRelNr = ValueOf( Xp.ValueAtDefRefTo( "SwRelNr" ) );
+	string SwRelVer = ValueOf( Xp.ValueAtDefRefTo( "SwRelVer" ) );
+	bool PsrBuild = ValueOf( Xp.ValueAtDefRefTo( "PrototypeBuild" ) );
+	string SwRelOrigin = "PROD";
+	string PsrId = "0";
+	string PsrRev = "A";
+	if ( PsrBuild == true )
+	{
+		SwRelOrigin = "PSR";
+		PsrId = ValueOf( Xp.ValueAtDefRefTo( "PsrId" ) );
+		PsrRev = ValueOf( Xp.ValueAtDefRefTo( "PsrRev" ) );
+	}
+#>
+
+/************************************************ Include Statements *************************************************/
+#include "NxtrSwIds.h"
+
+
+/******************************************** File Level Rule Deviations *********************************************/
+
+/********************************************* Embedded Local Constants **********************************************/
+CONST(SwRelNrRec, NxtrSwIds_CONST) NxtrSwIds_SwRelNr_Cnt_str = {"<#= SwRelNr #>", "<#= SwRelVer #>"};
+
+
+/* The fields in this group are updated at compile time using a preexec script to values read from the user's PC */
+CONST(uint8, NxtrSwIds_CONST) NxtrSwIds_SwAuthor_Cnt_u08[6U] = "";
+CONST(SwOriginRec, NxtrSwIds_CONST) NxtrSwIds_SwOrigin_Cnt_enum = SWORIGIN_<#= SwRelOrigin #>;
+
+
+/* The fields in this group are used for PSR builds.  If creating a PSR, also set SwOrigin above to SWORIGIN_PSR. */
+CONST(uint32, NxtrSwIds_CONST) NxtrSwIds_PsrId_Cnt_u32 = <#= PsrId #>U;
+CONST(uint8, NxtrSwIds_CONST) NxtrSwIds_PsrRev_Cnt_u08 = '<#= PsrRev #>';
+
+
+/******************************************** Module Specific Variables **********************************************/
+
+/******************************************** Local Function Prototypes **********************************************/
+
+/*********************************************** Function Definitions ************************************************/
+
+/* End of File: NxtrSwIdsCfg.c */

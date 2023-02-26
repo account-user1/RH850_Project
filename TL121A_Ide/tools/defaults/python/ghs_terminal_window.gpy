@@ -1,0 +1,75 @@
+import ghs_window;
+#import ghs_constants;
+#import ghs_winreg;
+
+class GHS_TerminalWindow(ghs_window.GHS_Window):
+    """ Describe MULTI Terminal window information. """
+    #
+    # Initialize object
+    #
+    # GHS: Validated
+    #
+    def __init__(self, compName="", wn="", wid="0", className="",
+		 regSvcName="", service=""):
+	ghs_window.GHS_Window.__init__(self, compName, wn, wid, className,
+				       regSvcName, service);
+
+
+    #
+    # Connect to serial port.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated (manually)
+    #
+    def Connect(self, block=False):
+	return self.SelectMenu("&File", "&Connect", block);
+    # Define some aliases for the function
+    connect = Connect;
+    #
+    # Disconnect the serial connection.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated (manually)
+    #
+    def Disconnect(self, block=False):
+	return self.PressButton("Disconnect", block);
+    # Define some aliases for the function
+    disconnect = Disconnect;
+
+
+    #
+    # Change baud rate.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated (manually)
+    #
+    def ChangeBaudRate(self, value, block=False):
+	return self.ChangePullDownValue("pdSerialBaudRate", value);
+    # Define some aliases for the function
+    changebaudrate = ChangeBaudRate;
+
+
+    #
+    # Send break to target.
+    #
+    # Return True(success) or False(failure).
+    #
+    # GHS: Validated (manually)
+    #
+    def SendBreak(self, block=False):
+	return self.PressButton("Send Break", block);
+    # Define some aliases for the function
+    sendbreak = SendBreak;
+
+
+    ##########################################################################
+    #
+    # More APIs......
+    #
+    ##########################################################################
+
+# Define some aliases for the class
+#ghs_terminalwindow = GHS_TerminalWindow;

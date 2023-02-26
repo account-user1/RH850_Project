@@ -1,0 +1,73 @@
+/*
+    =============================================================================================================
+    COPYRIGHT
+    ==============================================================================================================
+    Copyright (c) 2016 by Vector Informatik GmbH.                                             All rights reserved.
+
+                  This software is copyright protected and proprietary to Vector Informatik GmbH.
+                  Vector Informatik GmbH grants to you only those rights as set out in the license conditions.
+                  All other rights remain with Vector Informatik GmbH.
+    ==============================================================================================================
+    DESCRIPTION
+    ==============================================================================================================
+        Project:  DVCfgAutomationInterfaceGradle
+
+    Description:  dvCfgAutomationBootstrap file for Gradle build of an AutomationClient.
+    ==============================================================================================================
+
+    ==============================================================================================================
+    AUTHOR IDENTITY
+    ==============================================================================================================
+    Name                          Initials      Company
+    ==============================================================================================================
+    Andreas Turban                virtu         Vector Informatik GmbH
+    ==============================================================================================================
+    REVISION HISTORY
+    ==============================================================================================================
+    Version   Date        Author  Change Id     Description
+    ==============================================================================================================
+    1.0.0   2016-05-25  virtu  DAVID00132139  FEAT-1884: ScriptLoading inside of the DaVinci Configurator 
+    ==============================================================================================================
+ * 
+ * DO NOT CHANGE THIS FILE
+ */
+
+buildscript {
+    apply from: 'projectConfig.gradle'
+    // The current dvCfgAutomationBootstrapVersion
+    project.ext.dvCfgAutomationBootstrapVersion = "1.0.0"
+
+    if (!project.ext.has("dvCfgInstallation")) {
+        throw new RuntimeException("The project.ext.dvCfgInstallation property does not exist. Please make sure that the projectConfig.gradle contains the project.ext.dvCfgInstallation property.")
+    }
+
+    def automationPath = new File(project.ext.dvCfgInstallation, "Core/AutomationInterface/buildLibs")
+    if (!automationPath.exists()) {
+        automationPath = new File(project.ext.dvCfgInstallation, "DaVinciConfigurator/Core/AutomationInterface/buildLibs")
+        if (!automationPath.exists()) {
+            throw new RuntimeException("The project.ext.dvCfgInstallation property does not point to a valid DaVinci Configurator location. Please correct the property in projectConfig.gradle. Actual Path is: ${project.ext.dvCfgInstallation}")
+        } else {
+            project.ext.dvCfgInstallation = new File(project.ext.dvCfgInstallation, "DaVinciConfigurator").absoluteFile
+        }
+    }
+    automationPath = automationPath.absoluteFile
+
+    repositories {
+        ivy {
+            url automationPath
+            layout 'pattern', {
+                artifact "[artifact]-[revision](-[classifier])(.[ext])"
+                ivy 'ivy.xml'
+            }
+        }
+    }
+    dependencies {
+        classpath 'com.vector.cfg.build.gradle:DVCfgAutomationInterfaceGradle:1.+'
+    }
+}
+import com.vector.cfg.build.gradle.AutomationInterfaceGradlePlugin
+
+apply plugin: AutomationInterfaceGradlePlugin
+
+
+
